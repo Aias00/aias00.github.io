@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="刘宏宇的博客">
+    <meta name="keyword" content="aias00">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        修改基于springmvc的web项目用maven-tomcat插件启动 - aias00的博客 | aias00&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>hongyu liu</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <!-- <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li> -->
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于我</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-打开之前的demo工程"><span class="toc-text">1.打开之前的demo工程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-修改pom文件内容如下"><span class="toc-text">2.修改pom文件内容如下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-idea右上角菜单栏-gt-Edit-Configuration-gt-点击-号添加maven，在command-line中填写-tomcat7-run"><span class="toc-text">3.idea右上角菜单栏-&gt;Edit Configuration -&gt; 点击 + 号添加maven，在command line中填写  tomcat7:run</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-启动即可"><span class="toc-text">4.启动即可</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-命令"><span class="toc-text">5.命令</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        修改基于springmvc的web项目用maven-tomcat插件启动
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-08-23 13:40:43</span></span>
+        
+        
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content no-indent">
+        <h3 id="1-&#x6253;&#x5F00;&#x4E4B;&#x524D;&#x7684;demo&#x5DE5;&#x7A0B;"><a href="#1-&#x6253;&#x5F00;&#x4E4B;&#x524D;&#x7684;demo&#x5DE5;&#x7A0B;" class="headerlink" title="1.&#x6253;&#x5F00;&#x4E4B;&#x524D;&#x7684;demo&#x5DE5;&#x7A0B;"></a>1.&#x6253;&#x5F00;&#x4E4B;&#x524D;&#x7684;demo&#x5DE5;&#x7A0B;</h3><p><a href="https://aias00.github.io/2019/08/20/start-ssm-project-by-idea/" target="_blank" rel="noopener">&#x4F7F;&#x7528;idea&#x521B;&#x5EFA; springMVC + MyBatis + jsp &#x7684;web&#x9879;&#x76EE;</a></p>
+<h3 id="2-&#x4FEE;&#x6539;pom&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x5982;&#x4E0B;"><a href="#2-&#x4FEE;&#x6539;pom&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x5982;&#x4E0B;" class="headerlink" title="2.&#x4FEE;&#x6539;pom&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x5982;&#x4E0B;"></a>2.&#x4FEE;&#x6539;pom&#x6587;&#x4EF6;<build>&#x5185;&#x5BB9;&#x5982;&#x4E0B;</build></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">        &lt;resources&gt;</span><br><span class="line">            &lt;resource&gt;</span><br><span class="line">                &lt;directory&gt;${basedir}/src/main/resources&lt;/directory&gt;</span><br><span class="line">                &lt;includes&gt;</span><br><span class="line">                    &lt;include&gt;**/*&lt;/include&gt;</span><br><span class="line">                &lt;/includes&gt;</span><br><span class="line">            &lt;/resource&gt;</span><br><span class="line">            &lt;resource&gt;</span><br><span class="line">                &lt;directory&gt;${basedir}/src/main/java&lt;/directory&gt;</span><br><span class="line">                &lt;includes&gt;</span><br><span class="line">                    &lt;include&gt;**/*.xml&lt;/include&gt;</span><br><span class="line">                &lt;/includes&gt;</span><br><span class="line">            &lt;/resource&gt;</span><br><span class="line">        &lt;/resources&gt;</span><br><span class="line">        &lt;plugins&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;</span><br><span class="line">                &lt;configuration&gt;</span><br><span class="line">                    &lt;source&gt;1.8&lt;/source&gt;</span><br><span class="line">                    &lt;target&gt;1.8&lt;/target&gt;</span><br><span class="line">                    &lt;encoding&gt;UTF-8&lt;/encoding&gt;</span><br><span class="line">                &lt;/configuration&gt;</span><br><span class="line">            &lt;/plugin&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">                &lt;version&gt;2.2&lt;/version&gt;</span><br><span class="line">                &lt;configuration&gt;</span><br><span class="line">                    &lt;path&gt;/&lt;/path&gt;</span><br><span class="line">                    &lt;port&gt;8090&lt;/port&gt;</span><br><span class="line">                    &lt;uriEncoding&gt;UTF-8&lt;/uriEncoding&gt;</span><br><span class="line">                    &lt;url&gt;http://localhost:8090/&lt;/url&gt;</span><br><span class="line">                    &lt;server&gt;Tomcat7&lt;/server&gt;</span><br><span class="line">                &lt;/configuration&gt;</span><br><span class="line">                &lt;executions&gt;</span><br><span class="line">                    &lt;execution&gt;</span><br><span class="line">                        &lt;phase&gt;package&lt;/phase&gt;</span><br><span class="line">                        &lt;goals&gt;</span><br><span class="line">                            &lt;goal&gt;run&lt;/goal&gt;</span><br><span class="line">                        &lt;/goals&gt;</span><br><span class="line">                    &lt;/execution&gt;</span><br><span class="line">                &lt;/executions&gt;</span><br><span class="line">            &lt;/plugin&gt;</span><br><span class="line"></span><br><span class="line">        &lt;/plugins&gt;</span><br><span class="line">    &lt;/build&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-idea&#x53F3;&#x4E0A;&#x89D2;&#x83DC;&#x5355;&#x680F;-gt-Edit-Configuration-gt-&#x70B9;&#x51FB;-&#x53F7;&#x6DFB;&#x52A0;maven&#xFF0C;&#x5728;command-line&#x4E2D;&#x586B;&#x5199;-tomcat7-run"><a href="#3-idea&#x53F3;&#x4E0A;&#x89D2;&#x83DC;&#x5355;&#x680F;-gt-Edit-Configuration-gt-&#x70B9;&#x51FB;-&#x53F7;&#x6DFB;&#x52A0;maven&#xFF0C;&#x5728;command-line&#x4E2D;&#x586B;&#x5199;-tomcat7-run" class="headerlink" title="3.idea&#x53F3;&#x4E0A;&#x89D2;&#x83DC;&#x5355;&#x680F;-&gt;Edit Configuration -&gt; &#x70B9;&#x51FB; + &#x53F7;&#x6DFB;&#x52A0;maven&#xFF0C;&#x5728;command line&#x4E2D;&#x586B;&#x5199;  tomcat7:run"></a>3.idea&#x53F3;&#x4E0A;&#x89D2;&#x83DC;&#x5355;&#x680F;-&gt;Edit Configuration -&gt; &#x70B9;&#x51FB; + &#x53F7;&#x6DFB;&#x52A0;maven&#xFF0C;&#x5728;command line&#x4E2D;&#x586B;&#x5199;  tomcat7:run</h3><p><img src="/2019/08/23/change-maven-war-plugin/1.png" alt></p>
+<h3 id="4-&#x542F;&#x52A8;&#x5373;&#x53EF;"><a href="#4-&#x542F;&#x52A8;&#x5373;&#x53EF;" class="headerlink" title="4.&#x542F;&#x52A8;&#x5373;&#x53EF;"></a>4.&#x542F;&#x52A8;&#x5373;&#x53EF;</h3><h3 id="5-&#x547D;&#x4EE4;"><a href="#5-&#x547D;&#x4EE4;" class="headerlink" title="5.&#x547D;&#x4EE4;"></a>5.&#x547D;&#x4EE4;</h3><pre><code>tomcat7:deploy  --&#x90E8;&#x7F72;&#x4E00;&#x4E2A;web war&#x5305;
+tomcat7:reload  --&#x91CD;&#x65B0;&#x52A0;&#x8F7D;web war&#x5305;
+tomcat7:start    --&#x542F;&#x52A8;tomcat
+tomcat7:stop    --&#x505C;&#x6B62;tomcat
+tomcat7:undeploy--&#x505C;&#x6B62;&#x4E00;&#x4E2A;war&#x5305;
+tomcat7:run &#x542F;&#x52A8;&#x5D4C;&#x5165;&#x5F0F;tomcat &#xFF0C;&#x5E76;&#x8FD0;&#x884C;&#x5F53;&#x524D;&#x9879;&#x76EE;
+&#x5982;&#x679C;&#x9700;&#x8981;debug&#xFF0C;&#x5C31;&#x4F7F;&#x7528;debug as &#x65B9;&#x5F0F;&#x542F;&#x52A8;&#x9879;&#x76EE;&#xFF01;</code></pre>
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
