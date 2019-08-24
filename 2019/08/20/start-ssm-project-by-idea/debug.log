@@ -7,3 +7,4 @@
 [0823/102753:INFO:exception_record.cc(518)] [QB]Process ID: 41332 Type: 2
 [0823/161410:WARNING:dns_config_service_win.cc(674)] Failed to read DnsConfig.
 [0823/161415:WARNING:dns_config_service_win.cc(674)] Failed to read DnsConfig.
+[0823/175743:ERROR:browser_gpu_channel_host_factory.cc(119)] Failed to launch GPU process.
