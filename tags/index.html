@@ -113,7 +113,7 @@
         <!-- Main Content -->
         <div id="tag_cloud" class="tags">
     
-    <a href="#cache" title="cache" rel="1">cache</a>
+    <a href="#cache" title="cache" rel="2">cache</a>
     
     <a href="#redis" title="redis" rel="3">redis</a>
     
@@ -130,6 +130,20 @@
                 <span class="fa fa-tag listing-seperator" id="cache">
                     <span class="tag-text">cache</span>
                 </span>
+    
+    <!-- <li class="listing-item">
+    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+    </li> -->
+    <div class="post-preview">
+        <a href="/2020/08/09/cache-breakdown/">
+            <h2 class="post-title">
+                缓存穿透和缓存击穿
+            </h2>
+            
+        </a>
+        <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+    </div>
     
     <!-- <li class="listing-item">
     <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
@@ -157,9 +171,9 @@
     <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
     </li> -->
     <div class="post-preview">
-        <a href="/2020/08/02/redis-base/">
+        <a href="/2020/08/03/redis-persistence/">
             <h2 class="post-title">
-                redis基本数据类型
+                redis两种持久化方式
             </h2>
             
         </a>
@@ -185,9 +199,9 @@
     <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
     </li> -->
     <div class="post-preview">
-        <a href="/2020/08/03/redis-persistence/">
+        <a href="/2020/08/02/redis-base/">
             <h2 class="post-title">
-                redis两种持久化方式
+                redis基本数据类型
             </h2>
             
         </a>
