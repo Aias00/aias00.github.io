@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="刘宏宇的博客">
+    <meta name="keyword" content="aias00">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        注解@Resource和@Autowired的区别 - aias00的博客 | aias00&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>hongyu liu</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <!-- <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于我</span>
+                </a>
+            </li> -->
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        注解@Resource和@Autowired的区别
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2020-08-21 23:18:56</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#spring" title="spring">spring</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content no-indent">
+        <p>&#x5728;&#x5E94;&#x7528; spring &#x6846;&#x67B6;&#x8FDB;&#x884C;&#x5F00;&#x53D1;&#x65F6;,&#x6211;&#x4EEC;&#x5E38;&#x5E38;&#x7528;@Resource &#x548C;@Autowired &#x6CE8;&#x89E3;&#x8FDB;&#x884C;&#x4F9D;&#x8D56;&#x6CE8;&#x5165;</p>
+<p>&#x5728;&#x5F00;&#x53D1;&#x8FC7;&#x7A0B;&#x4E2D;&#x4EFF;&#x4F5B;&#x8FD9;&#x4E24;&#x8005;&#x5E94;&#x7528;&#x8D77;&#x6765;&#x5E76;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x533A;&#x522B;,&#x4F46;&#x662F;&#x5176;&#x5B9E;&#x8FD9;&#x4E24;&#x4E2A;&#x6CE8;&#x89E3;&#x672C;&#x8D28;&#x4E0A;&#x5C31;&#x662F;&#x4E0D;&#x4E00;&#x6837;&#x7684;</p>
+<p>&#x533A;&#x522B;&#x5982;&#x4E0B;:</p>
+<ul>
+<li><p>@Resource &#x662F;&#x7531; java &#x63D0;&#x4F9B;&#x7684;&#x6CE8;&#x89E3;,&#x800C;@Autowired &#x662F;&#x7531; spring &#x63D0;&#x4F9B;&#x7684;</p>
+</li>
+<li><p>@Resource &#x662F; ByName,&#x800C;@Autowired &#x662F; ByType</p>
+</li>
+<li><p>@Autowire &#x6CE8;&#x5165;&#x65F6; ByType &#x5982;&#x679C;&#x8981;&#x4F7F;&#x7528; ByName &#x9700;&#x8981;&#x914D;&#x5408;@Qualifier</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowire</span></span><br><span class="line"><span class="meta">@Qualifier</span>&#xFF08;<span class="string">&quot;orderService&quot;</span>&#xFF09;</span><br><span class="line"><span class="keyword">private</span> OrderService orderService;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>@Resource &#x9ED8;&#x8BA4; ByName,&#x5F53;&#x627E;&#x4E0D;&#x5230;&#x4E0E;&#x540D;&#x79F0;&#x5339;&#x914D;&#x7684; bean &#x624D;&#x4F1A;&#x6309;&#x7167;&#x7C7B;&#x578B;&#x88C5;&#x914D;,&#x53EF;&#x4EE5;&#x901A;&#x8FC7; name &#x5C5E;&#x6027;&#x6307;&#x5B9A;,&#x5982;&#x679C;&#x6CA1;&#x6709;&#x6307;&#x5B9A; name &#x5C5E;&#x6027;&#xFF0C;&#x5F53;&#x6CE8;&#x89E3;&#x6807;&#x6CE8;&#x5728;&#x5B57;&#x6BB5;&#x4E0A;,&#x5373;&#x9ED8;&#x8BA4;&#x53D6;&#x5B57;&#x6BB5;&#x7684;&#x540D;&#x79F0;&#x4F5C;&#x4E3A; bean &#x540D;&#x79F0;&#x5BFB;&#x627E;&#x4F9D;&#x8D56;&#x5BF9;&#x8C61;&#xFF0C;&#x5F53;&#x6CE8;&#x89E3;&#x6807;&#x6CE8;&#x5728;&#x5C5E;&#x6027;&#x7684; setter &#x65B9;&#x6CD5;&#x4E0A;,&#x5373;&#x9ED8;&#x8BA4;&#x53D6;&#x5C5E;&#x6027;&#x540D;&#x4F5C;&#x4E3A; bean &#x540D;&#x79F0;&#x5BFB;&#x627E;&#x4F9D;&#x8D56;&#x5BF9;&#x8C61;</p>
+</li>
+<li><p>&#x6CE8;&#x610F;&#xFF1A;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x6307;&#x5B9A; name &#x5C5E;&#x6027;,&#x5E76;&#x4E14;&#x6309;&#x7167;&#x9ED8;&#x8BA4;&#x7684;&#x540D;&#x79F0;&#x4ECD;&#x7136;&#x627E;&#x4E0D;&#x5230;&#x4F9D;&#x8D56;&#x7684;&#x5BF9;&#x8C61;&#x65F6;&#x5019;,&#x4F1A;&#x56DE;&#x9000;&#x5230;&#x6309;&#x7167;&#x7C7B;&#x578B;&#x88C5;&#x914D;,&#x4F46;&#x4E00;&#x65E6;&#x6307;&#x5B9A;&#x4E86; name &#x5C5E;&#x6027;,&#x5C31;&#x53EA;&#x80FD;&#x6309;&#x7167;&#x540D;&#x79F0;&#x88C5;&#x914D;&#x4E86;</p>
+</li>
+</ul>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
