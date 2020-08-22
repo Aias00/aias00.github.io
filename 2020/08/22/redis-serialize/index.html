@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="刘宏宇的博客">
+    <meta name="keyword" content="aias00">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        redisTemplate反序列化时遇到的问题 - aias00的博客 | aias00&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>hongyu liu</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <!-- <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于我</span>
+                </a>
+            </li> -->
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        redisTemplate反序列化时遇到的问题
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2020-08-22 01:01:57</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#redis" title="redis">redis</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content no-indent">
+        <p>&#x6700;&#x8FD1;&#x5728;&#x5F00;&#x53D1;&#x4E2D;&#x4F7F;&#x7528;&#x4E86; RedisTemplate &#x6765;&#x64CD;&#x4F5C; redis &#x7F13;&#x5B58;,SpringBoot &#x96C6;&#x5408; RedisTemplate &#x611F;&#x89C9;&#x7528;&#x8D77;&#x6765;&#x4E5F;&#x4E0D;&#x9519;,&#x540C;&#x65F6;&#x5728;&#x5F00;&#x53D1;&#x8FC7;&#x7A0B;&#x4E2D;&#x4E5F;&#x9047;&#x5230;&#x4E86;&#x4E00;&#x4E9B;&#x95EE;&#x9898;,&#x5728;&#x8FD9;&#x91CC;&#x8BB0;&#x5F55;&#x4E00;&#x4E0B;&#x6574;&#x4E2A;&#x8FC7;&#x7A0B;</p>
+<h3 id="&#x914D;&#x7F6E;"><a href="#&#x914D;&#x7F6E;" class="headerlink" title="&#x914D;&#x7F6E;"></a>&#x914D;&#x7F6E;</h3><ul>
+<li>&#x521B;&#x5EFA; SrpingBoot &#x9879;&#x76EE;&#x6216;&#x8005;&#x6A21;&#x5757;&#x5DE5;&#x7A0B;,&#x5F15;&#x5165;&#x4F9D;&#x8D56;</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-commons<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>&#x6DFB;&#x52A0; redis &#x914D;&#x7F6E;&#x53C2;&#x6570;</li>
+</ul>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  redis:</span></span><br><span class="line"><span class="attr">    host:</span> <span class="string">localhost</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">6379</span></span><br><span class="line"><span class="attr">    jedis:</span></span><br><span class="line"><span class="attr">      pool:</span></span><br><span class="line"><span class="attr">        min-idle:</span> <span class="number">50</span></span><br><span class="line"><span class="attr">        max-idle:</span> <span class="number">10</span></span><br><span class="line"><span class="attr">        max-wait:</span> <span class="number">200</span></span><br><span class="line"><span class="attr">        max-active:</span> <span class="number">300</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>&#x6DFB;&#x52A0;&#x914D;&#x7F6E;&#x7C7B;,&#x4FEE;&#x6539; redis &#x4E2D;&#x5B58;&#x50A8; key &#x548C; value &#x7684;&#x5E8F;&#x5217;&#x5316;&#x548C;&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;,RedisTemplate &#x9ED8;&#x8BA4;&#x914D;&#x7F6E;&#x7684;&#x662F;&#x4F7F;&#x7528; Jdk &#x5E8F;&#x5217;&#x5316;,&#x8FD9;&#x79CD;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;&#x5BF9;&#x5B58;&#x50A8;&#x5BF9;&#x8C61;&#x4E0D;&#x662F;&#x5F88;&#x65B9;&#x4FBF;</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisConfig</span> </span>{</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate&lt;String, Object&gt; redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisTemplate&lt;String, Object&gt; <span class="title">redisTemplateInit</span><span class="params">()</span> </span>{</span><br><span class="line">        <span class="comment">// &#x8BBE;&#x7F6E;key&#x7684;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;&#x4E3A;String</span></span><br><span class="line">        redisTemplate.setKeySerializer(RedisSerializer.string());</span><br><span class="line">        <span class="comment">// &#x8BBE;&#x7F6E;Hash key&#x7684;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;&#x4E3A;String</span></span><br><span class="line">        redisTemplate.setHashKeySerializer(RedisSerializer.string());</span><br><span class="line">        <span class="comment">// new &#x4E00;&#x4E2A;jackson&#x65B9;&#x5F0F;&#x7684;valueSerializer &#x5E8F;&#x5217;&#x5316;&#x548C;&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;&#x90FD;&#x4E3A;json</span></span><br><span class="line">        Jackson2JsonRedisSerializer&lt;Object&gt; jackson2JsonRedisSerializer =</span><br><span class="line">                <span class="keyword">new</span> Jackson2JsonRedisSerializer&lt;&gt;(Object.class);</span><br><span class="line">        <span class="comment">// &#x81EA;&#x5B9A;&#x4E49;ObjectMapper</span></span><br><span class="line">        ObjectMapper objectMapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">        <span class="comment">// &#x6307;&#x5B9A;&#x8981;&#x5E8F;&#x5217;&#x5316;&#x7684;&#x57DF;&#xFF0C;field,get&#x548C;set,&#x4EE5;&#x53CA;&#x4FEE;&#x9970;&#x7B26;&#x8303;&#x56F4;&#xFF0C;ANY&#x662F;&#x90FD;&#x6709;&#x5305;&#x62EC;private&#x548C;public</span></span><br><span class="line">        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);</span><br><span class="line">        <span class="comment">// &#x6307;&#x5B9A;&#x5E8F;&#x5217;&#x5316;&#x8F93;&#x5165;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x7C7B;&#x5FC5;&#x987B;&#x662F;&#x975E;final&#x4FEE;&#x9970;&#x7684;&#xFF0C;final&#x4FEE;&#x9970;&#x7684;&#x7C7B;&#xFF0C;&#x6BD4;&#x5982;String,Integer&#x7B49;&#x4F1A;&#x8DD1;&#x51FA;&#x5F02;&#x5E38;</span></span><br><span class="line">        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);</span><br><span class="line">        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);</span><br><span class="line">        <span class="comment">// &#x8BBE;&#x7F6E;value&#x7684;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;&#x4E3A;json</span></span><br><span class="line">        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        <span class="comment">// &#x8BBE;&#x7F6E;hash value&#x7684;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;&#x4E3A;json</span></span><br><span class="line">        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        redisTemplate.afterPropertiesSet();</span><br><span class="line">        <span class="keyword">return</span> redisTemplate;</span><br><span class="line">    }</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x5C31;&#x914D;&#x7F6E;&#x597D;&#x4E86; RedisTemplate</p>
+<h3 id="&#x95EE;&#x9898;"><a href="#&#x95EE;&#x9898;" class="headerlink" title="&#x95EE;&#x9898;"></a>&#x95EE;&#x9898;</h3><p>&#x8BB0;&#x5F55;&#x4E00;&#x4E0B;&#x9047;&#x5230;&#x7684;&#x4E00;&#x4E9B;&#x95EE;&#x9898;</p>
+<ul>
+<li>&#x5B58;&#x5230; redis &#x4E2D;&#x7684;&#x6570;&#x636E;,&#x8BFB;&#x53D6;&#x51FA;&#x6765;&#x4E4B;&#x540E;&#x7C7B;&#x578B;&#x4E0D;&#x662F;&#x539F;&#x6765;&#x7684;&#x7C7B;&#x578B;,&#x800C;&#x662F; LinkedHashMap</li>
+</ul>
+<p>&#x5728; jackson2JsonRedisSerializer &#x4E2D;&#x6CA1;&#x6709;&#x914D;&#x7F6E;&#x81EA;&#x5B9A;&#x4E49; objectMapper,&#x800C; jackson2JsonRedisSerializer &#x9ED8;&#x8BA4;&#x7684; ObjectMapper &#x6CA1;&#x6709;&#x914D;&#x7F6E; DefaultTyping &#x5C5E;&#x6027;,jackson &#x5C06;&#x4F7F;&#x7528;&#x7B80;&#x5355;&#x7684;&#x6570;&#x636E;&#x7ED1;&#x5B9A;&#x5177;&#x4F53;&#x7684; java &#x7C7B;&#x578B;,&#x5176;&#x4E2D; Object &#x5C31;&#x4F1A;&#x5728;&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x7684;&#x65F6;&#x5019;&#x53D8;&#x6210; LinkedHashMap</p>
+<ul>
+<li><p>&#x4E4B;&#x524D;&#x4E5F;&#x8BD5;&#x8FC7; FastJsonRedisSerializer,&#x5229;&#x7528;&#x8FD9;&#x79CD;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;,&#x5982;&#x679C;&#x6CA1;&#x6709;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x65E0;&#x53C2;&#x6784;&#x9020;&#x51FD;&#x6570;&#x6216;&#x8005;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x5168;&#x90E8;&#x53C2;&#x6570;&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;,&#x5728;&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x4E4B;&#x540E;&#x4F1A;&#x51FA;&#x73B0;&#x5C5E;&#x6027;&#x4E22;&#x5931;,&#x56E0;&#x4E3A; Serializer &#x5728;&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x65F6;&#x4F1A;&#x8C03;&#x7528;&#x5BF9;&#x8C61;&#x7C7B;&#x7684;&#x6784;&#x9020;&#x5668;&#x53BB;&#x8FDB;&#x884C;&#x5C5E;&#x6027;&#x6CE8;&#x5165;</p>
+</li>
+<li><p>&#x7528; jackson2JsonRedisSerializer &#x6216;&#x8005; GenericJackson2JsonRedisSerializer, &#x5982;&#x679C;&#x6CA1;&#x6709;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x65E0;&#x53C2;&#x6784;&#x9020;&#x51FD;&#x6570;,&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x65F6;&#x4F1A;&#x62A5;&#x9519;</p>
+</li>
+</ul>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
