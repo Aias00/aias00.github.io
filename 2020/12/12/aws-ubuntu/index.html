@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="刘宏宇的博客">
+    <meta name="keyword" content="aias00">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        在亚马逊免费试用ubuntu - aias00的博客 | aias00&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>hongyu liu</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <!-- <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于我</span>
+                </a>
+            </li> -->
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#更新-apt"><span class="toc-text">更新 apt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-shadowsocks-libev"><span class="toc-text">安装 shadowsocks-libev</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        在亚马逊免费试用ubuntu
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2020-12-12 10:08:58</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#liunx" title="liunx">liunx</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content no-indent">
+        <p>&#x672C;&#x7BC7;&#x4E0D;&#x5199;&#x53C2;&#x4E0E;&#x8BD5;&#x7528;&#x65B9;&#x6CD5;,&#x53EA;&#x8BB0;&#x5F55;&#x542F;&#x52A8;&#x5B9E;&#x4F8B;&#x4E4B;&#x540E;&#x505A;&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x64CD;&#x4F5C;,&#x53EA;&#x8981;&#x662F; ubuntu-18.04 &#x7248;&#x672C;&#x7684;&#x7CFB;&#x7EDF;&#x90FD;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x6B64;&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</p>
+<h3 id="&#x66F4;&#x65B0;-apt"><a href="#&#x66F4;&#x65B0;-apt" class="headerlink" title="&#x66F4;&#x65B0; apt"></a>&#x66F4;&#x65B0; apt</h3><p><code>apt-get update</code></p>
+<h3 id="&#x5B89;&#x88C5;-shadowsocks-libev"><a href="#&#x5B89;&#x88C5;-shadowsocks-libev" class="headerlink" title="&#x5B89;&#x88C5; shadowsocks-libev"></a>&#x5B89;&#x88C5; shadowsocks-libev</h3><p>&#x56E0;&#x4E3A;&#x670D;&#x52A1;&#x5668;&#x5728;&#x4E1C;&#x4EAC;,&#x6B63;&#x597D;&#x624B;&#x5934;&#x6CA1;&#x6709;&#x5408;&#x9002;&#x7684;&#x68AF;&#x5B50;,&#x4E0D;&#x5229;&#x7528;&#x8D77;&#x6765;&#x5C31;&#x662F;&#x6D6A;&#x8D39;</p>
+<p>1.&#x51C6;&#x5907;&#x7F16;&#x8BD1;&#x73AF;&#x5883;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apt install --no-install-recommends build-essential autoconf libtool \</span><br><span class="line">    libssl-dev gawk debhelper dh-systemd init-system-helpers pkg-config asciidoc \</span><br><span class="line">    xmlto apg libpcre3-dev zlib1g-dev libev-dev libudns-dev libsodium-dev \</span><br><span class="line">    libmbedtls-dev libc-ares-dev automake</span><br></pre></td></tr></table></figure>
+
+<p>2.&#x5B89;&#x88C5; git</p>
+<p><code>apt install git -y</code></p>
+<p>3.&#x83B7;&#x53D6;&#x6E90;&#x7801;&#x5E76;&#x7F16;&#x8BD1;</p>
+<p>&#x9996;&#x5148;&#x8981;&#x8FDB;&#x5165;&#x5230;&#x4F60;&#x60F3;&#x8981;&#x4FDD;&#x5B58;&#x6E90;&#x7801;&#x7684;&#x76EE;&#x5F55;,&#x6BD4;&#x5982;/usr/local/xxx(&#x81EA;&#x5DF1;&#x5EFA;&#x7684;&#x6587;&#x4EF6;&#x5939;)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/shadowsocks/shadowsocks-libev.git</span><br><span class="line">cd shadowsocks-libev</span><br><span class="line">git submodule update --init</span><br><span class="line">./autogen.sh &amp;&amp; ./configure --disable-documentation &amp;&amp; make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<p>4.&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /etc/shadowsocks-libev</span><br><span class="line">sudo vim /etc/shadowsocks-libev/config.json</span><br></pre></td></tr></table></figure>
+
+<p>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5185;&#x5BB9;,&#x8BB0;&#x5F97;&#x4FEE;&#x6539;&#x5BC6;&#x7801;</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="attr">&quot;server&quot;</span>: <span class="string">&quot;0.0.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;server_port&quot;</span>: <span class="number">8388</span>,</span><br><span class="line">  <span class="attr">&quot;local_port&quot;</span>: <span class="number">1080</span>,</span><br><span class="line">  <span class="attr">&quot;password&quot;</span>: <span class="string">&quot;password&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;timeout&quot;</span>: <span class="number">600</span>,</span><br><span class="line">  <span class="attr">&quot;method&quot;</span>: <span class="string">&quot;aes-256-cfb&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;fast_open&quot;</span>: <span class="literal">false</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<p>5.&#x521B;&#x5EFA; Shadowsocks-libev.service &#x914D;&#x7F6E;&#x6587;&#x4EF6;,&#x7528;&#x4E8E;&#x914D;&#x7F6E;&#x670D;&#x52A1;&#x542F;&#x52A8;</p>
+<p><code>sudo vim /etc/systemd/system/shadowsocks-libev.service</code></p>
+<p>&#x5185;&#x5BB9;&#x5982;&#x4E0B;:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks-libev Server</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">ExecStart=/usr/local/bin/ss-server -c /etc/shadowsocks-libev/config.json -u</span><br><span class="line">Restart=on-abort</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>6.&#x542F;&#x52A8;&#x670D;&#x52A1;</p>
+<p><code>sudo systemctl start shadowsocks-libev</code></p>
+<p>7.&#x914D;&#x7F6E;&#x5F00;&#x673A;&#x542F;&#x52A8;</p>
+<p><code>sudo systemctl enable shadowsocks-libev</code></p>
+<p>&#x81F3;&#x6B64;,&#x914D;&#x7F6E;&#x5B8C;&#x6210;,&#x81EA;&#x5DF1;&#x627E;&#x627E;&#x5BA2;&#x6237;&#x7AEF;&#x8FDB;&#x884C;&#x8FDE;&#x63A5;,&#x4E0A;&#x7F51;&#x51B2;&#x6D6A;&#x5427;(&#x8BB0;&#x5F97;&#x5F00;&#x653E;&#x5B89;&#x5168;&#x7EC4;&#x7AEF;&#x53E3;&#x5662;)</p>
+<p>### </p>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
