@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="刘宏宇的博客">
+    <meta name="keyword" content="aias00">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        多线程面试知识点(持续更新) - aias00的博客 | aias00&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>hongyu liu</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <!-- <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于我</span>
+                </a>
+            </li> -->
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-线程间同步"><span class="toc-text">1.线程间同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-volatile-关键字"><span class="toc-text">2.volatile 关键字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-ThreadLocal"><span class="toc-text">3.ThreadLocal</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        多线程面试知识点(持续更新)
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2021-03-13 14:48:38</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#thread, interview" title="thread, interview">thread, interview</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content no-indent">
+        <h3 id="1-&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;"><a href="#1-&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;" class="headerlink" title="1.&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;"></a>1.&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;</h3><p>&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;?</p>
+<p>java &#x5141;&#x8BB8;&#x591A;&#x7EBF;&#x7A0B;&#x5E76;&#x53D1;&#x63A7;&#x5236;,&#x5F53;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x64CD;&#x4F5C;&#x4E00;&#x4E2A;&#x53EF;&#x5171;&#x4EAB;&#x7684;&#x8D44;&#x6E90;&#x53D8;&#x91CF;&#x65F6;,&#x5C06;&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x7684;&#x4E0D;&#x51C6;&#x786E;,&#x76F8;&#x4E92;&#x4E4B;&#x95F4;&#x4EA7;&#x751F;&#x51B2;&#x7A81;,&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x52A0;&#x5165;&#x540C;&#x6B65;&#x9501;&#x4EE5;&#x907F;&#x514D;&#x5728;&#x8BE5;&#x7EBF;&#x7A0B;&#x6CA1;&#x6709;&#x5B8C;&#x6210;&#x5BF9;&#x6570;&#x636E;&#x7684;&#x64CD;&#x4F5C;&#x4E4B;&#x524D;,&#x6570;&#x636E;&#x88AB;&#x5176;&#x4ED6;&#x7EBF;&#x7A0B;&#x8C03;&#x7528;,&#x4ECE;&#x800C;&#x4FDD;&#x8BC1;&#x4E86;&#x8BE5;&#x53D8;&#x91CF;&#x7684;&#x552F;&#x4E00;&#x6027;&#x548C;&#x51C6;&#x786E;&#x6027;</p>
+<p>&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;:</p>
+<p>1.&#x540C;&#x6B65;&#x65B9;&#x6CD5;&#x6216;&#x540C;&#x6B65;&#x4EE3;&#x7801;&#x5757;:synchronized &#x5173;&#x952E;&#x5B57;&#x6216; Lock &#x9501;</p>
+<p>2.volatile &#x5173;&#x952E;&#x5B57;</p>
+<p>3.&#x4F7F;&#x7528; ThreadLocal</p>
+<p>4.&#x963B;&#x585E;&#x961F;&#x5217;</p>
+<p>5.&#x4F7F;&#x7528;&#x539F;&#x5B50;&#x53D8;&#x91CF;</p>
+<h3 id="2-volatile-&#x5173;&#x952E;&#x5B57;"><a href="#2-volatile-&#x5173;&#x952E;&#x5B57;" class="headerlink" title="2.volatile &#x5173;&#x952E;&#x5B57;"></a>2.volatile &#x5173;&#x952E;&#x5B57;</h3><p>&#x4FDD;&#x6301;&#x5185;&#x5B58;&#x53EF;&#x89C1;&#x6027;:&#x6240;&#x6709;&#x7EBF;&#x7A0B;&#x90FD;&#x80FD;&#x770B;&#x5230;&#x5171;&#x4EAB;&#x5185;&#x5B58;&#x7684;&#x6700;&#x65B0;&#x72B6;&#x6001;</p>
+<p>&#x539F;&#x7406;:</p>
+<p>1.&#x7EBF;&#x7A0B;&#x5BF9; volatile &#x53D8;&#x91CF;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#x4E4B;&#x540E;,&#x8981;&#x7ACB;&#x5373;&#x5199;&#x56DE;&#x4E3B;&#x5185;&#x5B58;,&#x5E76;&#x4E14;&#x4F1A;&#x5F3A;&#x5236;&#x8BA9;&#x7F13;&#x5B58;&#x4E86;&#x8BE5;&#x53D8;&#x91CF;&#x7684;&#x7EBF;&#x7A0B;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5931;&#x6548;</p>
+<p>2.&#x7EBF;&#x7A0B;&#x5BF9; volatile &#x8FDB;&#x884C;&#x8BFB;&#x53D6;&#x65F6;,&#x8981;&#x4ECE;&#x4E3B;&#x5185;&#x5B58;&#x8BFB;&#x53D6;&#x6700;&#x65B0;&#x7684;&#x6570;&#x636E;</p>
+<p>&#x9632;&#x6B62;&#x6307;&#x4EE4;&#x91CD;&#x6392;&#x5E8F;:</p>
+<h3 id="3-ThreadLocal"><a href="#3-ThreadLocal" class="headerlink" title="3.ThreadLocal"></a>3.ThreadLocal</h3>
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>

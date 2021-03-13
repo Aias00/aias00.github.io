@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="刘宏宇的博客">
+    <meta name="keyword" content="aias00">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        事务相关面试知识点(持续更新) - aias00的博客 | aias00&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>hongyu liu</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <!-- <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于我</span>
+                </a>
+            </li> -->
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是事务"><span class="toc-text">1.什么是事务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-并发下事务会产生的问题"><span class="toc-text">2.并发下事务会产生的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Spring-事务的隔离级别"><span class="toc-text">3.Spring 事务的隔离级别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Spring-事务传播机制"><span class="toc-text">4.Spring 事务传播机制</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        事务相关面试知识点(持续更新)
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2021-03-13 09:42:01</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#transaction, interview" title="transaction, interview">transaction, interview</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content no-indent">
+        <h3 id="1-&#x4EC0;&#x4E48;&#x662F;&#x4E8B;&#x52A1;"><a href="#1-&#x4EC0;&#x4E48;&#x662F;&#x4E8B;&#x52A1;" class="headerlink" title="1.&#x4EC0;&#x4E48;&#x662F;&#x4E8B;&#x52A1;"></a>1.&#x4EC0;&#x4E48;&#x662F;&#x4E8B;&#x52A1;</h3><p>&#x4E8B;&#x52A1;&#x662F;&#x8BBF;&#x95EE;&#x6570;&#x636E;&#x5E93;&#x7684;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x5E8F;&#x5217;&#xFF0C;&#x6570;&#x636E;&#x5E93;&#x5E94;&#x7528;&#x7CFB;&#x7EDF;&#x901A;&#x8FC7;&#x4E8B;&#x52A1;&#x6765;&#x5B8C;&#x6210;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5B58;&#x53D6;&#x3002;&#x4E8B;&#x52A1;&#x7684;&#x6B63;&#x786E;&#x6267;&#x884C;&#x4F7F;&#x5F97;&#x6570;&#x636E;&#x5E93;&#x4ECE;&#x4E00;&#x4E2A;&#x72B6;&#x6001;&#x8F6C;&#x6362;&#x4E3A;&#x53E6;&#x4E00;&#x4E2A;&#x72B6;&#x6001;</p>
+<p>&#x4E8B;&#x52A1;&#x6709; ACID &#x7684;&#x539F;&#x5219;&#xFF1A;</p>
+<ul>
+<li><p>&#x539F;&#x5B50;&#x6027;(atomicity):&#x5373;&#x4E0D;&#x53EF;&#x5206;&#x5272;,&#x4E8B;&#x52A1;&#x8981;&#x4E48;&#x5168;&#x90E8;&#x88AB;&#x6267;&#x884C;,&#x8981;&#x4E48;&#x5168;&#x90E8;&#x4E0D;&#x88AB;&#x6267;&#x884C;,&#x5982;&#x679C;&#x4E8B;&#x52A1;&#x4E2D;&#x6240;&#x6709;&#x7684;&#x5B50;&#x4E8B;&#x52A1;&#x5168;&#x90E8;&#x63D0;&#x4EA4;&#x6210;&#x529F;,&#x5219;&#x6240;&#x6709;&#x7684;&#x6570;&#x636E;&#x5E93;&#x64CD;&#x4F5C;&#x90FD;&#x88AB;&#x63D0;&#x4EA4;,&#x6570;&#x636E;&#x5E93;&#x72B6;&#x6001;&#x4F1A;&#x53D1;&#x751F;&#x53D8;&#x5316;;&#x5982;&#x679C;&#x6709;&#x5B50;&#x4E8B;&#x52A1;&#x5931;&#x8D25;,&#x5219;&#x5176;&#x4ED6;&#x5B50;&#x4E8B;&#x52A1;&#x7684;&#x6570;&#x636E;&#x5E93;&#x64CD;&#x4F5C;&#x5168;&#x90E8;&#x88AB;&#x56DE;&#x6EDA;,&#x6570;&#x636E;&#x5E93;&#x56DE;&#x5230;&#x6267;&#x884C;&#x4E8B;&#x52A1;&#x4E4B;&#x524D;&#x7684;&#x72B6;&#x6001;,&#x4E0D;&#x56DE;&#x53D1;&#x751F;&#x72B6;&#x6001;&#x53D8;&#x5316;</p>
+</li>
+<li><p>&#x4E00;&#x81F4;&#x6027;(consistency):&#x4E8B;&#x52A1;&#x7684;&#x6267;&#x884C;&#x4F7F;&#x6570;&#x636E;&#x5E93;&#x4ECE;&#x4E00;&#x79CD;&#x6B63;&#x786E;&#x72B6;&#x6001;&#x8F6C;&#x6362;&#x4E3A;&#x53E6;&#x4E00;&#x79CD;&#x6B63;&#x786E;&#x72B6;&#x6001;</p>
+</li>
+<li><p>&#x9694;&#x79BB;&#x6027;(isolation):&#x5728;&#x4E8B;&#x52A1;&#x6B63;&#x5E38;&#x63D0;&#x4EA4;&#x4E4B;&#x524D;,&#x4E0D;&#x5141;&#x8BB8;&#x628A;&#x8BE5;&#x4E8B;&#x52A1;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x6570;&#x636E;&#x7684;&#x4EFB;&#x4F55;&#x6539;&#x53D8;&#x63D0;&#x4F9B;&#x7ED9;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;,&#x5373;&#x5728;&#x4E8B;&#x52A1;&#x6B63;&#x786E;&#x63D0;&#x4EA4;&#x4E4B;&#x524D;,&#x5B83;&#x53EF;&#x80FD;&#x7684;&#x7ED3;&#x679C;&#x5BF9;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x4E0D;&#x53EF;&#x89C1;</p>
+</li>
+<li><p>&#x6301;&#x4E45;&#x6027;(durability):&#x4E8B;&#x52A1;&#x6B63;&#x786E;&#x63D0;&#x4EA4;&#x4E4B;&#x540E;,&#x5176;&#x7ED3;&#x679C;&#x5C06;&#x6C38;&#x8FDC;&#x4FDD;&#x5B58;&#x5728;&#x6570;&#x636E;&#x5E93;&#x4E2D;,&#x5373;&#x4F7F;&#x5728;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#x4E4B;&#x540E;&#x6709;&#x4E86;&#x5176;&#x4ED6;&#x6545;&#x969C;,&#x4E8B;&#x52A1;&#x7684;&#x5904;&#x7406;&#x7ED3;&#x679C;&#x4E5F;&#x4F1A;&#x5F97;&#x5230;&#x4FDD;&#x5B58;</p>
+</li>
+</ul>
+<h3 id="2-&#x5E76;&#x53D1;&#x4E0B;&#x4E8B;&#x52A1;&#x4F1A;&#x4EA7;&#x751F;&#x7684;&#x95EE;&#x9898;"><a href="#2-&#x5E76;&#x53D1;&#x4E0B;&#x4E8B;&#x52A1;&#x4F1A;&#x4EA7;&#x751F;&#x7684;&#x95EE;&#x9898;" class="headerlink" title="2.&#x5E76;&#x53D1;&#x4E0B;&#x4E8B;&#x52A1;&#x4F1A;&#x4EA7;&#x751F;&#x7684;&#x95EE;&#x9898;"></a>2.&#x5E76;&#x53D1;&#x4E0B;&#x4E8B;&#x52A1;&#x4F1A;&#x4EA7;&#x751F;&#x7684;&#x95EE;&#x9898;</h3><ul>
+<li><p>&#x810F;&#x8BFB;:&#x4E8B;&#x52A1; A &#x8BFB;&#x5230;&#x4E86;&#x4E8B;&#x52A1; B &#x8FD8;&#x6CA1;&#x6709;&#x63D0;&#x4EA4;&#x7684;&#x6570;&#x636E;</p>
+</li>
+<li><p>&#x5E7B;&#x8BFB;:&#x5728;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x7684;&#x64CD;&#x4F5C;&#x91CC;&#x9762;&#x53D1;&#x73B0;&#x4E86;&#x672A;&#x88AB;&#x64CD;&#x4F5C;&#x7684;&#x6570;&#x636E;</p>
+</li>
+<li><p>&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;:&#x5728;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x91CC;&#x9762;&#x8BFB;&#x53D6;&#x4E24;&#x6B21;&#x67D0;&#x7C7B;&#x6570;&#x636E;,&#x8BFB;&#x51FA;&#x6765;&#x7684;&#x6570;&#x636E;&#x4E0D;&#x4E00;&#x81F4;</p>
+</li>
+</ul>
+<h3 id="3-Spring-&#x4E8B;&#x52A1;&#x7684;&#x9694;&#x79BB;&#x7EA7;&#x522B;"><a href="#3-Spring-&#x4E8B;&#x52A1;&#x7684;&#x9694;&#x79BB;&#x7EA7;&#x522B;" class="headerlink" title="3.Spring &#x4E8B;&#x52A1;&#x7684;&#x9694;&#x79BB;&#x7EA7;&#x522B;"></a>3.Spring &#x4E8B;&#x52A1;&#x7684;&#x9694;&#x79BB;&#x7EA7;&#x522B;</h3><ul>
+<li><p>default:&#x9ED8;&#x8BA4;&#x9694;&#x79BB;&#x7EA7;&#x522B;,Spring &#x5C06;&#x4F7F;&#x7528;&#x6570;&#x636E;&#x5E93;&#x9ED8;&#x8BA4;&#x7684;&#x9694;&#x79BB;&#x7EA7;&#x522B;</p>
+</li>
+<li><p>read_uncommitted:&#x8BFB;&#x672A;&#x63D0;&#x4EA4;,&#x80FD;&#x591F;&#x8BFB;&#x53D6;&#x5230;&#x6CA1;&#x6709;&#x88AB;&#x63D0;&#x4EA4;&#x7684;&#x6570;&#x636E;,&#x5BFC;&#x81F4;&#x810F;&#x8BFB;,&#x5E7B;&#x8BFB;,&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;</p>
+</li>
+<li><p>read_committed:&#x8BFB;&#x5DF2;&#x63D0;&#x4EA4;,&#x80FD;&#x591F;&#x8BFB;&#x53D6;&#x5230;&#x5DF2;&#x7ECF;&#x88AB;&#x63D0;&#x4EA4;&#x7684;&#x6570;&#x636E;,&#x80FD;&#x89E3;&#x51B3;&#x810F;&#x8BFB;,&#x5BFC;&#x81F4;&#x5E7B;&#x8BFB;&#x548C;&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;</p>
+</li>
+<li><p>repeatable_read:&#x91CD;&#x590D;&#x8BFB;&#x53D6;,&#x5373;&#x5728;&#x6570;&#x636E;&#x8BFB;&#x51FA;&#x6765;&#x4E4B;&#x540E;&#x52A0;&#x9501;,&#x89E3;&#x51B3;&#x4E86;&#x810F;&#x8BFB;,&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;,&#x65E0;&#x6CD5;&#x89E3;&#x51B3;&#x5E7B;&#x8BFB;</p>
+</li>
+<li><p>serializable:&#x4E32;&#x884C;&#x5316;,&#x6700;&#x9AD8;&#x7684;&#x4E8B;&#x52A1;&#x9694;&#x79BB;&#x7EA7;&#x522B;,&#x89E3;&#x51B3;&#x4E86;&#x4EE5;&#x4E0A;&#x6240;&#x6709;&#x95EE;&#x9898;,&#x6027;&#x80FD;&#x5DEE;</p>
+</li>
+</ul>
+<p>mysql &#x9ED8;&#x8BA4;&#x7684;&#x4E8B;&#x52A1;&#x9694;&#x79BB;&#x7EA7;&#x522B;&#x662F; repeatable_read</p>
+<h3 id="4-Spring-&#x4E8B;&#x52A1;&#x4F20;&#x64AD;&#x673A;&#x5236;"><a href="#4-Spring-&#x4E8B;&#x52A1;&#x4F20;&#x64AD;&#x673A;&#x5236;" class="headerlink" title="4.Spring &#x4E8B;&#x52A1;&#x4F20;&#x64AD;&#x673A;&#x5236;"></a>4.Spring &#x4E8B;&#x52A1;&#x4F20;&#x64AD;&#x673A;&#x5236;</h3><ul>
+<li><p>REQUIRED:&#x652F;&#x6301;&#x5F53;&#x524D;&#x4E8B;&#x52A1;,&#x5982;&#x679C;&#x6CA1;&#x6709;&#x4E8B;&#x52A1;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x4E8B;&#x52A1;</p>
+</li>
+<li><p>REQUIRED_NEW:&#x6302;&#x8D77;&#x5F53;&#x524D;&#x4E8B;&#x52A1;,&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x4E8B;&#x52A1;</p>
+</li>
+<li><p>MANDATORY:&#x652F;&#x6301;&#x5F53;&#x524D;&#x4E8B;&#x52A1;,&#x5982;&#x679C;&#x5F53;&#x524D;&#x4E0D;&#x5B58;&#x5728;&#x4E8B;&#x52A1;&#x5219;&#x629B;&#x51FA;&#x5F02;&#x5E38;</p>
+</li>
+<li><p>SUPPORTS:&#x652F;&#x6301;&#x5F53;&#x524D;&#x4E8B;&#x52A1;,&#x5982;&#x679C;&#x5F53;&#x524D;&#x6CA1;&#x6709;&#x4E8B;&#x52A1;&#x4F1A;&#x4EE5;&#x975E;&#x4E8B;&#x52A1;&#x65B9;&#x5F0F;&#x6267;&#x884C;</p>
+</li>
+<li><p>NOT_SUPPORTED:&#x4EE5;&#x975E;&#x4E8B;&#x52A1;&#x65B9;&#x5F0F;&#x6267;&#x884C;,&#x5982;&#x679C;&#x5F53;&#x524D;&#x5B58;&#x5728;&#x4E8B;&#x52A1;&#x5219;&#x5C06;&#x5F53;&#x524D;&#x4E8B;&#x52A1;&#x6302;&#x8D77;</p>
+</li>
+<li><p>NESTED:&#x5982;&#x679C;&#x5F53;&#x524D;&#x5B58;&#x5728;&#x4E8B;&#x52A1;,&#x5219;&#x5728;&#x5D4C;&#x5957;&#x4E8B;&#x52A1;&#x5185;&#x6267;&#x884C;,&#x5982;&#x679C;&#x5F53;&#x524D;&#x4E0D;&#x5B58;&#x5728;&#x4E8B;&#x52A1;,&#x5219;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x4E8B;&#x52A1;</p>
+</li>
+<li><p>NEVER:&#x4EE5;&#x975E;&#x4E8B;&#x52A1;&#x65B9;&#x5F0F;&#x6267;&#x884C;,&#x5982;&#x679C;&#x5F53;&#x524D;&#x5B58;&#x5728;&#x4E8B;&#x52A1;&#x629B;&#x51FA;&#x5F02;&#x5E38;</p>
+</li>
+</ul>
+
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>

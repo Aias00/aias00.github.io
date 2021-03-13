@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="刘宏宇的博客">
+    <meta name="keyword" content="aias00">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        锁面试知识点(持续更新) - aias00的博客 | aias00&#39;s Blog
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar radius">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>hongyu liu</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <!-- <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于我</span>
+                </a>
+            </li> -->
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#synchronized-和-ReentrantLock-区别"><span class="toc-text">synchronized 和 ReentrantLock 区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#synchronized-原理"><span class="toc-text">synchronized 原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#synchronized-锁的对象"><span class="toc-text">synchronized 锁的对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lock-锁类型"><span class="toc-text">Lock 锁类型</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        锁面试知识点(持续更新)
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2021-03-11 14:04:23</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#lock, synchronized, interview" title="lock, synchronized, interview">lock, synchronized, interview</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content no-indent">
+        <h3 id="synchronized-&#x548C;-ReentrantLock-&#x533A;&#x522B;"><a href="#synchronized-&#x548C;-ReentrantLock-&#x533A;&#x522B;" class="headerlink" title="synchronized &#x548C; ReentrantLock &#x533A;&#x522B;"></a>synchronized &#x548C; ReentrantLock &#x533A;&#x522B;</h3><ul>
+<li><p>&#x90FD;&#x662F;&#x53EF;&#x91CD;&#x5165;&#x9501;</p>
+</li>
+<li><p>synchronized &#x662F; JVM &#x5C42;&#x9762;&#x7684;&#x9501;&#xFF0C;&#x662F; java &#x5173;&#x952E;&#x5B57;&#xFF0C;Reentrantlock &#x662F; lock &#x63A5;&#x53E3;&#x7684;&#x5B9E;&#x73B0;&#xFF0C;&#x662F; API &#x5C42;&#x9762;&#x7684;&#x9501;</p>
+</li>
+<li><p>Reentrantlock &#x663E;&#x793A;&#x83B7;&#x5F97;&#x9501;&#x3001;&#x91CA;&#x653E;&#x9501;&#xFF0C;synchronized &#x9690;&#x5F0F;&#x83B7;&#x53D6;&#x9501;&#x3001;&#x91CA;&#x653E;&#x9501;</p>
+</li>
+<li><p>ReentrantLock &#x53EF;&#x54CD;&#x5E94;&#x4E2D;&#x65AD;&#x3001;&#x53EF;&#x8F6E;&#x56DE;&#xFF0C;synchronized &#x662F;&#x4E0D;&#x53EF;&#x4EE5;&#x54CD;&#x5E94;&#x4E2D;&#x65AD;&#x7684;&#xFF0C;&#x7B49;&#x5F85;&#x7684;&#x7EBF;&#x7A0B;&#x4F1A;&#x4E00;&#x76F4;&#x7B49;&#x5F85;</p>
+</li>
+<li><p>synchronized &#x7684;&#x5B9E;&#x73B0;&#x6D89;&#x53CA;&#x5230;&#x9501;&#x7684;&#x5347;&#x7EA7;&#xFF0C;&#x662F;&#x540C;&#x6B65;&#x963B;&#x585E;&#xFF0C;ReentrantLock &#x901A;&#x8FC7;&#x5229;&#x7528; CAS &#x81EA;&#x65CB;&#x673A;&#x5236;&#x4FDD;&#x8BC1;&#x7EBF;&#x7A0B;&#x64CD;&#x4F5C;&#x7684;&#x539F;&#x5B50;&#x6027;&#x548C; volatile &#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x53EF;&#x89C1;&#x6027;&#xFF0C;&#x975E;&#x540C;&#x6B65;&#x963B;&#x585E;&#xFF0C;&#x91C7;&#x7528;&#x7684;&#x662F;&#x4E50;&#x89C2;&#x5E76;&#x53D1;&#x7B56;&#x7565;</p>
+</li>
+<li><p>ReentrantLock &#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x516C;&#x5E73;&#x9501;</p>
+</li>
+<li><p>ReentrantLock &#x53EF;&#x4EE5;&#x901A;&#x8FC7; Condition &#x7ED1;&#x5B9A;&#x591A;&#x4E2A;&#x6761;&#x4EF6;</p>
+</li>
+<li><p>synchronized &#x5728;&#x53D1;&#x751F;&#x5F02;&#x5E38;&#x65F6;&#xFF0C;&#x4F1A;&#x81EA;&#x52A8;&#x91CA;&#x653E;&#x7EBF;&#x7A0B;&#x5360;&#x6709;&#x9501;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0D;&#x56DE;&#x5BFC;&#x81F4;&#x6B7B;&#x9501;&#x73B0;&#x8C61;&#xFF0C;&#x800C; ReentrantLock &#x9700;&#x8981;&#x4E3B;&#x52A8;&#x91CA;&#x653E;&#x9501;&#x624D;&#x80FD;&#x907F;&#x514D;&#x6B7B;&#x9501;</p>
+</li>
+<li><p>ReentrantLock &#x53EF;&#x4EE5;&#x77E5;&#x9053;&#x6709;&#x6CA1;&#x6709;&#x6210;&#x529F;&#x83B7;&#x53D6;&#x9501;&#xFF0C;synchronized &#x4E0D;&#x80FD;</p>
+</li>
+<li><p>synchronized &#x9501;&#x7684;&#x662F;&#x5BF9;&#x8C61;&#xFF0C;&#x9501;&#x662F;&#x4FDD;&#x5B58;&#x5230;&#x5BF9;&#x8C61;&#x5934;&#x91CC;&#x9762;&#x7684;&#xFF0C;&#x6839;&#x636E;&#x5BF9;&#x8C61;&#x5934;&#x6570;&#x636E;&#x6765;&#x6807;&#x8BC6;&#x662F;&#x5426;&#x6709;&#x7EBF;&#x7A0B;&#x83B7;&#x5F97;&#x9501;/&#x4E89;&#x62A2;&#x9501;&#xFF0C;ReentrantLock &#x9501;&#x7684;&#x662F;&#x7EBF;&#x7A0B;&#xFF0C;&#x6839;&#x636E;&#x8FDB;&#x5165;&#x7684;&#x7EBF;&#x7A0B;&#x548C; int &#x7C7B;&#x578B;&#x7684; state &#x6807;&#x8BC6;&#x9501;&#x7684;&#x83B7;&#x5F97;/&#x4E89;&#x62A2;</p>
+</li>
+<li><p>ReentrantLock &#x62D3;&#x5C55;&#x529F;&#x80FD;&#x66F4;&#x5F3A;&#x5927;&#xFF0C;synchronized &#x5728; jdk1.6 &#x4E4B;&#x540E;&#x4F18;&#x5316;&#xFF0C;&#x6027;&#x80FD;&#x66F4;&#x597D;</p>
+</li>
+</ul>
+<h3 id="synchronized-&#x539F;&#x7406;"><a href="#synchronized-&#x539F;&#x7406;" class="headerlink" title="synchronized &#x539F;&#x7406;"></a>synchronized &#x539F;&#x7406;</h3><p>&#x901A;&#x8FC7; monitor &#x5BF9;&#x8C61;&#x6765;&#x5B8C;&#x6210;&#xFF0C;monitorenter &#x548C; monitorexit</p>
+<p>synchronized &#x9501;&#x5347;&#x7EA7;&#xFF1A;&#x65E0;&#x9501;&#xFF0C;&#x504F;&#x5411;&#x9501;&#xFF0C;&#x81EA;&#x65CB;&#x9501;&#xFF08;&#x8F7B;&#x91CF;&#x7EA7;&#x9501;&#xFF09;&#xFF0C;&#x91CD;&#x91CF;&#x7EA7;&#x9501;</p>
+<h3 id="synchronized-&#x9501;&#x7684;&#x5BF9;&#x8C61;"><a href="#synchronized-&#x9501;&#x7684;&#x5BF9;&#x8C61;" class="headerlink" title="synchronized &#x9501;&#x7684;&#x5BF9;&#x8C61;"></a>synchronized &#x9501;&#x7684;&#x5BF9;&#x8C61;</h3><ul>
+<li><p>&#x4FEE;&#x9970;&#x5728;&#x666E;&#x901A;&#x65B9;&#x6CD5;&#x548C;&#x666E;&#x901A;&#x4EE3;&#x7801;&#x5757;&#x4E0A;&#xFF0C;&#x5BF9;&#x8C61;&#x9501;</p>
+</li>
+<li><p>&#x4FEE;&#x9970;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#x6216;&#x8005;&#x9759;&#x6001;&#x4EE3;&#x7801;&#x5757;&#xFF0C;&#x7C7B;&#x9501;</p>
+</li>
+</ul>
+<h3 id="Lock-&#x9501;&#x7C7B;&#x578B;"><a href="#Lock-&#x9501;&#x7C7B;&#x578B;" class="headerlink" title="Lock &#x9501;&#x7C7B;&#x578B;"></a>Lock &#x9501;&#x7C7B;&#x578B;</h3>
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
