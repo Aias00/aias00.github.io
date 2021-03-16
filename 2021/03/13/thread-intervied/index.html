@@ -89,7 +89,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-线程间同步"><span class="toc-text">1.线程间同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-volatile-关键字"><span class="toc-text">2.volatile 关键字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-ThreadLocal"><span class="toc-text">3.ThreadLocal</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-线程间同步"><span class="toc-text">1.线程间同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-java-变量的读写"><span class="toc-text">2.java 变量的读写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-JMM-内存屏障"><span class="toc-text">3.JMM 内存屏障</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-volatile-关键字"><span class="toc-text">4.volatile 关键字</span></a></li></ol>
 </div>
     
 </div>
@@ -146,12 +146,38 @@
 <p>3.&#x4F7F;&#x7528; ThreadLocal</p>
 <p>4.&#x963B;&#x585E;&#x961F;&#x5217;</p>
 <p>5.&#x4F7F;&#x7528;&#x539F;&#x5B50;&#x53D8;&#x91CF;</p>
-<h3 id="2-volatile-&#x5173;&#x952E;&#x5B57;"><a href="#2-volatile-&#x5173;&#x952E;&#x5B57;" class="headerlink" title="2.volatile &#x5173;&#x952E;&#x5B57;"></a>2.volatile &#x5173;&#x952E;&#x5B57;</h3><p>&#x4FDD;&#x6301;&#x5185;&#x5B58;&#x53EF;&#x89C1;&#x6027;:&#x6240;&#x6709;&#x7EBF;&#x7A0B;&#x90FD;&#x80FD;&#x770B;&#x5230;&#x5171;&#x4EAB;&#x5185;&#x5B58;&#x7684;&#x6700;&#x65B0;&#x72B6;&#x6001;</p>
+<h3 id="2-java-&#x53D8;&#x91CF;&#x7684;&#x8BFB;&#x5199;"><a href="#2-java-&#x53D8;&#x91CF;&#x7684;&#x8BFB;&#x5199;" class="headerlink" title="2.java &#x53D8;&#x91CF;&#x7684;&#x8BFB;&#x5199;"></a>2.java &#x53D8;&#x91CF;&#x7684;&#x8BFB;&#x5199;</h3><p>Java &#x901A;&#x8FC7;&#x51E0;&#x79CD;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x5B8C;&#x6210;&#x5DE5;&#x4F5C;&#x5185;&#x5B58;&#x548C;&#x4E3B;&#x5185;&#x5B58;&#x7684;&#x4EA4;&#x4E92;:</p>
+<p>1.lock: &#x628A;&#x4E3B;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x6807;&#x5FD7;&#x4E3A;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x72EC;&#x4EAB;&#x7684;&#x72B6;&#x6001;</p>
+<p>2.unlock: &#x628A;&#x4E3B;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x89E3;&#x9664;&#x72EC;&#x5360;&#x72B6;&#x6001;</p>
+<p>3.read: &#x5C06;&#x4E3B;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x53D8;&#x91CF;&#x8BFB;&#x5230;&#x5DE5;&#x4F5C;&#x5185;&#x5B58;&#x4E2D;</p>
+<p>4.load: &#x628A; read &#x64CD;&#x4F5C;&#x4F20;&#x8FC7;&#x6765;&#x7684;&#x53D8;&#x91CF;&#x7684;&#x503C;&#x5B58;&#x5165;&#x5DE5;&#x4F5C;&#x5185;&#x5B58;&#x7684;&#x53D8;&#x91CF;&#x526F;&#x672C;&#x4E2D;</p>
+<p>5.use: &#x5F53;&#x6267;&#x884C;&#x5F15;&#x64CE;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x5230;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x65F6;,&#x5C06;&#x5DE5;&#x4F5C;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x53D8;&#x91CF;&#x7684;&#x503C;&#x4F20;&#x9012;&#x7ED9;&#x6267;&#x884C;&#x5F15;&#x64CE;</p>
+<p>6.assign: &#x5C06;&#x6267;&#x884C;&#x5F15;&#x64CE;&#x6536;&#x7684;&#x7684;&#x503C;&#x8D4B;&#x503C;&#x7ED9;&#x5DE5;&#x4F5C;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x53D8;&#x91CF;</p>
+<p>7.store: &#x5C06;&#x5DE5;&#x4F5C;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x53D8;&#x91CF;&#x7684;&#x503C;&#x4F20;&#x5230;&#x4E3B;&#x5185;&#x5B58;&#x4E2D;</p>
+<p>8.write: &#x5C06; store &#x5F97;&#x5230;&#x503C;&#x653E;&#x5230;&#x4E3B;&#x5185;&#x5B58;&#x7684;&#x53D8;&#x91CF;&#x4E2D;</p>
+<h3 id="3-JMM-&#x5185;&#x5B58;&#x5C4F;&#x969C;"><a href="#3-JMM-&#x5185;&#x5B58;&#x5C4F;&#x969C;" class="headerlink" title="3.JMM &#x5185;&#x5B58;&#x5C4F;&#x969C;"></a>3.JMM &#x5185;&#x5B58;&#x5C4F;&#x969C;</h3><h3 id="4-volatile-&#x5173;&#x952E;&#x5B57;"><a href="#4-volatile-&#x5173;&#x952E;&#x5B57;" class="headerlink" title="4.volatile &#x5173;&#x952E;&#x5B57;"></a>4.volatile &#x5173;&#x952E;&#x5B57;</h3><p>&#x4FDD;&#x6301;&#x5185;&#x5B58;&#x53EF;&#x89C1;&#x6027;:&#x6240;&#x6709;&#x7EBF;&#x7A0B;&#x90FD;&#x80FD;&#x770B;&#x5230;&#x5171;&#x4EAB;&#x5185;&#x5B58;&#x7684;&#x6700;&#x65B0;&#x72B6;&#x6001;</p>
 <p>&#x539F;&#x7406;:</p>
-<p>1.&#x7EBF;&#x7A0B;&#x5BF9; volatile &#x53D8;&#x91CF;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#x4E4B;&#x540E;,&#x8981;&#x7ACB;&#x5373;&#x5199;&#x56DE;&#x4E3B;&#x5185;&#x5B58;,&#x5E76;&#x4E14;&#x4F1A;&#x5F3A;&#x5236;&#x8BA9;&#x7F13;&#x5B58;&#x4E86;&#x8BE5;&#x53D8;&#x91CF;&#x7684;&#x7EBF;&#x7A0B;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5931;&#x6548;</p>
-<p>2.&#x7EBF;&#x7A0B;&#x5BF9; volatile &#x8FDB;&#x884C;&#x8BFB;&#x53D6;&#x65F6;,&#x8981;&#x4ECE;&#x4E3B;&#x5185;&#x5B58;&#x8BFB;&#x53D6;&#x6700;&#x65B0;&#x7684;&#x6570;&#x636E;</p>
+<ul>
+<li><p>read,load,use &#x52A8;&#x4F5C;&#x5FC5;&#x987B;&#x8FDE;&#x7EED;&#x51FA;&#x73B0;.</p>
+</li>
+<li><p>assign,store,write &#x52A8;&#x4F5C;&#x5FC5;&#x987B;&#x8FDE;&#x7EED;&#x51FA;&#x73B0;.</p>
+</li>
+<li><p>1.&#x7EBF;&#x7A0B;&#x5BF9; volatile &#x53D8;&#x91CF;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#x4E4B;&#x540E;,&#x8981;&#x7ACB;&#x5373;&#x5199;&#x56DE;&#x4E3B;&#x5185;&#x5B58;,&#x5E76;&#x4E14;&#x4F1A;&#x5F3A;&#x5236;&#x8BA9;&#x7F13;&#x5B58;&#x4E86;&#x8BE5;&#x53D8;&#x91CF;&#x7684;&#x7EBF;&#x7A0B;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5931;&#x6548;</p>
+</li>
+<li><p>2.&#x7EBF;&#x7A0B;&#x5BF9; volatile &#x8FDB;&#x884C;&#x8BFB;&#x53D6;&#x65F6;,&#x8981;&#x4ECE;&#x4E3B;&#x5185;&#x5B58;&#x8BFB;&#x53D6;&#x6700;&#x65B0;&#x7684;&#x6570;&#x636E;</p>
+</li>
+</ul>
 <p>&#x9632;&#x6B62;&#x6307;&#x4EE4;&#x91CD;&#x6392;&#x5E8F;:</p>
-<h3 id="3-ThreadLocal"><a href="#3-ThreadLocal" class="headerlink" title="3.ThreadLocal"></a>3.ThreadLocal</h3>
+<p>volatile &#x5173;&#x952E;&#x5B57;&#x901A;&#x8FC7;&#x201C;&#x5185;&#x5B58;&#x5C4F;&#x969C;&#x201D;&#x6765;&#x9632;&#x6B62;&#x6307;&#x4EE4;&#x88AB;&#x91CD;&#x6392;&#x5E8F;.</p>
+<p>&#x4E3A;&#x4E86;&#x5B9E;&#x73B0; volatile &#x7684;&#x5185;&#x5B58;&#x8BED;&#x4E49;,&#x7F16;&#x8BD1;&#x5668;&#x5728;&#x751F;&#x6210;&#x5B57;&#x8282;&#x7801;&#x65F6;,&#x4F1A;&#x5728;&#x6307;&#x4EE4;&#x5E8F;&#x5217;&#x4E2D;&#x63D2;&#x5165;&#x5185;&#x5B58;&#x5C4F;&#x969C;&#x6765;&#x7981;&#x6B62;&#x7279;&#x5B9A;&#x7C7B;&#x578B;&#x7684;&#x5904;&#x7406;&#x5668;&#x91CD;&#x6392;&#x5E8F;.&#x7136;&#x800C;&#x5BF9;&#x4E8E;&#x7F16;&#x8BD1;&#x5668;&#x6765;&#x8BF4;,&#x53D1;&#x73B0;&#x4E00;&#x4E2A;&#x6700;&#x4F18;&#x5E03;&#x7F6E;&#x6765;&#x6700;&#x5C0F;&#x5316;&#x63D2;&#x5165;&#x5C4F;&#x969C;&#x7684;&#x603B;&#x6570;&#x51E0;&#x4E4E;&#x4E0D;&#x53EF;&#x80FD;,&#x4E3A;&#x6B64;,java &#x5185;&#x5B58;&#x6A21;&#x578B;&#x91C7;&#x53D6;&#x4FDD;&#x5B88;&#x7B56;&#x7565;</p>
+<p>&#x4E0B;&#x9762;&#x662F;&#x57FA;&#x4E8E;&#x4FDD;&#x5B88;&#x7B56;&#x7565;&#x7684; JMM &#x5185;&#x5B58;&#x5C4F;&#x969C;&#x63D2;&#x5165;&#x7B56;&#x7565;:</p>
+<ul>
+<li>&#x5728;&#x6BCF;&#x4E2A; volatile &#x5199;&#x64CD;&#x4F5C;&#x7684;&#x524D;&#x9762;&#x63D2;&#x5165;&#x4E00;&#x4E2A; StoreStore &#x7684;&#x5C4F;&#x969C;</li>
+<li>&#x5728;&#x6BCF;&#x4E2A; volatile &#x5199;&#x64CD;&#x4F5C;&#x7684;&#x540E;&#x9762;&#x63D2;&#x5165;&#x4E00;&#x4E2A; StoreLoad &#x5C4F;&#x969C;</li>
+<li>&#x5728;&#x6BCF;&#x4E2A; volatile &#x8BFB;&#x64CD;&#x4F5C;&#x7684;&#x524D;&#x9762;&#x63D2;&#x5165;&#x4E00;&#x4E2A; LoadLoad &#x5C4F;&#x969C;</li>
+<li>&#x5728;&#x6BCF;&#x4E2A; volatile &#x8BFB;&#x64CD;&#x4F5C;&#x7684;&#x540E;&#x9762;&#x63D2;&#x5165;&#x4E00;&#x4E2A; LoadStore &#x5C4F;&#x969C;</li>
+</ul>
+
         
         <br>
         <div id="comment-container">
