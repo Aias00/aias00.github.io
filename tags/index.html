@@ -123,21 +123,23 @@
     
     <a href="#redis" title="redis" rel="5">redis</a>
     
-    <a href="#interview" title="interview" rel="2">interview</a>
+    <a href="#interview" title="interview" rel="1">interview</a>
     
     <a href="#linux" title="linux" rel="1">linux</a>
     
     <a href="#mysql, interview" title="mysql, interview" rel="1">mysql, interview</a>
     
-    <a href="#mysql" title="mysql" rel="2">mysql</a>
-    
     <a href="#spring-cloud-alibaba-nacos,spring-cloud-alibaba,spring-cloud" title="spring-cloud-alibaba-nacos,spring-cloud-alibaba,spring-cloud" rel="2">spring-cloud-alibaba-nacos,spring-cloud-alibaba,spring-cloud</a>
+    
+    <a href="#mysql" title="mysql" rel="2">mysql</a>
     
     <a href="#proxy, interview" title="proxy, interview" rel="1">proxy, interview</a>
     
+    <a href="#sentinel" title="sentinel" rel="1">sentinel</a>
+    
     <a href="#spring" title="spring" rel="1">spring</a>
     
-    <a href="#sentinel" title="sentinel" rel="1">sentinel</a>
+    <a href="#spring, interview" title="spring, interview" rel="1">spring, interview</a>
     
     <a href="#springboot" title="springboot" rel="1">springboot</a>
     
@@ -316,9 +318,9 @@
     <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
     </li> -->
     <div class="post-preview">
-        <a href="/2020/08/03/redis-persistence/">
+        <a href="/2020/08/04/redis-lock/">
             <h2 class="post-title">
-                redis两种持久化方式
+                redis实现分布式锁-单redis实例实现分布式锁
             </h2>
             
         </a>
@@ -330,9 +332,9 @@
     <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
     </li> -->
     <div class="post-preview">
-        <a href="/2020/08/04/redis-lock/">
+        <a href="/2020/08/03/redis-persistence/">
             <h2 class="post-title">
-                redis实现分布式锁-单redis实例实现分布式锁
+                redis两种持久化方式
             </h2>
             
         </a>
@@ -368,20 +370,6 @@
         <a href="/2021/03/20/interview-question-answer/">
             <h2 class="post-title">
                 面试问题及答案
-            </h2>
-            
-        </a>
-        <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-    </div>
-    
-    <!-- <li class="listing-item">
-    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-    </li> -->
-    <div class="post-preview">
-        <a href="/2021/03/13/other-interview/">
-            <h2 class="post-title">
-                零散Java面试题(持续更新)
             </h2>
             
         </a>
@@ -433,41 +421,6 @@
 </div>
 
 <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="mysql">
-                    <span class="tag-text">mysql</span>
-                </span>
-    
-    <!-- <li class="listing-item">
-    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-    </li> -->
-    <div class="post-preview">
-        <a href="/2021/03/26/mysql-problem/">
-            <h2 class="post-title">
-                mysql事务导致的一些问题
-            </h2>
-            
-        </a>
-        <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-    </div>
-    
-    <!-- <li class="listing-item">
-    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-    </li> -->
-    <div class="post-preview">
-        <a href="/2021/03/26/mvcc/">
-            <h2 class="post-title">
-                mvcc 多版本并发控制
-            </h2>
-            
-        </a>
-        <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-    </div>
-    
-</div>
-
-<div class="one-tag-list">
                 <span class="fa fa-tag listing-seperator" id="spring-cloud-alibaba-nacos,spring-cloud-alibaba,spring-cloud">
                     <span class="tag-text">spring-cloud-alibaba-nacos,spring-cloud-alibaba,spring-cloud</span>
                 </span>
@@ -503,6 +456,41 @@
 </div>
 
 <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="mysql">
+                    <span class="tag-text">mysql</span>
+                </span>
+    
+    <!-- <li class="listing-item">
+    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+    </li> -->
+    <div class="post-preview">
+        <a href="/2021/03/26/mysql-problem/">
+            <h2 class="post-title">
+                mysql事务导致的一些问题
+            </h2>
+            
+        </a>
+        <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+    </div>
+    
+    <!-- <li class="listing-item">
+    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+    </li> -->
+    <div class="post-preview">
+        <a href="/2021/03/26/mvcc/">
+            <h2 class="post-title">
+                mvcc 多版本并发控制
+            </h2>
+            
+        </a>
+        <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+    </div>
+    
+</div>
+
+<div class="one-tag-list">
                 <span class="fa fa-tag listing-seperator" id="proxy, interview">
                     <span class="tag-text">proxy, interview</span>
                 </span>
@@ -515,6 +503,27 @@
         <a href="/2021/03/13/proxy-interview/">
             <h2 class="post-title">
                 代理模式面试知识点(持续更新)
+            </h2>
+            
+        </a>
+        <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+    </div>
+    
+</div>
+
+<div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="sentinel">
+                    <span class="tag-text">sentinel</span>
+                </span>
+    
+    <!-- <li class="listing-item">
+    <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+    <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+    </li> -->
+    <div class="post-preview">
+        <a href="/2020/12/15/sentinel/">
+            <h2 class="post-title">
+                学习接入sentinel
             </h2>
             
         </a>
@@ -545,8 +554,8 @@
 </div>
 
 <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="sentinel">
-                    <span class="tag-text">sentinel</span>
+                <span class="fa fa-tag listing-seperator" id="spring, interview">
+                    <span class="tag-text">spring, interview</span>
                 </span>
     
     <!-- <li class="listing-item">
@@ -554,9 +563,9 @@
     <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
     </li> -->
     <div class="post-preview">
-        <a href="/2020/12/15/sentinel/">
+        <a href="/2021/03/27/spring-interview/">
             <h2 class="post-title">
-                学习接入sentinel
+                spring面试知识点(持续更新)
             </h2>
             
         </a>
