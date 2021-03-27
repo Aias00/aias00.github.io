@@ -89,7 +89,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-mysql-如何配置主从同步"><span class="toc-text">1.mysql 如何配置主从同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-获取-mysql-自增主键的方法"><span class="toc-text">2.获取 mysql 自增主键的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-sql-优化"><span class="toc-text">3.sql 优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-主键索引和唯一索引的区别"><span class="toc-text">4.主键索引和唯一索引的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-多个单个索引和联合索引的区别"><span class="toc-text">5.多个单个索引和联合索引的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-建立索引的原则"><span class="toc-text">6.建立索引的原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-分库分表策略"><span class="toc-text">7.分库分表策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-mysql-两种常见引擎的对比"><span class="toc-text">8.mysql 两种常见引擎的对比</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#mysql-客户端和服务端之间如何通信"><span class="toc-text">mysql 客户端和服务端之间如何通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-mysql-如何配置主从同步"><span class="toc-text">1.mysql 如何配置主从同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-获取-mysql-自增主键的方法"><span class="toc-text">2.获取 mysql 自增主键的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-sql-优化"><span class="toc-text">3.sql 优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-主键索引和唯一索引的区别"><span class="toc-text">4.主键索引和唯一索引的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-多个单个索引和联合索引的区别"><span class="toc-text">5.多个单个索引和联合索引的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-建立索引的原则"><span class="toc-text">6.建立索引的原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-分库分表策略"><span class="toc-text">7.分库分表策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-mysql-两种常见引擎的对比"><span class="toc-text">8.mysql 两种常见引擎的对比</span></a></li></ol>
 </div>
     
 </div>
@@ -138,7 +138,21 @@
 
     </div>
     <div class="post-content no-indent">
-        <h3 id="1-mysql-&#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"><a href="#1-mysql-&#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;" class="headerlink" title="1.mysql &#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"></a>1.mysql &#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;</h3><p>1.&#x4FEE;&#x6539;&#x4E3B;&#x5E93;&#x7684;&#x914D;&#x7F6E;</p>
+        <h3 id="mysql-&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;"><a href="#mysql-&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;" class="headerlink" title="mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;"></a>mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;</h3><p>1.&#x901A;&#x4FE1;&#x7C7B;&#x578B;:&#x957F;&#x8FDE;&#x63A5;&#x6216;&#x77ED;&#x8FDE;&#x63A5;(mysql &#x90FD;&#x652F;&#x6301;,&#x4E00;&#x822C;&#x4E3A;&#x957F;&#x8FDE;&#x63A5;,&#x653E;&#x5728;&#x8FDE;&#x63A5;&#x6C60;&#x4E2D;)</p>
+<p>&#x67E5;&#x770B;&#x8FDE;&#x63A5;:show full processlist;</p>
+<p>&#x67E5;&#x770B;&#x8FDE;&#x63A5;&#x53C2;&#x6570;:show global status like &#x2018;Thread%&#x2019;</p>
+<p><img src="https://i.loli.net/2021/03/26/etapP2QIrOLhbcZ.png" alt="mysql-interview-2021-03-26-13-30-5220210326133051"></p>
+<p>Threadpool_idle_threads: &#x7EBF;&#x7A0B;&#x6C60;&#x4E2D;&#x7A7A;&#x95F2;&#x7684;&#x7EBF;&#x7A0B;&#x6570;&#x91CF;</p>
+<p>Threadpool_threads: &#x7EBF;&#x7A0B;&#x6C60;&#x4E2D;&#x6240;&#x6709;&#x7684;&#x7EBF;&#x7A0B;&#x6570;&#x91CF;</p>
+<p>Thread_cached: The number of threads in the thread cache; &#x7F13;&#x5B58;&#x4E2D;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
+<p>Thread_connected: The number of currently open connetions; &#x5904;&#x4E8E;&#x8FDE;&#x63A5;&#x72B6;&#x6001;&#x4E2D;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
+<p>Thread_created: The number of threads created to handle connections; &#x88AB;&#x521B;&#x5EFA;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
+<p>Thread_running: The number of threads that are not sleeping; &#x5904;&#x4E8E;&#x6FC0;&#x6D3B;&#x72B6;&#x6001;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
+<p>2.&#x901A;&#x4FE1;&#x534F;&#x8BAE;:socket(&#x4E0D;&#x662F;&#x901A;&#x4FE1;&#x534F;&#x8BAE;)&#x548C; TCP/IP &#x534F;&#x8BAE;</p>
+<p>mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x6570;&#x636E;&#x5E93;&#x5B9E;&#x4F8B;&#x4E0D;&#x5728;&#x540C;&#x4E00;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x65F6;,&#x5728;&#x8FDE;&#x63A5;&#x65F6;&#x6CA1;&#x6709;&#x6307;&#x5B9A;-h &#x53C2;&#x6570;,&#x4F1A;&#x4F7F;&#x7528; scoket &#x65B9;&#x5F0F;&#x767B;&#x5F55;,&#x9700;&#x8981;&#x7528;&#x5230;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x7684;&#x4E00;&#x4E2A;&#x7269;&#x7406;&#x6587;&#x4EF6;(/var/lib/mysql/mysql.sock);</p>
+<p>&#x5982;&#x679C;&#x6307;&#x5B9A;-h &#x53C2;&#x6570;,&#x5C31;&#x4F1A;&#x4F7F;&#x7528; TCP &#x534F;&#x8BAE;</p>
+<p>3.&#x901A;&#x4FE1;&#x65B9;&#x5F0F;:&#x534A;&#x53CC;&#x5DE5;</p>
+<h3 id="1-mysql-&#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"><a href="#1-mysql-&#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;" class="headerlink" title="1.mysql &#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"></a>1.mysql &#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;</h3><p>1.&#x4FEE;&#x6539;&#x4E3B;&#x5E93;&#x7684;&#x914D;&#x7F6E;</p>
 <p>2.&#x521B;&#x5EFA;&#x4ECE;&#x670D;&#x52A1;&#x5668;&#x7684;&#x7528;&#x6237;&#x548C;&#x6743;&#x9650;</p>
 <p>3.&#x91CD;&#x542F; master</p>
 <p>4.&#x67E5;&#x770B; master &#x72B6;&#x6001;</p>
