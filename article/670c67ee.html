@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="&amp;#x516C;&amp;#x53F8;&amp;#x7684;&amp;#x4E00;&amp;#x4E2A;&amp;#x670D;&amp;#x52A1;&amp;#x7528;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x5355;&amp;#x53F0; redis &amp;#x670D;&amp;#x52A1;&amp;#x5668;,&amp;#x672C;&amp;#x6765;&amp;#x914D;&amp;#x7F6E; redis &amp;#x7684; maxmemory &amp;#x53E">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="查看redis所有key对应value占用内存大小">
+<meta property="og:url" content="http://yoursite.com/article/670c67ee.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="&amp;#x516C;&amp;#x53F8;&amp;#x7684;&amp;#x4E00;&amp;#x4E2A;&amp;#x670D;&amp;#x52A1;&amp;#x7528;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x5355;&amp;#x53F0; redis &amp;#x670D;&amp;#x52A1;&amp;#x5668;,&amp;#x672C;&amp;#x6765;&amp;#x914D;&amp;#x7F6E; redis &amp;#x7684; maxmemory &amp;#x53E">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-03-30T14:38:35.523Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="查看redis所有key对应value占用内存大小">
+<meta name="twitter:description" content="&amp;#x516C;&amp;#x53F8;&amp;#x7684;&amp;#x4E00;&amp;#x4E2A;&amp;#x670D;&amp;#x52A1;&amp;#x7528;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x5355;&amp;#x53F0; redis &amp;#x670D;&amp;#x52A1;&amp;#x5668;,&amp;#x672C;&amp;#x6765;&amp;#x914D;&amp;#x7F6E; redis &amp;#x7684; maxmemory &amp;#x53E">
+
+<link rel="canonical" href="http://yoursite.com/article/670c67ee.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>查看redis所有key对应value占用内存大小 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/670c67ee.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          查看redis所有key对应value占用内存大小
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-10 17:10:08" itemprop="dateCreated datePublished" datetime="2020-08-10T17:10:08+08:00">2020-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&#x516C;&#x53F8;&#x7684;&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x5355;&#x53F0; redis &#x670D;&#x52A1;&#x5668;,&#x672C;&#x6765;&#x914D;&#x7F6E; redis &#x7684; maxmemory &#x53EA;&#x6709; 512M,&#x4F46;&#x662F;&#x670D;&#x52A1;&#x8DD1;&#x4E86;&#x51E0;&#x4E2A;&#x6708;&#x90FD;&#x6CA1;&#x4EC0;&#x4E48;&#x95EE;&#x9898;,&#x8BF4;&#x660E;&#x662F;&#x591F;&#x7528;&#x7684;&#x3002;</p>
+<p>&#x4F46;&#x662F;&#x6700;&#x8FD1;&#x4E0D;&#x5230;&#x4E00;&#x4E2A;&#x6708;&#x7684;&#x65F6;&#x95F4;&#x7684;&#x65F6;&#x95F4;,&#x8FD9;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x7684; redis &#x62A5;&#x4E86;&#x4E24;&#x6B21;&#x5185;&#x5B58;&#x4E0D;&#x8DB3;,&#x6700;&#x5F00;&#x59CB;&#x662F;&#x4EE5;&#x4E3A;&#x8C03;&#x7528;&#x91CF;&#x6162;&#x6162;&#x4E0A;&#x6765;&#x4E86;,&#x6240;&#x4EE5;&#x53EA;&#x662F;&#x5355;&#x7EAF;&#x7684;&#x4FEE;&#x6539; maxmemory &#x7684;&#x503C;,&#x4FEE;&#x6539;&#x5230;&#x4E86; 3g&#x3002;</p>
+<p>&#x6628;&#x5929;&#x89C2;&#x5BDF;&#x4E86;&#x4E00;&#x4E0B;&#x53D1;&#x73B0;&#x5185;&#x5B58;&#x5360;&#x7528;&#x5DF2;&#x7ECF;&#x5230;&#x4E86; 2.3g &#x4E86;,&#x8FD9;&#x9A6C;&#x4E0A;&#x53C8;&#x5FEB;&#x6EE1;&#x4E86;,&#x89C9;&#x5F97;&#x4E0D;&#x5BF9;&#x52B2;,&#x6240;&#x4EE5;&#x60F3;&#x8981;&#x5206;&#x6790;&#x4E00;&#x4E0B;&#x662F;&#x54EA;&#x4E9B; key &#x5360;&#x7528;&#x7684;&#x7A7A;&#x95F4;&#x6BD4;&#x8F83;&#x5927;,&#x770B;&#x770B;&#x80FD;&#x4E0D;&#x80FD;&#x76F8;&#x5E94;&#x7684;&#x4F18;&#x5316;&#x4E00;&#x4E0B;&#x4EE3;&#x7801;</p>
+<h3 id="&#x73AF;&#x5883;"><a href="#&#x73AF;&#x5883;" class="headerlink" title="&#x73AF;&#x5883;"></a>&#x73AF;&#x5883;</h3><ul>
+<li><p>CentOS Linux release 7.2.1511</p>
+</li>
+<li><p>redis-5.0.4</p>
+</li>
+<li><p>python2.7</p>
+</li>
+<li><p>git</p>
+</li>
+</ul>
+<h3 id="&#x5DE5;&#x5177;"><a href="#&#x5DE5;&#x5177;" class="headerlink" title="&#x5DE5;&#x5177;"></a>&#x5DE5;&#x5177;</h3><p>&#x5728;&#x7F51;&#x4E0A;&#x67E5;&#x4E86;&#x4E00;&#x4E0B;,&#x53D1;&#x73B0;&#x4E86; redis-rdb-tools &#x8FD9;&#x4E2A;&#x5DE5;&#x5177;,redis-rdb-tools &#x662F;&#x4E00;&#x4E2A;&#x5FEB;&#x7167;&#x6587;&#x4EF6;&#x89E3;&#x6790;&#x5668;,&#x53EF;&#x4EE5;&#x5BF9; rdb &#x6587;&#x4EF6;&#x4E2D;&#x6240;&#x6709; key &#x5BF9;&#x5E94;&#x7684; value &#x7684;&#x5927;&#x5C0F;&#x7B49;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5206;&#x6790;,&#x53EF;&#x4EE5;&#x5BFC;&#x51FA; json/csv &#x7B49;&#x683C;&#x5F0F;&#x6587;&#x4EF6;</p>
+<h3 id="&#x5B89;&#x88C5;&#x6D41;&#x7A0B;"><a href="#&#x5B89;&#x88C5;&#x6D41;&#x7A0B;" class="headerlink" title="&#x5B89;&#x88C5;&#x6D41;&#x7A0B;"></a>&#x5B89;&#x88C5;&#x6D41;&#x7A0B;</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">yum install python-dev</span><br><span class="line"></span><br><span class="line">pip install rdbtools python-lzf</span><br><span class="line"></span><br><span class="line">git clone https://github.com/sripathikrishnan/redis-rdb-tools (&#x5230;&#x81EA;&#x5DF1;&#x9009;&#x5B9A;&#x7684;&#x8DEF;&#x5F84;&#x4E0B;&#x514B;&#x9686;)</span><br><span class="line"></span><br><span class="line">cd redis-rdb-tools</span><br><span class="line"></span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure>
+
+<h3 id="&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;"><a href="#&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;" class="headerlink" title="&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;"></a>&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</h3><ul>
+<li><p>&#x627E;&#x5230; redis &#x7684; dump.rdb &#x4F4D;&#x7F6E;, &#x5982;&#x6211;&#x4EEC;&#x7684; /Data/redis/dump.rdb</p>
+</li>
+<li><p>&#x5728;&#x5B89;&#x88C5; redis-rdb-tools &#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x6267;&#x884C;&#x6307;&#x4EE4; : rdb -c memory /Data/redis/dump.rdb &gt; /home/proview/redis.csv (&#x5C06; rdb &#x5185;&#x5B58;&#x5206;&#x6790;&#x7ED3;&#x679C;&#x5B58;&#x50A8;&#x5230;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x7684; csv &#x6587;&#x4EF6;&#x4E2D;)</p>
+</li>
+<li><p>&#x5728;&#x5B89;&#x88C5; redis-rdb-tools &#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x6267;&#x884C;&#x6307;&#x4EE4; : rdb &#x2013;command json /Data/redis/dump.rdb &gt; /home/proview/redis.json (&#x5C06; rdb &#x5185;&#x5B58;&#x5206;&#x6790;&#x7ED3;&#x679C;&#x5B58;&#x50A8;&#x5230;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x7684; json &#x6587;&#x4EF6;&#x4E2D;)</p>
+</li>
+<li><p>&#x5728;&#x5B89;&#x88C5; redis-rdb-tools &#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x6267;&#x884C;&#x6307;&#x4EE4; : rdb &#x2013;command json &#x2013;key &#x201C;key1.*&#x201D; /Data/redis/dump.rdb &gt; /home/proview/redis-key.json (&#x5C06;&#x6307;&#x5B9A;key&#x7684; rdb &#x5185;&#x5B58;&#x5206;&#x6790;&#x7ED3;&#x679C;&#x5B58;&#x50A8;&#x5230;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x7684; json &#x6587;&#x4EF6;&#x4E2D;)</p>
+</li>
+</ul>
+<p>&#x62FF;&#x4E0B;&#x6765;&#x8FD9;&#x4E2A; csv &#x4E00;&#x770B;,&#x6709;&#x4E2A; key &#x5360;&#x7528;&#x8FBE;&#x5230;&#x4E86; 2g,&#x7136;&#x540E;&#x5C31;&#x53BB;&#x5206;&#x6790;&#x4EE3;&#x7801;&#x5427;</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/90da3a95.html" rel="prev" title="缓存雪崩">
+      <i class="fa fa-chevron-left"></i> 缓存雪崩
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/f4f8ffc6.html" rel="next" title="我是如何使用策略模式的">
+      我是如何使用策略模式的 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-number">2.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装流程"><span class="nav-number">3.</span> <span class="nav-text">安装流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作流程"><span class="nav-number">4.</span> <span class="nav-text">操作流程</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.&amp;#x7B2C;&amp;#x4E00;&amp;#x7C7B;&amp;#x4E22;&amp;#x5931;&amp;#x66F4;&amp;#x65B0; &amp;#x64A4;&amp;#x9500;&amp;#x4E00;&amp;#x4E2A;&amp;#x4E8B;&amp;#x52A1;&amp;#x7684;&amp;#x65F6;&amp;#x5019;,&amp;#x628A;&amp;#x5176;&amp;#x4ED6;&amp;#x4E8B;&amp;#x52A1;&amp;#x5DF2;&amp;#x63D0;&amp;#x4EA4;&amp;#x7">
+<meta name="keywords" content="mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql事务导致的一些问题">
+<meta property="og:url" content="http://yoursite.com/article/61951fe.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="1.&amp;#x7B2C;&amp;#x4E00;&amp;#x7C7B;&amp;#x4E22;&amp;#x5931;&amp;#x66F4;&amp;#x65B0; &amp;#x64A4;&amp;#x9500;&amp;#x4E00;&amp;#x4E2A;&amp;#x4E8B;&amp;#x52A1;&amp;#x7684;&amp;#x65F6;&amp;#x5019;,&amp;#x628A;&amp;#x5176;&amp;#x4ED6;&amp;#x4E8B;&amp;#x52A1;&amp;#x5DF2;&amp;#x63D0;&amp;#x4EA4;&amp;#x7">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-03-30T14:38:35.571Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql事务导致的一些问题">
+<meta name="twitter:description" content="1.&amp;#x7B2C;&amp;#x4E00;&amp;#x7C7B;&amp;#x4E22;&amp;#x5931;&amp;#x66F4;&amp;#x65B0; &amp;#x64A4;&amp;#x9500;&amp;#x4E00;&amp;#x4E2A;&amp;#x4E8B;&amp;#x52A1;&amp;#x7684;&amp;#x65F6;&amp;#x5019;,&amp;#x628A;&amp;#x5176;&amp;#x4ED6;&amp;#x4E8B;&amp;#x52A1;&amp;#x5DF2;&amp;#x63D0;&amp;#x4EA4;&amp;#x7">
+
+<link rel="canonical" href="http://yoursite.com/article/61951fe.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>mysql事务导致的一些问题 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/61951fe.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mysql事务导致的一些问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-26 15:23:30" itemprop="dateCreated datePublished" datetime="2021-03-26T15:23:30+08:00">2021-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1.&#x7B2C;&#x4E00;&#x7C7B;&#x4E22;&#x5931;&#x66F4;&#x65B0;</p>
+<p>&#x64A4;&#x9500;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x7684;&#x65F6;&#x5019;,&#x628A;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x5DF2;&#x63D0;&#x4EA4;&#x7684;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x8986;&#x76D6;&#x4E86;;&#x8FD9;&#x662F;&#x5B8C;&#x5168;&#x6CA1;&#x6709;&#x4E8B;&#x52A1;&#x9694;&#x79BB;&#x7EA7;&#x522B;&#x9020;&#x6210;&#x7684;;&#x5982;&#x679C;&#x4E8B;&#x52A1; 1 &#x88AB;&#x63D0;&#x4EA4;,&#x53E6;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x88AB;&#x64A4;&#x9500;,&#x90A3;&#x4E48;&#x4F1A;&#x8FDE;&#x540C;&#x4E8B;&#x52A1; 1 &#x6240;&#x4F5C;&#x7684;&#x66F4;&#x65B0;&#x4E5F;&#x88AB;&#x64A4;&#x9500;</p>
+<p>2.&#x7B2C;&#x4E8C;&#x7C7B;&#x4E22;&#x5931;&#x66F4;&#x65B0;</p>
+<p>&#x5F53;&#x4E24;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x4E8B;&#x52A1;&#x67E5;&#x8BE2;&#x76F8;&#x540C;&#x7684;&#x8BB0;&#x5F55;,&#x7136;&#x540E;&#x5404;&#x81EA;&#x57FA;&#x4E8E;&#x67E5;&#x8BE2;&#x7684;&#x7ED3;&#x679C;&#x66F4;&#x65B0;&#x8BB0;&#x5F55;&#x65F6;,&#x4F1A;&#x9020;&#x6210;&#x7B2C;&#x4E8C;&#x7C7B;&#x66F4;&#x65B0;&#x4E22;&#x5931;&#x7684;&#x95EE;&#x9898;;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x4E0D;&#x77E5;&#x9053;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x7684;&#x5B58;&#x5728;,&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5BF9;&#x8BB0;&#x5F55;&#x6240;&#x4F5C;&#x7684;&#x66F4;&#x6539;&#x5C06;&#x8986;&#x76D6;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x4E4B;&#x524D;&#x5BF9;&#x8BE5;&#x8BB0;&#x5F55;&#x7684;&#x66F4;&#x6539;</p>
+<p>3.&#x810F;&#x8BFB;</p>
+<p>&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5BF9;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x4E86;&#x66F4;&#x65B0;,&#x4F46;&#x4E8B;&#x52A1;&#x8FD8;&#x6CA1;&#x6709;&#x63D0;&#x4EA4;,&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5C31;&#x53EF;&#x4EE5;&#x201D;&#x770B;&#x5230;&#x201D;&#x8BE5;&#x4E8B;&#x52A1;&#x6CA1;&#x6709;&#x63D0;&#x4EA4;&#x7684;&#x66F4;&#x65B0;&#x7ED3;&#x679C;;&#x8FD9;&#x6837;&#x9020;&#x6210;&#x7684;&#x95EE;&#x9898;&#x5C31;&#x662F;,&#x5982;&#x679C;&#x7B2C;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x56DE;&#x6EDA;,&#x90A3;&#x4E48;&#x7B2C;&#x4E8C;&#x4E2A;&#x4E8B;&#x52A1;&#x5728;&#x6B64;&#x4E4B;&#x524D;&#x201D;&#x770B;&#x5230;&#x201D;&#x7684;&#x6570;&#x636E;&#x5C31;&#x662F;&#x810F;&#x6570;&#x636E;</p>
+<p>4.&#x5E7B;&#x8BFB;</p>
+<p>&#x5E7B;&#x8BFB;&#x662F;&#x6307;&#x540C;&#x6837;&#x4E00;&#x4E2A;&#x67E5;&#x8BE2;&#x5728;&#x6574;&#x4E2A;&#x4E8B;&#x52A1;&#x8FC7;&#x7A0B;&#x4E2D;&#x591A;&#x6B21;&#x6267;&#x884C;&#x540E;,&#x67E5;&#x8BE2;&#x6240;&#x5F97;&#x5230;&#x7684;&#x7ED3;&#x679C;&#x96C6;&#x662F;&#x4E0D;&#x4E00;&#x6837;&#x7684;.&#x5E7B;&#x8BFB;&#x9488;&#x5BF9;&#x7684;&#x662F;&#x591A;&#x7B14;&#x8BB0;&#x5F55;</p>
+<p>5.&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;</p>
+<p>&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;&#x662F;&#x6307;&#x540C;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5728;&#x6574;&#x4E2A;&#x4E8B;&#x52A1;&#x8FC7;&#x7A0B;&#x4E2D;&#x5BF9;&#x540C;&#x4E00;&#x7B14;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x8BFB;&#x53D6;,&#x6BCF;&#x6B21;&#x8BFB;&#x53D6;&#x7ED3;&#x679C;&#x4E0D;&#x540C;.&#x5982;&#x679C;&#x4E8B;&#x52A1; 1 &#x5728;&#x4E8B;&#x52A1; 2 &#x7684;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;&#x4E4B;&#x524D;&#x8BFB;&#x4E00;&#x6B21;&#x6570;&#x636E;,&#x5728;&#x4E8B;&#x52A1; 2 &#x7684;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;&#x4E4B;&#x540E;&#x518D;&#x8BFB;&#x53D6;&#x540C;&#x4E00;&#x7B14;&#x6570;&#x636E;&#x4E00;&#x6B21;,&#x4E24;&#x6B21;&#x7ED3;&#x679C;&#x662F;&#x4E0D;&#x540C;&#x7684;</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/ba4a4566.html" rel="prev" title="mvcc 多版本并发控制">
+      <i class="fa fa-chevron-left"></i> mvcc 多版本并发控制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/adbddb32.html" rel="next" title="spring面试知识点(持续更新)">
+      spring面试知识点(持续更新) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

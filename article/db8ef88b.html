@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="&amp;#x672C;&amp;#x7BC7;&amp;#x4E0D;&amp;#x5199;&amp;#x53C2;&amp;#x4E0E;&amp;#x8BD5;&amp;#x7528;&amp;#x65B9;&amp;#x6CD5;,&amp;#x53EA;&amp;#x8BB0;&amp;#x5F55;&amp;#x542F;&amp;#x52A8;&amp;#x5B9E;&amp;#x4F8B;&amp;#x4E4B;&amp;#x540E;&amp;#x505A;&amp;#x7684;&amp;#x4E00;&amp;#x7CFB;&amp;#x5217;&amp;#x64CD">
+<meta name="keywords" content="liunx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在亚马逊免费试用ubuntu">
+<meta property="og:url" content="http://yoursite.com/article/db8ef88b.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="&amp;#x672C;&amp;#x7BC7;&amp;#x4E0D;&amp;#x5199;&amp;#x53C2;&amp;#x4E0E;&amp;#x8BD5;&amp;#x7528;&amp;#x65B9;&amp;#x6CD5;,&amp;#x53EA;&amp;#x8BB0;&amp;#x5F55;&amp;#x542F;&amp;#x52A8;&amp;#x5B9E;&amp;#x4F8B;&amp;#x4E4B;&amp;#x540E;&amp;#x505A;&amp;#x7684;&amp;#x4E00;&amp;#x7CFB;&amp;#x5217;&amp;#x64CD">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-03-30T14:38:35.433Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在亚马逊免费试用ubuntu">
+<meta name="twitter:description" content="&amp;#x672C;&amp;#x7BC7;&amp;#x4E0D;&amp;#x5199;&amp;#x53C2;&amp;#x4E0E;&amp;#x8BD5;&amp;#x7528;&amp;#x65B9;&amp;#x6CD5;,&amp;#x53EA;&amp;#x8BB0;&amp;#x5F55;&amp;#x542F;&amp;#x52A8;&amp;#x5B9E;&amp;#x4F8B;&amp;#x4E4B;&amp;#x540E;&amp;#x505A;&amp;#x7684;&amp;#x4E00;&amp;#x7CFB;&amp;#x5217;&amp;#x64CD">
+
+<link rel="canonical" href="http://yoursite.com/article/db8ef88b.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>在亚马逊免费试用ubuntu | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/db8ef88b.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在亚马逊免费试用ubuntu
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-12 10:08:58" itemprop="dateCreated datePublished" datetime="2020-12-12T10:08:58+08:00">2020-12-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&#x672C;&#x7BC7;&#x4E0D;&#x5199;&#x53C2;&#x4E0E;&#x8BD5;&#x7528;&#x65B9;&#x6CD5;,&#x53EA;&#x8BB0;&#x5F55;&#x542F;&#x52A8;&#x5B9E;&#x4F8B;&#x4E4B;&#x540E;&#x505A;&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x64CD;&#x4F5C;,&#x53EA;&#x8981;&#x662F; ubuntu-18.04 &#x7248;&#x672C;&#x7684;&#x7CFB;&#x7EDF;&#x90FD;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x6B64;&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</p>
+<h3 id="&#x66F4;&#x65B0;-apt"><a href="#&#x66F4;&#x65B0;-apt" class="headerlink" title="&#x66F4;&#x65B0; apt"></a>&#x66F4;&#x65B0; apt</h3><p><code>apt-get update</code></p>
+<h3 id="&#x5B89;&#x88C5;-shadowsocks-libev"><a href="#&#x5B89;&#x88C5;-shadowsocks-libev" class="headerlink" title="&#x5B89;&#x88C5; shadowsocks-libev"></a>&#x5B89;&#x88C5; shadowsocks-libev</h3><p>&#x56E0;&#x4E3A;&#x670D;&#x52A1;&#x5668;&#x5728;&#x4E1C;&#x4EAC;,&#x6B63;&#x597D;&#x624B;&#x5934;&#x6CA1;&#x6709;&#x5408;&#x9002;&#x7684;&#x68AF;&#x5B50;,&#x4E0D;&#x5229;&#x7528;&#x8D77;&#x6765;&#x5C31;&#x662F;&#x6D6A;&#x8D39;</p>
+<p>1.&#x51C6;&#x5907;&#x7F16;&#x8BD1;&#x73AF;&#x5883;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apt install --no-install-recommends build-essential autoconf libtool \</span><br><span class="line">    libssl-dev gawk debhelper dh-systemd init-system-helpers pkg-config asciidoc \</span><br><span class="line">    xmlto apg libpcre3-dev zlib1g-dev libev-dev libudns-dev libsodium-dev \</span><br><span class="line">    libmbedtls-dev libc-ares-dev automake</span><br></pre></td></tr></table></figure>
+
+<p>2.&#x5B89;&#x88C5; git</p>
+<p><code>apt install git -y</code></p>
+<p>3.&#x83B7;&#x53D6;&#x6E90;&#x7801;&#x5E76;&#x7F16;&#x8BD1;</p>
+<p>&#x9996;&#x5148;&#x8981;&#x8FDB;&#x5165;&#x5230;&#x4F60;&#x60F3;&#x8981;&#x4FDD;&#x5B58;&#x6E90;&#x7801;&#x7684;&#x76EE;&#x5F55;,&#x6BD4;&#x5982;/usr/local/xxx(&#x81EA;&#x5DF1;&#x5EFA;&#x7684;&#x6587;&#x4EF6;&#x5939;)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/shadowsocks/shadowsocks-libev.git</span><br><span class="line">cd shadowsocks-libev</span><br><span class="line">git submodule update --init</span><br><span class="line">./autogen.sh &amp;&amp; ./configure --disable-documentation &amp;&amp; make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<p>4.&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /etc/shadowsocks-libev</span><br><span class="line">sudo vim /etc/shadowsocks-libev/config.json</span><br></pre></td></tr></table></figure>
+
+<p>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5185;&#x5BB9;,&#x8BB0;&#x5F97;&#x4FEE;&#x6539;&#x5BC6;&#x7801;</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="attr">&quot;server&quot;</span>: <span class="string">&quot;0.0.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;server_port&quot;</span>: <span class="number">8388</span>,</span><br><span class="line">  <span class="attr">&quot;local_port&quot;</span>: <span class="number">1080</span>,</span><br><span class="line">  <span class="attr">&quot;password&quot;</span>: <span class="string">&quot;password&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;timeout&quot;</span>: <span class="number">600</span>,</span><br><span class="line">  <span class="attr">&quot;method&quot;</span>: <span class="string">&quot;aes-256-cfb&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;fast_open&quot;</span>: <span class="literal">false</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<p>5.&#x521B;&#x5EFA; Shadowsocks-libev.service &#x914D;&#x7F6E;&#x6587;&#x4EF6;,&#x7528;&#x4E8E;&#x914D;&#x7F6E;&#x670D;&#x52A1;&#x542F;&#x52A8;</p>
+<p><code>sudo vim /etc/systemd/system/shadowsocks-libev.service</code></p>
+<p>&#x5185;&#x5BB9;&#x5982;&#x4E0B;:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks-libev Server</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">ExecStart=/usr/local/bin/ss-server -c /etc/shadowsocks-libev/config.json -u</span><br><span class="line">Restart=on-abort</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>6.&#x542F;&#x52A8;&#x670D;&#x52A1;</p>
+<p><code>sudo systemctl start shadowsocks-libev</code></p>
+<p>7.&#x914D;&#x7F6E;&#x5F00;&#x673A;&#x542F;&#x52A8;</p>
+<p><code>sudo systemctl enable shadowsocks-libev</code></p>
+<p>&#x81F3;&#x6B64;,&#x914D;&#x7F6E;&#x5B8C;&#x6210;,&#x81EA;&#x5DF1;&#x627E;&#x627E;&#x5BA2;&#x6237;&#x7AEF;&#x8FDB;&#x884C;&#x8FDE;&#x63A5;,&#x4E0A;&#x7F51;&#x51B2;&#x6D6A;&#x5427;(&#x8BB0;&#x5F97;&#x5F00;&#x653E;&#x5B89;&#x5168;&#x7EC4;&#x7AEF;&#x53E3;&#x5662;)</p>
+<h3 id="&#x672A;&#x5B8C;&#x5F85;&#x7EED;"><a href="#&#x672A;&#x5B8C;&#x5F85;&#x7EED;" class="headerlink" title="&#x672A;&#x5B8C;&#x5F85;&#x7EED;"></a>&#x672A;&#x5B8C;&#x5F85;&#x7EED;</h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/liunx/" rel="tag"># liunx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/f2cdca07.html" rel="prev" title="使用Aliyun OssClient的错误案例">
+      <i class="fa fa-chevron-left"></i> 使用Aliyun OssClient的错误案例
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/5883ff82.html" rel="next" title="记录线上activemq出现的问题">
+      记录线上activemq出现的问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#更新-apt"><span class="nav-number">1.</span> <span class="nav-text">更新 apt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-shadowsocks-libev"><span class="nav-number">2.</span> <span class="nav-text">安装 shadowsocks-libev</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#未完待续"><span class="nav-number">3.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

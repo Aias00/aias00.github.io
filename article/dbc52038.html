@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="Redis &amp;#x652F;&amp;#x6301; 5 &amp;#x79CD;&amp;#x57FA;&amp;#x672C;&amp;#x6570;&amp;#x636E;&amp;#x7C7B;&amp;#x578B;: string(&amp;#x5B57;&amp;#x7B26;&amp;#x4E32;) / hash(&amp;#x54C8;&amp;#x5E0C;) / list(&amp;#x5217;&amp;#x8868;) / set(&amp;#x65E0;&amp;#x5E8F;&amp;#x96C6;&amp;#x5">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis基本数据类型">
+<meta property="og:url" content="http://yoursite.com/article/dbc52038.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="Redis &amp;#x652F;&amp;#x6301; 5 &amp;#x79CD;&amp;#x57FA;&amp;#x672C;&amp;#x6570;&amp;#x636E;&amp;#x7C7B;&amp;#x578B;: string(&amp;#x5B57;&amp;#x7B26;&amp;#x4E32;) / hash(&amp;#x54C8;&amp;#x5E0C;) / list(&amp;#x5217;&amp;#x8868;) / set(&amp;#x65E0;&amp;#x5E8F;&amp;#x96C6;&amp;#x5">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/article/dbc52038.html1.png">
+<meta property="og:image" content="http://yoursite.com/article/dbc52038.html2.png">
+<meta property="og:image" content="http://yoursite.com/article/dbc52038.html3.png">
+<meta property="og:image" content="http://yoursite.com/article/dbc52038.html4.png">
+<meta property="og:image" content="http://yoursite.com/article/dbc52038.html5.png">
+<meta property="og:updated_time" content="2021-03-30T14:38:35.621Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis基本数据类型">
+<meta name="twitter:description" content="Redis &amp;#x652F;&amp;#x6301; 5 &amp;#x79CD;&amp;#x57FA;&amp;#x672C;&amp;#x6570;&amp;#x636E;&amp;#x7C7B;&amp;#x578B;: string(&amp;#x5B57;&amp;#x7B26;&amp;#x4E32;) / hash(&amp;#x54C8;&amp;#x5E0C;) / list(&amp;#x5217;&amp;#x8868;) / set(&amp;#x65E0;&amp;#x5E8F;&amp;#x96C6;&amp;#x5">
+<meta name="twitter:image" content="http://yoursite.com/article/dbc52038.html1.png">
+
+<link rel="canonical" href="http://yoursite.com/article/dbc52038.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>redis基本数据类型 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/dbc52038.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis基本数据类型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-02 09:47:49" itemprop="dateCreated datePublished" datetime="2020-08-02T09:47:49+08:00">2020-08-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Redis &#x652F;&#x6301; 5 &#x79CD;&#x57FA;&#x672C;&#x6570;&#x636E;&#x7C7B;&#x578B;: string(&#x5B57;&#x7B26;&#x4E32;) / hash(&#x54C8;&#x5E0C;) / list(&#x5217;&#x8868;) / set(&#x65E0;&#x5E8F;&#x96C6;&#x5408;) / zset(&#x6709;&#x5E8F;&#x96C6;&#x5408;)</p>
+<h3 id="1-string"><a href="#1-string" class="headerlink" title="1.string"></a>1.string</h3><p>string &#x662F; Redis &#x6700;&#x57FA;&#x672C;&#x7684;&#x7C7B;&#x578B;,string &#x7C7B;&#x578B;&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x5168;&#x7684;,string &#x7C7B;&#x578B;&#x53EF;&#x4EE5;&#x5305;&#x542B;&#x4EFB;&#x4F55;&#x6570;&#x636E;,&#x4F8B;&#x5982;&#x56FE;&#x7247;&#x4E8C;&#x8FDB;&#x5236;&#x6D41;&#x6216;&#x8005;&#x5E8F;&#x5217;&#x5316;&#x4E4B;&#x540E;&#x7684;&#x5BF9;&#x8C61;</p>
+<p>string &#x7C7B;&#x578B;&#x6700;&#x5927;&#x80FD;&#x5B58;&#x50A8; 512M &#x7684;&#x5185;&#x5BB9;</p>
+<p><img src="/article/dbc52038.html1.png" alt="&#x64CD;&#x4F5C;string"></p>
+<h3 id="2-hash"><a href="#2-hash" class="headerlink" title="2.hash"></a>2.hash</h3><p>hash &#x662F;&#x4E00;&#x4E2A;&#x952E;&#x503C;&#x5BF9;&#x7684;&#x96C6;&#x5408;</p>
+<p>hash &#x662F;&#x4E00;&#x4E2A; string &#x7C7B;&#x578B;&#x7684; field &#x548C; value &#x7684;&#x6620;&#x5C04;&#x8868;,&#x5BF9;&#x5E94; java &#x96C6;&#x5408;&#x4E2D;&#x7684; map &#x7C7B;&#x578B;,&#x7279;&#x522B;&#x9002;&#x5408;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x5BF9;&#x8C61;&#x7ED3;&#x6784;</p>
+<p>&#x6BCF;&#x4E2A; hash &#x53EF;&#x4EE5;&#x5B58;&#x50A8; 2^32 -1 &#x4E2A;&#x952E;&#x503C;&#x5BF9;&#xFF08;40 &#x591A;&#x4EBF;&#xFF09;</p>
+<p><img src="/article/dbc52038.html2.png" alt="&#x64CD;&#x4F5C;hash"></p>
+<h3 id="3-list"><a href="#3-list" class="headerlink" title="3.list"></a>3.list</h3><p>list &#x662F;&#x7B80;&#x5355;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x5217;&#x8868;&#xFF0C;&#x6309;&#x7167;&#x63D2;&#x5165;&#x987A;&#x5E8F;&#x6392;&#x5E8F;</p>
+<p>&#x4F60;&#x53EF;&#x4EE5;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x5230;&#x5217;&#x8868;&#x7684;&#x5934;&#x90E8;&#xFF08;&#x5DE6;&#x8FB9;&#xFF09;&#x6216;&#x8005;&#x5C3E;&#x90E8;&#xFF08;&#x53F3;&#x8FB9;&#xFF09;,&#x5373;&#x53CC;&#x5411;&#x94FE;&#x8868;</p>
+<p>list &#x6700;&#x591A;&#x53EF;&#x5B58;&#x50A8; 2^32 - 1 &#x4E2A;&#x5143;&#x7D20; (4294967295, &#x6BCF;&#x4E2A;&#x5217;&#x8868;&#x53EF;&#x5B58;&#x50A8; 40 &#x591A;&#x4EBF;)</p>
+<p><img src="/article/dbc52038.html3.png" alt="&#x64CD;&#x4F5C;list"></p>
+<h3 id="4-set"><a href="#4-set" class="headerlink" title="4.set"></a>4.set</h3><p>set &#x662F; string &#x7C7B;&#x578B;&#x7684;&#x65E0;&#x5E8F;&#x96C6;&#x5408;</p>
+<p>set &#x662F;&#x901A;&#x8FC7;&#x54C8;&#x5E0C;&#x8868;&#x5B9E;&#x73B0;&#x7684;,&#x6240;&#x4EE5;&#x6DFB;&#x52A0;/&#x5220;&#x9664;/&#x67E5;&#x627E;&#x7684;&#x590D;&#x6742;&#x5EA6;&#x90FD;&#x662F; O(1)</p>
+<p>&#x6DFB;&#x52A0;&#x4E00;&#x4E2A; string &#x5143;&#x7D20;&#x5230; key &#x5BF9;&#x5E94;&#x7684; set &#x96C6;&#x5408;&#x4E2D;&#xFF0C;&#x6210;&#x529F;&#x8FD4;&#x56DE; 1&#xFF0C;&#x5982;&#x679C;&#x5143;&#x7D20;&#x5DF2;&#x7ECF;&#x5728;&#x96C6;&#x5408;&#x4E2D;&#x8FD4;&#x56DE; 0</p>
+<p>&#x96C6;&#x5408;&#x4E2D;&#x6700;&#x5927;&#x7684;&#x6210;&#x5458;&#x6570;&#x4E3A; 2^32 - 1(4294967295, &#x6BCF;&#x4E2A;&#x96C6;&#x5408;&#x53EF;&#x5B58;&#x50A8; 40 &#x591A;&#x4EBF;&#x4E2A;&#x6210;&#x5458;)</p>
+<p><img src="/article/dbc52038.html4.png" alt="&#x64CD;&#x4F5C;set"></p>
+<h3 id="5-zset"><a href="#5-zset" class="headerlink" title="5.zset"></a>5.zset</h3><p>zset &#x5373; sorted set, &#x6709;&#x5E8F;&#x96C6;&#x5408;</p>
+<p>zset &#x548C; set &#x4E00;&#x6837;&#x4E5F;&#x662F; string &#x7C7B;&#x578B;&#x5143;&#x7D20;&#x7684;&#x96C6;&#x5408;,&#x4E14;&#x4E0D;&#x5141;&#x8BB8;&#x91CD;&#x590D;&#x7684;&#x6210;&#x5458;</p>
+<p>&#x4E0D;&#x540C;&#x7684;&#x662F;&#x6BCF;&#x4E2A;&#x5143;&#x7D20;&#x90FD;&#x4F1A;&#x5173;&#x8054;&#x4E00;&#x4E2A; double &#x7C7B;&#x578B;&#x7684;&#x5206;&#x6570;(score)&#x3002;redis &#x6B63;&#x662F;&#x901A;&#x8FC7;&#x5206;&#x6570;&#x6765;&#x4E3A;&#x96C6;&#x5408;&#x4E2D;&#x7684;&#x6210;&#x5458;&#x8FDB;&#x884C;&#x4ECE;&#x5C0F;&#x5230;&#x5927;&#x7684;&#x6392;&#x5E8F;</p>
+<p>zset &#x7684;&#x6210;&#x5458;&#x662F;&#x552F;&#x4E00;&#x7684;,&#x4F46;&#x5206;&#x6570;&#x5374;&#x53EF;&#x4EE5;&#x91CD;&#x590D;</p>
+<p><img src="/article/dbc52038.html5.png" alt="&#x64CD;&#x4F5C;zset"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/ce309dda.html" rel="prev" title="搭建SpringBoot+dubbo+zookeeper简单demo工程">
+      <i class="fa fa-chevron-left"></i> 搭建SpringBoot+dubbo+zookeeper简单demo工程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/ab613fab.html" rel="next" title="redis两种持久化方式">
+      redis两种持久化方式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-string"><span class="nav-number">1.</span> <span class="nav-text">1.string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-hash"><span class="nav-number">2.</span> <span class="nav-text">2.hash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-list"><span class="nav-number">3.</span> <span class="nav-text">3.list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-set"><span class="nav-number">4.</span> <span class="nav-text">4.set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-zset"><span class="nav-number">5.</span> <span class="nav-text">5.zset</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

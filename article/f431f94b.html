@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x7F13;&amp;#x5B58;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;#x4E3A;&amp;#x4E86;&amp;#x652F;&amp;#x6301;&amp;#x9AD8;&amp;#x6027;&amp;#x80FD;/&amp;#x9AD8;&amp;#x5E76;&amp;#x53D1;&amp;#x7684;&amp;#x5904;&amp;#x7406">
+<meta name="keywords" content="cache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于缓存我的理解">
+<meta property="og:url" content="http://yoursite.com/article/f431f94b.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x7F13;&amp;#x5B58;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;#x4E3A;&amp;#x4E86;&amp;#x652F;&amp;#x6301;&amp;#x9AD8;&amp;#x6027;&amp;#x80FD;/&amp;#x9AD8;&amp;#x5E76;&amp;#x53D1;&amp;#x7684;&amp;#x5904;&amp;#x7406">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-03-30T14:38:35.470Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于缓存我的理解">
+<meta name="twitter:description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x7F13;&amp;#x5B58;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;#x4E3A;&amp;#x4E86;&amp;#x652F;&amp;#x6301;&amp;#x9AD8;&amp;#x6027;&amp;#x80FD;/&amp;#x9AD8;&amp;#x5E76;&amp;#x53D1;&amp;#x7684;&amp;#x5904;&amp;#x7406">
+
+<link rel="canonical" href="http://yoursite.com/article/f431f94b.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>关于缓存我的理解 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/f431f94b.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于缓存我的理解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-06 22:31:45" itemprop="dateCreated datePublished" datetime="2020-08-06T22:31:45+08:00">2020-08-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;"></a>&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;</h3><p>&#x7F13;&#x5B58;&#x4E3B;&#x8981;&#x662F;&#x4E3A;&#x4E86;&#x652F;&#x6301;&#x9AD8;&#x6027;&#x80FD;/&#x9AD8;&#x5E76;&#x53D1;&#x7684;&#x5904;&#x7406;&#x903B;&#x8F91;,&#x4EE5;&#x53CA;&#x7F13;&#x89E3;&#x6570;&#x636E;&#x5E93;&#x7684;&#x538B;&#x529B;</p>
+<p>&#x4E0D;&#x8003;&#x8651;&#x6301;&#x4E45;&#x5316;&#x7684;&#x60C5;&#x51B5;,&#x7F13;&#x5B58;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x57FA;&#x672C;&#x4E0A;&#x90FD;&#x662F;&#x5B58;&#x5728;&#x4E8E;&#x5185;&#x5B58;&#x4E2D;,&#x76F8;&#x6BD4;&#x4E8E;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x7A0B;&#x5E8F;&#x8BFB;&#x53D6;&#x5185;&#x5B58;&#x7684;&#x901F;&#x5EA6;&#x8981;&#x5FEB;&#x7684;&#x591A;</p>
+<p>&#x5047;&#x8BBE;&#x6CA1;&#x6709;&#x7F13;&#x5B58;,&#x7A0B;&#x5E8F;&#x76F4;&#x63A5;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x5E93;,&#x5728;&#x9AD8;&#x5E76;&#x53D1;&#x7684;&#x60C5;&#x51B5;&#x4E0B;,&#x5F88;&#x5BB9;&#x6613;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5B95;&#x673A;</p>
+<h3 id="&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;"><a href="#&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;"></a>&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;</h3><p>&#x6240;&#x8C13;&#x7684;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x4E3B;&#x8981;&#x6307;&#x7684;&#x662F;&#x6700;&#x7EC8;&#x4E00;&#x81F4;&#x6027;,&#x56E0;&#x4E3A;&#x6570;&#x636E;&#x5E93;&#x548C;&#x7F13;&#x5B58;&#x672C;&#x6765;&#x5C31;&#x5C5E;&#x4E8E;&#x4E24;&#x4E2A;&#x4E2A;&#x4F53;,&#x6240;&#x4EE5;&#x8981;&#x8BA9;&#x4ED6;&#x4FE9;&#x65F6;&#x65F6;&#x523B;&#x523B;&#x4FDD;&#x6301;&#x6570;&#x636E;&#x4E00;&#x81F4;&#x57FA;&#x672C;&#x4E0A;&#x662F;&#x5F88;&#x96BE;&#x5B9E;&#x73B0;&#x7684;</p>
+<p>&#x5DE5;&#x4F5C;&#x4E2D;&#x5E38;&#x89C1;&#x7684;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x57FA;&#x672C;&#x6D41;&#x7A0B;&#x5982;&#x4E0B;:</p>
+<ul>
+<li><p>&#x67E5;&#x8BE2;:&#x5982;&#x679C;&#x5728;&#x7F13;&#x5B58;&#x4E2D;&#x67E5;&#x5230;&#x4E86;,&#x76F4;&#x63A5;&#x8FD4;&#x56DE;&#x67E5;&#x8BE2;&#x7ED3;&#x679C;;&#x5982;&#x679C;&#x5728;&#x7F13;&#x5B58;&#x4E2D;&#x6CA1;&#x6709;&#x67E5;&#x5230;,&#x5C31;&#x53BB;&#x67E5;&#x6570;&#x636E;&#x5E93;,&#x7136;&#x540E;&#x5C06;&#x7ED3;&#x679C;&#x5199;&#x5165;&#x7F13;&#x5B58;,&#x7136;&#x540E;&#x8FD4;&#x56DE;</p>
+</li>
+<li><p>&#x66F4;&#x65B0;:&#x76F4;&#x63A5;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;,&#x5982;&#x679C;&#x66F4;&#x65B0;&#x6210;&#x529F;,&#x4F7F;&#x7F13;&#x5B58;&#x5931;&#x6548;;&#x8FD9;&#x6837;&#x518D;&#x4E0B;&#x4E00;&#x6B21;&#x67E5;&#x8BE2;&#x65F6;&#x5C31;&#x4F1A;&#x5C06;&#x67E5;&#x8BE2;&#x7ED3;&#x679C;&#x5199;&#x5165;&#x7F13;&#x5B58;</p>
+</li>
+</ul>
+<h3 id="&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;"></a>&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;</h3><p>&#x5199;&#x6570;&#x636E;&#x5E93;&#x548C;&#x5199;&#x7F13;&#x5B58;&#x662F;&#x4E24;&#x6B21;&#x5199;&#x5165;,&#x5B58;&#x5728;&#x65F6;&#x95F4;&#x5DEE;,&#x5047;&#x8BBE;&#x4E24;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x64CD;&#x4F5C;&#x4E00;&#x6761;&#x6570;&#x636E;,A &#x7EBF;&#x7A0B;&#x5148;&#x5199;&#x5165;&#x6570;&#x636E;&#x5E93;,B &#x7EBF;&#x7A0B;&#x540E;&#x5199;&#x5165;&#x6570;&#x636E;&#x5E93;,&#x4F46;&#x662F; B &#x7EBF;&#x7A0B;&#x5148;&#x66F4;&#x65B0;&#x5B8C;&#x7F13;&#x5B58;,&#x4E4B;&#x540E; A &#x7EBF;&#x7A0B;&#x624D;&#x66F4;&#x65B0;&#x7F13;&#x5B58;,&#x5C31;&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E0D;&#x4E00;&#x81F4;</p>
+<p>&#x800C;&#x4E14;&#x6211;&#x8BA4;&#x4E3A;,&#x5728;&#x66F4;&#x65B0;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;,&#x6570;&#x636E;&#x5E76;&#x4E0D;&#x4E00;&#x5B9A;&#x9A6C;&#x4E0A;&#x5C31;&#x9700;&#x8981;&#x88AB;&#x7528;&#x5230;,&#x53EF;&#x80FD;&#x5F88;&#x4E45;&#x4EE5;&#x540E;&#x624D;&#x4F1A;&#x67E5;&#x8BE2;&#x5230;,&#x90A3;&#x4E48;&#x66F4;&#x65B0;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x5C31;&#x653E;&#x8FDB;&#x7F13;&#x5B58;,&#x5C5E;&#x4E8E;&#x6D6A;&#x8D39;&#x8D44;&#x6E90;</p>
+<h3 id="&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;"><a href="#&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;" class="headerlink" title="&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;"></a>&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;</h3><ul>
+<li>Read Through Pattern</li>
+</ul>
+<p>&#x7F13;&#x5B58;&#x5931;&#x6548;&#x4E4B;&#x540E;&#x7F13;&#x5B58;&#x81EA;&#x5DF1;&#x4ECE;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x52A0;&#x8F7D;&#x6570;&#x636E;</p>
+<ul>
+<li>Write Through Pattern</li>
+</ul>
+<p>&#x5F53;&#x6709;&#x6570;&#x636E;&#x66F4;&#x65B0;&#x7684;&#x65F6;&#x5019;,&#x5982;&#x679C;&#x6CA1;&#x6709;&#x547D;&#x4E2D;&#x7F13;&#x5B58;,&#x76F4;&#x63A5;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;,&#x7136;&#x540E;&#x8FD4;&#x56DE;;&#x5982;&#x679C;&#x547D;&#x4E2D;&#x4E86;&#x7F13;&#x5B58;&#xFF0C;&#x5219;&#x66F4;&#x65B0;&#x7F13;&#x5B58;,&#x7136;&#x540E;&#x518D;&#x7531; Cache &#x81EA;&#x5DF1;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;&#xFF08;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x540C;&#x6B65;&#x64CD;&#x4F5C;&#xFF09;</p>
+<ul>
+<li>Write Behind Caching Pattern</li>
+</ul>
+<p>&#x5728;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;,&#x53EA;&#x66F4;&#x65B0;&#x7F13;&#x5B58;,&#x4E0D;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;,&#x800C;&#x6211;&#x4EEC;&#x7684;&#x7F13;&#x5B58;&#x4F1A;&#x5F02;&#x6B65;&#x5730;&#x6279;&#x91CF;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;</p>
+<h3 id="&#x63A8;&#x8350;"><a href="#&#x63A8;&#x8350;" class="headerlink" title="&#x63A8;&#x8350;"></a>&#x63A8;&#x8350;</h3><p>&#x9177;&#x58F3; <a href="https://coolshell.cn/articles/17416.html" title="&#x7F13;&#x5B58;&#x66F4;&#x65B0;&#x7684;&#x5957;&#x8DEF;" target="_blank" rel="noopener">&#x7F13;&#x5B58;&#x66F4;&#x65B0;&#x7684;&#x5957;&#x8DEF;</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cache/" rel="tag"># cache</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/8dec7256.html" rel="prev" title="redis实现分布式锁-单redis实例实现分布式锁">
+      <i class="fa fa-chevron-left"></i> redis实现分布式锁-单redis实例实现分布式锁
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/6c6b9155.html" rel="next" title="缓存穿透和缓存击穿">
+      缓存穿透和缓存击穿 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要用缓存"><span class="nav-number">1.</span> <span class="nav-text">为什么要用缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是数据库缓存读写一致性"><span class="nav-number">2.</span> <span class="nav-text">什么是数据库缓存读写一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么不能写完数据库之后更新缓存"><span class="nav-number">3.</span> <span class="nav-text">为什么不能写完数据库之后更新缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他保证数据库缓存一致性的思路"><span class="nav-number">4.</span> <span class="nav-text">其他保证数据库缓存一致性的思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推荐"><span class="nav-number">5.</span> <span class="nav-text">推荐</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

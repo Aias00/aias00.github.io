@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="&amp;#x5B66;&amp;#x4E60;&amp;#x4F7F;&amp;#x7528; sentinel &amp;#x6D41;&amp;#x63A7;&amp;#x529F;&amp;#x80FD; &amp;#x914D;&amp;#x7F6E; sentinel &amp;#x63A7;&amp;#x5236;&amp;#x53F0;1.&amp;#x53EF;&amp;#x4EE5;&amp;#x4ECE; github &amp;#x83B7;&amp;#x53D6;&amp;#x6E90;&amp;#x7801;&amp;#x5230;&amp;">
+<meta name="keywords" content="sentinel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习接入sentinel">
+<meta property="og:url" content="http://yoursite.com/article/32240ede.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="&amp;#x5B66;&amp;#x4E60;&amp;#x4F7F;&amp;#x7528; sentinel &amp;#x6D41;&amp;#x63A7;&amp;#x529F;&amp;#x80FD; &amp;#x914D;&amp;#x7F6E; sentinel &amp;#x63A7;&amp;#x5236;&amp;#x53F0;1.&amp;#x53EF;&amp;#x4EE5;&amp;#x4ECE; github &amp;#x83B7;&amp;#x53D6;&amp;#x6E90;&amp;#x7801;&amp;#x5230;&amp;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html1.png">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html2.png">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html3.png">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html4.png">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html5.png">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html6.png">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html7.png">
+<meta property="og:image" content="http://yoursite.com/article/32240ede.html8.png">
+<meta property="og:updated_time" content="2021-03-30T14:38:35.708Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="学习接入sentinel">
+<meta name="twitter:description" content="&amp;#x5B66;&amp;#x4E60;&amp;#x4F7F;&amp;#x7528; sentinel &amp;#x6D41;&amp;#x63A7;&amp;#x529F;&amp;#x80FD; &amp;#x914D;&amp;#x7F6E; sentinel &amp;#x63A7;&amp;#x5236;&amp;#x53F0;1.&amp;#x53EF;&amp;#x4EE5;&amp;#x4ECE; github &amp;#x83B7;&amp;#x53D6;&amp;#x6E90;&amp;#x7801;&amp;#x5230;&amp;">
+<meta name="twitter:image" content="http://yoursite.com/article/32240ede.html1.png">
+
+<link rel="canonical" href="http://yoursite.com/article/32240ede.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>学习接入sentinel | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/32240ede.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          学习接入sentinel
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-15 19:54:09" itemprop="dateCreated datePublished" datetime="2020-12-15T19:54:09+08:00">2020-12-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&#x5B66;&#x4E60;&#x4F7F;&#x7528; sentinel &#x6D41;&#x63A7;&#x529F;&#x80FD;</p>
+<h3 id="&#x914D;&#x7F6E;-sentinel-&#x63A7;&#x5236;&#x53F0;"><a href="#&#x914D;&#x7F6E;-sentinel-&#x63A7;&#x5236;&#x53F0;" class="headerlink" title="&#x914D;&#x7F6E; sentinel &#x63A7;&#x5236;&#x53F0;"></a>&#x914D;&#x7F6E; sentinel &#x63A7;&#x5236;&#x53F0;</h3><p>1.&#x53EF;&#x4EE5;&#x4ECE; github &#x83B7;&#x53D6;&#x6E90;&#x7801;&#x5230;&#x672C;&#x5730;&#x7F16;&#x8BD1;&#x6216;&#x8005;&#x76F4;&#x63A5;&#x4E0B;&#x8F7D;&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684; jar &#x5305;</p>
+<p>github &#x5730;&#x5740;:<a href="https://github.com/alibaba/Sentinel.git" target="_blank" rel="noopener">https://github.com/alibaba/Sentinel.git</a></p>
+<p>&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/alibaba/Sentinel.git</span><br><span class="line">cd Sentinel</span><br><span class="line">mvn clean package</span><br></pre></td></tr></table></figure>
+
+<p>jar &#x5305;&#x4E0B;&#x8F7D;&#x5730;&#x5740;: <a href="https://github.com/alibaba/Sentinel/releases" target="_blank" rel="noopener">https://github.com/alibaba/Sentinel/releases</a></p>
+<p>2.&#x542F;&#x52A8;&#x63A7;&#x5236;&#x53F0;</p>
+<p><code>java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar</code></p>
+<p>&#x5176;&#x4E2D; 8080 &#x662F;&#x6307;&#x5B9A;&#x63A7;&#x5236;&#x53F0;&#x7A0B;&#x5E8F;&#x7684;&#x542F;&#x52A8;&#x7AEF;&#x53E3;,&#x5982;&#x679C;&#x7AEF;&#x53E3;&#x88AB;&#x5360;&#x7528;&#x53EF;&#x4EE5;&#x4FEE;&#x6539;&#x6210;&#x522B;&#x7684;&#x3002;</p>
+<p>&#x542F;&#x52A8;&#x6210;&#x529F;&#x4E4B;&#x540E;&#x6253;&#x5F00; localhost:8080 &#x53EF;&#x4EE5;&#x770B;&#x5230; sentinel &#x63A7;&#x5236;&#x53F0;&#x7684;&#x767B;&#x5F55;&#x754C;&#x9762;</p>
+<p><img src="/article/32240ede.html1.png" alt></p>
+<p>&#x9ED8;&#x8BA4;&#x7684;&#x7528;&#x6237;&#x540D;&#x5BC6;&#x7801;&#x90FD;&#x662F; sentinel</p>
+<p>&#x767B;&#x5F55;&#x6210;&#x529F;&#x4E4B;&#x540E;&#x9875;&#x9762;<br><img src="/article/32240ede.html2.png" alt></p>
+<p>&#x5728;&#x8FD9;&#x4E2A;&#x9875;&#x9762;&#x5C55;&#x793A;&#x4E86;&#x6240;&#x6709;&#x8FDE;&#x63A5;&#x5230; sentinel &#x7684;&#x670D;&#x52A1;&#x76F8;&#x5173;&#x4FE1;&#x606F;</p>
+<h3 id="&#x914D;&#x7F6E;&#x9879;&#x76EE;&#x8FDE;&#x63A5;&#x5230;-sentinel"><a href="#&#x914D;&#x7F6E;&#x9879;&#x76EE;&#x8FDE;&#x63A5;&#x5230;-sentinel" class="headerlink" title="&#x914D;&#x7F6E;&#x9879;&#x76EE;&#x8FDE;&#x63A5;&#x5230; sentinel"></a>&#x914D;&#x7F6E;&#x9879;&#x76EE;&#x8FDE;&#x63A5;&#x5230; sentinel</h3><p>1.&#x5EFA;&#x4E00;&#x4E2A;&#x9879;&#x76EE;,&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x6307;&#x5411; sentinel<br>application.yml</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  application:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">coco-sentinel</span></span><br><span class="line"><span class="attr">  profiles:</span></span><br><span class="line"><span class="attr">    active:</span> <span class="string">dev</span></span><br><span class="line"><span class="attr">  cloud:</span></span><br><span class="line"><span class="attr">    sentinel:</span></span><br><span class="line"><span class="attr">      transport:</span></span><br><span class="line"><span class="attr">        port:</span> <span class="number">8719</span></span><br><span class="line"><span class="attr">        dashboard:</span> <span class="attr">localhost:8080</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">9993</span></span><br></pre></td></tr></table></figure>
+
+<p>pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- spring-cloud-alibaba-sentinel --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-sentinel<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6D4B;&#x8BD5;&#x7C7B;</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SentinelController</span> </span>{</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> TestService service;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(value = <span class="string">&quot;/hello/{name}&quot;</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">apiHello</span><span class="params">(@PathVariable String name)</span> </span>{</span><br><span class="line">        <span class="keyword">return</span> service.sayHello(name);</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestService</span> </span>{</span><br><span class="line">    <span class="meta">@SentinelResource</span>(value = <span class="string">&quot;sayHello&quot;</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sayHello</span><span class="params">(String name)</span> </span>{</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello, &quot;</span> + name;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<p>@SentinelResource &#x6CE8;&#x89E3;&#x7528;&#x6765;&#x6807;&#x8BC6;&#x8D44;&#x6E90;&#x662F;&#x5426;&#x88AB;&#x9650;&#x6D41;&#x3001;&#x964D;&#x7EA7;&#x3002;&#x4E0A;&#x8FF0;&#x4F8B;&#x5B50;&#x4E0A;&#x8BE5;&#x6CE8;&#x89E3;&#x7684;&#x5C5E;&#x6027; sayHello &#x8868;&#x793A;&#x8D44;&#x6E90;&#x540D;&#x3002;<br>@SentinelResource &#x8FD8;&#x63D0;&#x4F9B;&#x4E86;&#x5176;&#x5B83;&#x989D;&#x5916;&#x7684;&#x5C5E;&#x6027;&#x5982; blockHandler&#xFF0C;blockHandlerClass&#xFF0C;fallback &#x7528;&#x4E8E;&#x8868;&#x793A;&#x9650;&#x6D41;&#x6216;&#x964D;&#x7EA7;&#x7684;&#x64CD;&#x4F5C;&#xFF08;&#x6CE8;&#x610F;&#x6709;&#x65B9;&#x6CD5;&#x7B7E;&#x540D;&#x8981;&#x6C42;&#xFF09;&#xFF0C;&#x66F4;&#x591A;&#x5185;&#x5BB9;&#x53EF;&#x4EE5;&#x53C2;&#x8003; Sentinel &#x6CE8;&#x89E3;&#x652F;&#x6301;&#x6587;&#x6863;<a href="https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81" target="_blank" rel="noopener">https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81</a>&#x3002;&#x82E5;&#x4E0D;&#x914D;&#x7F6E; blockHandler&#x3001;fallback &#x7B49;&#x51FD;&#x6570;&#xFF0C;&#x5219;&#x88AB;&#x6D41;&#x63A7;&#x964D;&#x7EA7;&#x65F6;&#x65B9;&#x6CD5;&#x4F1A;&#x76F4;&#x63A5;&#x629B;&#x51FA;&#x5BF9;&#x5E94;&#x7684; BlockException&#xFF1B;&#x82E5;&#x65B9;&#x6CD5;&#x672A;&#x5B9A;&#x4E49; throws BlockException &#x5219;&#x4F1A;&#x88AB; JVM &#x5305;&#x88C5;&#x4E00;&#x5C42; UndeclaredThrowableException</p>
+<p>2.&#x542F;&#x52A8;&#x670D;&#x52A1;,&#x8BF7;&#x6C42;&#x4E00;&#x6B21;,&#x7136;&#x540E;&#x67E5;&#x770B; sentinel &#x63A7;&#x5236;&#x53F0;</p>
+<p><img src="/article/32240ede.html3.png" alt></p>
+<p>&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x6211;&#x4EEC;&#x7684;&#x670D;&#x52A1;&#x5DF2;&#x7ECF;&#x5728;&#x63A7;&#x5236;&#x53F0;&#x5C55;&#x793A;&#x51FA;&#x6765;&#x4E86;</p>
+<h3 id="&#x6D41;&#x63A7;&#x914D;&#x7F6E;"><a href="#&#x6D41;&#x63A7;&#x914D;&#x7F6E;" class="headerlink" title="&#x6D41;&#x63A7;&#x914D;&#x7F6E;"></a>&#x6D41;&#x63A7;&#x914D;&#x7F6E;</h3><p>1.&#x70B9;&#x51FB;&#x6211;&#x4EEC;&#x8981;&#x8BBE;&#x7F6E;&#x6D41;&#x63A7;&#x7684;&#x670D;&#x52A1;,&#x70B9;&#x51FB;&#x7C07;&#x70B9;&#x94FE;&#x8DEF;,&#x627E;&#x5230;&#x521A;&#x624D;&#x6307;&#x5B9A;&#x7684;&#x8D44;&#x6E90;,&#x5373; sayHello</p>
+<p><img src="/article/32240ede.html4.png" alt></p>
+<p>2.&#x70B9;&#x51FB;&#x6D41;&#x63A7;,&#x5728;&#x5F39;&#x51FA;&#x7684;&#x5BF9;&#x8BDD;&#x6846;&#x91CC;&#x8BBE;&#x7F6E;&#x5355;&#x673A;&#x9608;&#x503C;&#x4E3A; 1</p>
+<p><img src="/article/32240ede.html5.png" alt></p>
+<p>3.&#x70B9;&#x51FB;&#x65B0;&#x589E;,&#x4FDD;&#x5B58;&#x6210;&#x529F;&#x4E4B;&#x540E;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x521A;&#x624D;&#x914D;&#x7F6E;&#x7684;&#x6D41;&#x63A7;&#x89C4;&#x5219;&#x4FE1;&#x606F;</p>
+<p><img src="/article/32240ede.html6.png" alt></p>
+<p>4.&#x8FD9;&#x65F6;&#x518D;&#x6B21;&#x8BF7;&#x6C42;&#x6211;&#x4EEC;&#x7684;&#x63A5;&#x53E3;,&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#x5728; 1 &#x79D2;&#x5185;&#x53EA;&#x6709;&#x4E00;&#x6B21;&#x8BF7;&#x6C42;&#x80FD;&#x6210;&#x529F;</p>
+<p><img src="/article/32240ede.html7.png" alt></p>
+<p>&#x800C;&#x6211;&#x4EEC;&#x5E94;&#x7528;&#x7684;&#x63A7;&#x5236;&#x53F0;&#x6253;&#x5370;&#x51FA;&#x4E86; UndeclaredThrowableException</p>
+<p><img src="/article/32240ede.html8.png" alt></p>
+<p>&#x672C;&#x6587;&#x4EE3;&#x7801;&#x5730;&#x5740;:<a href="https://gitee.com/AtlsHY/coco/tree/master/coco-sentinel" target="_blank" rel="noopener">https://gitee.com/AtlsHY/coco/tree/master/coco-sentinel</a><br>&#x66F4;&#x591A;&#x8BE6;&#x7EC6;&#x5185;&#x5BB9;&#x8BF7;&#x53C2;&#x8003;&#x5B98;&#x65B9;&#x6587;&#x6863;:<a href="https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel" target="_blank" rel="noopener">https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sentinel/" rel="tag"># sentinel</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/24f85607.html" rel="prev" title="使用nacos配置中心功能">
+      <i class="fa fa-chevron-left"></i> 使用nacos配置中心功能
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/8df47b3e.html" rel="next" title="redis面试知识点总结(持续更新)">
+      redis面试知识点总结(持续更新) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-sentinel-控制台"><span class="nav-number">1.</span> <span class="nav-text">配置 sentinel 控制台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置项目连接到-sentinel"><span class="nav-number">2.</span> <span class="nav-text">配置项目连接到 sentinel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流控配置"><span class="nav-number">3.</span> <span class="nav-text">流控配置</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

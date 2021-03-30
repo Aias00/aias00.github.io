@@ -1,468 +1,1057 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="刘宏宇的博客">
-    <meta name="keyword" content="aias00">
-    <link rel="shortcut icon" href="/img/favicon.ico">
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-    <title>
-        
-        aias00的博客 | aias00&#39;s Blog
-        
-    </title>
+<link rel="stylesheet" href="/css/main.css">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/aircloud.css">
-    <link rel="stylesheet" href="/css/gitment.css">
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="保持好奇，保持热爱">
+<meta property="og:type" content="website">
+<meta property="og:title" content="hongyu`s blog">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="保持好奇，保持热爱">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hongyu`s blog">
+<meta name="twitter:description" content="保持好奇，保持热爱">
+
+<link rel="canonical" href="http://yoursite.com/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
 
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i>  </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
-        
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar radius">
-            <img src="/img/avatar.jpg">
-        </div>
-        <div class="name">
-            <i>hongyu liu</i>
-        </div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li class="active">
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
-                </a>
-            </li>
-            <li>
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
-                </a>
-            </li>
-            <li>
-                <a href="/archives">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
-                </a>
-            </li>
-            <!-- <li >
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>关于我</span>
-                </a>
-            </li> -->
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
             
-            <li>
-                <a id="search">
-                    <i class="iconfont icon-sousuo1"></i>
-                    <span>搜索</span>
-                </a>
-            </li>
-            
-        </ul>
-    </div>
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/d1dca260.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/d1dca260.html" class="post-title-link" itemprop="url">tree知识点(持续更新)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-30 10:56:26 / 修改时间：22:38:35" itemprop="dateCreated datePublished" datetime="2021-03-30T10:56:26+08:00">2021-03-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
     
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input">
-            <span id="begin-search">搜索</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i>  </i>
-        </div>
-    </div>
     
-    <div class="index-middle">
-        <!-- Main Content -->
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;"><a href="#&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;" class="headerlink" title="&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;"></a>&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;</h3><p>&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;&#xFF0C;Binary Search Tree[BST]&#xFF0C;&#x4E5F;&#x79F0;&#x6709;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;&#xFF08;ordered binary tree&#xFF09;&#xFF0C;&#x6392;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;&#xFF08;sorted binary tree&#xFF09;&#xFF0C;&#x662F;&#x6307;&#x4E00;&#x68F5;&#x7A7A;&#x6811;&#x6216;&#x5177;&#x6709;&#x4E0B;&#x5217;&#x6027;&#x8D28;&#x7684;&#x4E8C;&#x53C9;&#x6811;</p>
+<p>1.&#x82E5;&#x4EFB;&#x610F;&#x8282;&#x70B9;&#x7684;&#x5DE6;&#x5B50;&#x6811;&#x4E0D;&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x5DE6;&#x5B50;&#x6811;&#x4E0A;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684;&#x503C;&#x5747;&#x5C0F;&#x4E8E;&#x5B83;&#x7684;&#x6839;&#x8282;&#x70B9;&#x7684;&#x503C;</p>
+<p>2.&#x82E5;&#x4EFB;&#x610F;&#x8282;&#x70B9;&#x7684;&#x53F3;&#x5B50;&#x6811;&#x4E0D;&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x53F3;&#x5B50;&#x6811;&#x4E0A;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684;&#x503C;&#x5747;&#x5927;&#x4E8E;&#x5B83;&#x7684;&#x6839;&#x8282;&#x70B9;&#x7684;&#x503C;</p>
+<p>3.&#x4EFB;&#x610F;&#x8282;&#x70B9;&#x7684;&#x5DE6;&#x53F3;&#x5B50;&#x6811;&#x4E5F;&#x5206;&#x522B;&#x662F;&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/d1dca260.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
         
-<div class="post-preview-container" style="min-height: 1080px">
-    
-    <div class="post-preview">
-        <div class="post-time">2021-03-30</div>
-        <div class="post-info">
-            <a href="/2021/03/30/tree-interview/">
-                <h3>
-                    tree知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#tree" title="tree">tree</a>
-                <span>/</span>
-                
-                
-            </p>
-        </div>
+      
     </div>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-29</div>
-        <div class="post-info">
-            <a href="/2021/03/29/red-black-tree/">
-                <h3>
-                    红黑树
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#tree" title="tree">tree</a>
-                <span>/</span>
-                
-                
-            </p>
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/f89cb603.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/f89cb603.html" class="post-title-link" itemprop="url">红黑树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-29 19:19:41" itemprop="dateCreated datePublished" datetime="2021-03-29T19:19:41+08:00">2021-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
+      </header>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-27</div>
-        <div class="post-info">
-            <a href="/2021/03/27/java-interview/">
-                <h3>
-                    java面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#interview" title="interview">interview</a>
-                <span>/</span>
-                
-                
-            </p>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x5DE6;&#x65CB;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">leftRotate</span><span class="params">(Tree t, TreeNode x)</span></span>{</span><br><span class="line">  TreeNode y = x.right; <span class="comment">// &#x53D6;&#x5F97;x&#x8282;&#x70B9;&#x7684;&#x53F3;&#x513F;&#x5B50;&#x8D4B;&#x503C;&#x7ED9;y</span></span><br><span class="line"></span><br><span class="line">  x.right = y.left;     <span class="comment">// &#x5C06;y&#x7684;&#x5DE6;&#x513F;&#x5B50;&#x8D4B;&#x503C;&#x7ED9;x&#x7684;&#x53F3;&#x513F;&#x5B50;</span></span><br><span class="line">  y.left.parent = x;    <span class="comment">// &#x5C06;y&#x7684;&#x5DE6;&#x513F;&#x5B50;&#x7684;&#x7236;&#x8282;&#x70B9;&#x53D8;&#x66F4;&#x6210;x</span></span><br><span class="line"></span><br><span class="line">  y.parent = x.parent;   <span class="comment">// &#x5C06;x&#x7684;&#x7236;&#x8282;&#x70B9;&#x8D4B;&#x503C;&#x7ED9;y&#x7684;&#x7236;&#x8282;&#x70B9;</span></span><br><span class="line">  <span class="keyword">if</span>(x.parent == <span class="keyword">null</span>){</span><br><span class="line">    t.root = y;</span><br><span class="line">  }<span class="keyword">else</span> <span class="keyword">if</span>(x == x.parent.left){</span><br><span class="line">    x.parent.left = y;</span><br><span class="line">  }<span class="keyword">else</span>{</span><br><span class="line">    x.parent.right = y;</span><br><span class="line">  }</span><br><span class="line">  y.left = x;</span><br><span class="line">  x.parent = y;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#x63D2;&#x5165;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RBInsert</span><span class="params">(Tree t, TreeNode z)</span></span>{</span><br><span class="line">  TreeNode y = <span class="keyword">null</span>;</span><br><span class="line">  TreeNode x = t.root;</span><br><span class="line">  <span class="keyword">while</span>(x != <span class="keyword">null</span>){</span><br><span class="line">    y = x;</span><br><span class="line">    <span class="keyword">if</span>(z.value &lt; x.value){</span><br><span class="line">      x = x.left;</span><br><span class="line">    }<span class="keyword">else</span>{</span><br><span class="line">      x = x.right;</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  z.parent = y;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(y == <span class="keyword">null</span>){</span><br><span class="line">    t.root = z;</span><br><span class="line">  }<span class="keyword">else</span> <span class="keyword">if</span>(z.value &lt; y.value){</span><br><span class="line">    y.left = z;</span><br><span class="line">  }<span class="keyword">else</span>{</span><br><span class="line">    y.right = z;</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  z.left = <span class="keyword">null</span>;</span><br><span class="line">  z.right = <span class="keyword">null</span>;</span><br><span class="line">  z.color = RED;</span><br><span class="line">  RBInsertFixUp(t,z);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x7EA2;&#x9ED1;&#x6811;&#x63D2;&#x5165;&#x540E;&#x8C03;&#x6574;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RBInsertFixUp</span><span class="params">(Tree t,Node z)</span></span>{</span><br><span class="line">  <span class="keyword">while</span>(z.parent.color == RED){ </span><br><span class="line">    <span class="keyword">if</span>(z.parent == z.parent.parent.left){</span><br><span class="line">      TreeNode y = z.parent.parent.right;</span><br><span class="line">      <span class="keyword">if</span>(y.color == RED){</span><br><span class="line">        z.parent.color = BLACK;</span><br><span class="line">        y.color = BLACK;</span><br><span class="line">        z.parent.parent.color = RED;</span><br><span class="line">        z = z.parent.parent;</span><br><span class="line">      }<span class="keyword">else</span> <span class="keyword">if</span>(z == z.parent.right){</span><br><span class="line">        z = z.parent;</span><br><span class="line">        leftRotate(t,z);</span><br><span class="line">        z.parent.color = BLACK;</span><br><span class="line">        z.parent.parent.color = RED;</span><br><span class="line">        rightRotate(t,z.parent.parent);</span><br><span class="line">      }</span><br><span class="line">    }<span class="keyword">else</span>{</span><br><span class="line">      <span class="comment">// &#x540C;&#x4E0A;&#xFF0C;&#x8C03;&#x8F6C;left&#x548C;right</span></span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">  t.root.color = BLACK;</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/df4728df.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/df4728df.html" class="post-title-link" itemprop="url">java面试知识点(持续更新)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-27 17:17:40" itemprop="dateCreated datePublished" datetime="2021-03-27T17:17:40+08:00">2021-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
+      </header>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-27</div>
-        <div class="post-info">
-            <a href="/2021/03/27/spring-interview/">
-                <h3>
-                    spring面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#spring, interview" title="spring, interview">spring, interview</a>
-                <span>/</span>
-                
-                
-            </p>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="finally-&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x6267;&#x884C;"><a href="#finally-&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x6267;&#x884C;" class="headerlink" title="finally &#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x6267;&#x884C;"></a>finally &#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x6267;&#x884C;</h3><p>1.finally &#x8BED;&#x53E5;&#x5728; return &#x8BED;&#x53E5;&#x6267;&#x884C;&#x4E4B;&#x540E;,return &#x8FD4;&#x56DE;&#x4E4B;&#x524D;&#x6267;&#x884C;&#x7684;</p>
+<p>2.finally &#x4E2D;&#x7684; return &#x8BED;&#x53E5;&#x4F1A;&#x8986;&#x76D6; try &#x4E2D;&#x7684; return &#x8BED;&#x53E5;</p>
+<p>3.finally &#x91CC;&#x7684;&#x4FEE;&#x6539;&#x8BED;&#x53E5;&#x53EF;&#x80FD;&#x5F71;&#x54CD;&#x4E5F;&#x53EF;&#x80FD;&#x4E0D;&#x5F71;&#x54CD; try &#x6216; catch &#x91CC; return &#x5DF2;&#x7ECF;&#x786E;&#x5B9A;&#x7684;&#x8FD4;&#x56DE;&#x503C;</p>
+<h3 id="static-private-final-static-&#x54EA;&#x4E9B;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#x7684;"><a href="#static-private-final-static-&#x54EA;&#x4E9B;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#x7684;" class="headerlink" title="static/private/final static &#x54EA;&#x4E9B;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#x7684;"></a>static/private/final static &#x54EA;&#x4E9B;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#x7684;</h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/adbddb32.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/adbddb32.html" class="post-title-link" itemprop="url">spring面试知识点(持续更新)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-27 16:38:12" itemprop="dateCreated datePublished" datetime="2021-03-27T16:38:12+08:00">2021-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
+      </header>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-26</div>
-        <div class="post-info">
-            <a href="/2021/03/26/mysql-problem/">
-                <h3>
-                    mysql事务导致的一些问题
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#mysql" title="mysql">mysql</a>
-                <span>/</span>
-                
-                
-            </p>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="spring-&#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0;-ioc-&#x7684;"><a href="#spring-&#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0;-ioc-&#x7684;" class="headerlink" title="spring &#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0; ioc &#x7684;"></a>spring &#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0; ioc &#x7684;</h3><h3 id="spring-bean-&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x521D;&#x59CB;&#x5316;-&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x9500;&#x6BC1;&#x7684;"><a href="#spring-bean-&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x521D;&#x59CB;&#x5316;-&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x9500;&#x6BC1;&#x7684;" class="headerlink" title="spring bean &#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x521D;&#x59CB;&#x5316;,&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x9500;&#x6BC1;&#x7684;"></a>spring bean &#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x521D;&#x59CB;&#x5316;,&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x9500;&#x6BC1;&#x7684;</h3><h3 id="spring-lazy-init-&#x6CE8;&#x89E3;"><a href="#spring-lazy-init-&#x6CE8;&#x89E3;" class="headerlink" title="spring lazy-init &#x6CE8;&#x89E3;"></a>spring lazy-init &#x6CE8;&#x89E3;</h3><p>lazy-init &#x662F; Spring &#x4E2D;&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D; bean &#x7684;&#x5C5E;&#x6027;</p>
+<p>&#x8BBE;&#x7F6E;&#x4E3A; lazy-init=true &#x7684; bean &#x5C06;&#x4E0D;&#x4F1A;&#x5728; ApplicationContext &#x542F;&#x52A8;&#x65F6;&#x63D0;&#x524D;&#x88AB;&#x5B9E;&#x4F8B;&#x5316;,&#x800C;&#x662F;&#x5728;&#x7B2C;&#x4E00;&#x6B21;&#x5411;&#x5BB9;&#x5668;&#x901A;&#x8FC7; getBean &#x7D22;&#x53D6; bean &#x5B9E;&#x4F8B;&#x65F6;&#x5B9E;&#x4F8B;&#x5316;&#x7684;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/adbddb32.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/61951fe.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/61951fe.html" class="post-title-link" itemprop="url">mysql事务导致的一些问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-26 15:23:30" itemprop="dateCreated datePublished" datetime="2021-03-26T15:23:30+08:00">2021-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
+      </header>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-26</div>
-        <div class="post-info">
-            <a href="/2021/03/26/mvcc/">
-                <h3>
-                    mvcc 多版本并发控制
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#mysql" title="mysql">mysql</a>
-                <span>/</span>
-                
-                
-            </p>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.&#x7B2C;&#x4E00;&#x7C7B;&#x4E22;&#x5931;&#x66F4;&#x65B0;</p>
+<p>&#x64A4;&#x9500;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x7684;&#x65F6;&#x5019;,&#x628A;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x5DF2;&#x63D0;&#x4EA4;&#x7684;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x8986;&#x76D6;&#x4E86;;&#x8FD9;&#x662F;&#x5B8C;&#x5168;&#x6CA1;&#x6709;&#x4E8B;&#x52A1;&#x9694;&#x79BB;&#x7EA7;&#x522B;&#x9020;&#x6210;&#x7684;;&#x5982;&#x679C;&#x4E8B;&#x52A1; 1 &#x88AB;&#x63D0;&#x4EA4;,&#x53E6;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x88AB;&#x64A4;&#x9500;,&#x90A3;&#x4E48;&#x4F1A;&#x8FDE;&#x540C;&#x4E8B;&#x52A1; 1 &#x6240;&#x4F5C;&#x7684;&#x66F4;&#x65B0;&#x4E5F;&#x88AB;&#x64A4;&#x9500;</p>
+<p>2.&#x7B2C;&#x4E8C;&#x7C7B;&#x4E22;&#x5931;&#x66F4;&#x65B0;</p>
+<p>&#x5F53;&#x4E24;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x4E8B;&#x52A1;&#x67E5;&#x8BE2;&#x76F8;&#x540C;&#x7684;&#x8BB0;&#x5F55;,&#x7136;&#x540E;&#x5404;&#x81EA;&#x57FA;&#x4E8E;&#x67E5;&#x8BE2;&#x7684;&#x7ED3;&#x679C;&#x66F4;&#x65B0;&#x8BB0;&#x5F55;&#x65F6;,&#x4F1A;&#x9020;&#x6210;&#x7B2C;&#x4E8C;&#x7C7B;&#x66F4;&#x65B0;&#x4E22;&#x5931;&#x7684;&#x95EE;&#x9898;;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x4E0D;&#x77E5;&#x9053;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x7684;&#x5B58;&#x5728;,&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5BF9;&#x8BB0;&#x5F55;&#x6240;&#x4F5C;&#x7684;&#x66F4;&#x6539;&#x5C06;&#x8986;&#x76D6;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x4E4B;&#x524D;&#x5BF9;&#x8BE5;&#x8BB0;&#x5F55;&#x7684;&#x66F4;&#x6539;</p>
+<p>3.&#x810F;&#x8BFB;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/61951fe.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ba4a4566.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/ba4a4566.html" class="post-title-link" itemprop="url">mvcc 多版本并发控制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-26 13:41:27" itemprop="dateCreated datePublished" datetime="2021-03-26T13:41:27+08:00">2021-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
+      </header>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-26</div>
-        <div class="post-info">
-            <a href="/2021/03/26/linux-operation/">
-                <h3>
-                    linux常用操作指令
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#linux" title="linux">linux</a>
-                <span>/</span>
-                
-                
-            </p>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="&#x4EC0;&#x4E48;&#x662F;-mvcc"><a href="#&#x4EC0;&#x4E48;&#x662F;-mvcc" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F; mvcc"></a>&#x4EC0;&#x4E48;&#x662F; mvcc</h3><p>mvcc,Multi-version Concurrency Control,&#x5373;&#x591A;&#x7248;&#x672C;&#x5E76;&#x53D1;&#x63A7;&#x5236;;mvcc &#x662F;&#x4E00;&#x79CD;&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x7684;&#x65B9;&#x6CD5;,&#x4E00;&#x822C;&#x5728;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x4E2D;,&#x5B9E;&#x73B0;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;,&#x5728;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x4E2D;&#x5B9E;&#x73B0;&#x4E8B;&#x52A1;&#x5185;&#x5B58;</p>
+<p>MVCC &#x5728; mysql InnoDB &#x4E2D;&#x7684;&#x5B9E;&#x73B0;&#x4E3B;&#x8981;&#x662F;&#x4E3A;&#x4E86;&#x63D0;&#x9AD8;&#x6570;&#x636E;&#x5E93;&#x5E76;&#x53D1;&#x6027;&#x80FD;,&#x7528;&#x66F4;&#x597D;&#x7684;&#x65B9;&#x5F0F;&#x53BB;&#x5904;&#x7406;&#x8BFB;-&#x5199;&#x51B2;&#x7A81;,&#x505A;&#x5230;&#x5373;&#x4F7F;&#x6709;&#x8BFB;&#x5199;&#x51B2;&#x7A81;&#x65F6;,&#x4E5F;&#x80FD;&#x505A;&#x5230;&#x4E0D;&#x52A0;&#x9501;,&#x975E;&#x963B;&#x585E;&#x5E76;&#x53D1;&#x8BFB;</p>
+<h3 id="&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;"><a href="#&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;"></a>&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;</h3><p>1.&#x5F53;&#x524D;&#x8BFB;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/ba4a4566.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/c2128012.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/c2128012.html" class="post-title-link" itemprop="url">linux常用操作指令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-26 09:59:32" itemprop="dateCreated datePublished" datetime="2021-03-26T09:59:32+08:00">2021-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
+      </header>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-24</div>
-        <div class="post-info">
-            <a href="/2021/03/24/raft/">
-                <h3>
-                    raft算法
-                </h3>
-            </a>
-            <p>
-                
-            </p>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="&#x67E5;&#x8BE2;&#x65E5;&#x5FD7;&#x5C3E;&#x90E8;&#x6700;&#x540E;-10-&#x884C;&#x7684;&#x65E5;&#x5FD7;"><a href="#&#x67E5;&#x8BE2;&#x65E5;&#x5FD7;&#x5C3E;&#x90E8;&#x6700;&#x540E;-10-&#x884C;&#x7684;&#x65E5;&#x5FD7;" class="headerlink" title="&#x67E5;&#x8BE2;&#x65E5;&#x5FD7;&#x5C3E;&#x90E8;&#x6700;&#x540E; 10 &#x884C;&#x7684;&#x65E5;&#x5FD7;"></a>&#x67E5;&#x8BE2;&#x65E5;&#x5FD7;&#x5C3E;&#x90E8;&#x6700;&#x540E; 10 &#x884C;&#x7684;&#x65E5;&#x5FD7;</h3><p>tail -n 10 test.log</p>
+<h3 id="&#x67E5;&#x8BE2;-10-&#x884C;&#x4E4B;&#x540E;&#x7684;&#x6240;&#x6709;&#x65E5;&#x5FD7;"><a href="#&#x67E5;&#x8BE2;-10-&#x884C;&#x4E4B;&#x540E;&#x7684;&#x6240;&#x6709;&#x65E5;&#x5FD7;" class="headerlink" title="&#x67E5;&#x8BE2; 10 &#x884C;&#x4E4B;&#x540E;&#x7684;&#x6240;&#x6709;&#x65E5;&#x5FD7;"></a>&#x67E5;&#x8BE2; 10 &#x884C;&#x4E4B;&#x540E;&#x7684;&#x6240;&#x6709;&#x65E5;&#x5FD7;</h3><p>tail -n +10 test.log</p>
+<h3 id="&#x67E5;&#x8BE2;&#x524D;-10-&#x884C;"><a href="#&#x67E5;&#x8BE2;&#x524D;-10-&#x884C;" class="headerlink" title="&#x67E5;&#x8BE2;&#x524D; 10 &#x884C;"></a>&#x67E5;&#x8BE2;&#x524D; 10 &#x884C;</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/c2128012.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/52ae1042.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/52ae1042.html" class="post-title-link" itemprop="url">raft算法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-24 11:38:47" itemprop="dateCreated datePublished" datetime="2021-03-24T11:38:47+08:00">2021-03-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
+      </header>
+
     
-    <div class="post-preview">
-        <div class="post-time">2021-03-20</div>
-        <div class="post-info">
-            <a href="/2021/03/20/interview-question-answer/">
-                <h3>
-                    面试问题及答案
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#interview" title="interview">interview</a>
-                <span>/</span>
-                
-                
-            </p>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>raft &#x7B97;&#x6CD5;&#x662F;&#x4E00;&#x79CD;&#x7B80;&#x5355;&#x6613;&#x61C2;&#x7684;&#x5171;&#x8BC6;&#x7B97;&#x6CD5;,&#x5B83;&#x4F9D;&#x9760;&#x72B6;&#x6001;&#x673A;&#x548C;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;,&#x5728;&#x5404;&#x4E2A;&#x8282;&#x70B9;&#x4E4B;&#x95F4;&#x5B9E;&#x73B0;&#x6570;&#x636E;&#x7684;&#x4E00;&#x81F4;&#x6027;</p>
+<p>raft &#x7684;&#x4E24;&#x4E2A;&#x6838;&#x5FC3;&#x8981;&#x70B9;:</p>
+<p>1.&#x9009;&#x53D6;&#x4E3B;&#x8282;&#x70B9;</p>
+<p>2.&#x540C;&#x6B65;&#x6570;&#x636E;</p>
+<p>raft &#x7B97;&#x6CD5;&#x5728;&#x9009;&#x53D6;&#x4E3B;&#x8282;&#x70B9;&#x7684;&#x8FC7;&#x7A0B;,&#x4E5F;&#x662F;&#x901A;&#x8FC7;&#x591A;&#x4E2A;&#x8282;&#x70B9;&#x4E4B;&#x95F4;&#x7684;&#x6295;&#x7968;&#x7ADE;&#x4E89;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/52ae1042.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/b0523a70.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/b0523a70.html" class="post-title-link" itemprop="url">面试问题及答案</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-20 22:56:46" itemprop="dateCreated datePublished" datetime="2021-03-20T22:56:46+08:00">2021-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
         </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2021-03-13</div>
-        <div class="post-info">
-            <a href="/2021/03/13/thread-intervied/">
-                <h3>
-                    多线程面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#thread, interview" title="thread, interview">thread, interview</a>
-                <span>/</span>
-                
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2021-03-13</div>
-        <div class="post-info">
-            <a href="/2021/03/13/jvm-interview/">
-                <h3>
-                    jvm相关面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#jvm, interview" title="jvm, interview">jvm, interview</a>
-                <span>/</span>
-                
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2021-03-13</div>
-        <div class="post-info">
-            <a href="/2021/03/13/mysql-interview/">
-                <h3>
-                    mysql面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#mysql, interview" title="mysql, interview">mysql, interview</a>
-                <span>/</span>
-                
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2021-03-13</div>
-        <div class="post-info">
-            <a href="/2021/03/13/proxy-interview/">
-                <h3>
-                    代理模式面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#proxy, interview" title="proxy, interview">proxy, interview</a>
-                <span>/</span>
-                
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2021-03-13</div>
-        <div class="post-info">
-            <a href="/2021/03/13/transaction-interview/">
-                <h3>
-                    事务相关面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#transaction, interview" title="transaction, interview">transaction, interview</a>
-                <span>/</span>
-                
-                
-            </p>
-        </div>
-    </div>
-    
-    <div class="post-preview">
-        <div class="post-time">2021-03-12</div>
-        <div class="post-info">
-            <a href="/2021/03/12/collection-interview/">
-                <h3>
-                    java集合面试知识点(持续更新)
-                </h3>
-            </a>
-            <p>
-                
-                <span>/</span>
-                
-                <a class="tag" href="/tags/#collection, list, set, map, interview" title="collection, list, set, map, interview">collection, list, set, map, interview</a>
-                <span>/</span>
-                
-                
-            </p>
-        </div>
-    </div>
-    
-</div>
-<ul class="pager">
+      </header>
+
     
     
-    <li class="next">
-        <a href="/page/2/">Older Posts &rarr;</a>
-    </li>
     
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="new-Object-&#x5360;&#x591A;&#x5C11;&#x4E2A;&#x5B57;&#x8282;"><a href="#new-Object-&#x5360;&#x591A;&#x5C11;&#x4E2A;&#x5B57;&#x8282;" class="headerlink" title="new Object()&#x5360;&#x591A;&#x5C11;&#x4E2A;&#x5B57;&#x8282;"></a>new Object()&#x5360;&#x591A;&#x5C11;&#x4E2A;&#x5B57;&#x8282;</h3><ul>
+<li><p>mark word(8 &#x5B57;&#x8282;)+klass(4 &#x5B57;&#x8282;,&#x9ED8;&#x8BA4;&#x5F00;&#x542F;&#x6307;&#x9488;&#x538B;&#x7F29;)+padding(4 &#x5B57;&#x8282;) = 16 &#x5B57;&#x8282;</p>
+</li>
+<li><p>mark word(8 &#x5B57;&#x8282;)+klass(8 &#x5B57;&#x8282;,&#x4E0D;&#x5F00;&#x542F;&#x6307;&#x9488;&#x538B;&#x7F29;) = 16 &#x5B57;&#x8282;</p>
+</li>
 </ul>
-
+<h3 id="User-int-id-String-name-User-u-new-User-1-&#x201D;&#x674E;&#x56DB;&#x201D;"><a href="#User-int-id-String-name-User-u-new-User-1-&#x201D;&#x674E;&#x56DB;&#x201D;" class="headerlink" title="User (int id,String name) User u = new User(1,&#x201D;&#x674E;&#x56DB;&#x201D;)"></a>User (int id,String name) User u = new User(1,&#x201D;&#x674E;&#x56DB;&#x201D;)</h3><p>mark word(8 &#x5B57;&#x8282;)+klass(4 &#x5B57;&#x8282;,&#x9ED8;&#x8BA4;&#x5F00;&#x542F;&#x6307;&#x9488;&#x538B;&#x7F29;)+instance data int(4 &#x5B57;&#x8282;) + &#x5F00;&#x542F;&#x666E;&#x901A;&#x5BF9;&#x8C61;&#x6307;&#x9488;&#x538B;&#x7F29;&#x540E; String(4 &#x5B57;&#x8282;)+padding(4 &#x5B57;&#x8282;) = 24 &#x5B57;&#x8282;</p>
+<h3 id="&#x7EBF;&#x7A0B;&#x4EA4;&#x66FF;&#x6253;&#x5370;"><a href="#&#x7EBF;&#x7A0B;&#x4EA4;&#x66FF;&#x6253;&#x5370;" class="headerlink" title="&#x7EBF;&#x7A0B;&#x4EA4;&#x66FF;&#x6253;&#x5370;"></a>&#x7EBF;&#x7A0B;&#x4EA4;&#x66FF;&#x6253;&#x5370;</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/b0523a70.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
     </div>
-</div>
 
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-
-        
-
-    </ul>
     
-    <p>
-        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
-</footer>
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/1bbbbb30.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/1bbbbb30.html" class="post-title-link" itemprop="url">多线程面试知识点(持续更新)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-13 14:48:38" itemprop="dateCreated datePublished" datetime="2021-03-13T14:48:38+08:00">2021-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;"><a href="#1-&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;" class="headerlink" title="1.&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;"></a>1.&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;</h3><h4 id="&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;"><a href="#&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;" class="headerlink" title="&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;?"></a>&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;?</h4><p>java &#x5141;&#x8BB8;&#x591A;&#x7EBF;&#x7A0B;&#x5E76;&#x53D1;&#x63A7;&#x5236;,&#x5F53;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x64CD;&#x4F5C;&#x4E00;&#x4E2A;&#x53EF;&#x5171;&#x4EAB;&#x7684;&#x8D44;&#x6E90;&#x53D8;&#x91CF;&#x65F6;,&#x5C06;&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x7684;&#x4E0D;&#x51C6;&#x786E;,&#x76F8;&#x4E92;&#x4E4B;&#x95F4;&#x4EA7;&#x751F;&#x51B2;&#x7A81;,&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x52A0;&#x5165;&#x540C;&#x6B65;&#x9501;&#x4EE5;&#x907F;&#x514D;&#x5728;&#x8BE5;&#x7EBF;&#x7A0B;&#x6CA1;&#x6709;&#x5B8C;&#x6210;&#x5BF9;&#x6570;&#x636E;&#x7684;&#x64CD;&#x4F5C;&#x4E4B;&#x524D;,&#x6570;&#x636E;&#x88AB;&#x5176;&#x4ED6;&#x7EBF;&#x7A0B;&#x8C03;&#x7528;,&#x4ECE;&#x800C;&#x4FDD;&#x8BC1;&#x4E86;&#x8BE5;&#x53D8;&#x91CF;&#x7684;&#x552F;&#x4E00;&#x6027;&#x548C;&#x51C6;&#x786E;&#x6027;</p>
+<h4 id="&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;"><a href="#&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;" class="headerlink" title="&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;"></a>&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;</h4><p>1.&#x540C;&#x6B65;&#x65B9;&#x6CD5;&#x6216;&#x540C;&#x6B65;&#x4EE3;&#x7801;&#x5757;:synchronized &#x5173;&#x952E;&#x5B57;&#x6216; Lock &#x9501;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/1bbbbb30.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
-
-</body>
+          </div>
+          
 
 <script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = "search.json"
-    window.hexo_root = "/"
-    window.isPost = false
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
 </script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="/js/index.js"></script>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 
 
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
 </html>
