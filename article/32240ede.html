@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="学习使用 sentinel 流控功能 配置 sentinel 控制台1.可以从 github 获取源码到本地编译或者直接下载官方提供的 jar 包 github 地址:https://github.com/alibaba/Sentinel.git 操作流程">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-03-30T14:38:35.708Z">
+<meta property="og:updated_time" content="2021-04-01T06:13:23.162Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="学习接入sentinel">
 <meta name="twitter:description" content="学习使用 sentinel 流控功能 配置 sentinel 控制台1.可以从 github 获取源码到本地编译或者直接下载官方提供的 jar 包 github 地址:https://github.com/alibaba/Sentinel.git 操作流程">
@@ -178,7 +178,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+                <time title="修改时间：2021-04-01 14:13:23" itemprop="dateModified" datetime="2021-04-01T14:13:23+08:00">2021-04-01</time>
               </span>
 
           
@@ -210,9 +210,9 @@
 <p><code>java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar</code></p>
 <p>其中 8080 是指定控制台程序的启动端口,如果端口被占用可以修改成别的。</p>
 <p>启动成功之后打开 localhost:8080 可以看到 sentinel 控制台的登录界面</p>
-<p><img data-src="sentinel/1.png" alt></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/1.png" alt></p>
 <p>默认的用户名密码都是 sentinel</p>
-<p>登录成功之后页面<br><img data-src="sentinel/2.png" alt></p>
+<p>登录成功之后页面<br><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/2.png" alt></p>
 <p>在这个页面展示了所有连接到 sentinel 的服务相关信息</p>
 <h3 id="配置项目连接到-sentinel"><a href="#配置项目连接到-sentinel" class="headerlink" title="配置项目连接到 sentinel"></a>配置项目连接到 sentinel</h3><p>1.建一个项目,配置文件指向 sentinel<br>application.yml</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  application:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">coco-sentinel</span></span><br><span class="line"><span class="attr">  profiles:</span></span><br><span class="line"><span class="attr">    active:</span> <span class="string">dev</span></span><br><span class="line"><span class="attr">  cloud:</span></span><br><span class="line"><span class="attr">    sentinel:</span></span><br><span class="line"><span class="attr">      transport:</span></span><br><span class="line"><span class="attr">        port:</span> <span class="number">8719</span></span><br><span class="line"><span class="attr">        dashboard:</span> <span class="attr">localhost:8080</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">9993</span></span><br></pre></td></tr></table></figure>
@@ -225,18 +225,18 @@
 
 <p>@SentinelResource 注解用来标识资源是否被限流、降级。上述例子上该注解的属性 sayHello 表示资源名。<br>@SentinelResource 还提供了其它额外的属性如 blockHandler，blockHandlerClass，fallback 用于表示限流或降级的操作（注意有方法签名要求），更多内容可以参考 Sentinel 注解支持文档<a href="https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81" target="_blank" rel="noopener">https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81</a>。若不配置 blockHandler、fallback 等函数，则被流控降级时方法会直接抛出对应的 BlockException；若方法未定义 throws BlockException 则会被 JVM 包装一层 UndeclaredThrowableException</p>
 <p>2.启动服务,请求一次,然后查看 sentinel 控制台</p>
-<p><img data-src="sentinel/3.png" alt></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/3.png" alt></p>
 <p>可以看到我们的服务已经在控制台展示出来了</p>
 <h3 id="流控配置"><a href="#流控配置" class="headerlink" title="流控配置"></a>流控配置</h3><p>1.点击我们要设置流控的服务,点击簇点链路,找到刚才指定的资源,即 sayHello</p>
-<p><img data-src="sentinel/4.png" alt></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/4.png" alt></p>
 <p>2.点击流控,在弹出的对话框里设置单机阈值为 1</p>
-<p><img data-src="sentinel/5.png" alt></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/5.png" alt></p>
 <p>3.点击新增,保存成功之后可以看到刚才配置的流控规则信息</p>
-<p><img data-src="sentinel/6.png" alt></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/6.png" alt></p>
 <p>4.这时再次请求我们的接口,可以发现在 1 秒内只有一次请求能成功</p>
-<p><img data-src="sentinel/7.png" alt></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/7.png" alt></p>
 <p>而我们应用的控制台打印出了 UndeclaredThrowableException</p>
-<p><img data-src="sentinel/8.png" alt></p>
+<p><img data-src="https://cdn.jsdelivr.net/gh/Aias00/picgo/images/8.png" alt></p>
 <p>本文代码地址:<a href="https://gitee.com/AtlsHY/coco/tree/master/coco-sentinel" target="_blank" rel="noopener">https://gitee.com/AtlsHY/coco/tree/master/coco-sentinel</a><br>更多详细内容请参考官方文档:<a href="https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel" target="_blank" rel="noopener">https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel</a></p>
 
     </div>
