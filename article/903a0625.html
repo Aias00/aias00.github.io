@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="1.JVM &amp;#x5185;&amp;#x5B58;&amp;#x6A21;&amp;#x578B;&amp;#x8FD0;&amp;#x884C;&amp;#x65F6;&amp;#x6570;&amp;#x636E;&amp;#x533A;&amp;#x57DF; &amp;#x7EBF;&amp;#x7A0B;&amp;#x79C1;&amp;#x6709;&amp;#x7EBF;&amp;#x7A0B;&amp;#x79C1;&amp;#x6709;&amp;#x90E8;&amp;#x5206;,&amp;#x751F;&amp;#x547D;&amp;#x5468;">
+  <meta name="description" content="1.JVM 内存模型运行时数据区域 线程私有线程私有部分,生命周期和线程一致 虚拟机栈(Stack)">
 <meta name="keywords" content="jvm, interview">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jvm相关面试知识点(持续更新)">
 <meta property="og:url" content="http://yoursite.com/article/903a0625.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="1.JVM &amp;#x5185;&amp;#x5B58;&amp;#x6A21;&amp;#x578B;&amp;#x8FD0;&amp;#x884C;&amp;#x65F6;&amp;#x6570;&amp;#x636E;&amp;#x533A;&amp;#x57DF; &amp;#x7EBF;&amp;#x7A0B;&amp;#x79C1;&amp;#x6709;&amp;#x7EBF;&amp;#x7A0B;&amp;#x79C1;&amp;#x6709;&amp;#x90E8;&amp;#x5206;,&amp;#x751F;&amp;#x547D;&amp;#x5468;">
+<meta property="og:description" content="1.JVM 内存模型运行时数据区域 线程私有线程私有部分,生命周期和线程一致 虚拟机栈(Stack)">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.784Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jvm相关面试知识点(持续更新)">
-<meta name="twitter:description" content="1.JVM &amp;#x5185;&amp;#x5B58;&amp;#x6A21;&amp;#x578B;&amp;#x8FD0;&amp;#x884C;&amp;#x65F6;&amp;#x6570;&amp;#x636E;&amp;#x533A;&amp;#x57DF; &amp;#x7EBF;&amp;#x7A0B;&amp;#x79C1;&amp;#x6709;&amp;#x7EBF;&amp;#x7A0B;&amp;#x79C1;&amp;#x6709;&amp;#x90E8;&amp;#x5206;,&amp;#x751F;&amp;#x547D;&amp;#x5468;">
+<meta name="twitter:description" content="1.JVM 内存模型运行时数据区域 线程私有线程私有部分,生命周期和线程一致 虚拟机栈(Stack)">
 
 <link rel="canonical" href="http://yoursite.com/article/903a0625.html">
 
@@ -199,234 +199,234 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="1-JVM-&#x5185;&#x5B58;&#x6A21;&#x578B;"><a href="#1-JVM-&#x5185;&#x5B58;&#x6A21;&#x578B;" class="headerlink" title="1.JVM &#x5185;&#x5B58;&#x6A21;&#x578B;"></a>1.JVM &#x5185;&#x5B58;&#x6A21;&#x578B;</h3><p>&#x8FD0;&#x884C;&#x65F6;&#x6570;&#x636E;&#x533A;&#x57DF;</p>
-<h4 id="&#x7EBF;&#x7A0B;&#x79C1;&#x6709;"><a href="#&#x7EBF;&#x7A0B;&#x79C1;&#x6709;" class="headerlink" title="&#x7EBF;&#x7A0B;&#x79C1;&#x6709;"></a>&#x7EBF;&#x7A0B;&#x79C1;&#x6709;</h4><p>&#x7EBF;&#x7A0B;&#x79C1;&#x6709;&#x90E8;&#x5206;,&#x751F;&#x547D;&#x5468;&#x671F;&#x548C;&#x7EBF;&#x7A0B;&#x4E00;&#x81F4;</p>
-<h5 id="&#x865A;&#x62DF;&#x673A;&#x6808;-Stack"><a href="#&#x865A;&#x62DF;&#x673A;&#x6808;-Stack" class="headerlink" title="&#x865A;&#x62DF;&#x673A;&#x6808;(Stack)"></a>&#x865A;&#x62DF;&#x673A;&#x6808;(Stack)</h5><p>&#x6BCF;&#x4E2A;&#x7EBF;&#x7A0B;&#x5728;&#x521B;&#x5EFA;&#x7684;&#x65F6;&#x5019;&#x90FD;&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x865A;&#x62DF;&#x673A;&#x6808;(Stack),&#x5176;&#x5185;&#x90E8;&#x4FDD;&#x5B58;&#x4E00;&#x4E2A;&#x4E2A;&#x7684;&#x6808;&#x5E27;(Stack Frame),&#x5BF9;&#x5E94;&#x7740;&#x4E00;&#x6B21;&#x6B21; Java &#x65B9;&#x6CD5;&#x8C03;&#x7528;;</p>
-<p>&#x6BCF;&#x4E2A;&#x6808;&#x5E27;&#x4E2D;&#x90FD;&#x62E5;&#x6709;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x8868;/&#x64CD;&#x4F5C;&#x6570;&#x6808;/&#x52A8;&#x6001;&#x94FE;&#x63A5;/&#x65B9;&#x6CD5;&#x51FA;&#x53E3;&#x4FE1;&#x606F;&#x7B49;</p>
-<p>&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x8868;&#x4E3B;&#x8981;&#x5B58;&#x653E;&#x4E86;&#x7F16;&#x8BD1;&#x5668;&#x53EF;&#x77E5;&#x7684;&#x5404;&#x79CD;&#x57FA;&#x672C;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x548C;&#x5BF9;&#x8C61;&#x5F15;&#x7528;(Reference &#x7C7B;&#x578B;,&#x5B83;&#x4E0D;&#x540C;&#x4E8E;&#x5BF9;&#x8C61;&#x672C;&#x8EAB;,&#x53EF;&#x80FD;&#x662F;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x5BF9;&#x8C61;&#x8D77;&#x59CB;&#x5730;&#x5740;&#x7684;&#x5F15;&#x7528;&#x6307;&#x9488;,&#x4E5F;&#x53EF;&#x80FD;&#x662F;&#x6307;&#x5411;&#x4E00;&#x4E2A;&#x4EE3;&#x8868;&#x5BF9;&#x8C61;&#x7684;&#x53E5;&#x67C4;&#x6216;&#x5176;&#x4ED6;&#x4E0E;&#x6B64;&#x5BF9;&#x8C61;&#x76F8;&#x5173;&#x7684;&#x4F4D;&#x7F6E;)</p>
-<p>&#x6BCF;&#x4E2A;&#x7EBF;&#x7A0B;&#x5728;&#x6808;&#x4E2D;&#x4FDD;&#x5B58;&#x81EA;&#x5DF1;&#x7684;&#x6570;&#x636E;,&#x5176;&#x4ED6;&#x7EBF;&#x7A0B;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;;</p>
-<p>&#x6BCF;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x4ECE;&#x88AB;&#x8C03;&#x7528;&#x5230;&#x6267;&#x884C;&#x5B8C;&#x6210;&#x7684;&#x8FC7;&#x7A0B;,&#x90FD;&#x5BF9;&#x5E94;&#x7740;&#x4E00;&#x4E2A;&#x6808;&#x5E27;&#x4ECE;&#x5165;&#x6808;&#x5230;&#x51FA;&#x6808;&#x7684;&#x8FC7;&#x7A0B;;</p>
-<p>&#x5728;&#x6808;&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x80FD;&#x9047;&#x5230;&#x4E24;&#x79CD;&#x5F02;&#x5E38;:StackOverFlowError &#x548C; OutOfMemoryError</p>
+        <h3 id="1-JVM-内存模型"><a href="#1-JVM-内存模型" class="headerlink" title="1.JVM 内存模型"></a>1.JVM 内存模型</h3><p>运行时数据区域</p>
+<h4 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h4><p>线程私有部分,生命周期和线程一致</p>
+<h5 id="虚拟机栈-Stack"><a href="#虚拟机栈-Stack" class="headerlink" title="虚拟机栈(Stack)"></a>虚拟机栈(Stack)</h5><p>每个线程在创建的时候都会创建一个虚拟机栈(Stack),其内部保存一个个的栈帧(Stack Frame),对应着一次次 Java 方法调用;</p>
+<p>每个栈帧中都拥有局部变量表/操作数栈/动态链接/方法出口信息等</p>
+<p>局部变量表主要存放了编译器可知的各种基本数据类型和对象引用(Reference 类型,它不同于对象本身,可能是一个指向对象起始地址的引用指针,也可能是指向一个代表对象的句柄或其他与此对象相关的位置)</p>
+<p>每个线程在栈中保存自己的数据,其他线程无法访问;</p>
+<p>每一个方法从被调用到执行完成的过程,都对应着一个栈帧从入栈到出栈的过程;</p>
+<p>在栈中我们可能遇到两种异常:StackOverFlowError 和 OutOfMemoryError</p>
 <ul>
-<li><p>StackOverFlowError :&#x82E5; Java &#x865A;&#x62DF;&#x673A;&#x6808;&#x7684;&#x5185;&#x5B58;&#x4E0D;&#x5141;&#x8BB8;&#x52A8;&#x6001;&#x62D3;&#x5C55;,&#x90A3;&#x4E48;&#x5F53;&#x7EBF;&#x7A0B;&#x8BF7;&#x6C42;&#x7684;&#x6808;&#x6DF1;&#x5EA6;&#x8D85;&#x8FC7;&#x5F53;&#x524D; Java &#x865A;&#x62DF;&#x673A;&#x6808;&#x7684;&#x6700;&#x5927;&#x5141;&#x8BB8;&#x6DF1;&#x5EA6;,&#x5C06;&#x629B;&#x51FA;&#x6B64;&#x5F02;&#x5E38;</p>
+<li><p>StackOverFlowError :若 Java 虚拟机栈的内存不允许动态拓展,那么当线程请求的栈深度超过当前 Java 虚拟机栈的最大允许深度,将抛出此异常</p>
 </li>
-<li><p>OutOfMemoryError :&#x5F53; Java &#x865A;&#x62DF;&#x673A;&#x6808;&#x7684;&#x5185;&#x5B58;&#x5141;&#x8BB8;&#x52A8;&#x6001;&#x62D3;&#x5C55;,&#x90A3;&#x4E48;&#x5F53;&#x7EBF;&#x7A0B;&#x5728;&#x62D3;&#x5C55;&#x6808;&#x65F6;&#x65E0;&#x6CD5;&#x7533;&#x8BF7;&#x5230;&#x8DB3;&#x591F;&#x7684;&#x5185;&#x5B58;,&#x5C06;&#x629B;&#x51FA;&#x6B64;&#x5F02;&#x5E38;</p>
+<li><p>OutOfMemoryError :当 Java 虚拟机栈的内存允许动态拓展,那么当线程在拓展栈时无法申请到足够的内存,将抛出此异常</p>
 </li>
 </ul>
-<h5 id="&#x672C;&#x5730;&#x65B9;&#x6CD5;&#x6808;-Native-Method-Stack"><a href="#&#x672C;&#x5730;&#x65B9;&#x6CD5;&#x6808;-Native-Method-Stack" class="headerlink" title="&#x672C;&#x5730;&#x65B9;&#x6CD5;&#x6808;(Native Method Stack)"></a>&#x672C;&#x5730;&#x65B9;&#x6CD5;&#x6808;(Native Method Stack)</h5><p>&#x672C;&#x5730;&#x65B9;&#x6CD5;&#x6808;&#x548C;&#x865A;&#x62DF;&#x673A;&#x6808;&#x7C7B;&#x4F3C;,&#x533A;&#x522B;&#x53EA;&#x5728;&#x4E8E;&#x672C;&#x5730;&#x65B9;&#x6CD5;&#x6808;&#x4E3A; Native &#x670D;&#x52A1;;</p>
-<p>Native &#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x4E00;&#x4E2A; Java &#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x975E; Java &#x65B9;&#x6CD5;&#x7684;&#x63A5;&#x53E3;,&#x6BD4;&#x5982; JNI;</p>
-<p>&#x5728; HotSpot &#x865A;&#x62DF;&#x673A;&#x4E2D;&#x672C;&#x5730;&#x65B9;&#x6CD5;&#x6808;&#x548C; Java &#x865A;&#x62DF;&#x673A;&#x6808;&#x5408;&#x4E8C;&#x4E3A;&#x4E00;;</p>
-<h5 id="&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;-Program-Counter-Register"><a href="#&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;-Program-Counter-Register" class="headerlink" title="&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;(Program Counter Register)"></a>&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;(Program Counter Register)</h5><p>Java &#x4EE3;&#x7801;&#x6700;&#x7EC8;&#x90FD;&#x8981;&#x7F16;&#x8BD1;&#x6210;&#x4E00;&#x6761;&#x6761;&#x5B57;&#x8282;&#x7801;,&#x7136;&#x540E;&#x7531;&#x5B57;&#x8282;&#x7801;&#x89E3;&#x91CA;&#x5668;&#x4E00;&#x884C;&#x884C;&#x7684;&#x6267;&#x884C;,&#x800C;&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;&#x53EF;&#x4EE5;&#x770B;&#x4F5C;&#x662F;&#x5F53;&#x524D;&#x7EBF;&#x7A0B;&#x6240;&#x6267;&#x884C;&#x7684;&#x5B57;&#x8282;&#x7801;&#x7684;&#x884C;&#x53F7;&#x8BA1;&#x6570;&#x5668;;</p>
-<p>&#x5B57;&#x8282;&#x7801;&#x89E3;&#x91CA;&#x5668;&#x5DE5;&#x4F5C;&#x65F6;&#x901A;&#x8FC7;&#x6539;&#x53D8;&#x8FD9;&#x4E2A;&#x8BA1;&#x6570;&#x5668;&#x7684;&#x503C;&#x6765;&#x9009;&#x53D6;&#x4E0B;&#x4E00;&#x6761;&#x9700;&#x8981;&#x6267;&#x884C;&#x7684;&#x5B57;&#x8282;&#x7801;&#x6307;&#x4EE4;,&#x5206;&#x652F;/&#x5FAA;&#x73AF;/&#x8DF3;&#x8F6C;/&#x5F02;&#x5E38;&#x5904;&#x7406;/&#x7EBF;&#x7A0B;&#x6062;&#x590D;&#x7B49;&#x529F;&#x80FD;&#x90FD;&#x9700;&#x8981;&#x4F9D;&#x8D56;&#x8FD9;&#x4E2A;&#x8BA1;&#x6570;&#x5668;&#x6765;&#x5B8C;&#x6210;;</p>
-<p>&#x5982;&#x679C;&#x6B63;&#x5728;&#x6267;&#x884C;&#x7684;&#x662F;&#x4E00;&#x4E2A; Java &#x65B9;&#x6CD5;,&#x90A3;&#x4E48;&#x8FD9;&#x4E2A;&#x8BA1;&#x6570;&#x5668;&#x8BB0;&#x5F55;&#x7684;&#x662F;&#x6B63;&#x5728;&#x6267;&#x884C;&#x7684;&#x5B57;&#x8282;&#x7801;&#x6307;&#x4EE4;&#x5730;&#x5740;;&#x5982;&#x679C;&#x6B63;&#x5728;&#x6267;&#x884C;&#x7684;&#x662F; Native &#x65B9;&#x6CD5;,&#x90A3;&#x4E48;&#x8BA1;&#x6570;&#x5668;&#x7684;&#x503C;&#x4E3A; undefined;</p>
-<p>&#x6BCF;&#x6761;&#x7EBF;&#x7A0B;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x72EC;&#x7ACB;&#x7684;&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;,&#x5404;&#x7EBF;&#x7A0B;&#x7684;&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;&#x4E92;&#x4E0D;&#x5F71;&#x54CD;;</p>
-<p>&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;&#x662F;&#x552F;&#x4E00;&#x4E00;&#x4E2A;&#x4E0D;&#x4F1A; OOM &#x7684;&#x5185;&#x5B58;&#x533A;&#x57DF;</p>
-<h4 id="&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;"><a href="#&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;" class="headerlink" title="&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;"></a>&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;</h4><p>&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;&#x90E8;&#x5206;&#x5185;&#x5BB9;</p>
-<h5 id="&#x5806;-Heap"><a href="#&#x5806;-Heap" class="headerlink" title="&#x5806;(Heap)"></a>&#x5806;(Heap)</h5><p>Java &#x5185;&#x5B58;&#x4E2D;&#x5360;&#x7528;&#x7A7A;&#x95F4;&#x6700;&#x5927;&#x7684;&#x4E00;&#x4E2A;&#x533A;&#x57DF;</p>
-<p>&#x5806;&#x552F;&#x4E00;&#x7684;&#x4F5C;&#x7528;&#x5C31;&#x662F;&#x5B58;&#x653E;&#x5BF9;&#x8C61;,&#x4E0D;&#x8FC7;&#x5E76;&#x975E;&#x6240;&#x6709;&#x5BF9;&#x8C61;&#x90FD;&#x5728;&#x5806;&#x4E2D;</p>
-<p>&#x5806;&#x5982;&#x679C;&#x7A7A;&#x95F4;&#x4E0D;&#x8DB3;,&#x5C31;&#x4F1A;&#x629B;&#x51FA; OOM</p>
-<p>&#x5806;&#x662F;&#x5783;&#x573E;&#x6536;&#x96C6;&#x5668;&#x7BA1;&#x7406;&#x7684;&#x4E3B;&#x8981;&#x533A;&#x57DF;,&#x56E0;&#x6B64;&#x4E5F;&#x88AB;&#x79F0;&#x4E3A; GC &#x5806;(Garbage Collected Heap)</p>
-<h6 id="&#x5206;&#x4EE3;"><a href="#&#x5206;&#x4EE3;" class="headerlink" title="&#x5206;&#x4EE3;"></a>&#x5206;&#x4EE3;</h6><p>&#x7531;&#x4E8E;&#x73B0;&#x5728;&#x6536;&#x96C6;&#x5668;&#x57FA;&#x672C;&#x4E0A;&#x90FD;&#x91C7;&#x7528;&#x5206;&#x4EE3;&#x5783;&#x573E;&#x6536;&#x96C6;&#x7B97;&#x6CD5;,&#x6240;&#x4EE5; Java &#x5806;&#x8FD8;&#x53EF;&#x4EE5;&#x7EC6;&#x5206;&#x4E3A;: &#x65B0;&#x751F;&#x4EE3;&#x548C;&#x8001;&#x5E74;&#x4EE3;;&#x5176;&#x4E2D;&#x65B0;&#x751F;&#x4EE3;&#x53C8;&#x5206;&#x4E3A;:Eden &#x7A7A;&#x95F4;,From Survivor &#x7A7A;&#x95F4;&#x548C; To Survivor &#x7A7A;&#x95F4;;</p>
-<p>&#x8FDB;&#x4E00;&#x6B65;&#x5212;&#x5206;&#x7684;&#x76EE;&#x7684;&#x662F;&#x66F4;&#x597D;&#x5730;&#x56DE;&#x6536;&#x5185;&#x5B58;,&#x6216;&#x8005;&#x66F4;&#x5FEB;&#x5730;&#x5206;&#x914D;&#x5185;&#x5B58;</p>
-<p>&#x201C;&#x5206;&#x4EE3;&#x56DE;&#x6536;&#x201D;&#x662F;&#x57FA;&#x4E8E;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x4E8B;&#x5B9E;:&#x5BF9;&#x8C61;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x4E0D;&#x540C;,&#x6240;&#x4EE5;&#x9488;&#x5BF9;&#x4E0D;&#x540C;&#x751F;&#x547D;&#x5468;&#x671F;&#x7684;&#x5BF9;&#x8C61;&#x53EF;&#x4EE5;&#x91C7;&#x7528;&#x4E0D;&#x540C;&#x7684;&#x56DE;&#x6536;&#x65B9;&#x5F0F;,&#x4EE5;&#x4FBF;&#x63D0;&#x9AD8;&#x56DE;&#x6536;&#x6548;&#x7387;</p>
-<p>&#x4ECE;&#x5185;&#x5B58;&#x5206;&#x914D;&#x7684;&#x89D2;&#x5EA6;&#x6765;&#x770B;,&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;&#x7684; Java &#x5806;&#x4E2D;&#x53EF;&#x80FD;&#x4F1A;&#x5212;&#x5206;&#x51FA;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x79C1;&#x6709;&#x7684;&#x5206;&#x914D;&#x7F13;&#x51B2;&#x533A;(Thread Local Allocation Buffer)TLAB</p>
+<h5 id="本地方法栈-Native-Method-Stack"><a href="#本地方法栈-Native-Method-Stack" class="headerlink" title="本地方法栈(Native Method Stack)"></a>本地方法栈(Native Method Stack)</h5><p>本地方法栈和虚拟机栈类似,区别只在于本地方法栈为 Native 服务;</p>
+<p>Native 方法就是一个 Java 方法调用非 Java 方法的接口,比如 JNI;</p>
+<p>在 HotSpot 虚拟机中本地方法栈和 Java 虚拟机栈合二为一;</p>
+<h5 id="程序计数器-Program-Counter-Register"><a href="#程序计数器-Program-Counter-Register" class="headerlink" title="程序计数器(Program Counter Register)"></a>程序计数器(Program Counter Register)</h5><p>Java 代码最终都要编译成一条条字节码,然后由字节码解释器一行行的执行,而程序计数器可以看作是当前线程所执行的字节码的行号计数器;</p>
+<p>字节码解释器工作时通过改变这个计数器的值来选取下一条需要执行的字节码指令,分支/循环/跳转/异常处理/线程恢复等功能都需要依赖这个计数器来完成;</p>
+<p>如果正在执行的是一个 Java 方法,那么这个计数器记录的是正在执行的字节码指令地址;如果正在执行的是 Native 方法,那么计数器的值为 undefined;</p>
+<p>每条线程都有一个独立的程序计数器,各线程的程序计数器互不影响;</p>
+<p>程序计数器是唯一一个不会 OOM 的内存区域</p>
+<h4 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h4><p>线程共享部分内容</p>
+<h5 id="堆-Heap"><a href="#堆-Heap" class="headerlink" title="堆(Heap)"></a>堆(Heap)</h5><p>Java 内存中占用空间最大的一个区域</p>
+<p>堆唯一的作用就是存放对象,不过并非所有对象都在堆中</p>
+<p>堆如果空间不足,就会抛出 OOM</p>
+<p>堆是垃圾收集器管理的主要区域,因此也被称为 GC 堆(Garbage Collected Heap)</p>
+<h6 id="分代"><a href="#分代" class="headerlink" title="分代"></a>分代</h6><p>由于现在收集器基本上都采用分代垃圾收集算法,所以 Java 堆还可以细分为: 新生代和老年代;其中新生代又分为:Eden 空间,From Survivor 空间和 To Survivor 空间;</p>
+<p>进一步划分的目的是更好地回收内存,或者更快地分配内存</p>
+<p>“分代回收”是基于这样一个事实:对象的生命周期不同,所以针对不同生命周期的对象可以采用不同的回收方式,以便提高回收效率</p>
+<p>从内存分配的角度来看,线程共享的 Java 堆中可能会划分出多个线程私有的分配缓冲区(Thread Local Allocation Buffer)TLAB</p>
 <ul>
-<li>&#x65B0;&#x751F;&#x4EE3;(Young Generation):&#x5927;&#x591A;&#x6570;&#x5BF9;&#x8C61;&#x5728;&#x65B0;&#x751F;&#x4EE3;&#x4E2D;&#x88AB;&#x521B;&#x5EFA;,&#x5176;&#x4E2D;&#x5F88;&#x591A;&#x5BF9;&#x8C61;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x5F88;&#x77ED;,&#x6BCF;&#x6B21;&#x65B0;&#x751F;&#x4EE3;&#x7684;&#x5783;&#x573E;&#x56DE;&#x6536;(Minor GC)&#x540E;&#x53EA;&#x6709;&#x5C11;&#x91CF;&#x5BF9;&#x8C61;&#x5B58;&#x6D3B;,&#x6240;&#x4EE5;&#x9009;&#x7528;&#x590D;&#x5236;&#x7B97;&#x6CD5;,&#x53EA;&#x9700;&#x8981;&#x5C11;&#x91CF;&#x7684;&#x590D;&#x5236;&#x6210;&#x672C;&#x5C31;&#x53EF;&#x4EE5;&#x5B8C;&#x6210;&#x56DE;&#x6536;</li>
+<li>新生代(Young Generation):大多数对象在新生代中被创建,其中很多对象的生命周期很短,每次新生代的垃圾回收(Minor GC)后只有少量对象存活,所以选用复制算法,只需要少量的复制成本就可以完成回收</li>
 </ul>
-<p>&#x65B0;&#x751F;&#x4EE3;&#x53C8;&#x5206;&#x4E3A;&#x4E09;&#x4E2A;&#x533A;,&#x4E00;&#x4E2A; Eden &#x533A;,&#x4E24;&#x4E2A; Survivor &#x533A;(&#x4E00;&#x822C;&#x800C;&#x8A00;),&#x5927;&#x90E8;&#x5206;&#x5BF9;&#x8C61;&#x5728; Eden &#x533A;&#x4E2D;&#x751F;&#x6210;,&#x5F53; Eden &#x533A;&#x6EE1;&#x65F6;,&#x8FD8;&#x5B58;&#x6D3B;&#x7684;&#x5BF9;&#x8C61;&#x5C06;&#x88AB;&#x590D;&#x5236;&#x5230;&#x4E24;&#x4E2A; Survivor &#x533A;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;,&#x5F53;&#x8FD9;&#x4E2A; Survivor &#x533A;&#x6EE1;&#x65F6;,&#x6B64;&#x533A;&#x7684;&#x5B58;&#x6D3B;&#x4E14;&#x4E0D;&#x6EE1;&#x8DB3;&#x201D;&#x664B;&#x5347;&#x201D;&#x6761;&#x4EF6;&#x7684;&#x5BF9;&#x8C61;&#x5C06;&#x88AB;&#x590D;&#x5236;&#x5230;&#x53E6;&#x5916;&#x4E00;&#x4E2A; Survivor &#x533A;,&#x5BF9;&#x8C61;&#x6BCF;&#x7ECF;&#x5386;&#x4E00;&#x6B21; Minor GC,&#x5E74;&#x9F84;+1,&#x8FBE;&#x5230;&#x201D;&#x664B;&#x5347;&#x5E74;&#x9F84;&#x9608;&#x503C;&#x201D;&#x540E;,&#x88AB;&#x653E;&#x5230;&#x8001;&#x5E74;&#x4EE3;,&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E5F;&#x88AB;&#x79F0;&#x4E3A;&#x201D;&#x664B;&#x5347;&#x201D;;&#x663E;&#x7136;&#x201D;&#x664B;&#x5347;&#x5E74;&#x9F84;&#x9608;&#x503C;&#x201D;&#x7684;&#x5927;&#x5C0F;&#x76F4;&#x63A5;&#x5F71;&#x54CD;&#x7740;&#x5BF9;&#x8C61;&#x5728;&#x65B0;&#x751F;&#x4EE3;&#x4E2D;&#x7684;&#x505C;&#x7559;&#x65F6;&#x95F4;,&#x5728; Serial &#x548C; ParNew &#x4E24;&#x79CD;&#x56DE;&#x6536;&#x5668;&#x4E2D;,&#x201D;&#x664B;&#x5347;&#x5E74;&#x9F84;&#x9608;&#x503C;&#x201D;&#x901A;&#x8FC7;&#x53C2;&#x6570; MaxTenuringThreshold &#x8BBE;&#x5B9A;,&#x9ED8;&#x8BA4;&#x503C;&#x4E3A; 15</p>
+<p>新生代又分为三个区,一个 Eden 区,两个 Survivor 区(一般而言),大部分对象在 Eden 区中生成,当 Eden 区满时,还存活的对象将被复制到两个 Survivor 区中的一个,当这个 Survivor 区满时,此区的存活且不满足”晋升”条件的对象将被复制到另外一个 Survivor 区,对象每经历一次 Minor GC,年龄+1,达到”晋升年龄阈值”后,被放到老年代,这个过程也被称为”晋升”;显然”晋升年龄阈值”的大小直接影响着对象在新生代中的停留时间,在 Serial 和 ParNew 两种回收器中,”晋升年龄阈值”通过参数 MaxTenuringThreshold 设定,默认值为 15</p>
 <ul>
-<li><p>&#x8001;&#x5E74;&#x4EE3;(Old Generation):&#x5728;&#x65B0;&#x751F;&#x4EE3;&#x4E2D;&#x7ECF;&#x5386;&#x4E86; N &#x6B21;&#x5783;&#x573E;&#x56DE;&#x6536;&#x540E;&#x4ECD;&#x5B58;&#x6D3B;&#x7684;&#x5BF9;&#x8C61;,&#x5C31;&#x4F1A;&#x88AB;&#x653E;&#x5230;&#x8001;&#x5E74;&#x4EE3;,&#x8BE5;&#x533A;&#x57DF;&#x4E2D;&#x5BF9;&#x8C61;&#x5B58;&#x6D3B;&#x7387;&#x9AD8;;&#x8001;&#x5E74;&#x4EE3;&#x7684;&#x5783;&#x573E;&#x56DE;&#x6536;(Major GC),&#x901A;&#x5E38;&#x4F7F;&#x7528;&#x201D;&#x6807;&#x8BB0;-&#x6E05;&#x9664;&#x201D;&#x6216;&#x8005;&#x201D;&#x6807;&#x8BB0;-&#x6574;&#x7406;&#x201D;&#x7B97;&#x6CD5;;</p>
+<li><p>老年代(Old Generation):在新生代中经历了 N 次垃圾回收后仍存活的对象,就会被放到老年代,该区域中对象存活率高;老年代的垃圾回收(Major GC),通常使用”标记-清除”或者”标记-整理”算法;</p>
 </li>
-<li><p>&#x6574;&#x5806;&#x5305;&#x62EC;&#x65B0;&#x751F;&#x4EE3;&#x548C;&#x8001;&#x5E74;&#x4EE3;&#x7684;&#x5783;&#x573E;&#x56DE;&#x6536;&#x79F0;&#x4E3A; Full GC(HotSpot &#x865A;&#x62DF;&#x673A;&#x4E2D;,&#x9664;&#x4E86; CMS &#x5916;,&#x5176;&#x4ED6;&#x80FD;&#x6536;&#x96C6;&#x8001;&#x5E74;&#x4EE3;&#x7684;&#x5783;&#x573E;&#x56DE;&#x6536;&#x5668;&#x90FD;&#x4F1A;&#x6536;&#x96C6;&#x6574;&#x4E2A; GC &#x5806;,&#x5305;&#x62EC;&#x65B0;&#x751F;&#x4EE3;)</p>
+<li><p>整堆包括新生代和老年代的垃圾回收称为 Full GC(HotSpot 虚拟机中,除了 CMS 外,其他能收集老年代的垃圾回收器都会收集整个 GC 堆,包括新生代)</p>
 </li>
-<li><p>&#x6C38;&#x4E45;&#x4EE3;(Perm Generation): &#x4E3B;&#x8981;&#x5B58;&#x653E;&#x5143;&#x6570;&#x636E;,&#x4F8B;&#x5982; Class,Method &#x7684;&#x5143;&#x4FE1;&#x606F;,&#x4E0E;&#x5783;&#x573E;&#x56DE;&#x6536;&#x8981;&#x56DE;&#x6536;&#x7684; Java &#x5BF9;&#x8C61;&#x5173;&#x7CFB;&#x4E0D;&#x5927;,&#x76F8;&#x5BF9;&#x4E8E;&#x65B0;&#x751F;&#x4EE3;&#x548C;&#x8001;&#x5E74;&#x4EE3;&#x6765;&#x8BF4;,&#x8BE5;&#x533A;&#x57DF;&#x7684;&#x5212;&#x5206;&#x5BF9;&#x5783;&#x573E;&#x56DE;&#x6536;&#x5F71;&#x54CD;&#x8F83;&#x5C0F;;</p>
+<li><p>永久代(Perm Generation): 主要存放元数据,例如 Class,Method 的元信息,与垃圾回收要回收的 Java 对象关系不大,相对于新生代和老年代来说,该区域的划分对垃圾回收影响较小;</p>
 </li>
 </ul>
-<p>&#x5728; jdk1.8 &#x4E2D;&#x79FB;&#x9664;&#x6574;&#x4E2A;&#x6C38;&#x4E45;&#x4EE3;,&#x53D6;&#x800C;&#x4EE3;&#x4E4B;&#x7684;&#x662F;&#x4E00;&#x4E2A;&#x53EB;&#x5143;&#x7A7A;&#x95F4;(Metaspace)&#x7684;&#x533A;&#x57DF;(&#x6C38;&#x4E45;&#x4EE3;&#x4F7F;&#x7528;&#x7684;&#x662F; JVM &#x7684;&#x5806;&#x5185;&#x5B58;&#x7A7A;&#x95F4;,&#x800C;&#x5143;&#x7A7A;&#x95F4;&#x4F7F;&#x7528;&#x7684;&#x662F;&#x7269;&#x7406;&#x5185;&#x5B58;,&#x76F4;&#x63A5;&#x53D7;&#x5230;&#x672C;&#x673A;&#x7684;&#x7269;&#x7406;&#x5185;&#x5B58;&#x9650;&#x5236;)</p>
-<h5 id="&#x65B9;&#x6CD5;&#x533A;-Method-Area"><a href="#&#x65B9;&#x6CD5;&#x533A;-Method-Area" class="headerlink" title="&#x65B9;&#x6CD5;&#x533A;(Method Area)"></a>&#x65B9;&#x6CD5;&#x533A;(Method Area)</h5><p>&#x7528;&#x4E8E;&#x5B58;&#x50A8;&#x5DF2;&#x7ECF;&#x88AB;&#x865A;&#x62DF;&#x673A;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x4FE1;&#x606F;,&#x5E38;&#x91CF;&#x6C60;,&#x9759;&#x6001;&#x53D8;&#x91CF;,JIT &#x7F16;&#x8BD1;&#x540E;&#x7684;&#x4EE3;&#x7801;&#x7B49;&#x6570;&#x636E;;</p>
-<p>&#x867D;&#x7136; java &#x865A;&#x62DF;&#x673A;&#x89C4;&#x8303;&#x628A;&#x65B9;&#x6CD5;&#x533A;&#x63CF;&#x8FF0;&#x4E3A;&#x5806;&#x7684;&#x4E00;&#x4E2A;&#x903B;&#x8F91;&#x90E8;&#x5206;,&#x4F46;&#x662F;&#x5B83;&#x5374;&#x6709;&#x4E00;&#x4E2A;&#x522B;&#x540D;&#x53EB;&#x505A;&#x975E;&#x5806;(Non-Heap),&#x76EE;&#x7684;&#x662F;&#x4E0E; Java &#x5806;&#x533A;&#x5206;&#x5F00;</p>
-<p>HotSpot &#x865A;&#x62DF;&#x673A;&#x4E2D;&#x65B9;&#x6CD5;&#x533A;&#x5E38;&#x88AB;&#x79F0;&#x4E3A;&#x201D;&#x6C38;&#x4E45;&#x4EE3;&#x201D;,&#x672C;&#x8D28;&#x4E0A;&#x4E24;&#x8005;&#x5E76;&#x4E0D;&#x7B49;&#x4EF7;,&#x4EC5;&#x4EC5;&#x662F;&#x56E0;&#x4E3A; HotSpot &#x865A;&#x62DF;&#x673A;&#x7528;&#x6C38;&#x4E45;&#x4EE3;&#x6765;&#x5B9E;&#x73B0;&#x65B9;&#x6CD5;&#x533A;&#x800C;&#x5DF2;,&#x8FD9;&#x6837; HotSpot &#x865A;&#x62DF;&#x673A;&#x7684;&#x5783;&#x573E;&#x6536;&#x96C6;&#x5668;&#x5C31;&#x53EF;&#x4EE5;&#x50CF;&#x7BA1;&#x7406; Java &#x5806;&#x4E00;&#x6837;&#x7BA1;&#x7406;&#x8FD9;&#x90E8;&#x5206;&#x5185;&#x5B58;&#x4E86;,&#x4F46;&#x662F;&#x8FD9;&#x5E76;&#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x597D;&#x4E3B;&#x610F;,&#x56E0;&#x4E3A;&#x8FD9;&#x6837;&#x66F4;&#x5BB9;&#x6613;&#x9047;&#x5230;&#x5185;&#x5B58;&#x6EA2;&#x51FA;&#x95EE;&#x9898;;</p>
-<p>&#x76F8;&#x5BF9;&#x800C;&#x8A00;,&#x5783;&#x573E;&#x6536;&#x96C6;&#x884C;&#x4E3A;&#x5728;&#x8FD9;&#x4E2A;&#x533A;&#x57DF;&#x662F;&#x6BD4;&#x8F83;&#x5C11;&#x51FA;&#x73B0;&#x7684;,&#x4F46;&#x5E76;&#x975E;&#x6570;&#x636E;&#x8FDB;&#x5165;&#x65B9;&#x6CD5;&#x540E;&#x5C31;&#x201D;&#x6C38;&#x4E45;&#x5B58;&#x5728;&#x201D;&#x4E86;</p>
-<h6 id="&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;-Runtime-Constant-Pool"><a href="#&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;-Runtime-Constant-Pool" class="headerlink" title="&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;(Runtime Constant Pool)"></a>&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;(Runtime Constant Pool)</h6><p>&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;&#x662F;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x4E00;&#x90E8;&#x5206;,Class &#x6587;&#x4EF6;&#x4E2D;&#x9664;&#x4E86;&#x6709;&#x7C7B;&#x7248;&#x672C;,&#x5B57;&#x6BB5;,&#x65B9;&#x6CD5;,&#x63A5;&#x53E3;&#x7B49;&#x63CF;&#x8FF0;&#x4FE1;&#x606F;,&#x8FD8;&#x6709;&#x5E38;&#x91CF;&#x6C60;&#x4FE1;&#x606F;(&#x7528;&#x4E8E;&#x5B58;&#x653E;&#x7F16;&#x8BD1;&#x671F;&#x751F;&#x6210;&#x7684;&#x5404;&#x79CD;&#x5B57;&#x9762;&#x91CF;&#x548C;&#x7B26;&#x53F7;&#x5F15;&#x7528;),&#x8FD9;&#x90E8;&#x5206;&#x5185;&#x5BB9;&#x5C06;&#x5728;&#x7C7B;&#x52A0;&#x8F7D;&#x540E;&#x8FDB;&#x5165;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;</p>
-<p>&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;&#x76F8;&#x5BF9;&#x4E8E; Class &#x6587;&#x4EF6;&#x5E38;&#x91CF;&#x6C60;&#x7684;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x7279;&#x5F81;&#x5C31;&#x662F;&#x5177;&#x5907;&#x52A8;&#x6001;&#x6027;,Java &#x8BED;&#x8A00;&#x5E76;&#x4E0D;&#x8981;&#x6C42;&#x5E38;&#x91CF;&#x4E00;&#x5B9A;&#x53EA;&#x6709;&#x5728;&#x7F16;&#x8BD1;&#x671F;&#x624D;&#x80FD;&#x4EA7;&#x751F;,&#x4E5F;&#x5C31;&#x662F;&#x5E76;&#x975E;&#x9884;&#x7F6E; Class &#x6587;&#x4EF6;&#x4E2D;&#x7684;&#x5E38;&#x91CF;&#x6C60;&#x5185;&#x5BB9;&#x624D;&#x80FD;&#x8FDB;&#x5165;&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;,&#x8FD0;&#x884C;&#x671F;&#x95F4;&#x4E5F;&#x53EF;&#x80FD;&#x5C06;&#x65B0;&#x7684;&#x5E38;&#x91CF;&#x653E;&#x5165;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;,&#x8FD9;&#x79CD;&#x7279;&#x6027;&#x88AB;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x5229;&#x7528;&#x7684;&#x6BD4;&#x8F83;&#x591A;&#x7684;&#x4FBF;&#x662F; String &#x7684; intern()&#x65B9;&#x6CD5;</p>
-<p>&#x65E2;&#x7136;&#x8FD0;&#x884C;&#x65F6;&#x5E38;&#x91CF;&#x6C60;&#x662F;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x4E00;&#x90E8;&#x5206;,&#x81EA;&#x7136;&#x53D7;&#x5230;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x5185;&#x5B58;&#x9650;&#x5236;,&#x5F53;&#x5E38;&#x91CF;&#x6C60;&#x65E0;&#x6CD5;&#x518D;&#x7533;&#x8BF7;&#x5230;&#x5185;&#x5B58;&#x65F6;&#x4F1A;&#x629B;&#x51FA; OOM</p>
-<p>JDK1.7 &#x53CA;&#x4E4B;&#x540E;&#x7248;&#x672C;&#x7684; JVM &#x5DF2;&#x7ECF;&#x5C06;&#x5B57;&#x7B26;&#x4E32;&#x5E38;&#x91CF;&#x6C60;&#x4ECE;&#x65B9;&#x6CD5;&#x533A;&#x79FB;&#x4E86;&#x51FA;&#x6765;,&#x5728; java &#x5806;&#x4E2D;&#x5F00;&#x8F9F;&#x4E86;&#x4E00;&#x5757;&#x533A;&#x57DF;&#x5B58;&#x653E;&#x5B57;&#x7B26;&#x4E32;&#x5E38;&#x91CF;&#x6C60;</p>
-<h6 id="&#x6C38;&#x4E45;&#x4EE3;"><a href="#&#x6C38;&#x4E45;&#x4EE3;" class="headerlink" title="&#x6C38;&#x4E45;&#x4EE3;"></a>&#x6C38;&#x4E45;&#x4EE3;</h6><p>&#x4F5C;&#x4E3A;&#x548C;&#x5806;&#x4E00;&#x6837;&#x53EF;&#x4EE5;&#x88AB;&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;&#x7684;&#x5185;&#x5B58;&#x533A;&#x57DF;,&#x5806;&#x4E4B;&#x5916;&#x7684;&#x7A7A;&#x95F4;&#x88AB;&#x6210;&#x4E3A;&#x975E;&#x5806;(Non-Heap).&#x53EF;&#x4EE5;&#x7C97;&#x7565;&#x7684;&#x7406;&#x89E3;&#x4E3A;&#x975E;&#x5806;&#x91CC;&#x9762;&#x5305;&#x542B;&#x4E86;&#x6C38;&#x4E45;&#x4EE3;,&#x800C;&#x6C38;&#x4E45;&#x4EE3;&#x91CC;&#x53C8;&#x5305;&#x542B;&#x4E86;&#x65B9;&#x6CD5;&#x533A;</p>
-<p>&#x6211;&#x4EEC;&#x5E38;&#x5E38;&#x628A;&#x6C38;&#x4E45;&#x4EE3;&#x548C;&#x65B9;&#x6CD5;&#x533A;&#x7B49;&#x540C;&#x8D77;&#x6765;,&#x7136;&#x800C;&#x6C38;&#x4E45;&#x4EE3;&#x5176;&#x5B9E;&#x662F; HotSpot &#x865A;&#x62DF;&#x673A;&#x628A;&#x5206;&#x4EE3; GC &#x7684;&#x8303;&#x56F4;&#x62D3;&#x5C55;&#x5230;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x4EA7;&#x7269;</p>
-<h6 id="&#x5143;&#x7A7A;&#x95F4;"><a href="#&#x5143;&#x7A7A;&#x95F4;" class="headerlink" title="&#x5143;&#x7A7A;&#x95F4;"></a>&#x5143;&#x7A7A;&#x95F4;</h6><p>&#x5728; JDK8 &#x4E2D;&#x79FB;&#x9664;&#x4E86;&#x6C38;&#x4E45;&#x4EE3;,&#x5F15;&#x5165;&#x4E86;&#x5143;&#x7A7A;&#x95F4;(metaspace),&#x539F;&#x5148;&#x7684; class,field &#x7B49;&#x53D8;&#x91CF;&#x653E;&#x5165; metaspace;&#x5143;&#x7A7A;&#x95F4;&#x5E76;&#x4E0D;&#x5728;&#x865A;&#x62DF;&#x673A;&#x4E2D;,&#x800C;&#x662F;&#x4F7F;&#x7528;&#x672C;&#x5730;&#x5185;&#x5B58;;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#x5143;&#x7A7A;&#x95F4;&#x7684;&#x5927;&#x5C0F;&#x4EC5;&#x53D7;&#x672C;&#x5730;&#x5185;&#x5B58;&#x7684;&#x9650;&#x5236;,&#x4F46;&#x662F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x53C2;&#x6570;&#x6765;&#x8FDB;&#x884C;&#x6307;&#x5B9A;</p>
-<h4 id="&#x76F4;&#x63A5;&#x5185;&#x5B58;"><a href="#&#x76F4;&#x63A5;&#x5185;&#x5B58;" class="headerlink" title="&#x76F4;&#x63A5;&#x5185;&#x5B58;"></a>&#x76F4;&#x63A5;&#x5185;&#x5B58;</h4><p>&#x4E00;&#x822C;&#x4F7F;&#x7528; Native &#x51FD;&#x6570;&#x64CD;&#x4F5C; C++&#x4EE3;&#x7801;&#x6765;&#x5B9E;&#x73B0;&#x76F4;&#x63A5;&#x5206;&#x914D;&#x5806;&#x5916;&#x5185;&#x5B58;,&#x4E0D;&#x662F;&#x865A;&#x62DF;&#x673A;&#x8FD0;&#x884C;&#x65F6;&#x6570;&#x636E;&#x533A;&#x7684;&#x4E00;&#x90E8;&#x5206;,&#x4E5F;&#x4E0D;&#x662F;&#x865A;&#x62DF;&#x673A;&#x89C4;&#x8303;&#x4E2D;&#x5B9A;&#x4E49;&#x7684;&#x5185;&#x5B58;&#x533A;&#x57DF;,&#x4F46;&#x8FD9;&#x90E8;&#x5206;&#x5185;&#x5B58;&#x4E5F;&#x88AB;&#x9891;&#x7E41;&#x7684;&#x4F7F;&#x7528;.&#x800C;&#x4E14;&#x4E5F;&#x53EF;&#x80FD;&#x5BFC;&#x81F4; OOM</p>
-<p>JDK1.4 &#x4E2D;&#x65B0;&#x52A0;&#x5165;&#x7684; NIO(New Input/Output)&#x4E2D;,&#x5F15;&#x5165;&#x4E86;&#x4E00;&#x79CD;&#x57FA;&#x4E8E;&#x901A;&#x9053;(Channel)&#x4E0E;&#x7F13;&#x51B2;&#x533A;(Buffer)&#x7684; I/O &#x65B9;&#x5F0F;,&#x5B83;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4F7F;&#x7528; Native &#x51FD;&#x6570;&#x5E93;&#x76F4;&#x63A5;&#x5206;&#x914D;&#x5806;&#x5916;&#x5185;&#x5B58;,&#x7136;&#x540E;&#x901A;&#x8FC7;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x5728; Java &#x5806;&#x4E2D;&#x7684; DirectByteBuffer &#x5BF9;&#x8C61;&#x4F5C;&#x4E3A;&#x8FD9;&#x5757;&#x5185;&#x5B58;&#x7684;&#x5F15;&#x7528;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;;&#x8FD9;&#x6837;&#x5C31;&#x80FD;&#x5728;&#x4E00;&#x4E9B;&#x573A;&#x666F;&#x4E2D;&#x663E;&#x8457;&#x63D0;&#x9AD8;&#x6027;&#x80FD;,&#x56E0;&#x4E3A;&#x907F;&#x514D;&#x4E86;&#x5728; Java &#x5806;&#x548C; Native &#x5806;&#x4E4B;&#x95F4;&#x6765;&#x56DE;&#x590D;&#x5236;&#x6570;&#x636E;.&#x53EF;&#x4EE5;&#x6709;&#x6548;&#x63D0;&#x9AD8;&#x8BFB;&#x5199;&#x6548;&#x7387;,&#x4F46;&#x662F;&#x521B;&#x5EFA;/&#x9500;&#x6BC1;&#x5374;&#x6BD4;&#x666E;&#x901A; buffer &#x6162;</p>
-<p>&#x672C;&#x673A;&#x76F4;&#x63A5;&#x5185;&#x5B58;&#x7684;&#x5206;&#x914D;&#x4E0D;&#x4F1A;&#x6536;&#x5230; java &#x5806;&#x7684;&#x9650;&#x5236;,&#x4F46;&#x662F;&#x65E2;&#x7136;&#x662F;&#x5185;&#x5B58;&#x5C31;&#x4F1A;&#x53D7;&#x5230;&#x672C;&#x673A;&#x603B;&#x5185;&#x5B58;&#x5927;&#x5C0F;&#x4EE5;&#x53CA;&#x5904;&#x7406;&#x5668;&#x5BFB;&#x5740;&#x7A7A;&#x95F4;&#x7684;&#x9650;&#x5236;;</p>
-<h3 id="2-&#x5BF9;&#x8C61;&#x521B;&#x5EFA;&#x8FC7;&#x7A0B;"><a href="#2-&#x5BF9;&#x8C61;&#x521B;&#x5EFA;&#x8FC7;&#x7A0B;" class="headerlink" title="2.&#x5BF9;&#x8C61;&#x521B;&#x5EFA;&#x8FC7;&#x7A0B;"></a>2.&#x5BF9;&#x8C61;&#x521B;&#x5EFA;&#x8FC7;&#x7A0B;</h3><h4 id="1-&#x7C7B;&#x52A0;&#x8F7D;&#x68C0;&#x67E5;"><a href="#1-&#x7C7B;&#x52A0;&#x8F7D;&#x68C0;&#x67E5;" class="headerlink" title="1.&#x7C7B;&#x52A0;&#x8F7D;&#x68C0;&#x67E5;"></a>1.&#x7C7B;&#x52A0;&#x8F7D;&#x68C0;&#x67E5;</h4><p>&#x865A;&#x62DF;&#x673A;&#x9047;&#x5230;&#x4E00;&#x6761; new &#x6307;&#x4EE4;&#x65F6;,&#x9996;&#x5148;&#x5C06;&#x53BB;&#x68C0;&#x67E5;&#x8FD9;&#x4E2A;&#x6307;&#x4EE4;&#x7684;&#x53C2;&#x6570;&#x80FD;&#x5426;&#x5728;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x5B9A;&#x4F4D;&#x5230;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;,&#x5E76;&#x68C0;&#x67E5;&#x8FD9;&#x4E2A;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x4EE3;&#x8868;&#x7684;&#x7C7B;&#x662F;&#x5426;&#x5DF2;&#x7ECF;&#x88AB;&#x52A0;&#x8F7D;,&#x89E3;&#x6790;&#x548C;&#x521D;&#x59CB;&#x5316;&#x8FC7;,&#x5982;&#x679C;&#x6CA1;&#x6709;,&#x90A3;&#x4E48;&#x5FC5;&#x987B;&#x5148;&#x6267;&#x884C;&#x76F8;&#x5E94;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x8FC7;&#x7A0B;</p>
-<h4 id="2-&#x5206;&#x914D;&#x5185;&#x5B58;"><a href="#2-&#x5206;&#x914D;&#x5185;&#x5B58;" class="headerlink" title="2.&#x5206;&#x914D;&#x5185;&#x5B58;"></a>2.&#x5206;&#x914D;&#x5185;&#x5B58;</h4><p>&#x5728;&#x7C7B;&#x52A0;&#x8F7D;&#x68C0;&#x67E5;&#x901A;&#x8FC7;&#x540E;,&#x63A5;&#x4E0B;&#x6765;&#x865A;&#x62DF;&#x673A;&#x5C06;&#x4F1A;&#x4E3A;&#x65B0;&#x751F;&#x7684;&#x5BF9;&#x8C61;&#x5206;&#x914D;&#x5185;&#x5B58;.&#x5BF9;&#x8C61;&#x6240;&#x9700;&#x7684;&#x5185;&#x5B58;&#x5927;&#x5C0F;&#x5728;&#x7C7B;&#x52A0;&#x8F7D;&#x5B8C;&#x6210;&#x540E;&#x4FBF;&#x53EF;&#x5B8C;&#x5168;&#x786E;&#x5B9A;,&#x4E3A;&#x5BF9;&#x8C61;&#x5206;&#x914D;&#x7A7A;&#x95F4;&#x7B49;&#x4E8E;&#x628A;&#x4E00;&#x5757;&#x786E;&#x5B9A;&#x5927;&#x5C0F;&#x7684;&#x5185;&#x5B58;&#x4ECE; java &#x5806;&#x4E2D;&#x5212;&#x5206;&#x51FA;&#x6765;;</p>
-<p>&#x5206;&#x914D;&#x65B9;&#x5F0F;&#x6709;&#x201D;&#x6307;&#x9488;&#x78B0;&#x649E;&#x201D;&#x548C;&#x201D;&#x7A7A;&#x95F2;&#x5217;&#x8868;&#x201D;&#x4E24;&#x79CD;,&#x9009;&#x62E9;&#x54EA;&#x79CD;&#x5206;&#x914D;&#x65B9;&#x5F0F;&#x7531; java &#x5806;&#x662F;&#x5426;&#x89C4;&#x6574;&#x51B3;&#x5B9A;,&#x800C; java &#x5806;&#x662F;&#x5426;&#x89C4;&#x6574;&#x53C8;&#x7531;&#x6240;&#x91C7;&#x7528;&#x7684;&#x5783;&#x573E;&#x56DE;&#x6536;&#x5668;&#x662F;&#x5426;&#x5E26;&#x6709;&#x538B;&#x7F29;&#x6574;&#x7406;&#x529F;&#x80FD;&#x51B3;&#x5B9A;</p>
+<p>在 jdk1.8 中移除整个永久代,取而代之的是一个叫元空间(Metaspace)的区域(永久代使用的是 JVM 的堆内存空间,而元空间使用的是物理内存,直接受到本机的物理内存限制)</p>
+<h5 id="方法区-Method-Area"><a href="#方法区-Method-Area" class="headerlink" title="方法区(Method Area)"></a>方法区(Method Area)</h5><p>用于存储已经被虚拟机加载的类信息,常量池,静态变量,JIT 编译后的代码等数据;</p>
+<p>虽然 java 虚拟机规范把方法区描述为堆的一个逻辑部分,但是它却有一个别名叫做非堆(Non-Heap),目的是与 Java 堆区分开</p>
+<p>HotSpot 虚拟机中方法区常被称为”永久代”,本质上两者并不等价,仅仅是因为 HotSpot 虚拟机用永久代来实现方法区而已,这样 HotSpot 虚拟机的垃圾收集器就可以像管理 Java 堆一样管理这部分内存了,但是这并不是一个好主意,因为这样更容易遇到内存溢出问题;</p>
+<p>相对而言,垃圾收集行为在这个区域是比较少出现的,但并非数据进入方法后就”永久存在”了</p>
+<h6 id="运行时常量池-Runtime-Constant-Pool"><a href="#运行时常量池-Runtime-Constant-Pool" class="headerlink" title="运行时常量池(Runtime Constant Pool)"></a>运行时常量池(Runtime Constant Pool)</h6><p>运行时常量池是方法区的一部分,Class 文件中除了有类版本,字段,方法,接口等描述信息,还有常量池信息(用于存放编译期生成的各种字面量和符号引用),这部分内容将在类加载后进入方法区的运行时常量池中</p>
+<p>运行时常量池相对于 Class 文件常量池的另外一个重要特征就是具备动态性,Java 语言并不要求常量一定只有在编译期才能产生,也就是并非预置 Class 文件中的常量池内容才能进入运行时常量池,运行期间也可能将新的常量放入常量池中,这种特性被开发人员利用的比较多的便是 String 的 intern()方法</p>
+<p>既然运行时常量池是方法区的一部分,自然受到方法区的内存限制,当常量池无法再申请到内存时会抛出 OOM</p>
+<p>JDK1.7 及之后版本的 JVM 已经将字符串常量池从方法区移了出来,在 java 堆中开辟了一块区域存放字符串常量池</p>
+<h6 id="永久代"><a href="#永久代" class="headerlink" title="永久代"></a>永久代</h6><p>作为和堆一样可以被线程共享的内存区域,堆之外的空间被成为非堆(Non-Heap).可以粗略的理解为非堆里面包含了永久代,而永久代里又包含了方法区</p>
+<p>我们常常把永久代和方法区等同起来,然而永久代其实是 HotSpot 虚拟机把分代 GC 的范围拓展到方法区的产物</p>
+<h6 id="元空间"><a href="#元空间" class="headerlink" title="元空间"></a>元空间</h6><p>在 JDK8 中移除了永久代,引入了元空间(metaspace),原先的 class,field 等变量放入 metaspace;元空间并不在虚拟机中,而是使用本地内存;默认情况下元空间的大小仅受本地内存的限制,但是可以通过参数来进行指定</p>
+<h4 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h4><p>一般使用 Native 函数操作 C++代码来实现直接分配堆外内存,不是虚拟机运行时数据区的一部分,也不是虚拟机规范中定义的内存区域,但这部分内存也被频繁的使用.而且也可能导致 OOM</p>
+<p>JDK1.4 中新加入的 NIO(New Input/Output)中,引入了一种基于通道(Channel)与缓冲区(Buffer)的 I/O 方式,它可以直接使用 Native 函数库直接分配堆外内存,然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作;这样就能在一些场景中显著提高性能,因为避免了在 Java 堆和 Native 堆之间来回复制数据.可以有效提高读写效率,但是创建/销毁却比普通 buffer 慢</p>
+<p>本机直接内存的分配不会收到 java 堆的限制,但是既然是内存就会受到本机总内存大小以及处理器寻址空间的限制;</p>
+<h3 id="2-对象创建过程"><a href="#2-对象创建过程" class="headerlink" title="2.对象创建过程"></a>2.对象创建过程</h3><h4 id="1-类加载检查"><a href="#1-类加载检查" class="headerlink" title="1.类加载检查"></a>1.类加载检查</h4><p>虚拟机遇到一条 new 指令时,首先将去检查这个指令的参数能否在常量池中定位到一个类的符号引用,并检查这个符号引用代表的类是否已经被加载,解析和初始化过,如果没有,那么必须先执行相应的类加载过程</p>
+<h4 id="2-分配内存"><a href="#2-分配内存" class="headerlink" title="2.分配内存"></a>2.分配内存</h4><p>在类加载检查通过后,接下来虚拟机将会为新生的对象分配内存.对象所需的内存大小在类加载完成后便可完全确定,为对象分配空间等于把一块确定大小的内存从 java 堆中划分出来;</p>
+<p>分配方式有”指针碰撞”和”空闲列表”两种,选择哪种分配方式由 java 堆是否规整决定,而 java 堆是否规整又由所采用的垃圾回收器是否带有压缩整理功能决定</p>
 <ul>
-<li><p>&#x6307;&#x9488;&#x78B0;&#x649E;: &#x5047;&#x8BBE; java &#x5806;&#x4E2D;&#x5185;&#x5B58;&#x662F;&#x5B8C;&#x6574;&#x7684;,&#x5DF2;&#x5206;&#x914D;&#x7684;&#x5185;&#x5B58;&#x548C;&#x7A7A;&#x95F2;&#x5185;&#x5B58;&#x5206;&#x522B;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x4E00;&#x4FA7;,&#x901A;&#x8FC7;&#x4E00;&#x4E2A;&#x6307;&#x9488;&#x4F5C;&#x4E3A;&#x5206;&#x754C;&#x70B9;,&#x9700;&#x8981;&#x5206;&#x914D;&#x5185;&#x5B58;&#x65F6;,&#x4EC5;&#x4EC5;&#x9700;&#x8981;&#x628A;&#x6307;&#x9488;&#x5F80;&#x7A7A;&#x95F2;&#x7684;&#x4E00;&#x7AEF;&#x79FB;&#x52A8;&#x4E0E;&#x5BF9;&#x8C61;&#x5927;&#x5C0F;&#x76F8;&#x7B49;&#x7684;&#x8DDD;&#x79BB;;&#x4F7F;&#x7528;&#x7684; GC &#x6536;&#x96C6;&#x5668;:Serial, ParNew,&#x9002;&#x7528;&#x5185;&#x5B58;&#x89C4;&#x6574;(&#x5373;&#x6CA1;&#x6709;&#x5185;&#x5B58;&#x788E;&#x7247;)&#x7684;&#x60C5;&#x51B5;&#x4E0B;</p>
+<li><p>指针碰撞: 假设 java 堆中内存是完整的,已分配的内存和空闲内存分别在不同的一侧,通过一个指针作为分界点,需要分配内存时,仅仅需要把指针往空闲的一端移动与对象大小相等的距离;使用的 GC 收集器:Serial, ParNew,适用内存规整(即没有内存碎片)的情况下</p>
 </li>
-<li><p>&#x7A7A;&#x95F2;&#x5217;&#x8868;: &#x4E8B;&#x5B9E;&#x4E0A;,java &#x5806;&#x4E2D;&#x7684;&#x5185;&#x5B58;&#x5E76;&#x4E0D;&#x662F;&#x5B8C;&#x6574;&#x7684;,&#x5DF2;&#x5206;&#x914D;&#x7684;&#x5185;&#x5B58;&#x548C;&#x7A7A;&#x95F2;&#x5185;&#x5B58;&#x76F8;&#x4E92;&#x4EA4;&#x9519;,JVM &#x901A;&#x8FC7;&#x7EF4;&#x62A4;&#x4E00;&#x4E2A;&#x7A7A;&#x95F2;&#x5217;&#x8868;,&#x8BB0;&#x5F55;&#x53EF;&#x7528;&#x7684;&#x5185;&#x5B58;&#x5757;&#x4FE1;&#x606F;,&#x5F53;&#x5206;&#x914D;&#x64CD;&#x4F5C;&#x53D1;&#x751F;&#x65F6;,&#x4ECE;&#x5217;&#x8868;&#x4E2D;&#x627E;&#x5230;&#x4E00;&#x4E2A;&#x8DB3;&#x591F;&#x5927;&#x7684;&#x5185;&#x5B58;&#x5757;&#x5206;&#x914D;&#x7ED9;&#x5BF9;&#x8C61;&#x5B9E;&#x4F8B;,&#x5E76;&#x66F4;&#x65B0;&#x5217;&#x8868;&#x4E0A;&#x7684;&#x8BB0;&#x5F55;;&#x9002;&#x7528;&#x7684; GC &#x6536;&#x96C6;&#x5668;:CMS,&#x9002;&#x7528;&#x5806;&#x5185;&#x5B58;&#x4E0D;&#x89C4;&#x6574;&#x7684;&#x60C5;&#x51B5;&#x4E0B;</p>
+<li><p>空闲列表: 事实上,java 堆中的内存并不是完整的,已分配的内存和空闲内存相互交错,JVM 通过维护一个空闲列表,记录可用的内存块信息,当分配操作发生时,从列表中找到一个足够大的内存块分配给对象实例,并更新列表上的记录;适用的 GC 收集器:CMS,适用堆内存不规整的情况下</p>
 </li>
 </ul>
-<p>Java &#x5806;&#x5185;&#x5B58;&#x662F;&#x5426;&#x89C4;&#x6574;,&#x53D6;&#x51B3;&#x4E8E; GC &#x6536;&#x96C6;&#x5668;&#x7684;&#x7B97;&#x6CD5;&#x662F;&#x201D;&#x6807;&#x8BB0;-&#x6E05;&#x9664;&#x201D;&#x8FD8;&#x662F;&#x201D;&#x6807;&#x8BB0;-&#x6574;&#x7406;&#x201D;,&#x503C;&#x5F97;&#x6CE8;&#x610F;&#x7684;&#x662F;,&#x590D;&#x5236;&#x7B97;&#x6CD5;&#x5185;&#x5B58;&#x4E5F;&#x662F;&#x89C4;&#x6574;&#x7684;;</p>
+<p>Java 堆内存是否规整,取决于 GC 收集器的算法是”标记-清除”还是”标记-整理”,值得注意的是,复制算法内存也是规整的;</p>
 <ul>
-<li>&#x5185;&#x5B58;&#x5206;&#x914D;&#x5E76;&#x53D1;&#x95EE;&#x9898;</li>
+<li>内存分配并发问题</li>
 </ul>
-<p>&#x5728;&#x521B;&#x5EFA;&#x5BF9;&#x8C61;&#x7684;&#x65F6;&#x5019;&#x6709;&#x4E00;&#x4E2A;&#x5F88;&#x91CD;&#x8981;&#x7684;&#x95EE;&#x9898;,&#x5C31;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;,&#x56E0;&#x4E3A;&#x5728;&#x5B9E;&#x9645;&#x5F00;&#x53D1;&#x8FC7;&#x7A0B;&#x4E2D;,&#x521B;&#x5EFA;&#x5BF9;&#x8C61;&#x662F;&#x5F88;&#x7E41;&#x7410;&#x7684;&#x4E8B;&#x60C5;,&#x4F8B;&#x5982;&#x6B63;&#x5728;&#x7ED9; A &#x5BF9;&#x8C61;&#x5206;&#x914D;&#x5185;&#x5B58;,&#x4F46;&#x662F;&#x6307;&#x9488;&#x8FD8;&#x6CA1;&#x6709;&#x4FEE;&#x6539;,&#x8FD9;&#x65F6;&#x5019;&#x53EF;&#x80FD;&#x4F7F;&#x7528;&#x539F;&#x6765;&#x7684;&#x6307;&#x9488;&#x7ED9;&#x5BF9;&#x8C61; B &#x5206;&#x914D;&#x5185;&#x5B58;&#x7684;&#x60C5;&#x51B5;;&#x4F5C;&#x4E3A;&#x865A;&#x62DF;&#x673A;&#x6765;&#x8BF4;,&#x5FC5;&#x987B;&#x8981;&#x4FDD;&#x8BC1;&#x7EBF;&#x7A0B;&#x662F;&#x5B89;&#x5168;&#x7684;.&#x901A;&#x5E38;&#x6765;&#x8BB2;,&#x865A;&#x62DF;&#x673A;&#x91C7;&#x7528;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#x6765;&#x4FDD;&#x8BC1;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;</p>
-<p>1.CAS+&#x5931;&#x8D25;&#x91CD;&#x8BD5;:&#x865A;&#x62DF;&#x673A;&#x91C7;&#x7528; CAS &#x914D;&#x5408;&#x5931;&#x8D25;&#x91CD;&#x8BD5;&#x7684;&#x65B9;&#x5F0F;&#x4FDD;&#x8BC1;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;&#x7684;&#x539F;&#x5B50;&#x6027;<br>2.TLAB:&#x4E3A;&#x6BCF;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x9884;&#x5148;&#x5728; Eden &#x533A;&#x5206;&#x914D;&#x4E00;&#x5757;&#x5185;&#x5B58;.JVM &#x5728;&#x7ED9;&#x7EBF;&#x7A0B;&#x4E2D;&#x7684;&#x5BF9;&#x8C61;&#x5206;&#x914D;&#x5185;&#x5B58;&#x65F6;,&#x9996;&#x5148;&#x5728;&#x5404;&#x4E2A;&#x7EBF;&#x7A0B;&#x7684; TLAB &#x5206;&#x914D;,&#x5F53;&#x5BF9;&#x8C61;&#x5927;&#x4E8E; TLAB &#x4E2D;&#x7684;&#x5269;&#x4F59;&#x5185;&#x5B58;&#x6216; TLAB &#x7684;&#x5185;&#x5B58;&#x5DF2;&#x7ECF;&#x7528;&#x5C3D;&#x65F6;,&#x518D;&#x91C7;&#x7528;&#x4E0A;&#x8FF0;&#x7684; CAS &#x8FDB;&#x884C;&#x5185;&#x5B58;&#x5206;&#x914D;,&#x865A;&#x62DF;&#x673A;&#x662F;&#x5426;&#x542F;&#x7528; TLAB,&#x53EF;&#x4EE5;&#x901A;&#x8FC7;-XX:+/-UseTLAB &#x53C2;&#x6570;&#x6765;&#x8BBE;&#x5B9A;,&#x53EF;&#x4EE5;&#x901A;&#x8FC7; -XX:TLABWasteTargetPercent &#x8BBE;&#x7F6E; TLAB &#x7A7A;&#x95F4;&#x6240;&#x5360;&#x7528; Eden &#x7A7A;&#x95F4;&#x7684;&#x767E;&#x5206;&#x6BD4;&#x5927;&#x5C0F;</p>
-<h4 id="3-&#x521D;&#x59CB;&#x96F6;&#x503C;"><a href="#3-&#x521D;&#x59CB;&#x96F6;&#x503C;" class="headerlink" title="3.&#x521D;&#x59CB;&#x96F6;&#x503C;"></a>3.&#x521D;&#x59CB;&#x96F6;&#x503C;</h4><p>&#x5185;&#x5B58;&#x5206;&#x914D;&#x5B8C;&#x6210;&#x540E;,&#x865A;&#x62DF;&#x673A;&#x9700;&#x8981;&#x5C06;&#x5206;&#x914D;&#x5230;&#x7684;&#x5185;&#x5B58;&#x7A7A;&#x95F4;&#x90FD;&#x521D;&#x59CB;&#x5316;&#x4E3A;&#x96F6;&#x503C;(&#x4E0D;&#x5305;&#x62EC;&#x5BF9;&#x8C61;&#x5934;),&#x8FD9;&#x4E00;&#x6B65;&#x64CD;&#x4F5C;&#x4FDD;&#x8BC1;&#x4E86;&#x5BF9;&#x8C61;&#x7684;&#x5B9E;&#x4F8B;&#x5B57;&#x6BB5;&#x5728; Java &#x4EE3;&#x7801;&#x4E2D;&#x53EF;&#x4EE5;&#x4E0D;&#x8D4B;&#x521D;&#x59CB;&#x503C;&#x5C31;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;,&#x7A0B;&#x5E8F;&#x80FD;&#x8BBF;&#x95EE;&#x5230;&#x8FD9;&#x4E9B;&#x5B57;&#x6BB5;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x6240;&#x5BF9;&#x5E94;&#x7684;&#x96F6;&#x503C;;&#x5982;&#x679C;&#x4F7F;&#x7528; TLAB,&#x8FD9;&#x4E00;&#x5206;&#x914D;&#x8FC7;&#x7A0B;&#x4E5F;&#x53EF;&#x4EE5;&#x63D0;&#x524D;&#x5230; TLAB &#x5206;&#x914D;&#x65F6;&#x8FDB;&#x884C;</p>
-<h4 id="4-&#x8BBE;&#x7F6E;&#x5BF9;&#x8C61;&#x5934;"><a href="#4-&#x8BBE;&#x7F6E;&#x5BF9;&#x8C61;&#x5934;" class="headerlink" title="4.&#x8BBE;&#x7F6E;&#x5BF9;&#x8C61;&#x5934;"></a>4.&#x8BBE;&#x7F6E;&#x5BF9;&#x8C61;&#x5934;</h4><p>&#x63A5;&#x4E0B;&#x6765;,&#x865A;&#x62DF;&#x673A;&#x8981;&#x5BF9;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x5FC5;&#x8981;&#x7684;&#x8BBE;&#x7F6E;,&#x6BD4;&#x5982;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#x662F;&#x54EA;&#x4E2A;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;,&#x5982;&#x4F55;&#x624D;&#x80FD;&#x627E;&#x5230;&#x7C7B;&#x7684;&#x5143;&#x6570;&#x636E;&#x4FE1;&#x606F;,&#x5BF9;&#x8C61;&#x7684; hashCode,&#x5BF9;&#x8C61;&#x7684; GC &#x5206;&#x4EE3;&#x5E74;&#x9F84;&#x7B49;&#x4FE1;&#x606F;,&#x8FD9;&#x4E9B;&#x4FE1;&#x606F;&#x5B58;&#x653E;&#x5728;&#x5BF9;&#x8C61;&#x5934;&#x4E2D;,&#x6839;&#x636E;&#x865A;&#x62DF;&#x673A;&#x5F53;&#x524D;&#x7684;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#x4E0D;&#x540C;,&#x5BF9;&#x8C61;&#x5934;&#x4F1A;&#x6709;&#x4E0D;&#x540C;&#x7684;&#x8BBE;&#x7F6E;&#x65B9;&#x5F0F;</p>
-<h4 id="5-&#x6267;&#x884C;-init-&#x65B9;&#x6CD5;"><a href="#5-&#x6267;&#x884C;-init-&#x65B9;&#x6CD5;" class="headerlink" title="5.&#x6267;&#x884C; init &#x65B9;&#x6CD5;"></a>5.&#x6267;&#x884C; init &#x65B9;&#x6CD5;</h4><p>&#x5728;&#x4E0A;&#x9762;&#x7684;&#x5DE5;&#x4F5C;&#x90FD;&#x5B8C;&#x6210;&#x540E;,&#x4ECE;&#x865A;&#x62DF;&#x673A;&#x7684;&#x89C6;&#x89D2;&#x6765;&#x770B;,&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x5BF9;&#x8C61;&#x5DF2;&#x7ECF;&#x4EA7;&#x751F;&#x4E86;,&#x4F46;&#x4ECE; java &#x7A0B;&#x5E8F;&#x7684;&#x89C6;&#x89D2;&#x6765;&#x770B;,&#x5BF9;&#x8C61;&#x521B;&#x5EFA;&#x624D;&#x521A;&#x5F00;&#x59CB;,init &#x65B9;&#x6CD5;&#x8FD8;&#x6CA1;&#x6709;&#x6267;&#x884C;,&#x6240;&#x6709;&#x7684;&#x5B57;&#x6BB5;&#x8FD8;&#x90FD;&#x4E3A;&#x96F6;;&#x6240;&#x4EE5;&#x4E00;&#x822C;&#x6765;&#x8BF4;,&#x6267;&#x884C; new &#x6307;&#x4EE4;&#x4E4B;&#x540E;&#x4F1A;&#x63A5;&#x7740;&#x6267;&#x884C; Init &#x65B9;&#x6CD5;,&#x628A;&#x5BF9;&#x8C61;&#x6309;&#x7167;&#x7A0B;&#x5E8F;&#x5458;&#x7684;&#x610F;&#x613F;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;,&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x771F;&#x6B63;&#x53EF;&#x7528;&#x7684;&#x5BF9;&#x8C61;&#x624D;&#x7B97;&#x5B8C;&#x5168;&#x751F;&#x4EA7;&#x51FA;&#x6765;</p>
-<h3 id="3-&#x964D;&#x4F4E;-java-&#x5783;&#x573E;&#x56DE;&#x6536;&#x5F00;&#x9500;"><a href="#3-&#x964D;&#x4F4E;-java-&#x5783;&#x573E;&#x56DE;&#x6536;&#x5F00;&#x9500;" class="headerlink" title="3.&#x964D;&#x4F4E; java &#x5783;&#x573E;&#x56DE;&#x6536;&#x5F00;&#x9500;"></a>3.&#x964D;&#x4F4E; java &#x5783;&#x573E;&#x56DE;&#x6536;&#x5F00;&#x9500;</h3><p>1.&#x9884;&#x6D4B;&#x96C6;&#x5408;&#x7684;&#x5BB9;&#x91CF;</p>
-<p>2.&#x76F4;&#x63A5;&#x5904;&#x7406;&#x6570;&#x636E;&#x6D41;</p>
-<p>3.&#x4F7F;&#x7528;&#x4E0D;&#x53EF;&#x53D8;&#x7684;&#x5BF9;&#x8C61;</p>
-<p>4.&#x62FC;&#x63A5;&#x5B57;&#x7B26;&#x4E32;&#x65F6;&#x4E0D;&#x7528;&#x2019;+&#x2019;</p>
-<p>5.&#x5C3D;&#x91CF;&#x5C11;&#x521B;&#x5EFA;&#x4E00;&#x6B21;&#x6027;&#x5BF9;&#x8C61;</p>
-<p>6.&#x5EFA;&#x7ACB;&#x5BF9;&#x8C61;&#x6C60;,&#x5BF9;&#x9891;&#x7E41;&#x4F7F;&#x7528;,&#x5360;&#x7528;&#x5185;&#x5B58;&#x5927;&#x7684;&#x5BF9;&#x8C61;&#x56DE;&#x6536;&#x7BA1;&#x7406;</p>
-<h3 id="4-&#x7C7B;&#x52A0;&#x8F7D;&#x8FC7;&#x7A0B;"><a href="#4-&#x7C7B;&#x52A0;&#x8F7D;&#x8FC7;&#x7A0B;" class="headerlink" title="4.&#x7C7B;&#x52A0;&#x8F7D;&#x8FC7;&#x7A0B;"></a>4.&#x7C7B;&#x52A0;&#x8F7D;&#x8FC7;&#x7A0B;</h3><p>&#x7C7B;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;,&#x5305;&#x62EC;&#x4EE5;&#x4E0B; 7 &#x4E2A;&#x9636;&#x6BB5;</p>
+<p>在创建对象的时候有一个很重要的问题,就是线程安全,因为在实际开发过程中,创建对象是很繁琐的事情,例如正在给 A 对象分配内存,但是指针还没有修改,这时候可能使用原来的指针给对象 B 分配内存的情况;作为虚拟机来说,必须要保证线程是安全的.通常来讲,虚拟机采用两种方式来保证线程安全</p>
+<p>1.CAS+失败重试:虚拟机采用 CAS 配合失败重试的方式保证更新操作的原子性<br>2.TLAB:为每一个线程预先在 Eden 区分配一块内存.JVM 在给线程中的对象分配内存时,首先在各个线程的 TLAB 分配,当对象大于 TLAB 中的剩余内存或 TLAB 的内存已经用尽时,再采用上述的 CAS 进行内存分配,虚拟机是否启用 TLAB,可以通过-XX:+/-UseTLAB 参数来设定,可以通过 -XX:TLABWasteTargetPercent 设置 TLAB 空间所占用 Eden 空间的百分比大小</p>
+<h4 id="3-初始零值"><a href="#3-初始零值" class="headerlink" title="3.初始零值"></a>3.初始零值</h4><p>内存分配完成后,虚拟机需要将分配到的内存空间都初始化为零值(不包括对象头),这一步操作保证了对象的实例字段在 Java 代码中可以不赋初始值就可以使用,程序能访问到这些字段的数据类型所对应的零值;如果使用 TLAB,这一分配过程也可以提前到 TLAB 分配时进行</p>
+<h4 id="4-设置对象头"><a href="#4-设置对象头" class="headerlink" title="4.设置对象头"></a>4.设置对象头</h4><p>接下来,虚拟机要对对象进行必要的设置,比如这个对象是哪个类的实例,如何才能找到类的元数据信息,对象的 hashCode,对象的 GC 分代年龄等信息,这些信息存放在对象头中,根据虚拟机当前的运行状态不同,对象头会有不同的设置方式</p>
+<h4 id="5-执行-init-方法"><a href="#5-执行-init-方法" class="headerlink" title="5.执行 init 方法"></a>5.执行 init 方法</h4><p>在上面的工作都完成后,从虚拟机的视角来看,一个新的对象已经产生了,但从 java 程序的视角来看,对象创建才刚开始,init 方法还没有执行,所有的字段还都为零;所以一般来说,执行 new 指令之后会接着执行 Init 方法,把对象按照程序员的意愿进行初始化,这样一个真正可用的对象才算完全生产出来</p>
+<h3 id="3-降低-java-垃圾回收开销"><a href="#3-降低-java-垃圾回收开销" class="headerlink" title="3.降低 java 垃圾回收开销"></a>3.降低 java 垃圾回收开销</h3><p>1.预测集合的容量</p>
+<p>2.直接处理数据流</p>
+<p>3.使用不可变的对象</p>
+<p>4.拼接字符串时不用’+’</p>
+<p>5.尽量少创建一次性对象</p>
+<p>6.建立对象池,对频繁使用,占用内存大的对象回收管理</p>
+<h3 id="4-类加载过程"><a href="#4-类加载过程" class="headerlink" title="4.类加载过程"></a>4.类加载过程</h3><p>类的生命周期,包括以下 7 个阶段</p>
 <ul>
-<li>&#x52A0;&#x8F7D;(Loading):</li>
-<li>&#x8FDE;&#x63A5;(&#x9A8C;&#x8BC1;,&#x51C6;&#x5907;,&#x89E3;&#x6790;)</li>
-<li>&#x521D;&#x59CB;&#x5316;(Intilization)</li>
-<li>&#x4F7F;&#x7528;(Using)</li>
-<li>&#x5378;&#x8F7D;(Unloading)</li>
+<li>加载(Loading):</li>
+<li>连接(验证,准备,解析)</li>
+<li>初始化(Intilization)</li>
+<li>使用(Using)</li>
+<li>卸载(Unloading)</li>
 </ul>
-<p>&#x5176;&#x4E2D;&#x89E3;&#x6790;&#x8FC7;&#x7A0B;&#x5728;&#x67D0;&#x4E9B;&#x60C5;&#x51B5;&#x4E0B;&#x53EF;&#x4EE5;&#x5728;&#x521D;&#x59CB;&#x5316;&#x9636;&#x6BB5;&#x4E4B;&#x540E;&#x518D;&#x5F00;&#x59CB;,&#x8FD9;&#x662F;&#x4E3A;&#x4E86;&#x652F;&#x6301; Java &#x7684;&#x52A8;&#x6001;&#x7ED1;&#x5B9A;</p>
-<h4 id="&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65F6;&#x673A;"><a href="#&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65F6;&#x673A;" class="headerlink" title="&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65F6;&#x673A;"></a>&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65F6;&#x673A;</h4><p>&#x52A0;&#x8F7D;&#x9636;&#x6BB5;,java &#x865A;&#x62DF;&#x673A;&#x89C4;&#x8303;&#x4E2D;&#x5E76;&#x6CA1;&#x6709;&#x8FDB;&#x884C;&#x7EA6;&#x675F;,&#x4F46;&#x521D;&#x59CB;&#x5316;&#x9636;&#x6BB5;,java &#x865A;&#x62DF;&#x673A;&#x4E25;&#x683C;&#x89C4;&#x5B9A;&#x4E86;&#x6709;&#x4E14;&#x53EA;&#x6709;&#x5982;&#x4E0B; 5 &#x79CD;&#x60C5;&#x51B5;&#x5FC5;&#x987B;&#x7ACB;&#x5373;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;(&#x521D;&#x59CB;&#x5316;&#x524D;,&#x5FC5;&#x987B;&#x7ECF;&#x8FC7;&#x52A0;&#x8F7D;,&#x9A8C;&#x8BC1;,&#x51C6;&#x5907;&#x9636;&#x6BB5;):</p>
-<p>1.&#x4F7F;&#x7528; new &#x5B9E;&#x4F8B;&#x5316;&#x5BF9;&#x8C61;&#x65F6;,&#x8BFB;&#x53D6;&#x548C;&#x8BBE;&#x7F6E;&#x7C7B;&#x7684;&#x9759;&#x6001;&#x53D8;&#x91CF;/&#x9759;&#x6001;&#x975E;&#x5B57;&#x9762;&#x503C;&#x53D8;&#x91CF;(&#x9759;&#x6001;&#x5B57;&#x9762;&#x503C;&#x53D8;&#x91CF;&#x9664;&#x5916;)&#x65F6;,&#x8C03;&#x7528;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#x65F6;</p>
-<p>2.&#x5BF9;&#x7C7B;&#x8FDB;&#x884C;&#x53CD;&#x5C04;&#x65F6;</p>
-<p>3.&#x521D;&#x59CB;&#x5316;&#x4E00;&#x4E2A;&#x7C7B;&#x65F6;,&#x5982;&#x679C;&#x7236;&#x7C7B;&#x6CA1;&#x6709;&#x521D;&#x59CB;&#x5316;,&#x9700;&#x8981;&#x5148;&#x521D;&#x59CB;&#x5316;&#x5176;&#x7236;&#x7C7B;</p>
-<p>4.&#x542F;&#x52A8;&#x7A0B;&#x5E8F;&#x6240;&#x4F7F;&#x7528;&#x7684; main &#x65B9;&#x6CD5;&#x6240;&#x5728;&#x7C7B;</p>
-<p>5.&#x4F7F;&#x7528;&#x52A8;&#x6001;&#x8BED;&#x8A00;&#x652F;&#x6301;&#x65F6;</p>
-<p>&#x4EE5;&#x4E0A; 5 &#x79CD;&#x573A;&#x666F;&#x53C8;&#x88AB;&#x79F0;&#x4E3A;&#x4E3B;&#x52A8;&#x5F15;&#x7528;,&#x9664;&#x6B64;&#x4E4B;&#x5916;&#x7684;&#x5F15;&#x7528;&#x79F0;&#x4E3A;&#x88AB;&#x52A8;&#x5F15;&#x7528;,&#x88AB;&#x52A8;&#x5F15;&#x7528;&#x6709;&#x5982;&#x4E0B;&#x60C5;&#x51B5;:</p>
-<p>1.&#x901A;&#x8FC7;&#x5B50;&#x7C7B;&#x5F15;&#x7528;&#x7236;&#x7C7B;&#x7684;&#x9759;&#x6001;&#x53D8;&#x91CF;,&#x53EA;&#x4F1A;&#x89E6;&#x53D1;&#x7236;&#x7C7B;&#x7684;&#x521D;&#x59CB;&#x5316;,&#x4E0D;&#x4F1A;&#x89E6;&#x53D1;&#x5B50;&#x7C7B;&#x7684;&#x521D;&#x59CB;&#x5316;</p>
-<p>2.&#x5B9A;&#x4E49;&#x5BF9;&#x8C61;&#x6570;&#x7EC4;&#x548C;&#x96C6;&#x5408;,&#x4E0D;&#x4F1A;&#x89E6;&#x53D1;&#x8BE5;&#x7C7B;&#x7684;&#x521D;&#x59CB;&#x5316;</p>
-<p>3.&#x7C7B; A &#x5F15;&#x7528;&#x7C7B; B &#x7684; static final &#x5E38;&#x91CF;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;&#x7C7B; B &#x7684;&#x521D;&#x59CB;&#x5316;(&#x6CE8;&#x610F;&#x9759;&#x6001;&#x5E38;&#x91CF;&#x5FC5;&#x987B;&#x662F;&#x5B57;&#x9762;&#x503C;&#x5E38;&#x91CF;,&#x5426;&#x5219;&#x8FD8;&#x662F;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B; B &#x7684;&#x521D;&#x59CB;&#x5316;)</p>
-<p>4.&#x901A;&#x8FC7;&#x7C7B;&#x540D;&#x83B7;&#x53D6; Class &#x5BF9;&#x8C61;,&#x4E0D;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x7684;&#x521D;&#x59CB;&#x5316;,&#x5982; System.out.printlin(Person.class)</p>
-<p>5.&#x901A;&#x8FC7; Class.forName &#x52A0;&#x8F7D;&#x6307;&#x5B9A;&#x7C7B;&#x65F6;,&#x5982;&#x679C;&#x6307;&#x5B9A;&#x53C2;&#x6570; initialize &#x4E3A; false &#x65F6;,&#x4E5F;&#x4E0D;&#x4F1A;&#x89E6;&#x53D1;&#x7C7B;&#x7684;&#x521D;&#x59CB;&#x5316;</p>
-<p>6.&#x901A;&#x8FC7; ClassLoader &#x9ED8;&#x8BA4;&#x7684; loadClass &#x65B9;&#x6CD5;,&#x4E5F;&#x4E0D;&#x4F1A;&#x89E6;&#x53D1;&#x521D;&#x59CB;&#x5316;&#x52A8;&#x4F5C;</p>
-<p>&#x6CE8;&#x610F;: &#x88AB;&#x52A8;&#x5F15;&#x7528;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;&#x7C7B;&#x7684;&#x521D;&#x59CB;&#x5316;,&#x4F46;&#x4E0D;&#x4EE3;&#x8868;&#x4E0D;&#x4F1A;&#x7ECF;&#x5386;&#x52A0;&#x8F7D;,&#x9A8C;&#x8BC1;,&#x51C6;&#x5907;&#x9636;&#x6BB5;</p>
-<h4 id="&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65B9;&#x5F0F;"><a href="#&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65B9;&#x5F0F;" class="headerlink" title="&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65B9;&#x5F0F;"></a>&#x7C7B;&#x52A0;&#x8F7D;&#x7684;&#x65B9;&#x5F0F;</h4><h5 id="&#x9690;&#x5F0F;&#x52A0;&#x8F7D;"><a href="#&#x9690;&#x5F0F;&#x52A0;&#x8F7D;" class="headerlink" title="&#x9690;&#x5F0F;&#x52A0;&#x8F7D;"></a>&#x9690;&#x5F0F;&#x52A0;&#x8F7D;</h5><p>1.&#x521B;&#x5EFA;&#x7C7B;&#x5BF9;&#x8C61;</p>
-<p>2.&#x4F7F;&#x7528;&#x7C7B;&#x7684;&#x9759;&#x6001;&#x57DF;</p>
-<p>3.&#x521B;&#x5EFA;&#x5B50;&#x7C7B;&#x5BF9;&#x8C61;</p>
-<p>4.&#x5728; JVM &#x542F;&#x52A8;&#x65F6;,BootstrapClassLoader &#x4F1A;&#x52A0;&#x8F7D;&#x4E00;&#x4E9B; JVM &#x81EA;&#x8EAB;&#x8FD0;&#x884C;&#x6240;&#x9700;&#x7684; class</p>
-<p>5.&#x5728; JVM &#x542F;&#x52A8;&#x65F6;,ExtClassLoader &#x4F1A;&#x52A0;&#x8F7D;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x4E00;&#x4E9B;&#x7279;&#x6B8A;&#x7684; class</p>
-<p>6.&#x5728; JVM &#x542F;&#x52A8;&#x65F6;,AppClassLoader &#x4F1A;&#x52A0;&#x8F7D; classpath &#x8DEF;&#x5F84;&#x4E0B;&#x7684; class,&#x4EE5;&#x53CA; main &#x51FD;&#x6570;&#x6240;&#x5728;&#x7684;&#x7C7B; class</p>
-<h5 id="&#x663E;&#x5F0F;&#x52A0;&#x8F7D;"><a href="#&#x663E;&#x5F0F;&#x52A0;&#x8F7D;" class="headerlink" title="&#x663E;&#x5F0F;&#x52A0;&#x8F7D;"></a>&#x663E;&#x5F0F;&#x52A0;&#x8F7D;</h5><p>1.ClassLoader.loadClass(className),&#x53EA;&#x52A0;&#x8F7D;&#x548C;&#x8FDE;&#x63A5;,&#x4E0D;&#x4F1A;&#x521D;&#x59CB;&#x5316;</p>
-<p>2.Class.forName(String name,boolean initialize,ClassLoader classLoader),&#x4F7F;&#x7528; classLoader &#x8FDB;&#x884C;&#x52A0;&#x8F7D;&#x548C;&#x8FDE;&#x63A5;,&#x6839;&#x636E;&#x53C2;&#x6570; initialize &#x51B3;&#x5B9A;&#x662F;&#x5426;&#x8981;&#x521D;&#x59CB;&#x5316;</p>
-<h4 id="&#x52A0;&#x8F7D;"><a href="#&#x52A0;&#x8F7D;" class="headerlink" title="&#x52A0;&#x8F7D;"></a>&#x52A0;&#x8F7D;</h4><p>&#x7C7B;&#x52A0;&#x8F7D;&#x6307;&#x7684;&#x662F;&#x5C06; class &#x6587;&#x4EF6;&#x8BFB;&#x5165;&#x5185;&#x5B58;,&#x5E76;&#x4E3A;&#x4E4B;&#x521B;&#x5EFA;&#x4E00;&#x4E2A; java.lang.Class &#x5BF9;&#x8C61;,&#x5373;&#x7A0B;&#x5E8F;&#x4E2D;&#x4F7F;&#x7528;&#x7684;&#x4EFB;&#x4F55;&#x7C7B;,&#x7CFB;&#x7EDF;&#x90FD;&#x4F1A;&#x4E3A;&#x4E4B;&#x521B;&#x5EFA;&#x4E00;&#x4E2A; java.lang.Class &#x5BF9;&#x8C61;;&#x7CFB;&#x7EDF;&#x4E2D;&#x6240;&#x6709;&#x7684;&#x7C7B;&#x90FD;&#x662F;&#x7531;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#x5B9E;&#x73B0;&#x7684;</p>
-<p>&#x7C7B;&#x7684;&#x52A0;&#x8F7D;&#x7531;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x5B8C;&#x6210;,JVM &#x63D0;&#x4F9B;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x53EB;&#x7CFB;&#x7EDF;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;(System ClassLoader),&#x6B64;&#x5916;&#x8FD8;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x7EE7;&#x627F; ClassLoader &#x57FA;&#x7C7B;&#x6765;&#x81EA;&#x5B9A;&#x4E49;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;</p>
-<p>&#x5728;&#x52A0;&#x8F7D;&#x9636;&#x6BB5;,&#x865A;&#x62DF;&#x673A;&#x9700;&#x8981;&#x5B8C;&#x6210;&#x4EE5;&#x4E0B; 3 &#x4EF6;&#x4E8B;&#x60C5;:</p>
-<p>1.&#x901A;&#x8FC7;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x5168;&#x9650;&#x5B9A;&#x540D;,&#x6765;&#x83B7;&#x53D6;&#x5B9A;&#x4E49;&#x6B64;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x5B57;&#x8282;&#x6D41;</p>
-<p>2.&#x5C06;&#x8FD9;&#x4E2A;&#x5B57;&#x8282;&#x6D41;&#x6240;&#x4EE3;&#x8868;&#x7684;&#x9759;&#x6001;&#x5B58;&#x50A8;&#x7ED3;&#x6784;&#x8F6C;&#x5316;&#x4E3A;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x6570;&#x636E;&#x7ED3;&#x6784;</p>
-<p>3.&#x5728;&#x5185;&#x5B58;&#x79CD;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x4EE3;&#x8868;&#x8FD9;&#x4E2A;&#x7C7B;&#x7684; java.lang.Class &#x5BF9;&#x8C61;,&#x4F5C;&#x4E3A;&#x65B9;&#x6CD5;&#x533A;&#x8FD9;&#x4E2A;&#x7C7B;&#x7684;&#x5404;&#x79CD;&#x6570;&#x636E;&#x7684;&#x8BBF;&#x95EE;&#x5165;&#x53E3;</p>
-<p>&#x901A;&#x5E38;&#x53EF;&#x4EE5;&#x7528;&#x4E0B;&#x9762;&#x51E0;&#x79CD;&#x65B9;&#x5F0F;&#x52A0;&#x8F7D;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;:</p>
+<p>其中解析过程在某些情况下可以在初始化阶段之后再开始,这是为了支持 Java 的动态绑定</p>
+<h4 id="类加载的时机"><a href="#类加载的时机" class="headerlink" title="类加载的时机"></a>类加载的时机</h4><p>加载阶段,java 虚拟机规范中并没有进行约束,但初始化阶段,java 虚拟机严格规定了有且只有如下 5 种情况必须立即进行初始化(初始化前,必须经过加载,验证,准备阶段):</p>
+<p>1.使用 new 实例化对象时,读取和设置类的静态变量/静态非字面值变量(静态字面值变量除外)时,调用静态方法时</p>
+<p>2.对类进行反射时</p>
+<p>3.初始化一个类时,如果父类没有初始化,需要先初始化其父类</p>
+<p>4.启动程序所使用的 main 方法所在类</p>
+<p>5.使用动态语言支持时</p>
+<p>以上 5 种场景又被称为主动引用,除此之外的引用称为被动引用,被动引用有如下情况:</p>
+<p>1.通过子类引用父类的静态变量,只会触发父类的初始化,不会触发子类的初始化</p>
+<p>2.定义对象数组和集合,不会触发该类的初始化</p>
+<p>3.类 A 引用类 B 的 static final 常量不会导致类 B 的初始化(注意静态常量必须是字面值常量,否则还是会触发类 B 的初始化)</p>
+<p>4.通过类名获取 Class 对象,不会触发类的初始化,如 System.out.printlin(Person.class)</p>
+<p>5.通过 Class.forName 加载指定类时,如果指定参数 initialize 为 false 时,也不会触发类的初始化</p>
+<p>6.通过 ClassLoader 默认的 loadClass 方法,也不会触发初始化动作</p>
+<p>注意: 被动引用不会导致类的初始化,但不代表不会经历加载,验证,准备阶段</p>
+<h4 id="类加载的方式"><a href="#类加载的方式" class="headerlink" title="类加载的方式"></a>类加载的方式</h4><h5 id="隐式加载"><a href="#隐式加载" class="headerlink" title="隐式加载"></a>隐式加载</h5><p>1.创建类对象</p>
+<p>2.使用类的静态域</p>
+<p>3.创建子类对象</p>
+<p>4.在 JVM 启动时,BootstrapClassLoader 会加载一些 JVM 自身运行所需的 class</p>
+<p>5.在 JVM 启动时,ExtClassLoader 会加载指定目录下的一些特殊的 class</p>
+<p>6.在 JVM 启动时,AppClassLoader 会加载 classpath 路径下的 class,以及 main 函数所在的类 class</p>
+<h5 id="显式加载"><a href="#显式加载" class="headerlink" title="显式加载"></a>显式加载</h5><p>1.ClassLoader.loadClass(className),只加载和连接,不会初始化</p>
+<p>2.Class.forName(String name,boolean initialize,ClassLoader classLoader),使用 classLoader 进行加载和连接,根据参数 initialize 决定是否要初始化</p>
+<h4 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h4><p>类加载指的是将 class 文件读入内存,并为之创建一个 java.lang.Class 对象,即程序中使用的任何类,系统都会为之创建一个 java.lang.Class 对象;系统中所有的类都是由这个对象实现的</p>
+<p>类的加载由类加载器完成,JVM 提供的类加载器叫系统类加载器(System ClassLoader),此外还可以通过继承 ClassLoader 基类来自定义类加载器</p>
+<p>在加载阶段,虚拟机需要完成以下 3 件事情:</p>
+<p>1.通过一个类的全限定名,来获取定义此类的二进制字节流</p>
+<p>2.将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</p>
+<p>3.在内存种生成一个代表这个类的 java.lang.Class 对象,作为方法区这个类的各种数据的访问入口</p>
+<p>通常可以用下面几种方式加载类的二进制文件:</p>
 <ul>
-<li><p>&#x4ECE;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x52A0;&#x8F7D; class &#x6587;&#x4EF6;</p>
+<li><p>从本地文件系统加载 class 文件</p>
 </li>
-<li><p>&#x4ECE; jar &#x5305;&#x4E2D;&#x52A0;&#x8F7D; class &#x6587;&#x4EF6;,&#x5982; jar &#x5305;&#x7684;&#x6570;&#x636E;&#x5E93;&#x9A71;&#x52A8;&#x7C7B;</p>
+<li><p>从 jar 包中加载 class 文件,如 jar 包的数据库驱动类</p>
 </li>
-<li><p>&#x901A;&#x8FC7;&#x7F51;&#x7EDC;&#x52A0;&#x8F7D; class &#x6587;&#x4EF6;</p>
+<li><p>通过网络加载 class 文件</p>
 </li>
-<li><p>&#x4ECE;&#x4E13;&#x6709;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x63D0;&#x53D6; class &#x6587;&#x4EF6;</p>
+<li><p>从专有数据库中提取 class 文件</p>
 </li>
-<li><p>&#x628A;&#x4E00;&#x4E2A; Java &#x6E90;&#x6587;&#x4EF6;&#x52A8;&#x6001;&#x7F16;&#x8BD1;&#x5E76;&#x6267;&#x884C;&#x52A0;&#x8F7D;</p>
-</li>
-</ul>
-<h4 id="&#x8FDE;&#x63A5;"><a href="#&#x8FDE;&#x63A5;" class="headerlink" title="&#x8FDE;&#x63A5;"></a>&#x8FDE;&#x63A5;</h4><p>&#x8FDE;&#x63A5;&#x9636;&#x6BB5;&#x8D1F;&#x8D23;&#x628A;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x5408;&#x5E76;&#x5230; JRE &#x4E2D;,&#x5176;&#x53C8;&#x53EF;&#x4EE5;&#x5206;&#x4E3A;&#x5982;&#x4E0B;&#x4E09;&#x4E2A;&#x9636;&#x6BB5;</p>
-<h5 id="1-&#x9A8C;&#x8BC1;-&#x786E;&#x4FDD;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x4FE1;&#x606F;&#x7B26;&#x5408;-JVM-&#x89C4;&#x8303;-&#x65E0;&#x5B89;&#x5168;&#x95EE;&#x9898;"><a href="#1-&#x9A8C;&#x8BC1;-&#x786E;&#x4FDD;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x4FE1;&#x606F;&#x7B26;&#x5408;-JVM-&#x89C4;&#x8303;-&#x65E0;&#x5B89;&#x5168;&#x95EE;&#x9898;" class="headerlink" title="1.&#x9A8C;&#x8BC1;: &#x786E;&#x4FDD;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x4FE1;&#x606F;&#x7B26;&#x5408; JVM &#x89C4;&#x8303;,&#x65E0;&#x5B89;&#x5168;&#x95EE;&#x9898;"></a>1.&#x9A8C;&#x8BC1;: &#x786E;&#x4FDD;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x4FE1;&#x606F;&#x7B26;&#x5408; JVM &#x89C4;&#x8303;,&#x65E0;&#x5B89;&#x5168;&#x95EE;&#x9898;</h5><ul>
-<li><p>1.&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x7684;&#x9A8C;&#x8BC1;,&#x6587;&#x4EF6;&#x4E2D;&#x662F;&#x5426;&#x6709;&#x4E0D;&#x7B26;&#x5408;&#x89C4;&#x8303;&#x6216;&#x8005;&#x9644;&#x52A0;&#x7684;&#x5176;&#x4ED6;&#x4FE1;&#x606F;,&#x4F8B;&#x5982;&#x5E38;&#x91CF;&#x4E2D;&#x662F;&#x5426;&#x6709;&#x4E0D;&#x88AB;&#x652F;&#x6301;&#x7684;&#x957F;&#x91CF;</p>
-</li>
-<li><p>2.&#x5143;&#x6570;&#x636E;&#x7684;&#x9A8C;&#x8BC1;,&#x4FDD;&#x8BC1;&#x5176;&#x63CF;&#x8FF0;&#x7684;&#x4FE1;&#x606F;&#x7B26;&#x5408; Java &#x8BED;&#x8A00;&#x89C4;&#x8303;&#x7684;&#x8981;&#x6C42;,&#x4F8B;&#x5982;&#x7C7B;&#x662F;&#x5426;&#x6709;&#x7236;&#x7C7B;,&#x662F;&#x5426;&#x7EE7;&#x627F;&#x4E86;&#x4E0D;&#x88AB;&#x5141;&#x8BB8;&#x7684; final &#x7C7B;&#x7B49;</p>
-</li>
-<li><p>3.&#x5B57;&#x8282;&#x7801;&#x7684;&#x9A8C;&#x8BC1;,&#x4FDD;&#x8BC1;&#x7A0B;&#x5E8F;&#x8BED;&#x4E49;&#x7684;&#x5408;&#x7406;&#x6027;,&#x6BD4;&#x5982;&#x8981;&#x4FDD;&#x8BC1;&#x7C7B;&#x578B;&#x8F6C;&#x6362;&#x7684;&#x5408;&#x7406;&#x6027;</p>
-</li>
-<li><p>4.&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x7684;&#x9A8C;&#x8BC1;,&#x6BD4;&#x5982;&#x6821;&#x9A8C;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x4E2D;&#x901A;&#x8FC7;&#x5168;&#x9650;&#x5B9A;&#x540D;&#x662F;&#x5426;&#x80FD;&#x591F;&#x627E;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x7C7B;,&#x6821;&#x9A8C;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x4E2D;&#x7684;&#x8BBF;&#x95EE;&#x6027;(public,private)&#x662F;&#x5426;&#x53EF;&#x4EE5;&#x88AB;&#x5F53;&#x524D;&#x7C7B;&#x8BBF;&#x95EE;&#x7B49;</p>
+<li><p>把一个 Java 源文件动态编译并执行加载</p>
 </li>
 </ul>
-<h5 id="2-&#x51C6;&#x5907;-&#x4E3A;&#x7C7B;&#x53D8;&#x91CF;&#x5206;&#x914D;&#x5185;&#x5B58;-&#x5E76;&#x8BBE;&#x7F6E;&#x521D;&#x59CB;&#x503C;"><a href="#2-&#x51C6;&#x5907;-&#x4E3A;&#x7C7B;&#x53D8;&#x91CF;&#x5206;&#x914D;&#x5185;&#x5B58;-&#x5E76;&#x8BBE;&#x7F6E;&#x521D;&#x59CB;&#x503C;" class="headerlink" title="2.&#x51C6;&#x5907;: &#x4E3A;&#x7C7B;&#x53D8;&#x91CF;&#x5206;&#x914D;&#x5185;&#x5B58;,&#x5E76;&#x8BBE;&#x7F6E;&#x521D;&#x59CB;&#x503C;"></a>2.&#x51C6;&#x5907;: &#x4E3A;&#x7C7B;&#x53D8;&#x91CF;&#x5206;&#x914D;&#x5185;&#x5B58;,&#x5E76;&#x8BBE;&#x7F6E;&#x521D;&#x59CB;&#x503C;</h5><p>&#x4E3B;&#x8981;&#x662F;&#x4E3A;&#x7C7B;&#x53D8;&#x91CF;(&#x6CE8;&#x610F;,&#x4E0D;&#x662F;&#x5B9E;&#x4F8B;&#x53D8;&#x91CF;)&#x5206;&#x914D;&#x5185;&#x5B58;,&#x5E76;&#x4E14;&#x8D4B;&#x4E88;&#x521D;&#x503C;</p>
-<p>&#x7279;&#x522B;&#x9700;&#x8981;&#x6CE8;&#x610F;,&#x521D;&#x503C;,&#x4E0D;&#x662F;&#x4EE3;&#x7801;&#x4E2D;&#x5177;&#x4F53;&#x5199;&#x7684;&#x521D;&#x59CB;&#x5316;&#x7684;&#x503C;,&#x800C;&#x662F; java &#x865A;&#x62DF;&#x673A;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x7684;&#x53D8;&#x91CF;&#x7C7B;&#x578B;&#x7684;&#x9ED8;&#x8BA4;&#x521D;&#x59CB;&#x503C;,&#x5982; int &#x7C7B;&#x578B;&#x7684;&#x521D;&#x503C;&#x4E3A; 0,reference &#x4E3A; null</p>
-<h5 id="3-&#x89E3;&#x6790;-&#x5C06;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x4E2D;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x66FF;&#x6362;&#x4E3A;&#x76F4;&#x63A5;&#x5F15;&#x7528;"><a href="#3-&#x89E3;&#x6790;-&#x5C06;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x4E2D;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x66FF;&#x6362;&#x4E3A;&#x76F4;&#x63A5;&#x5F15;&#x7528;" class="headerlink" title="3.&#x89E3;&#x6790;: &#x5C06;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x4E2D;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x66FF;&#x6362;&#x4E3A;&#x76F4;&#x63A5;&#x5F15;&#x7528;"></a>3.&#x89E3;&#x6790;: &#x5C06;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x4E2D;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x66FF;&#x6362;&#x4E3A;&#x76F4;&#x63A5;&#x5F15;&#x7528;</h5><p>&#x5C06;&#x5E38;&#x91CF;&#x6C60;&#x5185;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x66FF;&#x6362;&#x4E3A;&#x76F4;&#x63A5;&#x5F15;&#x7528;&#x7684;&#x8FC7;&#x7A0B;</p>
-<p>&#x4E3E;&#x4E2A;&#x4F8B;&#x5B50;&#x6765;&#x8BF4;,&#x73B0;&#x5728;&#x8C03;&#x7528;&#x65B9;&#x6CD5; hello(),&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x7684;&#x5730;&#x5740;&#x662F; 123456,&#x90A3;&#x4E48; hello()&#x5C31;&#x662F;&#x7B26;&#x53F7;&#x5F15;&#x7528;,123456 &#x5C31;&#x662F;&#x76F4;&#x63A5;&#x5F15;&#x7528;</p>
-<p>&#x5728;&#x89E3;&#x6790;&#x9636;&#x6BB5;,&#x865A;&#x62DF;&#x673A;&#x4F1A;&#x628A;&#x6240;&#x6709;&#x7684;&#x7C7B;&#x540D;,&#x65B9;&#x6CD5;&#x540D;,&#x5B57;&#x6BB5;&#x540D;&#x8FD9;&#x4E9B;&#x7B26;&#x53F7;&#x5F15;&#x7528;&#x66FF;&#x6362;&#x4E3A;&#x5177;&#x4F53;&#x7684;&#x5185;&#x5B58;&#x5730;&#x5740;&#x6216;&#x504F;&#x79FB;&#x91CF;,&#x4E5F;&#x5373;&#x662F;&#x76F4;&#x63A5;&#x5F15;&#x7528;</p>
-<h4 id="&#x521D;&#x59CB;&#x5316;"><a href="#&#x521D;&#x59CB;&#x5316;" class="headerlink" title="&#x521D;&#x59CB;&#x5316;"></a>&#x521D;&#x59CB;&#x5316;</h4><h5 id="&#x8BE5;&#x9636;&#x6BB5;&#x4E3B;&#x8981;&#x662F;&#x5BF9;&#x7C7B;&#x53D8;&#x91CF;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;-&#x662F;&#x6267;&#x884C;&#x7C7B;&#x6784;&#x9020;&#x5668;&#x7684;&#x8FC7;&#x7A0B;"><a href="#&#x8BE5;&#x9636;&#x6BB5;&#x4E3B;&#x8981;&#x662F;&#x5BF9;&#x7C7B;&#x53D8;&#x91CF;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;-&#x662F;&#x6267;&#x884C;&#x7C7B;&#x6784;&#x9020;&#x5668;&#x7684;&#x8FC7;&#x7A0B;" class="headerlink" title="&#x8BE5;&#x9636;&#x6BB5;&#x4E3B;&#x8981;&#x662F;&#x5BF9;&#x7C7B;&#x53D8;&#x91CF;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;,&#x662F;&#x6267;&#x884C;&#x7C7B;&#x6784;&#x9020;&#x5668;&#x7684;&#x8FC7;&#x7A0B;"></a>&#x8BE5;&#x9636;&#x6BB5;&#x4E3B;&#x8981;&#x662F;&#x5BF9;&#x7C7B;&#x53D8;&#x91CF;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;,&#x662F;&#x6267;&#x884C;&#x7C7B;&#x6784;&#x9020;&#x5668;&#x7684;&#x8FC7;&#x7A0B;</h5><ul>
-<li><p>&#x53EA;&#x5BF9; static &#x4FEE;&#x9970;&#x7684;&#x53D8;&#x91CF;&#x6216;&#x8BED;&#x53E5;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;</p>
+<h4 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h4><p>连接阶段负责把类的二进制数据合并到 JRE 中,其又可以分为如下三个阶段</p>
+<h5 id="1-验证-确保加载的类信息符合-JVM-规范-无安全问题"><a href="#1-验证-确保加载的类信息符合-JVM-规范-无安全问题" class="headerlink" title="1.验证: 确保加载的类信息符合 JVM 规范,无安全问题"></a>1.验证: 确保加载的类信息符合 JVM 规范,无安全问题</h5><ul>
+<li><p>1.文件格式的验证,文件中是否有不符合规范或者附加的其他信息,例如常量中是否有不被支持的长量</p>
 </li>
-<li><p>&#x5982;&#x679C;&#x521D;&#x59CB;&#x5316;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x65F6;&#x5019;,&#x5176;&#x7236;&#x7C7B;&#x5C1A;&#x672A;&#x521D;&#x59CB;&#x5316;,&#x5219;&#x4F18;&#x5148;&#x521D;&#x59CB;&#x5316;&#x5176;&#x7236;&#x7C7B;</p>
+<li><p>2.元数据的验证,保证其描述的信息符合 Java 语言规范的要求,例如类是否有父类,是否继承了不被允许的 final 类等</p>
 </li>
-<li><p>&#x5982;&#x679C;&#x540C;&#x65F6;&#x5305;&#x542B;&#x591A;&#x4E2A;&#x9759;&#x6001;&#x53D8;&#x91CF;&#x548C;&#x9759;&#x6001;&#x4EE3;&#x7801;&#x5757;,&#x5219;&#x6309;&#x7167;&#x81EA;&#x4E0A;&#x800C;&#x4E0B;&#x7684;&#x987A;&#x5E8F;&#x4F9D;&#x6B21;&#x6267;&#x884C;</p>
+<li><p>3.字节码的验证,保证程序语义的合理性,比如要保证类型转换的合理性</p>
+</li>
+<li><p>4.符号引用的验证,比如校验符号引用中通过全限定名是否能够找到对应的类,校验符号引用中的访问性(public,private)是否可以被当前类访问等</p>
 </li>
 </ul>
-<h5 id="&#x7C7B;&#x521D;&#x59CB;&#x5316;&#x65F6;&#x673A;"><a href="#&#x7C7B;&#x521D;&#x59CB;&#x5316;&#x65F6;&#x673A;" class="headerlink" title="&#x7C7B;&#x521D;&#x59CB;&#x5316;&#x65F6;&#x673A;"></a>&#x7C7B;&#x521D;&#x59CB;&#x5316;&#x65F6;&#x673A;</h5><ul>
-<li><p>&#x521B;&#x5EFA;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x65F6;(new, &#x53CD;&#x5C04;, &#x5E8F;&#x5217;&#x5316;)</p>
+<h5 id="2-准备-为类变量分配内存-并设置初始值"><a href="#2-准备-为类变量分配内存-并设置初始值" class="headerlink" title="2.准备: 为类变量分配内存,并设置初始值"></a>2.准备: 为类变量分配内存,并设置初始值</h5><p>主要是为类变量(注意,不是实例变量)分配内存,并且赋予初值</p>
+<p>特别需要注意,初值,不是代码中具体写的初始化的值,而是 java 虚拟机根据不同的变量类型的默认初始值,如 int 类型的初值为 0,reference 为 null</p>
+<h5 id="3-解析-将类的二进制数据中的符号引用替换为直接引用"><a href="#3-解析-将类的二进制数据中的符号引用替换为直接引用" class="headerlink" title="3.解析: 将类的二进制数据中的符号引用替换为直接引用"></a>3.解析: 将类的二进制数据中的符号引用替换为直接引用</h5><p>将常量池内的符号引用替换为直接引用的过程</p>
+<p>举个例子来说,现在调用方法 hello(),这个方法的地址是 123456,那么 hello()就是符号引用,123456 就是直接引用</p>
+<p>在解析阶段,虚拟机会把所有的类名,方法名,字段名这些符号引用替换为具体的内存地址或偏移量,也即是直接引用</p>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><h5 id="该阶段主要是对类变量进行初始化-是执行类构造器的过程"><a href="#该阶段主要是对类变量进行初始化-是执行类构造器的过程" class="headerlink" title="该阶段主要是对类变量进行初始化,是执行类构造器的过程"></a>该阶段主要是对类变量进行初始化,是执行类构造器的过程</h5><ul>
+<li><p>只对 static 修饰的变量或语句进行初始化</p>
 </li>
-<li><p>&#x8C03;&#x7528;&#x67D0;&#x4E2A;&#x7C7B;&#x7684;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#x65F6;</p>
+<li><p>如果初始化一个类的时候,其父类尚未初始化,则优先初始化其父类</p>
 </li>
-<li><p>&#x4F7F;&#x7528;&#x67D0;&#x4E2A;&#x7C7B;&#x6216;&#x63A5;&#x53E3;&#x7684;&#x9759;&#x6001; Field &#x6216;&#x5BF9;&#x8BE5; Field &#x8D4B;&#x503C;&#x65F6;</p>
-</li>
-<li><p>&#x4F7F;&#x7528;&#x53CD;&#x5C04;&#x6765;&#x5F3A;&#x5236;&#x521B;&#x5EFA;&#x67D0;&#x4E2A;&#x7C7B;&#x6216;&#x63A5;&#x53E3;&#x5BF9;&#x5E94;&#x7684; java.lang.Class &#x5BF9;&#x8C61;,&#x5982; Class.forName(&#x201C;Person&#x201D;);</p>
-</li>
-<li><p>&#x521D;&#x59CB;&#x5316;&#x67D0;&#x4E2A;&#x7C7B;&#x7684;&#x5B50;&#x7C7B;&#x65F6;,&#x6B64;&#x65F6;&#x8BE5;&#x5B50;&#x7C7B;&#x7684;&#x6240;&#x6709;&#x7236;&#x7C7B;&#x90FD;&#x4F1A;&#x88AB;&#x521D;&#x59CB;&#x5316;</p>
-</li>
-<li><p>&#x76F4;&#x63A5;&#x4F7F;&#x7528; java.exe &#x8FD0;&#x884C;&#x67D0;&#x4E2A;&#x4E3B;&#x7C7B;&#x65F6;</p>
+<li><p>如果同时包含多个静态变量和静态代码块,则按照自上而下的顺序依次执行</p>
 </li>
 </ul>
-<h3 id="5-&#x7C7B;&#x52A0;&#x8F7D;&#x5668;"><a href="#5-&#x7C7B;&#x52A0;&#x8F7D;&#x5668;" class="headerlink" title="5.&#x7C7B;&#x52A0;&#x8F7D;&#x5668;"></a>5.&#x7C7B;&#x52A0;&#x8F7D;&#x5668;</h3><p>&#x5BF9;&#x4E8E;&#x4EFB;&#x610F;&#x4E00;&#x4E2A;&#x7C7B;,&#x90FD;&#x9700;&#x8981;&#x7531;&#x4ED6;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x548C;&#x8FD9;&#x4E2A;&#x7C7B;&#x672C;&#x8EAB;&#x4E00;&#x540C;&#x786E;&#x5B9A;&#x5176;&#x5728; JVM &#x4E2D;&#x7684;&#x552F;&#x4E00;&#x6027;;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;,&#x5982;&#x679C;&#x4E24;&#x4E2A;&#x7C7B;&#x7684;&#x52A0;&#x8F7D;&#x5668;&#x4E0D;&#x540C;,&#x5373;&#x4F7F;&#x4E24;&#x4E2A;&#x7C7B;&#x6765;&#x6E90;&#x4E8E;&#x540C;&#x4E00;&#x4E2A;&#x5B57;&#x8282;&#x7801;&#x6587;&#x4EF6;,&#x90A3;&#x8FD9;&#x4E24;&#x4E2A;&#x7C7B;&#x4F9D;&#x65E7;&#x4E0D;&#x76F8;&#x7B49;(&#x4E24;&#x4E2A;&#x7C7B;&#x7684; Class &#x5BF9;&#x8C61;&#x4E0D; equals)</p>
-<p>Java &#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x53EF;&#x4EE5;&#x5206;&#x6210;&#x4E09;&#x79CD;:</p>
-<p>1.&#x6839;(&#x53C8;&#x53EB;&#x542F;&#x52A8;,&#x5F15;&#x5BFC;)&#x7C7B;&#x52A0;&#x8F7D;&#x5668;(Bootstrap ClassLoader)</p>
-<p>&#x5B83;&#x8D1F;&#x8D23;&#x52A0;&#x8F7D; Java &#x6838;&#x5FC3;&#x7C7B;(String,System &#x7B49;).&#x5B83;&#x6BD4;&#x8F83;&#x7279;&#x6B8A;,&#x56E0;&#x4E3A;&#x5B83;&#x662F;&#x7531;&#x539F;&#x751F; C++&#x5B9E;&#x73B0;&#x7684;,&#x5E76;&#x4E0D;&#x662F; java.lang.ClassLoader &#x7684;&#x5B50;&#x7C7B;,&#x6240;&#x4EE5; String.class.getClassLoader()&#x4E3A; null</p>
-<p>2.&#x62D3;&#x5C55;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;(Extension ClassLoader)</p>
-<p>&#x52A0;&#x8F7D; jre/lib/ext &#x5305;&#x4E0B;&#x9762;&#x7684; jar &#x6587;&#x4EF6;,&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x628A;&#x81EA;&#x5DF1;&#x5F00;&#x53D1;&#x7684;&#x7C7B;&#x6253;&#x5305;&#x6210; jar &#x6587;&#x4EF6;&#x653E;&#x5165;&#x62D3;&#x5C55;&#x76EE;&#x5F55;&#x6765;&#x4E3A; java &#x62D3;&#x5C55;&#x6838;&#x5FC3;&#x7C7B;&#x4EE5;&#x5916;&#x7684;&#x65B0;&#x529F;&#x80FD;</p>
-<p>3.&#x5E94;&#x7528;(&#x7CFB;&#x7EDF;)&#x7C7B;&#x52A0;&#x8F7D;&#x5668;(Application or System ClassLoader)</p>
-<p>&#x6839;&#x636E;&#x7A0B;&#x5E8F;&#x7684;&#x7C7B;&#x8DEF;&#x5F84;&#x6765;&#x52A0;&#x8F7D; java &#x7C7B;</p>
-<p>&#x5B83;&#x8D1F;&#x8D23;&#x5728; JVM &#x542F;&#x52A8;&#x65F6;&#x52A0;&#x8F7D;&#x6765;&#x81EA; Java &#x547D;&#x4EE4;&#x7684; -classpath &#x9009;&#x9879;,java.class.path &#x5C5E;&#x6027;,&#x6216; CLASSPATH &#x73AF;&#x5883;&#x53D8;&#x91CF;&#x6240;&#x6307;&#x5B9A;&#x7684; Jar &#x5305;&#x548C;&#x7C7B;&#x8DEF;&#x5F84;;&#x7A0B;&#x5E8F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; ClassLoader &#x7684;&#x9759;&#x6001;&#x65B9;&#x6CD5; getSystemClassLoader &#x83B7;&#x53D6;&#x7CFB;&#x7EDF;&#x52A0;&#x8F7D;&#x5668;</p>
-<p>&#x6BCF;&#x4E2A; java &#x7C7B;&#x90FD;&#x7EF4;&#x62A4;&#x7740;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x5B9A;&#x4E49;&#x5B83;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x7684;&#x5F15;&#x7528;,&#x901A;&#x8FC7;&#x7C7B;&#x540D;.class.getClassLoader()&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x5230;&#x6B64;&#x5F15;&#x7528;;&#x7136;&#x540E;&#x901A;&#x8FC7; loader.getParent()&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x7684;&#x4E0A;&#x5C42;&#x52A0;&#x8F7D;&#x5668;</p>
-<h3 id="6-&#x7C7B;&#x52A0;&#x8F7D;&#x673A;&#x5236;"><a href="#6-&#x7C7B;&#x52A0;&#x8F7D;&#x673A;&#x5236;" class="headerlink" title="6.&#x7C7B;&#x52A0;&#x8F7D;&#x673A;&#x5236;"></a>6.&#x7C7B;&#x52A0;&#x8F7D;&#x673A;&#x5236;</h3><p>java &#x7C7B;&#x52A0;&#x8F7D;&#x673A;&#x5236;&#x4E3B;&#x8981;&#x6709;&#x4EE5;&#x4E0B;&#x4E09;&#x79CD;:</p>
+<h5 id="类初始化时机"><a href="#类初始化时机" class="headerlink" title="类初始化时机"></a>类初始化时机</h5><ul>
+<li><p>创建类的实例时(new, 反射, 序列化)</p>
+</li>
+<li><p>调用某个类的静态方法时</p>
+</li>
+<li><p>使用某个类或接口的静态 Field 或对该 Field 赋值时</p>
+</li>
+<li><p>使用反射来强制创建某个类或接口对应的 java.lang.Class 对象,如 Class.forName(“Person”);</p>
+</li>
+<li><p>初始化某个类的子类时,此时该子类的所有父类都会被初始化</p>
+</li>
+<li><p>直接使用 java.exe 运行某个主类时</p>
+</li>
+</ul>
+<h3 id="5-类加载器"><a href="#5-类加载器" class="headerlink" title="5.类加载器"></a>5.类加载器</h3><p>对于任意一个类,都需要由他的类加载器和这个类本身一同确定其在 JVM 中的唯一性;也就是说,如果两个类的加载器不同,即使两个类来源于同一个字节码文件,那这两个类依旧不相等(两个类的 Class 对象不 equals)</p>
+<p>Java 类加载器可以分成三种:</p>
+<p>1.根(又叫启动,引导)类加载器(Bootstrap ClassLoader)</p>
+<p>它负责加载 Java 核心类(String,System 等).它比较特殊,因为它是由原生 C++实现的,并不是 java.lang.ClassLoader 的子类,所以 String.class.getClassLoader()为 null</p>
+<p>2.拓展类加载器(Extension ClassLoader)</p>
+<p>加载 jre/lib/ext 包下面的 jar 文件,我们可以通过把自己开发的类打包成 jar 文件放入拓展目录来为 java 拓展核心类以外的新功能</p>
+<p>3.应用(系统)类加载器(Application or System ClassLoader)</p>
+<p>根据程序的类路径来加载 java 类</p>
+<p>它负责在 JVM 启动时加载来自 Java 命令的 -classpath 选项,java.class.path 属性,或 CLASSPATH 环境变量所指定的 Jar 包和类路径;程序可以通过 ClassLoader 的静态方法 getSystemClassLoader 获取系统加载器</p>
+<p>每个 java 类都维护着一个指向定义它的类加载器的引用,通过类名.class.getClassLoader()可以获取到此引用;然后通过 loader.getParent()可以获取类加载器的上层加载器</p>
+<h3 id="6-类加载机制"><a href="#6-类加载机制" class="headerlink" title="6.类加载机制"></a>6.类加载机制</h3><p>java 类加载机制主要有以下三种:</p>
 <ul>
-<li><p>&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;&#x6A21;&#x578B;: &#x5982;&#x679C;&#x4E00;&#x4E2A;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x6536;&#x5230;&#x4E86;&#x52A0;&#x8F7D;&#x7C7B;&#x7684;&#x8BF7;&#x6C42;,&#x5B83;&#x9996;&#x5148;&#x4E0D;&#x4F1A;&#x53BB;&#x52A0;&#x8F7D;,&#x800C;&#x662F;&#x59D4;&#x6258;&#x7ED9;&#x81EA;&#x5DF1;&#x7684;&#x7236;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x53BB;&#x52A0;&#x8F7D;,&#x7236;&#x7C7B;&#x53C8;&#x59D4;&#x6258;&#x7ED9;&#x7236;&#x7C7B;,&#x56E0;&#x6B64;&#x6240;&#x6709;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x90FD;&#x4F1A;&#x59D4;&#x6258;&#x7ED9;&#x9876;&#x5C42;&#x7684;&#x7236;&#x7C7B;,&#x4E00;&#x76F4;&#x5230;&#x6700;&#x9876;&#x5C42;&#x7684;&#x542F;&#x52A8;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;;&#x53EA;&#x6709;&#x5728;&#x7236;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x65E0;&#x6CD5;&#x5B8C;&#x6210;&#x7C7B;&#x7684;&#x52A0;&#x8F7D;&#x5DE5;&#x4F5C;&#x65F6;,&#x5F53;&#x524D;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x624D;&#x4F1A;&#x81EA;&#x5DF1;&#x53BB;&#x52A0;&#x8F7D;&#x8FD9;&#x4E2A;&#x7C7B;;&#x6CE8;&#x610F;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x4E2D;&#x7684;&#x7236;&#x5B50;&#x5173;&#x7CFB;&#x5E76;&#x4E0D;&#x662F;&#x7C7B;&#x7EE7;&#x627F;&#x4E0A;&#x7684;&#x7236;&#x5B50;&#x5173;&#x7CFB;,&#x800C;&#x662F;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;;&#x4F7F;&#x7528;&#x53CC;&#x4EB2;&#x59D4;&#x6D3E;&#x6A21;&#x578B;,Java &#x7C7B;&#x968F;&#x7740;&#x5B83;&#x7684;&#x52A0;&#x8F7D;&#x5668;&#x4E00;&#x8D77;&#x5177;&#x5907;&#x4E86;&#x4E00;&#x79CD;&#x5E26;&#x4F18;&#x5148;&#x7EA7;&#x7684;&#x5C42;&#x6B21;&#x5173;&#x7CFB;,&#x901A;&#x8FC7;&#x8FD9;&#x79CD;&#x5C42;&#x6B21;&#x6A21;&#x578B;,&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x7C7B;&#x7684;&#x91CD;&#x590D;&#x52A0;&#x8F7D;,&#x4E5F;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x6838;&#x5FC3;&#x7C7B;&#x88AB;&#x4E0D;&#x540C;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x52A0;&#x8F7D;&#x5230;&#x5185;&#x5B58;&#x4E2D;&#x9020;&#x6210;&#x51B2;&#x7A81;&#x548C;&#x6DF7;&#x4E71;,&#x4ECE;&#x800C;&#x4FDD;&#x8BC1;&#x4E86; java &#x7684;&#x6838;&#x5FC3;&#x5E93;&#x7684;&#x5B89;&#x5168;;</p>
+<li><p>双亲委派模型: 如果一个类加载器收到了加载类的请求,它首先不会去加载,而是委托给自己的父类加载器去加载,父类又委托给父类,因此所有的类加载都会委托给顶层的父类,一直到最顶层的启动类加载器;只有在父类加载器无法完成类的加载工作时,当前类加载器才会自己去加载这个类;注意类加载器中的父子关系并不是类继承上的父子关系,而是类加载器实例之间的关系;使用双亲委派模型,Java 类随着它的加载器一起具备了一种带优先级的层次关系,通过这种层次模型,可以避免类的重复加载,也可以避免核心类被不同的类加载器加载到内存中造成冲突和混乱,从而保证了 java 的核心库的安全;</p>
 </li>
-<li><p>&#x5168;&#x76D8;&#x8D1F;&#x8D23;: &#x5F53;&#x4E00;&#x4E2A;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x52A0;&#x8F7D;&#x67D0;&#x4E2A; class &#x65F6;,&#x8BE5; class &#x6240;&#x4F9D;&#x8D56;&#x548C;&#x5F15;&#x7528;&#x7684;&#x5176;&#x4ED6;&#x7684; class &#x4E5F;&#x5C06;&#x7531;&#x8BE5;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x8F7D;&#x5165;,&#x9664;&#x975E;&#x663E;&#x793A;&#x7684;&#x4F7F;&#x7528;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x6765;&#x8F7D;&#x5165;</p>
+<li><p>全盘负责: 当一个类加载器加载某个 class 时,该 class 所依赖和引用的其他的 class 也将由该类加载器载入,除非显示的使用另外一个类加载器来载入</p>
 </li>
-<li><p>&#x7F13;&#x5B58;&#x673A;&#x5236;: &#x7F13;&#x5B58;&#x673A;&#x5236;&#x4FDD;&#x8BC1;&#x6240;&#x6709;&#x52A0;&#x8F7D;&#x8FC7;&#x7684; class &#x90FD;&#x4F1A;&#x88AB;&#x7F13;&#x5B58;,&#x5F53;&#x7A0B;&#x5E8F;&#x4E2D;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x67D0;&#x4E2A;&#x7C7B;&#x65F6;,&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x5148;&#x4ECE;&#x7F13;&#x51B2;&#x533A;&#x641C;&#x7D22;&#x8BE5;&#x7C7B;,&#x82E5;&#x641C;&#x5BFB;&#x4E0D;&#x5230;&#x5C06;&#x8BFB;&#x53D6;&#x8BE5;&#x7C7B;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x5E76;&#x8F6C;&#x6362;&#x6210; class &#x5BF9;&#x8C61;&#x5B58;&#x5165;&#x7F13;&#x51B2;&#x533A;&#x4E2D;,&#x8FD9;&#x5C31;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;&#x4FEE;&#x6539;&#x4E86; class &#x540E;&#x9700;&#x91CD;&#x542F; JVM &#x624D;&#x80FD;&#x751F;&#x6548;</p>
+<li><p>缓存机制: 缓存机制保证所有加载过的 class 都会被缓存,当程序中需要使用某个类时,类加载器先从缓冲区搜索该类,若搜寻不到将读取该类的二进制数据并转换成 class 对象存入缓冲区中,这就是为什么修改了 class 后需重启 JVM 才能生效</p>
 </li>
 </ul>
-<h3 id="JVM-&#x7684;-Class-&#x5BF9;&#x8C61;&#x7684;&#x5B58;&#x50A8;&#x4F4D;&#x7F6E;&#x548C;&#x4F5C;&#x7528;"><a href="#JVM-&#x7684;-Class-&#x5BF9;&#x8C61;&#x7684;&#x5B58;&#x50A8;&#x4F4D;&#x7F6E;&#x548C;&#x4F5C;&#x7528;" class="headerlink" title="JVM &#x7684; Class &#x5BF9;&#x8C61;&#x7684;&#x5B58;&#x50A8;&#x4F4D;&#x7F6E;&#x548C;&#x4F5C;&#x7528;"></a>JVM &#x7684; Class &#x5BF9;&#x8C61;&#x7684;&#x5B58;&#x50A8;&#x4F4D;&#x7F6E;&#x548C;&#x4F5C;&#x7528;</h3><p>&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#x662F;&#x4E00;&#x4E2A; java &#x7C7B;&#x7684;&#x63CF;&#x8FF0;&#x4FE1;&#x606F;(class meta), classLoader &#x52A0;&#x8F7D;&#x4E00;&#x4E2A;&#x7C7B;&#x65F6;&#x4ECE; class &#x6587;&#x4EF6;&#x4E2D;&#x63D0;&#x53D6;&#x51FA;&#x6765;&#x5E76;&#x5B58;&#x50A8;&#x5728;&#x65B9;&#x6CD5;&#x533A;.&#x5B83;&#x5305;&#x542B;&#x4EE5;&#x4E0B;&#x4FE1;&#x606F;:</p>
-<p>1.&#x7C7B;&#x578B;&#x7684;&#x5B8C;&#x6574;&#x6709;&#x6548;&#x540D;,&#x7C7B;&#x7684;&#x4FEE;&#x9970;&#x7B26;(public, abstract, final &#x7684;&#x67D0;&#x4E2A;&#x5B50;&#x96C6;),&#x7C7B;&#x578B;&#x76F4;&#x63A5;&#x63A5;&#x53E3;&#x7684;&#x4E00;&#x4E2A;&#x6709;&#x5E8F;&#x5217;&#x8868;&#x53CA;&#x7EE7;&#x627F;&#x7684;&#x7236;&#x7C7B;;</p>
-<p>&#x7C7B;&#x578B;&#x540D;&#x79F0;&#x5728; java &#x7C7B;&#x6587;&#x4EF6;&#x548C; jvm &#x4E2D;&#x90FD;&#x5DF2;&#x4EE5;&#x5B8C;&#x6574;&#x6709;&#x6548;&#x540D;&#x51FA;&#x73B0;;&#x5728; java &#x6E90;&#x4EE3;&#x7801;&#x4E2D;,&#x5B8C;&#x6574;&#x7684;&#x6709;&#x6548;&#x540D;&#x7531;&#x7C7B;&#x6240;&#x5C5E;&#x7684;&#x5305;&#x540D;&#x79F0;&#x52A0;&#x4E00;&#x4E2A;&#x201D;.&#x201D;,&#x518D;&#x52A0;&#x4E0A;&#x7C7B;&#x540D;&#x7EC4;&#x6210;;&#x4F8B;&#x5982;,&#x7C7B; Object &#x6240;&#x5C5E;&#x7684;&#x5305;&#x4E3A; java.lang,&#x5B83;&#x7684;&#x5B8C;&#x6574;&#x540D;&#x79F0;&#x4E3A; java.lang.Object,&#x4F46;&#x5728;&#x7C7B;&#x6587;&#x4EF6;&#x4E2D;,&#x6240;&#x6709;&#x7684;&#x201D;.&#x201D;&#x90FD;&#x88AB;&#x659C;&#x6760;&#x201D;/&#x201C;&#x4EE3;&#x66FF;,&#x5C31;&#x6210;&#x4E3A; java/lang/Object.&#x5B8C;&#x6574;&#x7684;&#x6709;&#x6548;&#x540D;&#x5728;&#x65B9;&#x6CD5;&#x533A;&#x4E2D;&#x7684;&#x8868;&#x793A;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x7684;&#x5B9E;&#x73B0;&#x800C;&#x4E0D;&#x540C;</p>
-<p>2.&#x7C7B;&#x578B;&#x7684;&#x5E38;&#x91CF;&#x6C60;(constant pool)</p>
-<p>3.&#x57DF;(Field)&#x4FE1;&#x606F;</p>
-<p>4.&#x65B9;&#x6CD5;(Method)&#x4FE1;&#x606F;</p>
-<p>5.&#x9664;&#x4E86;&#x5E38;&#x91CF;&#x5916;&#x7684;&#x6240;&#x6709;&#x9759;&#x6001;(static)&#x53D8;&#x91CF;</p>
-<p>6.classloader &#x7684;&#x5F15;&#x7528;</p>
-<p>ClassLoader &#x52A0;&#x8F7D;&#x4E00;&#x4E2A;&#x7C7B;&#x5E76;&#x628A;&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#x4FDD;&#x5B58;&#x5230;&#x65B9;&#x6CD5;&#x533A;&#x540E;,&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A; Class &#x5BF9;&#x8C61;,&#x5B58;&#x653E;&#x5728;&#x5806;&#x533A;,&#x4E0D;&#x662F;&#x65B9;&#x6CD5;&#x533A;,&#x5B83;&#x4E3A;&#x7A0B;&#x5E8F;&#x63D0;&#x4F9B;&#x4E86;&#x8BBF;&#x95EE;&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#x7684;&#x65B9;&#x6CD5;</p>
-<p>&#x65B9;&#x6CD5;&#x533A;:</p>
-<p>&#x5728;&#x4E00;&#x4E2A; JVM &#x5B9E;&#x4F8B;&#x7684;&#x5185;&#x90E8;,&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#x5B58;&#x50A8;&#x5728;&#x4E00;&#x4E2A;&#x79F0;&#x4E3A;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x5185;&#x5B58;&#x903B;&#x8F91;&#x533A;&#x4E2D;.&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#x662F;&#x7531;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x5728;&#x7C7B;&#x52A0;&#x8F7D;&#x65F6;&#x4ECE;&#x7C7B;&#x6587;&#x4EF6;&#x4E2D;&#x63D0;&#x53D6;&#x51FA;&#x6765;&#x7684;.&#x7C7B;(&#x9759;&#x6001;)&#x53D8;&#x91CF;&#x4E5F;&#x5B58;&#x50A8;&#x5728;&#x65B9;&#x6CD5;&#x533A;&#x4E2D;</p>
-<p>JVM &#x5B9E;&#x73B0;&#x7684;&#x8BBE;&#x8BA1;&#x8005;&#x51B3;&#x5B9A;&#x4E86;&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#x7684;&#x5185;&#x90E8;&#x8868;&#x73B0;&#x5F62;&#x5F0F;,&#x5982;,&#x591A;&#x5B57;&#x8282;&#x53D8;&#x91CF;&#x5728;&#x7C7B;&#x6587;&#x4EF6;&#x662F;&#x4EE5;&#x5927;&#x7AEF;&#x6A21;&#x5F0F;(big-endian)&#x5B58;&#x50A8;&#x7684;,&#x4F46;&#x5728;&#x52A0;&#x8F7D;&#x5230;&#x65B9;&#x6CD5;&#x533A;&#x540E;,&#x5176;&#x5B58;&#x653E;&#x5F62;&#x5F0F;&#x7531; jvm &#x6839;&#x636E;&#x4E0D;&#x540C;&#x7684;&#x5E73;&#x53F0;&#x6765;&#x5177;&#x4F53;&#x5B9A;&#x4E49;</p>
-<p>JVM &#x5728;&#x8FD0;&#x884C;&#x5E94;&#x7528;&#x65F6;&#x8981;&#x5927;&#x91CF;&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x5728;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x7C7B;&#x578B;&#x4FE1;&#x606F;;&#x5728;&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#x7684;&#x8868;&#x793A;&#x4E0A;,&#x8BBE;&#x8BA1;&#x8005;&#x9664;&#x4E86;&#x8981;&#x5C3D;&#x53EF;&#x80FD;&#x63D0;&#x9AD8;&#x5E94;&#x7528;&#x7684;&#x8FD0;&#x884C;&#x6548;&#x7387;&#x5916;,&#x8FD8;&#x8981;&#x8003;&#x8651;&#x7A7A;&#x95F4;&#x95EE;&#x9898;;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x7684;&#x9700;&#x6C42;,JVM &#x7684;&#x5B9E;&#x73B0;&#x8005;&#x53EF;&#x4EE5;&#x5728;&#x65F6;&#x95F4;&#x548C;&#x7A7A;&#x95F4;&#x4E0A;&#x8FFD;&#x6C42;&#x4E00;&#x79CD;&#x5E73;&#x8861;</p>
-<p>&#x56E0;&#x4E3A;&#x65B9;&#x6CD5;&#x533A;&#x662F;&#x88AB;&#x6240;&#x6709;&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;&#x7684;,&#x6240;&#x4EE5;&#x5FC5;&#x987B;&#x8003;&#x8651;&#x6570;&#x636E;&#x7684;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;;&#x5047;&#x5982;&#x4E24;&#x4E2A;&#x7EBF;&#x7A0B;&#x90FD;&#x5728;&#x8BD5;&#x56FE;&#x627E; java &#x7684;&#x7C7B;,&#x5728; java &#x7C7B;&#x8FD8;&#x6CA1;&#x6709;&#x88AB;&#x52A0;&#x8F7D;&#x7684;&#x60C5;&#x51B5;&#x4E0B;,&#x53EA;&#x5E94;&#x8BE5;&#x6709;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53BB;&#x52A0;&#x8F7D;,&#x800C;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x7B49;&#x5F85;</p>
-<p>&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x5927;&#x5C0F;&#x4E0D;&#x5FC5;&#x662F;&#x56FA;&#x5B9A;&#x7684;,jvm &#x53EF;&#x4EE5;&#x6839;&#x636E;&#x5E94;&#x7528;&#x7684;&#x9700;&#x8981;&#x52A8;&#x6001;&#x8C03;&#x6574;,&#x540C;&#x6837;&#x65B9;&#x6CD5;&#x533A;&#x4E5F;&#x4E0D;&#x5FC5;&#x662F;&#x8FDE;&#x7EED;&#x7684;,&#x65B9;&#x6CD5;&#x533A;&#x53EF;&#x4EE5;&#x5728;&#x5806;(&#x751A;&#x81F3;&#x662F;&#x865A;&#x62DF;&#x673A;&#x81EA;&#x5DF1;&#x7684;&#x5806;)&#x4E2D;&#x5206;&#x914D;;jvm &#x53EF;&#x4EE5;&#x5141;&#x8BB8;&#x7528;&#x6237;&#x548C;&#x7A0B;&#x5E8F;&#x6307;&#x5B9A;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x521D;&#x59CB;&#x5927;&#x5C0F;,&#x6700;&#x5C0F;&#x548C;&#x6700;&#x5927;&#x5BB9;&#x91CF;;</p>
-<p>&#x65B9;&#x6CD5;&#x533A;&#x540C;&#x6837;&#x5B58;&#x5728;&#x5783;&#x573E;&#x6536;&#x96C6;,&#x56E0;&#x4E3A;&#x901A;&#x8FC7;&#x7528;&#x6237;&#x5B9A;&#x4E49;&#x7684;&#x7C7B;&#x52A0;&#x8F7D;&#x5668;&#x53EF;&#x4EE5;&#x52A8;&#x6001;&#x62D3;&#x5C55; java &#x7A0B;&#x5E8F;,&#x4E00;&#x4E9B;&#x7C7B;&#x4E5F;&#x4F1A;&#x6210;&#x4E3A;&#x5783;&#x573E;;jvm &#x53EF;&#x4EE5;&#x56DE;&#x6536;&#x4E00;&#x4E2A;&#x672A;&#x88AB;&#x5F15;&#x7528;&#x7C7B;&#x6240;&#x5360;&#x7684;&#x7A7A;&#x95F4;,&#x4EE5;&#x4FBF;&#x4F7F;&#x65B9;&#x6CD5;&#x533A;&#x7684;&#x7A7A;&#x95F4;&#x6700;&#x5C0F;</p>
-<p>&#x7528;&#x4E8E;&#x5B58;&#x50A8;&#x5DF2;&#x88AB;&#x865A;&#x62DF;&#x673A;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x578B;&#x4FE1;&#x606F;\&#x5E38;&#x91CF;\&#x9759;&#x6001;&#x53D8;&#x91CF;\&#x5373;&#x65F6;&#x7F16;&#x8BD1;&#x5668;&#x7F16;&#x8BD1;&#x540E;&#x7684;&#x4EE3;&#x7801;&#x7F13;&#x5B58;&#x7B49;</p>
-<p>&#x5E38;&#x91CF;&#x6C60;:</p>
-<p>jvm &#x4E3A;&#x6BCF;&#x4E2A;&#x5DF2;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x578B;&#x90FD;&#x7EF4;&#x62A4;&#x4E00;&#x4E2A;&#x5E38;&#x91CF;&#x6C60;,&#x5E38;&#x91CF;&#x6C60;&#x5C31;&#x662F;&#x8FD9;&#x4E2A;&#x7C7B;&#x578B;&#x7528;&#x5230;&#x7684;&#x5E38;&#x91CF;&#x7684;&#x4E00;&#x4E2A;&#x6709;&#x5E8F;&#x96C6;&#x5408;,&#x5305;&#x62EC;&#x5B9E;&#x9645;&#x7684;&#x5E38;&#x91CF;(String,int &#x548C;&#x6D6E;&#x70B9;&#x5E38;&#x91CF;)&#x548C;&#x5BF9;&#x7C7B;&#x578B;/&#x57DF;&#x548C;&#x65B9;&#x6CD5;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;.&#x6C60;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x9879;&#x50CF;&#x6570;&#x7EC4;&#x9879;&#x4E00;&#x6837;,&#x662F;&#x901A;&#x8FC7;&#x7D22;&#x5F15;&#x8BBF;&#x95EE;&#x7684;</p>
-<p>&#x56E0;&#x4E3A;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x5B58;&#x50A8;&#x4E86;&#x4E00;&#x4E2A;&#x7C7B;&#x578B;&#x6240;&#x4F7F;&#x7528;&#x5230;&#x7684;&#x6240;&#x6709;&#x7C7B;&#x578B;/&#x57DF;&#x548C;&#x65B9;&#x6CD5;&#x7684;&#x7B26;&#x53F7;&#x5F15;&#x7528;,&#x6240;&#x4EE5;&#x5B83;&#x5728; java &#x7A0B;&#x5E8F;&#x4E2D;&#x7684;&#x52A8;&#x6001;&#x8FDE;&#x63A5;&#x8D77;&#x5230;&#x4E86;&#x6838;&#x5FC3;&#x7684;&#x4F5C;&#x7528;</p>
-<p>jvm &#x5FC5;&#x987B;&#x5728;&#x65B9;&#x6CD5;&#x533A;&#x4E2D;&#x4FDD;&#x5B58;&#x7C7B;&#x578B;&#x7684;&#x6240;&#x6709;&#x57DF;&#x76F8;&#x5173;&#x7684;&#x4FE1;&#x606F;&#x4EE5;&#x53CA;&#x57DF;&#x7684;&#x58F0;&#x660E;&#x987A;&#x5E8F;:</p>
-<p>&#x7C7B;&#x578B;&#x4FE1;&#x606F;:</p>
-<p>&#x5BF9;&#x6BCF;&#x4E2A;&#x52A0;&#x8F7D;&#x7684;&#x7C7B;&#x578B;(&#x7C7B; Class\&#x63A5;&#x53E3; interface\&#x679A;&#x4E3E; enum\&#x6CE8;&#x89E3; annotation),JVM &#x5FC5;&#x987B;&#x5728;&#x65B9;&#x6CD5;&#x533A;&#x4E2D;&#x5B58;&#x50A8;&#x4EE5;&#x4E0B;&#x7C7B;&#x578B;&#x4FE1;&#x606F;:</p>
-<p>1.&#x8FD9;&#x4E2A;&#x7C7B;&#x578B;&#x7684;&#x5B8C;&#x6574;&#x6709;&#x6548;&#x540D;&#x79F0;(&#x5168;&#x540D;=&#x5305;&#x540D;.&#x7C7B;&#x540D;)</p>
-<p>2.&#x8FD9;&#x4E2A;&#x7C7B;&#x578B;&#x76F4;&#x63A5;&#x7236;&#x7C7B;&#x7684;&#x5B8C;&#x6574;&#x6709;&#x6548;&#x540D;(&#x5BF9;&#x4E8E; interface &#x6216;&#x8005; java.lang.Object,&#x90FD;&#x6CA1;&#x6709;&#x7236;&#x7C7B;)</p>
-<p>3.&#x8FD9;&#x4E2A;&#x7C7B;&#x578B;&#x7684;&#x4FEE;&#x9970;&#x7B26;(public/abstract/final &#x7684;&#x5B50;&#x96C6;)</p>
-<p>4.&#x8FD9;&#x4E2A;&#x7C7B;&#x578B;&#x76F4;&#x63A5;&#x63A5;&#x53E3;&#x7684;&#x6709;&#x5E8F;&#x5217;&#x8868;</p>
-<p>&#x57DF;&#x7684;&#x76F8;&#x5173;&#x4FE1;&#x606F;:</p>
-<p>1.&#x57DF;&#x540D;&#x79F0;</p>
-<p>2.&#x57DF;&#x7C7B;&#x578B;</p>
-<p>3.&#x57DF;&#x4FEE;&#x9970;&#x7B26;(public/private/protected/static/final/volatile/transient &#x7684;&#x5B50;&#x96C6;)</p>
-<p>&#x65B9;&#x6CD5;&#x4FE1;&#x606F;:</p>
-<p>jvm &#x5FC5;&#x987B;&#x4FDD;&#x5B58;&#x6240;&#x6709;&#x65B9;&#x6CD5;&#x7684;&#x4EE5;&#x4E0B;&#x4FE1;&#x606F;,&#x540C;&#x57DF;&#x4FE1;&#x606F;&#x4E00;&#x6837;&#x5305;&#x62EC;&#x58F0;&#x660E;&#x987A;&#x5E8F;</p>
-<p>1.&#x65B9;&#x6CD5;&#x540D;</p>
-<p>2.&#x65B9;&#x6CD5;&#x7684;&#x8FD4;&#x56DE;&#x7C7B;&#x578B;(&#x6216; void)</p>
-<p>3.&#x65B9;&#x6CD5;&#x53C2;&#x6570;&#x7684;&#x6570;&#x91CF;&#x548C;&#x7C7B;&#x578B;(&#x6709;&#x5E8F;&#x7684;)</p>
-<p>4.&#x65B9;&#x6CD5;&#x7684;&#x4FEE;&#x9970;&#x7B26;(public/private/protected/static/final/synchronized/native/abstract &#x7684;&#x5B50;&#x96C6;)</p>
-<p>5.&#x65B9;&#x6CD5;&#x7684;&#x5B57;&#x8282;&#x7801;(bytecodes),&#x64CD;&#x4F5C;&#x6570;&#x6808;&#x548C;&#x65B9;&#x6CD5;&#x6808;&#x5E27;&#x7684;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x7684;&#x5927;&#x5C0F;(abstract &#x548C; native &#x65B9;&#x6CD5;&#x9664;&#x5916;)</p>
-<p>6.&#x5F02;&#x5E38;&#x8868;(abstract &#x548C; native &#x65B9;&#x6CD5;&#x9664;&#x5916;)</p>
+<h3 id="JVM-的-Class-对象的存储位置和作用"><a href="#JVM-的-Class-对象的存储位置和作用" class="headerlink" title="JVM 的 Class 对象的存储位置和作用"></a>JVM 的 Class 对象的存储位置和作用</h3><p>类型信息是一个 java 类的描述信息(class meta), classLoader 加载一个类时从 class 文件中提取出来并存储在方法区.它包含以下信息:</p>
+<p>1.类型的完整有效名,类的修饰符(public, abstract, final 的某个子集),类型直接接口的一个有序列表及继承的父类;</p>
+<p>类型名称在 java 类文件和 jvm 中都已以完整有效名出现;在 java 源代码中,完整的有效名由类所属的包名称加一个”.”,再加上类名组成;例如,类 Object 所属的包为 java.lang,它的完整名称为 java.lang.Object,但在类文件中,所有的”.”都被斜杠”/“代替,就成为 java/lang/Object.完整的有效名在方法区中的表示根据不同的实现而不同</p>
+<p>2.类型的常量池(constant pool)</p>
+<p>3.域(Field)信息</p>
+<p>4.方法(Method)信息</p>
+<p>5.除了常量外的所有静态(static)变量</p>
+<p>6.classloader 的引用</p>
+<p>ClassLoader 加载一个类并把类型信息保存到方法区后,会创建一个 Class 对象,存放在堆区,不是方法区,它为程序提供了访问类型信息的方法</p>
+<p>方法区:</p>
+<p>在一个 JVM 实例的内部,类型信息存储在一个称为方法区的内存逻辑区中.类型信息是由类加载器在类加载时从类文件中提取出来的.类(静态)变量也存储在方法区中</p>
+<p>JVM 实现的设计者决定了类型信息的内部表现形式,如,多字节变量在类文件是以大端模式(big-endian)存储的,但在加载到方法区后,其存放形式由 jvm 根据不同的平台来具体定义</p>
+<p>JVM 在运行应用时要大量使用存储在方法区的类型信息;在类型信息的表示上,设计者除了要尽可能提高应用的运行效率外,还要考虑空间问题;根据不同的需求,JVM 的实现者可以在时间和空间上追求一种平衡</p>
+<p>因为方法区是被所有线程共享的,所以必须考虑数据的线程安全;假如两个线程都在试图找 java 的类,在 java 类还没有被加载的情况下,只应该有一个线程去加载,而另外一个线程等待</p>
+<p>方法区的大小不必是固定的,jvm 可以根据应用的需要动态调整,同样方法区也不必是连续的,方法区可以在堆(甚至是虚拟机自己的堆)中分配;jvm 可以允许用户和程序指定方法区的初始大小,最小和最大容量;</p>
+<p>方法区同样存在垃圾收集,因为通过用户定义的类加载器可以动态拓展 java 程序,一些类也会成为垃圾;jvm 可以回收一个未被引用类所占的空间,以便使方法区的空间最小</p>
+<p>用于存储已被虚拟机加载的类型信息\常量\静态变量\即时编译器编译后的代码缓存等</p>
+<p>常量池:</p>
+<p>jvm 为每个已加载的类型都维护一个常量池,常量池就是这个类型用到的常量的一个有序集合,包括实际的常量(String,int 和浮点常量)和对类型/域和方法的符号引用.池中的数据项像数组项一样,是通过索引访问的</p>
+<p>因为常量池中存储了一个类型所使用到的所有类型/域和方法的符号引用,所以它在 java 程序中的动态连接起到了核心的作用</p>
+<p>jvm 必须在方法区中保存类型的所有域相关的信息以及域的声明顺序:</p>
+<p>类型信息:</p>
+<p>对每个加载的类型(类 Class\接口 interface\枚举 enum\注解 annotation),JVM 必须在方法区中存储以下类型信息:</p>
+<p>1.这个类型的完整有效名称(全名=包名.类名)</p>
+<p>2.这个类型直接父类的完整有效名(对于 interface 或者 java.lang.Object,都没有父类)</p>
+<p>3.这个类型的修饰符(public/abstract/final 的子集)</p>
+<p>4.这个类型直接接口的有序列表</p>
+<p>域的相关信息:</p>
+<p>1.域名称</p>
+<p>2.域类型</p>
+<p>3.域修饰符(public/private/protected/static/final/volatile/transient 的子集)</p>
+<p>方法信息:</p>
+<p>jvm 必须保存所有方法的以下信息,同域信息一样包括声明顺序</p>
+<p>1.方法名</p>
+<p>2.方法的返回类型(或 void)</p>
+<p>3.方法参数的数量和类型(有序的)</p>
+<p>4.方法的修饰符(public/private/protected/static/final/synchronized/native/abstract 的子集)</p>
+<p>5.方法的字节码(bytecodes),操作数栈和方法栈帧的局部变量的大小(abstract 和 native 方法除外)</p>
+<p>6.异常表(abstract 和 native 方法除外)</p>
 
     </div>
 
@@ -525,12 +525,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

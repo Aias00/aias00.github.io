@@ -21,20 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="mysql &amp;#x5BA2;&amp;#x6237;&amp;#x7AEF;&amp;#x548C;&amp;#x670D;&amp;#x52A1;&amp;#x7AEF;&amp;#x4E4B;&amp;#x95F4;&amp;#x5982;&amp;#x4F55;&amp;#x901A;&amp;#x4FE1;1.&amp;#x901A;&amp;#x4FE1;&amp;#x7C7B;&amp;#x578B;:&amp;#x957F;&amp;#x8FDE;&amp;#x63A5;&amp;#x6216;&amp;#x77ED;&amp;#x8FDE;&amp;#x63A5">
+  <meta name="description" content="mysql 客户端和服务端之间如何通信1.通信类型:长连接或短连接(mysql 都支持,一般为长连接,放在连接池中) 查看连接:show full processlist; 查看连接参数:show global status like ‘Thread%’">
 <meta name="keywords" content="mysql, interview">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mysql面试知识点(持续更新)">
 <meta property="og:url" content="http://yoursite.com/article/a748be8.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="mysql &amp;#x5BA2;&amp;#x6237;&amp;#x7AEF;&amp;#x548C;&amp;#x670D;&amp;#x52A1;&amp;#x7AEF;&amp;#x4E4B;&amp;#x95F4;&amp;#x5982;&amp;#x4F55;&amp;#x901A;&amp;#x4FE1;1.&amp;#x901A;&amp;#x4FE1;&amp;#x7C7B;&amp;#x578B;:&amp;#x957F;&amp;#x8FDE;&amp;#x63A5;&amp;#x6216;&amp;#x77ED;&amp;#x8FDE;&amp;#x63A5">
+<meta property="og:description" content="mysql 客户端和服务端之间如何通信1.通信类型:长连接或短连接(mysql 都支持,一般为长连接,放在连接池中) 查看连接:show full processlist; 查看连接参数:show global status like ‘Thread%’">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://i.loli.net/2021/03/26/etapP2QIrOLhbcZ.png">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.579Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql面试知识点(持续更新)">
-<meta name="twitter:description" content="mysql &amp;#x5BA2;&amp;#x6237;&amp;#x7AEF;&amp;#x548C;&amp;#x670D;&amp;#x52A1;&amp;#x7AEF;&amp;#x4E4B;&amp;#x95F4;&amp;#x5982;&amp;#x4F55;&amp;#x901A;&amp;#x4FE1;1.&amp;#x901A;&amp;#x4FE1;&amp;#x7C7B;&amp;#x578B;:&amp;#x957F;&amp;#x8FDE;&amp;#x63A5;&amp;#x6216;&amp;#x77ED;&amp;#x8FDE;&amp;#x63A5">
-<meta name="twitter:image" content="https://i.loli.net/2021/03/26/etapP2QIrOLhbcZ.png">
+<meta name="twitter:description" content="mysql 客户端和服务端之间如何通信1.通信类型:长连接或短连接(mysql 都支持,一般为长连接,放在连接池中) 查看连接:show full processlist; 查看连接参数:show global status like ‘Thread%’">
 
 <link rel="canonical" href="http://yoursite.com/article/a748be8.html">
 
@@ -201,97 +199,97 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="mysql-&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;"><a href="#mysql-&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;" class="headerlink" title="mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;"></a>mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;</h3><p>1.&#x901A;&#x4FE1;&#x7C7B;&#x578B;:&#x957F;&#x8FDE;&#x63A5;&#x6216;&#x77ED;&#x8FDE;&#x63A5;(mysql &#x90FD;&#x652F;&#x6301;,&#x4E00;&#x822C;&#x4E3A;&#x957F;&#x8FDE;&#x63A5;,&#x653E;&#x5728;&#x8FDE;&#x63A5;&#x6C60;&#x4E2D;)</p>
-<p>&#x67E5;&#x770B;&#x8FDE;&#x63A5;:show full processlist;</p>
-<p>&#x67E5;&#x770B;&#x8FDE;&#x63A5;&#x53C2;&#x6570;:show global status like &#x2018;Thread%&#x2019;</p>
-<p><img src="https://i.loli.net/2021/03/26/etapP2QIrOLhbcZ.png" alt="mysql-interview-2021-03-26-13-30-5220210326133051"></p>
-<p>Threadpool_idle_threads: &#x7EBF;&#x7A0B;&#x6C60;&#x4E2D;&#x7A7A;&#x95F2;&#x7684;&#x7EBF;&#x7A0B;&#x6570;&#x91CF;</p>
-<p>Threadpool_threads: &#x7EBF;&#x7A0B;&#x6C60;&#x4E2D;&#x6240;&#x6709;&#x7684;&#x7EBF;&#x7A0B;&#x6570;&#x91CF;</p>
-<p>Thread_cached: The number of threads in the thread cache; &#x7F13;&#x5B58;&#x4E2D;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
-<p>Thread_connected: The number of currently open connetions; &#x5904;&#x4E8E;&#x8FDE;&#x63A5;&#x72B6;&#x6001;&#x4E2D;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
-<p>Thread_created: The number of threads created to handle connections; &#x88AB;&#x521B;&#x5EFA;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
-<p>Thread_running: The number of threads that are not sleeping; &#x5904;&#x4E8E;&#x6FC0;&#x6D3B;&#x72B6;&#x6001;&#x7684;&#x7EBF;&#x7A0B;&#x6570;</p>
-<p>2.&#x901A;&#x4FE1;&#x534F;&#x8BAE;:socket(&#x4E0D;&#x662F;&#x901A;&#x4FE1;&#x534F;&#x8BAE;)&#x548C; TCP/IP &#x534F;&#x8BAE;</p>
-<p>mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x6570;&#x636E;&#x5E93;&#x5B9E;&#x4F8B;&#x4E0D;&#x5728;&#x540C;&#x4E00;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x65F6;,&#x5728;&#x8FDE;&#x63A5;&#x65F6;&#x6CA1;&#x6709;&#x6307;&#x5B9A;-h &#x53C2;&#x6570;,&#x4F1A;&#x4F7F;&#x7528; scoket &#x65B9;&#x5F0F;&#x767B;&#x5F55;,&#x9700;&#x8981;&#x7528;&#x5230;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x7684;&#x4E00;&#x4E2A;&#x7269;&#x7406;&#x6587;&#x4EF6;(/var/lib/mysql/mysql.sock);</p>
-<p>&#x5982;&#x679C;&#x6307;&#x5B9A;-h &#x53C2;&#x6570;,&#x5C31;&#x4F1A;&#x4F7F;&#x7528; TCP &#x534F;&#x8BAE;</p>
-<p>3.&#x901A;&#x4FE1;&#x65B9;&#x5F0F;:&#x534A;&#x53CC;&#x5DE5;</p>
-<h3 id="1-mysql-&#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"><a href="#1-mysql-&#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;" class="headerlink" title="1.mysql &#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"></a>1.mysql &#x5982;&#x4F55;&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;</h3><p>1.&#x4FEE;&#x6539;&#x4E3B;&#x5E93;&#x7684;&#x914D;&#x7F6E;</p>
-<p>2.&#x521B;&#x5EFA;&#x4ECE;&#x670D;&#x52A1;&#x5668;&#x7684;&#x7528;&#x6237;&#x548C;&#x6743;&#x9650;</p>
-<p>3.&#x91CD;&#x542F; master</p>
-<p>4.&#x67E5;&#x770B; master &#x72B6;&#x6001;</p>
-<p>5.&#x4FEE;&#x6539;&#x4ECE;&#x5E93;&#x914D;&#x7F6E;</p>
-<p>6.&#x91CD;&#x542F; slave</p>
-<p>7.slave &#x8FDE;&#x63A5; master</p>
-<p>8.&#x542F;&#x52A8; slave &#x540C;&#x6B65;</p>
-<h3 id="2-&#x83B7;&#x53D6;-mysql-&#x81EA;&#x589E;&#x4E3B;&#x952E;&#x7684;&#x65B9;&#x6CD5;"><a href="#2-&#x83B7;&#x53D6;-mysql-&#x81EA;&#x589E;&#x4E3B;&#x952E;&#x7684;&#x65B9;&#x6CD5;" class="headerlink" title="2.&#x83B7;&#x53D6; mysql &#x81EA;&#x589E;&#x4E3B;&#x952E;&#x7684;&#x65B9;&#x6CD5;"></a>2.&#x83B7;&#x53D6; mysql &#x81EA;&#x589E;&#x4E3B;&#x952E;&#x7684;&#x65B9;&#x6CD5;</h3><p>1.mybatis:useGeneratedKeys</p>
+        <h3 id="mysql-客户端和服务端之间如何通信"><a href="#mysql-客户端和服务端之间如何通信" class="headerlink" title="mysql 客户端和服务端之间如何通信"></a>mysql 客户端和服务端之间如何通信</h3><p>1.通信类型:长连接或短连接(mysql 都支持,一般为长连接,放在连接池中)</p>
+<p>查看连接:show full processlist;</p>
+<p>查看连接参数:show global status like ‘Thread%’</p>
+<p><img data-src="https://i.loli.net/2021/03/26/etapP2QIrOLhbcZ.png" alt="mysql-interview-2021-03-26-13-30-5220210326133051"></p>
+<p>Threadpool_idle_threads: 线程池中空闲的线程数量</p>
+<p>Threadpool_threads: 线程池中所有的线程数量</p>
+<p>Thread_cached: The number of threads in the thread cache; 缓存中的线程数</p>
+<p>Thread_connected: The number of currently open connetions; 处于连接状态中的线程数</p>
+<p>Thread_created: The number of threads created to handle connections; 被创建的线程数</p>
+<p>Thread_running: The number of threads that are not sleeping; 处于激活状态的线程数</p>
+<p>2.通信协议:socket(不是通信协议)和 TCP/IP 协议</p>
+<p>mysql 客户端和数据库实例不在同一台服务器上时,在连接时没有指定-h 参数,会使用 scoket 方式登录,需要用到服务器上的一个物理文件(/var/lib/mysql/mysql.sock);</p>
+<p>如果指定-h 参数,就会使用 TCP 协议</p>
+<p>3.通信方式:半双工</p>
+<h3 id="1-mysql-如何配置主从同步"><a href="#1-mysql-如何配置主从同步" class="headerlink" title="1.mysql 如何配置主从同步"></a>1.mysql 如何配置主从同步</h3><p>1.修改主库的配置</p>
+<p>2.创建从服务器的用户和权限</p>
+<p>3.重启 master</p>
+<p>4.查看 master 状态</p>
+<p>5.修改从库配置</p>
+<p>6.重启 slave</p>
+<p>7.slave 连接 master</p>
+<p>8.启动 slave 同步</p>
+<h3 id="2-获取-mysql-自增主键的方法"><a href="#2-获取-mysql-自增主键的方法" class="headerlink" title="2.获取 mysql 自增主键的方法"></a>2.获取 mysql 自增主键的方法</h3><p>1.mybatis:useGeneratedKeys</p>
 <p>2.jdbc:Statement.RETURN_GENERATED_KEYS</p>
-<h3 id="3-sql-&#x4F18;&#x5316;"><a href="#3-sql-&#x4F18;&#x5316;" class="headerlink" title="3.sql &#x4F18;&#x5316;"></a>3.sql &#x4F18;&#x5316;</h3><p>1.&#x4E3A;&#x8868;&#x5EFA;&#x7ACB;&#x4E3B;&#x952E;</p>
-<p>2.&#x5B9A;&#x4E49;&#x5B57;&#x6BB5;&#x65F6;&#x9009;&#x53D6;&#x5408;&#x9002;&#x7684;&#x7C7B;&#x522B;&#x548C;&#x957F;&#x5EA6;</p>
-<p>3.&#x4E0D;&#x4F7F;&#x7528; select&#x2019;*&#x2018;,&#x660E;&#x786E;&#x67E5;&#x8BE2;&#x5B57;&#x6BB5;,&#x8FD4;&#x56DE;&#x65E0;&#x7528;&#x7684;&#x5B57;&#x6BB5;&#x4F1A;&#x964D;&#x4F4E;&#x67E5;&#x8BE2;&#x6548;&#x7387;</p>
-<p>4.&#x5355;&#x6761; sql &#x4E0D;&#x8981; join &#x8D85;&#x8FC7;&#x4E09;&#x5F20;&#x8868;,&#x5173;&#x8054;&#x5B57;&#x6BB5;&#x5FC5;&#x987B;&#x6709;&#x7D22;&#x5F15;&#x4E14;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x4E00;&#x81F4;</p>
-<p>5.&#x5355;&#x6761; sql &#x5B50;&#x67E5;&#x8BE2;&#x4E0D;&#x8981;&#x8D85;&#x8FC7;&#x4E24;&#x5C42;</p>
-<p>6.sql &#x4E2D;&#x4E0D;&#x8981;&#x8FDB;&#x884C;&#x8BA1;&#x7B97;&#x6216;&#x8005;&#x5D4C;&#x5957;&#x5224;&#x65AD;</p>
-<p>7.where &#x5B50;&#x53E5;,group by &#x4E2D;&#x7528;&#x5230;&#x7684;&#x5B57;&#x6BB5;&#x589E;&#x52A0;&#x7D22;&#x5F15;</p>
-<p>8.where &#x5B50;&#x53E5;&#x4E2D;&#x7B49;&#x53F7;&#x7684;&#x5DE6;&#x4FA7;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;&#x51FD;&#x6570;&#x6216;&#x8005;&#x8868;&#x8FBE;&#x5F0F;,&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5F15;&#x64CE;&#x653E;&#x5F03;&#x7D22;&#x5F15;&#x8FDB;&#x884C;&#x5168;&#x8868;&#x626B;&#x63CF;</p>
-<p>9.&#x4E0D;&#x8981;&#x4F7F;&#x7528; like &#x2018;%name&#x2019;,&#x5373;&#x5DE6;&#x6A21;&#x7CCA;</p>
-<p>10.&#x4E0D;&#x8981;&#x4F7F;&#x7528;&#x8D1F;&#x5411;&#x67E5;&#x8BE2;&#x6761;&#x4EF6;(!=&#x3001;&lt;&gt;&#x3001;not),&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5F15;&#x64CE;&#x653E;&#x5F03;&#x7D22;&#x5F15;,&#x8FDB;&#x884C;&#x5168;&#x8868;&#x626B;&#x63CF;</p>
-<p>11.&#x4E0D;&#x8981;&#x4F7F;&#x7528; or,&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5F15;&#x64CE;&#x653E;&#x5F03;&#x7D22;&#x5F15;&#x67E5;&#x8BE2;&#x800C;&#x8FDB;&#x884C;&#x5168;&#x8868;&#x626B;&#x63CF;</p>
-<p>12.&#x4F20;&#x5165;&#x53D8;&#x91CF;&#x7C7B;&#x578B;&#x4E0E;&#x67E5;&#x8BE2;&#x6761;&#x4EF6;&#x4E2D;&#x5B57;&#x6BB5;&#x7C7B;&#x578B;&#x5E94;&#x8BE5;&#x5339;&#x914D;,&#x7981;&#x6B62;&#x9690;&#x5F0F;&#x8F6C;&#x6362;</p>
-<p>13.&#x4E0D;&#x8981;&#x4F7F;&#x7528;&#x5916;&#x952E;\&#x89C6;&#x56FE;\&#x89E6;&#x53D1;&#x5668;\&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;&#x7B49;</p>
-<p>14.&#x5C3D;&#x91CF;&#x907F;&#x514D;&#x8FDB;&#x884C; null &#x503C;&#x7684;&#x5224;&#x65AD;,&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5F15;&#x64CE;&#x653E;&#x5F03;&#x7D22;&#x5F15;&#x800C;&#x8FDB;&#x884C;&#x5168;&#x8868;&#x626B;&#x63CF;</p>
-<h3 id="4-&#x4E3B;&#x952E;&#x7D22;&#x5F15;&#x548C;&#x552F;&#x4E00;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;"><a href="#4-&#x4E3B;&#x952E;&#x7D22;&#x5F15;&#x548C;&#x552F;&#x4E00;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;" class="headerlink" title="4.&#x4E3B;&#x952E;&#x7D22;&#x5F15;&#x548C;&#x552F;&#x4E00;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;"></a>4.&#x4E3B;&#x952E;&#x7D22;&#x5F15;&#x548C;&#x552F;&#x4E00;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;</h3><p>1.&#x4E3B;&#x952E;&#x662F;&#x4E00;&#x79CD;&#x7EA6;&#x675F;,&#x76EE;&#x7684;&#x662F;&#x5BF9;&#x8FD9;&#x4E2A;&#x8868;&#x7684;&#x67D0;&#x4E00;&#x5217;&#x8FDB;&#x884C;&#x9650;&#x5236;,&#x552F;&#x4E00;&#x7D22;&#x5F15;&#x662F;&#x4E00;&#x79CD;&#x7D22;&#x5F15;,&#x662F;&#x4E3A;&#x4E86;&#x66F4;&#x5FEB;&#x7684;&#x67E5;&#x8BE2;</p>
-<p>2.&#x4E3B;&#x952E;&#x4E0D;&#x5141;&#x8BB8;&#x5B58;&#x5728; null &#x503C;,&#x552F;&#x4E00;&#x7D22;&#x5F15;&#x53EF;&#x4EE5;&#x5B58;&#x5728;&#x7A7A;&#x503C;</p>
-<p>3.&#x4E00;&#x4E2A;&#x8868;&#x6700;&#x591A;&#x53EA;&#x80FD;&#x6709;&#x4E00;&#x4E2A;&#x4E3B;&#x952E;,&#x4F46;&#x662F;&#x53EF;&#x4EE5;&#x5305;&#x542B;&#x591A;&#x4E2A;&#x552F;&#x4E00;&#x7D22;&#x5F15;</p>
-<p>4.&#x4E3B;&#x952E;&#x521B;&#x5EFA;&#x540E;&#x4E00;&#x5B9A;&#x5305;&#x542B;&#x4E00;&#x4E2A;&#x552F;&#x4E00;&#x6027;&#x7D22;&#x5F15;,&#x552F;&#x4E00;&#x7D22;&#x5F15;&#x5E76;&#x4E0D;&#x4E00;&#x5B9A;&#x90FD;&#x662F;&#x4E3B;&#x952E;</p>
-<p>5.&#x4E3B;&#x952E;&#x53EF;&#x4EE5;&#x88AB;&#x5176;&#x4ED6;&#x8868;&#x5F15;&#x4E3A;&#x5916;&#x952E;</p>
-<p>6.&#x4E3B;&#x952E;&#x6570;&#x636E;&#x5FC5;&#x987B;&#x552F;&#x4E00;,&#x7D22;&#x5F15;&#x6570;&#x636E;&#x53EF;&#x4EE5;&#x4E0D;&#x552F;&#x4E00;</p>
-<h3 id="5-&#x591A;&#x4E2A;&#x5355;&#x4E2A;&#x7D22;&#x5F15;&#x548C;&#x8054;&#x5408;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;"><a href="#5-&#x591A;&#x4E2A;&#x5355;&#x4E2A;&#x7D22;&#x5F15;&#x548C;&#x8054;&#x5408;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;" class="headerlink" title="5.&#x591A;&#x4E2A;&#x5355;&#x4E2A;&#x7D22;&#x5F15;&#x548C;&#x8054;&#x5408;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;"></a>5.&#x591A;&#x4E2A;&#x5355;&#x4E2A;&#x7D22;&#x5F15;&#x548C;&#x8054;&#x5408;&#x7D22;&#x5F15;&#x7684;&#x533A;&#x522B;</h3><p>1.&#x591A;&#x4E2A;&#x5355;&#x5217;&#x7D22;&#x5F15;&#x5728;&#x591A;&#x6761;&#x4EF6;&#x67E5;&#x8BE2;&#x65F6;&#x53EA;&#x4F1A;&#x751F;&#x6548;&#x7B2C;&#x4E00;&#x4E2A;&#x7D22;&#x5F15;</p>
-<p>2.&#x8054;&#x5408;&#x7D22;&#x5F15;&#x6700;&#x5DE6;&#x524D;&#x7F00;&#x539F;&#x5219;:&#x5F53;&#x521B;&#x5EFA;(a,b,c)&#x8054;&#x5408;&#x7D22;&#x5F15;&#x65F6;,&#x76F8;&#x5F53;&#x4E8E;&#x521B;&#x5EFA;&#x4E86;(a)&#x5355;&#x5217;&#x7D22;&#x5F15;,(a,b)&#x8054;&#x5408;&#x7D22;&#x5F15;&#x4EE5;&#x53CA;(a,b,c)&#x8054;&#x5408;&#x7D22;&#x5F15;</p>
-<p>3.&#x8054;&#x5408;&#x7D22;&#x5F15;&#x6BD4;&#x5BF9;&#x6BCF;&#x4E2A;&#x5217;&#x5206;&#x522B;&#x5EFA;&#x7D22;&#x5F15;&#x66F4;&#x6709;&#x4F18;&#x52BF;,&#x56E0;&#x4E3A;&#x7D22;&#x5F15;&#x5EFA;&#x7ACB;&#x5F97;&#x8D8A;&#x591A;&#x5C31;&#x8D8A;&#x5360;&#x78C1;&#x76D8;&#x7A7A;&#x95F4;,&#x5728;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#x901F;&#x5EA6;&#x4F1A;&#x66F4;&#x6162;.&#x53E6;&#x5916;&#x5EFA;&#x7ACB;&#x591A;&#x5217;&#x7D22;&#x5F15;&#x65F6;,&#x987A;&#x5E8F;&#x4E5F;&#x662F;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;,&#x5E94;&#x8BE5;&#x5C06;&#x4E25;&#x683C;&#x7684;&#x7D22;&#x5F15;&#x653E;&#x5728;&#x524D;&#x9762;,&#x8FD9;&#x6837;&#x7B5B;&#x9009;&#x7684;&#x529B;&#x5EA6;&#x4F1A;&#x66F4;&#x5927;,&#x6548;&#x7387;&#x66F4;&#x9AD8;</p>
-<h3 id="6-&#x5EFA;&#x7ACB;&#x7D22;&#x5F15;&#x7684;&#x539F;&#x5219;"><a href="#6-&#x5EFA;&#x7ACB;&#x7D22;&#x5F15;&#x7684;&#x539F;&#x5219;" class="headerlink" title="6.&#x5EFA;&#x7ACB;&#x7D22;&#x5F15;&#x7684;&#x539F;&#x5219;"></a>6.&#x5EFA;&#x7ACB;&#x7D22;&#x5F15;&#x7684;&#x539F;&#x5219;</h3><p>1.&#x9009;&#x62E9;&#x552F;&#x4E00;&#x6027;&#x7D22;&#x5F15;</p>
-<p>2.&#x4E3A;&#x7ECF;&#x5E38;&#x9700;&#x8981;&#x6392;&#x5E8F;,&#x5206;&#x7EC4;&#x6216;&#x8005;&#x8054;&#x5408;&#x64CD;&#x4F5C;&#x7684;&#x5B57;&#x6BB5;&#x5EFA;&#x7ACB;&#x7D22;&#x5F15;</p>
-<p>3.&#x4E3A;&#x7ECF;&#x5E38;&#x7528;&#x4F5C;&#x67E5;&#x8BE2;&#x6761;&#x4EF6;&#x7684;&#x5B57;&#x6BB5;&#x5EFA;&#x7ACB;&#x7D22;&#x5F15;</p>
-<p>4.&#x9650;&#x5236;&#x7D22;&#x5F15;&#x7684;&#x6570;&#x76EE;,&#x56E0;&#x4E3A;&#x5EFA;&#x7D22;&#x5F15;&#x6709;&#x4E00;&#x5B9A;&#x5F00;&#x9500;</p>
-<p>5.&#x7D22;&#x5F15;&#x5B57;&#x6BB5;&#x957F;&#x5EA6;&#x4E0D;&#x80FD;&#x592A;&#x957F;</p>
-<p>6.&#x8054;&#x5408;&#x7D22;&#x5F15;&#x6700;&#x5DE6;&#x524D;&#x7F00;&#x987A;&#x5E8F;&#x5F88;&#x91CD;&#x8981;</p>
-<p>7.&#x5C3D;&#x91CF;&#x9009;&#x62E9;&#x533A;&#x5206;&#x5EA6;&#x9AD8;&#x7684;&#x5217;&#x4F5C;&#x4E3A;&#x7D22;&#x5F15;</p>
-<p>8.&#x9891;&#x7E41;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x64CD;&#x4F5C;&#x7684;&#x8868;,&#x4E0D;&#x8981;&#x5EFA;&#x7ACB;&#x592A;&#x591A;&#x7684;&#x7D22;&#x5F15;</p>
-<p>9.&#x5220;&#x9664;&#x65E0;&#x7528;&#x7684;&#x7D22;&#x5F15;</p>
-<h3 id="7-&#x5206;&#x5E93;&#x5206;&#x8868;&#x7B56;&#x7565;"><a href="#7-&#x5206;&#x5E93;&#x5206;&#x8868;&#x7B56;&#x7565;" class="headerlink" title="7.&#x5206;&#x5E93;&#x5206;&#x8868;&#x7B56;&#x7565;"></a>7.&#x5206;&#x5E93;&#x5206;&#x8868;&#x7B56;&#x7565;</h3><p>1.&#x6C34;&#x5E73;&#x5206;&#x5E93;</p>
-<p>&#x6982;&#x5FF5;:&#x4EE5;&#x5B57;&#x6BB5;&#x4E3A;&#x4F9D;&#x636E;,&#x6309;&#x7167;&#x4E00;&#x5B9A;&#x7684;&#x7B56;&#x7565;(hash,range &#x7B49;),&#x5C06;&#x4E00;&#x4E2A;&#x5E93;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x62C6;&#x5206;&#x5230;&#x591A;&#x4E2A;&#x5E93;</p>
-<p>&#x7ED3;&#x679C;:&#x6BCF;&#x4E2A;&#x5E93;&#x7684;&#x7ED3;&#x6784;&#x90FD;&#x662F;&#x4E00;&#x6837;&#x7684;,&#x6BCF;&#x4E2A;&#x5E93;&#x7684;&#x6570;&#x636E;&#x90FD;&#x4E0D;&#x4E00;&#x6837;,&#x6CA1;&#x6709;&#x4EA4;&#x96C6;,&#x6240;&#x6709;&#x5E93;&#x7684;&#x6570;&#x636E;&#x7684;&#x5E76;&#x96C6;&#x662F;&#x5168;&#x91CF;&#x6570;&#x636E;</p>
-<p>&#x573A;&#x666F;:&#x7CFB;&#x7EDF;&#x7EDD;&#x5BF9;&#x5E76;&#x53D1;&#x91CF;&#x4E0A;&#x6765;&#x4E86;,&#x5206;&#x8868;&#x96BE;&#x4EE5;&#x89E3;&#x51B3;&#x95EE;&#x9898;,&#x5E76;&#x4E14;&#x8FD8;&#x6CA1;&#x6709;&#x660E;&#x663E;&#x7684;&#x4E1A;&#x52A1;&#x5F52;&#x5C5E;&#x6765;&#x5782;&#x76F4;&#x5206;&#x5E93;</p>
-<p>2.&#x6C34;&#x5E73;&#x5206;&#x8868;</p>
-<p>&#x6982;&#x5FF5;:&#x4EE5;&#x5B57;&#x6BB5;&#x4E3A;&#x4F9D;&#x636E;,&#x6309;&#x7167;&#x4E00;&#x5B9A;&#x7684;&#x7B56;&#x7565;(hash,range &#x7B49;),&#x5C06;&#x4E00;&#x4E2A;&#x8868;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x62C6;&#x5206;&#x5230;&#x591A;&#x4E2A;&#x8868;</p>
-<p>&#x7ED3;&#x679C;:&#x6BCF;&#x4E2A;&#x8868;&#x7684;&#x7ED3;&#x6784;&#x90FD;&#x662F;&#x4E00;&#x6837;&#x7684;,&#x6BCF;&#x4E2A;&#x8868;&#x7684;&#x6570;&#x636E;&#x90FD;&#x4E0D;&#x4E00;&#x6837;,&#x6CA1;&#x6709;&#x4EA4;&#x96C6;,&#x6240;&#x6709;&#x8868;&#x7684;&#x6570;&#x636E;&#x7684;&#x5E76;&#x96C6;&#x662F;&#x5168;&#x91CF;&#x6570;&#x636E;</p>
-<p>&#x573A;&#x666F;:&#x5355;&#x8868;&#x6570;&#x636E;&#x91CF;&#x592A;&#x5927;,&#x5F71;&#x54CD; sql &#x6548;&#x7387;,&#x52A0;&#x91CD;&#x4E86; cpu &#x8D1F;&#x8F7D;</p>
-<p>3.&#x5782;&#x76F4;&#x5206;&#x5E93;</p>
-<p>&#x6982;&#x5FF5;:&#x4EE5;&#x8868;&#x4E3A;&#x4F9D;&#x636E;,&#x6309;&#x7167;&#x4E1A;&#x52A1;&#x5F52;&#x5C5E;&#x4E0D;&#x540C;,&#x5C06;&#x4E0D;&#x540C;&#x7684;&#x8868;&#x62C6;&#x5206;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x5E93;&#x4E2D;</p>
-<p>&#x7ED3;&#x679C;:&#x6BCF;&#x4E2A;&#x5E93;&#x7684;&#x7ED3;&#x6784;&#x90FD;&#x4E0D;&#x4E00;&#x6837;,&#x6BCF;&#x4E2A;&#x5E93;&#x7684;&#x6570;&#x636E;&#x4E5F;&#x4E0D;&#x4E00;&#x6837;,&#x6CA1;&#x6709;&#x4EA4;&#x96C6;,&#x6240;&#x6709;&#x5E93;&#x7684;&#x5E76;&#x96C6;&#x662F;&#x5168;&#x91CF;&#x6570;&#x636E;</p>
-<p>&#x573A;&#x666F;:&#x7EDD;&#x5BF9;&#x5E76;&#x53D1;&#x91CF;&#x4E0A;&#x6765;&#x4E86;,&#x5E76;&#x4E14;&#x53EF;&#x4EE5;&#x62BD;&#x8C61;&#x51FA;&#x5355;&#x72EC;&#x7684;&#x4E1A;&#x52A1;&#x6A21;&#x5757;,&#x6A21;&#x5757;&#x5316;,&#x4E00;&#x7C7B;&#x4E1A;&#x52A1;&#x6A21;&#x5757;&#x4E00;&#x4E2A;&#x5E93;</p>
-<p>4.&#x5782;&#x76F4;&#x5206;&#x8868;</p>
-<p>&#x6982;&#x5FF5;:&#x4EE5;&#x5B57;&#x6BB5;&#x4E3A;&#x4F9D;&#x636E;,&#x6309;&#x7167;&#x5B57;&#x6BB5;&#x7684;&#x6D3B;&#x8DC3;&#x6027;,&#x5C06;&#x8868;&#x4E2D;&#x5B57;&#x6BB5;&#x62C6;&#x5206;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x8868;(&#x4E3B;&#x8868;&#x548C;&#x62D3;&#x5C55;&#x8868;)&#x4E2D;</p>
-<p>&#x7ED3;&#x679C;:&#x6BCF;&#x4E2A;&#x8868;&#x7684;&#x7ED3;&#x6784;&#x4E0D;&#x4E00;&#x6837;,&#x6BCF;&#x4E2A;&#x8868;&#x7684;&#x6570;&#x636E;&#x4E5F;&#x4E0D;&#x4E00;&#x6837;,&#x4E00;&#x822C;&#x6765;&#x8BF4;&#x6BCF;&#x4E2A;&#x8868;&#x7684;&#x5B57;&#x6BB5;&#x81F3;&#x5C11;&#x6709;&#x4E00;&#x5217;&#x4EA4;&#x96C6;,&#x4E00;&#x822C;&#x662F;&#x4E3B;&#x952E;,&#x7528;&#x4E8E;&#x5173;&#x8054;&#x6570;&#x636E;;&#x6240;&#x6709;&#x8868;&#x7684;&#x5E76;&#x96C6;&#x662F;&#x5168;&#x91CF;&#x6570;&#x636E;</p>
-<p>&#x573A;&#x666F;:&#x8868;&#x7684;&#x5B57;&#x6BB5;&#x5F88;&#x591A;,&#x5E76;&#x4E14;&#x70ED;&#x70B9;&#x6570;&#x636E;&#x548C;&#x975E;&#x70ED;&#x70B9;&#x6570;&#x636E;&#x5728;&#x4E00;&#x8D77;,&#x5355;&#x884C;&#x6570;&#x636E;&#x6240;&#x9700;&#x7684;&#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x5927;,&#x4EE5;&#x81F3;&#x4E8E;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x7684;&#x6570;&#x636E;&#x884C;&#x51CF;&#x5C11;,&#x67E5;&#x8BE2;&#x65F6;&#x4F1A;&#x53BB;&#x8BFB;&#x53D6;&#x78C1;&#x76D8;&#x4EA7;&#x751F; IO</p>
-<h3 id="8-mysql-&#x4E24;&#x79CD;&#x5E38;&#x89C1;&#x5F15;&#x64CE;&#x7684;&#x5BF9;&#x6BD4;"><a href="#8-mysql-&#x4E24;&#x79CD;&#x5E38;&#x89C1;&#x5F15;&#x64CE;&#x7684;&#x5BF9;&#x6BD4;" class="headerlink" title="8.mysql &#x4E24;&#x79CD;&#x5E38;&#x89C1;&#x5F15;&#x64CE;&#x7684;&#x5BF9;&#x6BD4;"></a>8.mysql &#x4E24;&#x79CD;&#x5E38;&#x89C1;&#x5F15;&#x64CE;&#x7684;&#x5BF9;&#x6BD4;</h3><p>1.Innodb:</p>
-<p>&#x63D0;&#x4F9B;&#x4E86;&#x5BF9;&#x6570;&#x636E;&#x5E93; ACID &#x4E8B;&#x52A1;&#x7684;&#x652F;&#x6301;</p>
-<p>&#x5E76;&#x4E14;&#x5B9E;&#x73B0;&#x4E86; SQL &#x6807;&#x51C6;&#x7684;&#x56DB;&#x79CD;&#x9694;&#x79BB;&#x7EA7;&#x522B;</p>
-<p>&#x63D0;&#x4F9B;&#x4E86;&#x884C;&#x7EA7;&#x9501;&#x548C;&#x5916;&#x952E;&#x7EA6;&#x675F;</p>
-<p>&#x4E0D;&#x652F;&#x6301; FULLTEXT &#x7C7B;&#x578B;&#x7684;&#x7D22;&#x5F15;</p>
-<p>&#x6CA1;&#x6709;&#x4FDD;&#x5B58;&#x8868;&#x7684;&#x884C;&#x6570;</p>
-<p>&#x9501;&#x7684;&#x7C92;&#x5EA6;&#x66F4;&#x5C0F;,&#x5199;&#x64CD;&#x4F5C;&#x4E0D;&#x4F1A;&#x9501;&#x5B9A;&#x5168;&#x8868;</p>
+<h3 id="3-sql-优化"><a href="#3-sql-优化" class="headerlink" title="3.sql 优化"></a>3.sql 优化</h3><p>1.为表建立主键</p>
+<p>2.定义字段时选取合适的类别和长度</p>
+<p>3.不使用 select’*‘,明确查询字段,返回无用的字段会降低查询效率</p>
+<p>4.单条 sql 不要 join 超过三张表,关联字段必须有索引且数据类型一致</p>
+<p>5.单条 sql 子查询不要超过两层</p>
+<p>6.sql 中不要进行计算或者嵌套判断</p>
+<p>7.where 子句,group by 中用到的字段增加索引</p>
+<p>8.where 子句中等号的左侧不能使用函数或者表达式,会导致数据库引擎放弃索引进行全表扫描</p>
+<p>9.不要使用 like ‘%name’,即左模糊</p>
+<p>10.不要使用负向查询条件(!=、&lt;&gt;、not),会导致数据库引擎放弃索引,进行全表扫描</p>
+<p>11.不要使用 or,会导致数据库引擎放弃索引查询而进行全表扫描</p>
+<p>12.传入变量类型与查询条件中字段类型应该匹配,禁止隐式转换</p>
+<p>13.不要使用外键\视图\触发器\存储过程等</p>
+<p>14.尽量避免进行 null 值的判断,会导致数据库引擎放弃索引而进行全表扫描</p>
+<h3 id="4-主键索引和唯一索引的区别"><a href="#4-主键索引和唯一索引的区别" class="headerlink" title="4.主键索引和唯一索引的区别"></a>4.主键索引和唯一索引的区别</h3><p>1.主键是一种约束,目的是对这个表的某一列进行限制,唯一索引是一种索引,是为了更快的查询</p>
+<p>2.主键不允许存在 null 值,唯一索引可以存在空值</p>
+<p>3.一个表最多只能有一个主键,但是可以包含多个唯一索引</p>
+<p>4.主键创建后一定包含一个唯一性索引,唯一索引并不一定都是主键</p>
+<p>5.主键可以被其他表引为外键</p>
+<p>6.主键数据必须唯一,索引数据可以不唯一</p>
+<h3 id="5-多个单个索引和联合索引的区别"><a href="#5-多个单个索引和联合索引的区别" class="headerlink" title="5.多个单个索引和联合索引的区别"></a>5.多个单个索引和联合索引的区别</h3><p>1.多个单列索引在多条件查询时只会生效第一个索引</p>
+<p>2.联合索引最左前缀原则:当创建(a,b,c)联合索引时,相当于创建了(a)单列索引,(a,b)联合索引以及(a,b,c)联合索引</p>
+<p>3.联合索引比对每个列分别建索引更有优势,因为索引建立得越多就越占磁盘空间,在更新数据的时候速度会更慢.另外建立多列索引时,顺序也是需要注意的,应该将严格的索引放在前面,这样筛选的力度会更大,效率更高</p>
+<h3 id="6-建立索引的原则"><a href="#6-建立索引的原则" class="headerlink" title="6.建立索引的原则"></a>6.建立索引的原则</h3><p>1.选择唯一性索引</p>
+<p>2.为经常需要排序,分组或者联合操作的字段建立索引</p>
+<p>3.为经常用作查询条件的字段建立索引</p>
+<p>4.限制索引的数目,因为建索引有一定开销</p>
+<p>5.索引字段长度不能太长</p>
+<p>6.联合索引最左前缀顺序很重要</p>
+<p>7.尽量选择区分度高的列作为索引</p>
+<p>8.频繁进行数据操作的表,不要建立太多的索引</p>
+<p>9.删除无用的索引</p>
+<h3 id="7-分库分表策略"><a href="#7-分库分表策略" class="headerlink" title="7.分库分表策略"></a>7.分库分表策略</h3><p>1.水平分库</p>
+<p>概念:以字段为依据,按照一定的策略(hash,range 等),将一个库中的数据拆分到多个库</p>
+<p>结果:每个库的结构都是一样的,每个库的数据都不一样,没有交集,所有库的数据的并集是全量数据</p>
+<p>场景:系统绝对并发量上来了,分表难以解决问题,并且还没有明显的业务归属来垂直分库</p>
+<p>2.水平分表</p>
+<p>概念:以字段为依据,按照一定的策略(hash,range 等),将一个表中的数据拆分到多个表</p>
+<p>结果:每个表的结构都是一样的,每个表的数据都不一样,没有交集,所有表的数据的并集是全量数据</p>
+<p>场景:单表数据量太大,影响 sql 效率,加重了 cpu 负载</p>
+<p>3.垂直分库</p>
+<p>概念:以表为依据,按照业务归属不同,将不同的表拆分到不同的库中</p>
+<p>结果:每个库的结构都不一样,每个库的数据也不一样,没有交集,所有库的并集是全量数据</p>
+<p>场景:绝对并发量上来了,并且可以抽象出单独的业务模块,模块化,一类业务模块一个库</p>
+<p>4.垂直分表</p>
+<p>概念:以字段为依据,按照字段的活跃性,将表中字段拆分到不同的表(主表和拓展表)中</p>
+<p>结果:每个表的结构不一样,每个表的数据也不一样,一般来说每个表的字段至少有一列交集,一般是主键,用于关联数据;所有表的并集是全量数据</p>
+<p>场景:表的字段很多,并且热点数据和非热点数据在一起,单行数据所需的存储空间大,以至于数据库缓存的数据行减少,查询时会去读取磁盘产生 IO</p>
+<h3 id="8-mysql-两种常见引擎的对比"><a href="#8-mysql-两种常见引擎的对比" class="headerlink" title="8.mysql 两种常见引擎的对比"></a>8.mysql 两种常见引擎的对比</h3><p>1.Innodb:</p>
+<p>提供了对数据库 ACID 事务的支持</p>
+<p>并且实现了 SQL 标准的四种隔离级别</p>
+<p>提供了行级锁和外键约束</p>
+<p>不支持 FULLTEXT 类型的索引</p>
+<p>没有保存表的行数</p>
+<p>锁的粒度更小,写操作不会锁定全表</p>
 <p>2.MyISAM:</p>
-<p>&#x6CA1;&#x6709;&#x63D0;&#x4F9B;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x4E8B;&#x52A1;&#x7684;&#x652F;&#x6301;</p>
-<p>&#x4E0D;&#x652F;&#x6301;&#x884C;&#x7EA7;&#x9501;&#x548C;&#x5916;&#x952E;,&#x5373;&#x8868;&#x7EA7;&#x9501;</p>
-<p>&#x5B58;&#x50A8;&#x4E86;&#x8868;&#x7684;&#x884C;&#x6570;</p>
-<p>&#x9002;&#x5408;&#x8BFB;&#x64CD;&#x4F5C;&#x8FDC;&#x8FDC;&#x591A;&#x4E8E;&#x5199;&#x64CD;&#x4F5C;,&#x4E14;&#x4E0D;&#x9700;&#x8981;&#x64CD;&#x4F5C;&#x6570;&#x636E;&#x5E93;&#x4E8B;&#x52A1;&#x7684;&#x573A;&#x666F;</p>
-<p>&#x533A;&#x522B;:</p>
+<p>没有提供对数据库事务的支持</p>
+<p>不支持行级锁和外键,即表级锁</p>
+<p>存储了表的行数</p>
+<p>适合读操作远远多于写操作,且不需要操作数据库事务的场景</p>
+<p>区别:</p>
 <ul>
-<li><p>MyISAM &#x662F;&#x975E;&#x4E8B;&#x52A1;&#x5B89;&#x5168;&#x7684;,InnoDB &#x662F;&#x4E8B;&#x52A1;&#x5B89;&#x5168;&#x7684;</p>
+<li><p>MyISAM 是非事务安全的,InnoDB 是事务安全的</p>
 </li>
-<li><p>MyISAM &#x9501;&#x7684;&#x529B;&#x5EA6;&#x662F;&#x8868;&#x7EA7;,InnoDB &#x662F;&#x884C;&#x7EA7;</p>
+<li><p>MyISAM 锁的力度是表级,InnoDB 是行级</p>
 </li>
-<li><p>MyISAM &#x652F;&#x6301;&#x5168;&#x6587;&#x7D22;&#x5F15;,InnoDB &#x4E0D;&#x652F;&#x6301;</p>
+<li><p>MyISAM 支持全文索引,InnoDB 不支持</p>
 </li>
 </ul>
 
@@ -392,12 +390,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

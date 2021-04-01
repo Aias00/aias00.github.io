@@ -168,10 +168,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-03-30 10:56:26 / 修改时间：22:38:35" itemprop="dateCreated datePublished" datetime="2021-03-30T10:56:26+08:00">2021-03-30</time>
+              <time title="创建时间：2021-03-30 10:56:26" itemprop="dateCreated datePublished" datetime="2021-03-30T10:56:26+08:00">2021-03-30</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-01 11:25:31" itemprop="dateModified" datetime="2021-04-01T11:25:31+08:00">2021-04-01</time>
+              </span>
 
           
 
@@ -184,10 +190,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;"><a href="#&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;" class="headerlink" title="&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;"></a>&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;</h3><p>&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;&#xFF0C;Binary Search Tree[BST]&#xFF0C;&#x4E5F;&#x79F0;&#x6709;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;&#xFF08;ordered binary tree&#xFF09;&#xFF0C;&#x6392;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;&#xFF08;sorted binary tree&#xFF09;&#xFF0C;&#x662F;&#x6307;&#x4E00;&#x68F5;&#x7A7A;&#x6811;&#x6216;&#x5177;&#x6709;&#x4E0B;&#x5217;&#x6027;&#x8D28;&#x7684;&#x4E8C;&#x53C9;&#x6811;</p>
-<p>1.&#x82E5;&#x4EFB;&#x610F;&#x8282;&#x70B9;&#x7684;&#x5DE6;&#x5B50;&#x6811;&#x4E0D;&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x5DE6;&#x5B50;&#x6811;&#x4E0A;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684;&#x503C;&#x5747;&#x5C0F;&#x4E8E;&#x5B83;&#x7684;&#x6839;&#x8282;&#x70B9;&#x7684;&#x503C;</p>
-<p>2.&#x82E5;&#x4EFB;&#x610F;&#x8282;&#x70B9;&#x7684;&#x53F3;&#x5B50;&#x6811;&#x4E0D;&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x53F3;&#x5B50;&#x6811;&#x4E0A;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684;&#x503C;&#x5747;&#x5927;&#x4E8E;&#x5B83;&#x7684;&#x6839;&#x8282;&#x70B9;&#x7684;&#x503C;</p>
-<p>3.&#x4EFB;&#x610F;&#x8282;&#x70B9;&#x7684;&#x5DE6;&#x53F3;&#x5B50;&#x6811;&#x4E5F;&#x5206;&#x522B;&#x662F;&#x4E8C;&#x53C9;&#x67E5;&#x627E;&#x6811;</p>
+          <h3 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h3><p>二叉查找树，Binary Search Tree[BST]，也称有序二叉树（ordered binary tree），排序二叉树（sorted binary tree），是指一棵空树或具有下列性质的二叉树</p>
+<p>1.若任意节点的左子树不为空，则左子树上所有节点的值均小于它的根节点的值</p>
+<p>2.若任意节点的右子树不为空，则右子树上所有节点的值均大于它的根节点的值</p>
+<p>3.任意节点的左右子树也分别是二叉查找树</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/d1dca260.html#more" rel="contents">
@@ -545,9 +551,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="&#x4EC0;&#x4E48;&#x662F;-mvcc"><a href="#&#x4EC0;&#x4E48;&#x662F;-mvcc" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F; mvcc"></a>&#x4EC0;&#x4E48;&#x662F; mvcc</h3><p>mvcc,Multi-version Concurrency Control,&#x5373;&#x591A;&#x7248;&#x672C;&#x5E76;&#x53D1;&#x63A7;&#x5236;;mvcc &#x662F;&#x4E00;&#x79CD;&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x7684;&#x65B9;&#x6CD5;,&#x4E00;&#x822C;&#x5728;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x4E2D;,&#x5B9E;&#x73B0;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;,&#x5728;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x4E2D;&#x5B9E;&#x73B0;&#x4E8B;&#x52A1;&#x5185;&#x5B58;</p>
-<p>MVCC &#x5728; mysql InnoDB &#x4E2D;&#x7684;&#x5B9E;&#x73B0;&#x4E3B;&#x8981;&#x662F;&#x4E3A;&#x4E86;&#x63D0;&#x9AD8;&#x6570;&#x636E;&#x5E93;&#x5E76;&#x53D1;&#x6027;&#x80FD;,&#x7528;&#x66F4;&#x597D;&#x7684;&#x65B9;&#x5F0F;&#x53BB;&#x5904;&#x7406;&#x8BFB;-&#x5199;&#x51B2;&#x7A81;,&#x505A;&#x5230;&#x5373;&#x4F7F;&#x6709;&#x8BFB;&#x5199;&#x51B2;&#x7A81;&#x65F6;,&#x4E5F;&#x80FD;&#x505A;&#x5230;&#x4E0D;&#x52A0;&#x9501;,&#x975E;&#x963B;&#x585E;&#x5E76;&#x53D1;&#x8BFB;</p>
-<h3 id="&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;"><a href="#&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;"></a>&#x4EC0;&#x4E48;&#x662F;&#x5F53;&#x524D;&#x8BFB;&#x548C;&#x5FEB;&#x7167;&#x8BFB;</h3><p>1.&#x5F53;&#x524D;&#x8BFB;</p>
+          <h3 id="什么是-mvcc"><a href="#什么是-mvcc" class="headerlink" title="什么是 mvcc"></a>什么是 mvcc</h3><p>mvcc,Multi-version Concurrency Control,即多版本并发控制;mvcc 是一种并发控制的方法,一般在数据库管理系统中,实现对数据库的并发访问,在编程语言中实现事务内存</p>
+<p>MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能,用更好的方式去处理读-写冲突,做到即使有读写冲突时,也能做到不加锁,非阻塞并发读</p>
+<h3 id="什么是当前读和快照读"><a href="#什么是当前读和快照读" class="headerlink" title="什么是当前读和快照读"></a>什么是当前读和快照读</h3><p>1.当前读</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/ba4a4566.html#more" rel="contents">
@@ -848,8 +854,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="1-&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;"><a href="#1-&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;" class="headerlink" title="1.&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;"></a>1.&#x7EBF;&#x7A0B;&#x95F4;&#x540C;&#x6B65;</h3><h4 id="&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;"><a href="#&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;" class="headerlink" title="&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;?"></a>&#x4E3A;&#x4F55;&#x8981;&#x4F7F;&#x7528;&#x540C;&#x6B65;?</h4><p>java &#x5141;&#x8BB8;&#x591A;&#x7EBF;&#x7A0B;&#x5E76;&#x53D1;&#x63A7;&#x5236;,&#x5F53;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x64CD;&#x4F5C;&#x4E00;&#x4E2A;&#x53EF;&#x5171;&#x4EAB;&#x7684;&#x8D44;&#x6E90;&#x53D8;&#x91CF;&#x65F6;,&#x5C06;&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x7684;&#x4E0D;&#x51C6;&#x786E;,&#x76F8;&#x4E92;&#x4E4B;&#x95F4;&#x4EA7;&#x751F;&#x51B2;&#x7A81;,&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x52A0;&#x5165;&#x540C;&#x6B65;&#x9501;&#x4EE5;&#x907F;&#x514D;&#x5728;&#x8BE5;&#x7EBF;&#x7A0B;&#x6CA1;&#x6709;&#x5B8C;&#x6210;&#x5BF9;&#x6570;&#x636E;&#x7684;&#x64CD;&#x4F5C;&#x4E4B;&#x524D;,&#x6570;&#x636E;&#x88AB;&#x5176;&#x4ED6;&#x7EBF;&#x7A0B;&#x8C03;&#x7528;,&#x4ECE;&#x800C;&#x4FDD;&#x8BC1;&#x4E86;&#x8BE5;&#x53D8;&#x91CF;&#x7684;&#x552F;&#x4E00;&#x6027;&#x548C;&#x51C6;&#x786E;&#x6027;</p>
-<h4 id="&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;"><a href="#&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;" class="headerlink" title="&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;"></a>&#x540C;&#x6B65;&#x7684;&#x65B9;&#x5F0F;</h4><p>1.&#x540C;&#x6B65;&#x65B9;&#x6CD5;&#x6216;&#x540C;&#x6B65;&#x4EE3;&#x7801;&#x5757;:synchronized &#x5173;&#x952E;&#x5B57;&#x6216; Lock &#x9501;</p>
+          <h3 id="1-线程间同步"><a href="#1-线程间同步" class="headerlink" title="1.线程间同步"></a>1.线程间同步</h3><h4 id="为何要使用同步"><a href="#为何要使用同步" class="headerlink" title="为何要使用同步?"></a>为何要使用同步?</h4><p>java 允许多线程并发控制,当多个线程同时操作一个可共享的资源变量时,将会导致数据的不准确,相互之间产生冲突,因此可以加入同步锁以避免在该线程没有完成对数据的操作之前,数据被其他线程调用,从而保证了该变量的唯一性和准确性</p>
+<h4 id="同步的方式"><a href="#同步的方式" class="headerlink" title="同步的方式"></a>同步的方式</h4><p>1.同步方法或同步代码块:synchronized 关键字或 Lock 锁</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/1bbbbb30.html#more" rel="contents">
@@ -942,12 +948,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

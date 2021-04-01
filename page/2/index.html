@@ -190,9 +190,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="1-JVM-&#x5185;&#x5B58;&#x6A21;&#x578B;"><a href="#1-JVM-&#x5185;&#x5B58;&#x6A21;&#x578B;" class="headerlink" title="1.JVM &#x5185;&#x5B58;&#x6A21;&#x578B;"></a>1.JVM &#x5185;&#x5B58;&#x6A21;&#x578B;</h3><p>&#x8FD0;&#x884C;&#x65F6;&#x6570;&#x636E;&#x533A;&#x57DF;</p>
-<h4 id="&#x7EBF;&#x7A0B;&#x79C1;&#x6709;"><a href="#&#x7EBF;&#x7A0B;&#x79C1;&#x6709;" class="headerlink" title="&#x7EBF;&#x7A0B;&#x79C1;&#x6709;"></a>&#x7EBF;&#x7A0B;&#x79C1;&#x6709;</h4><p>&#x7EBF;&#x7A0B;&#x79C1;&#x6709;&#x90E8;&#x5206;,&#x751F;&#x547D;&#x5468;&#x671F;&#x548C;&#x7EBF;&#x7A0B;&#x4E00;&#x81F4;</p>
-<h5 id="&#x865A;&#x62DF;&#x673A;&#x6808;-Stack"><a href="#&#x865A;&#x62DF;&#x673A;&#x6808;-Stack" class="headerlink" title="&#x865A;&#x62DF;&#x673A;&#x6808;(Stack)"></a>&#x865A;&#x62DF;&#x673A;&#x6808;(Stack)</h5>
+          <h3 id="1-JVM-内存模型"><a href="#1-JVM-内存模型" class="headerlink" title="1.JVM 内存模型"></a>1.JVM 内存模型</h3><p>运行时数据区域</p>
+<h4 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h4><p>线程私有部分,生命周期和线程一致</p>
+<h5 id="虚拟机栈-Stack"><a href="#虚拟机栈-Stack" class="headerlink" title="虚拟机栈(Stack)"></a>虚拟机栈(Stack)</h5>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/903a0625.html#more" rel="contents">
@@ -264,10 +264,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="mysql-&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;"><a href="#mysql-&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;" class="headerlink" title="mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;"></a>mysql &#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x95F4;&#x5982;&#x4F55;&#x901A;&#x4FE1;</h3><p>1.&#x901A;&#x4FE1;&#x7C7B;&#x578B;:&#x957F;&#x8FDE;&#x63A5;&#x6216;&#x77ED;&#x8FDE;&#x63A5;(mysql &#x90FD;&#x652F;&#x6301;,&#x4E00;&#x822C;&#x4E3A;&#x957F;&#x8FDE;&#x63A5;,&#x653E;&#x5728;&#x8FDE;&#x63A5;&#x6C60;&#x4E2D;)</p>
-<p>&#x67E5;&#x770B;&#x8FDE;&#x63A5;:show full processlist;</p>
-<p>&#x67E5;&#x770B;&#x8FDE;&#x63A5;&#x53C2;&#x6570;:show global status like &#x2018;Thread%&#x2019;</p>
-<p><img src="https://i.loli.net/2021/03/26/etapP2QIrOLhbcZ.png" alt="mysql-interview-2021-03-26-13-30-5220210326133051"></p>
+          <h3 id="mysql-客户端和服务端之间如何通信"><a href="#mysql-客户端和服务端之间如何通信" class="headerlink" title="mysql 客户端和服务端之间如何通信"></a>mysql 客户端和服务端之间如何通信</h3><p>1.通信类型:长连接或短连接(mysql 都支持,一般为长连接,放在连接池中)</p>
+<p>查看连接:show full processlist;</p>
+<p>查看连接参数:show global status like ‘Thread%’</p>
+<p><img data-src="https://i.loli.net/2021/03/26/etapP2QIrOLhbcZ.png" alt="mysql-interview-2021-03-26-13-30-5220210326133051"></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/a748be8.html#more" rel="contents">
@@ -506,122 +506,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="1-&#x6570;&#x7EC4;&#x548C;&#x96C6;&#x5408;&#x7684;&#x533A;&#x522B;"><a href="#1-&#x6570;&#x7EC4;&#x548C;&#x96C6;&#x5408;&#x7684;&#x533A;&#x522B;" class="headerlink" title="1.&#x6570;&#x7EC4;&#x548C;&#x96C6;&#x5408;&#x7684;&#x533A;&#x522B;"></a>1.&#x6570;&#x7EC4;&#x548C;&#x96C6;&#x5408;&#x7684;&#x533A;&#x522B;</h3><ul>
-<li>&#x6570;&#x7EC4;&#x80FD;&#x5B58;&#x653E;&#x57FA;&#x7840;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x548C;&#x5BF9;&#x8C61;,&#x800C;&#x96C6;&#x5408;&#x5B58;&#x653E;&#x7684;&#x90FD;&#x662F;&#x5BF9;&#x8C61;,&#x96C6;&#x5408;&#x65E0;&#x6CD5;&#x5B58;&#x653E;&#x57FA;&#x7840;&#x6570;&#x636E;&#x7C7B;&#x578B;.&#x6570;&#x7EC4;&#x548C;&#x96C6;&#x5408;&#x5B58;&#x653E;&#x7684;&#x90FD;&#x662F;&#x5BF9;&#x8C61;&#x7684;&#x5F15;&#x7528;&#x5730;&#x5740;</li>
-<li>&#x6570;&#x7EC4;&#x5BB9;&#x91CF;&#x56FA;&#x5B9A;&#x65E0;&#x6CD5;&#x52A8;&#x6001;&#x6539;&#x53D8;,&#x96C6;&#x5408;&#x5BB9;&#x91CF;&#x53EF;&#x4EE5;&#x52A8;&#x6001;&#x6539;&#x53D8;</li>
-<li>&#x6570;&#x7EC4;&#x65E0;&#x6CD5;&#x5224;&#x65AD;&#x5176;&#x4E2D;&#x5B9E;&#x9645;&#x5B58;&#x653E;&#x591A;&#x5C11;&#x5143;&#x7D20;,length &#x53EA;&#x544A;&#x8BC9;&#x4E86;&#x6570;&#x7EC4;&#x7684;&#x5BB9;&#x91CF;,&#x800C;&#x96C6;&#x5408;&#x7684; size()&#x53EF;&#x4EE5;&#x786E;&#x5207;&#x77E5;&#x9053;&#x5143;&#x7D20;&#x7684;&#x4E2A;&#x6570;</li>
-<li>&#x96C6;&#x5408;&#x6709;&#x591A;&#x79CD;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x548C;&#x4E0D;&#x540C;&#x9002;&#x7528;&#x573A;&#x666F;,&#x4E0D;&#x50CF;&#x6570;&#x7EC4;&#x4EC5;&#x91C7;&#x7528;&#x987A;&#x5E8F;&#x8868;&#x65B9;&#x5F0F;</li>
-<li>&#x96C6;&#x5408;&#x4EE5;&#x7C7B;&#x7684;&#x5F62;&#x5F0F;&#x5B58;&#x5728;,&#x5177;&#x6709;&#x7EE7;&#x627F;,&#x5C01;&#x88C5;,&#x591A;&#x6001;&#x7B49;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7279;&#x6027;,&#x901A;&#x8FC7;&#x7B80;&#x5355;&#x7684;&#x65B9;&#x6CD5;&#x548C;&#x5C5E;&#x6027;&#x5373;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x5404;&#x79CD;&#x590D;&#x6742;&#x64CD;&#x4F5C;,&#x5927;&#x5927;&#x63D0;&#x9AD8;&#x4E86;&#x8F6F;&#x4EF6;&#x5F00;&#x53D1;&#x7684;&#x6548;&#x7387;</li>
+          <h3 id="1-数组和集合的区别"><a href="#1-数组和集合的区别" class="headerlink" title="1.数组和集合的区别"></a>1.数组和集合的区别</h3><ul>
+<li>数组能存放基础数据类型和对象,而集合存放的都是对象,集合无法存放基础数据类型.数组和集合存放的都是对象的引用地址</li>
+<li>数组容量固定无法动态改变,集合容量可以动态改变</li>
+<li>数组无法判断其中实际存放多少元素,length 只告诉了数组的容量,而集合的 size()可以确切知道元素的个数</li>
+<li>集合有多种实现方式和不同适用场景,不像数组仅采用顺序表方式</li>
+<li>集合以类的形式存在,具有继承,封装,多态等面向对象特性,通过简单的方法和属性即可以实现各种复杂操作,大大提高了软件开发的效率</li>
 </ul>
-<h3 id="2-java-&#x96C6;&#x5408;&#x5206;&#x7C7B;"><a href="#2-java-&#x96C6;&#x5408;&#x5206;&#x7C7B;" class="headerlink" title="2.java &#x96C6;&#x5408;&#x5206;&#x7C7B;"></a>2.java &#x96C6;&#x5408;&#x5206;&#x7C7B;</h3><p>Collection &#x548C; Map,&#x662F;&#x96C6;&#x5408;&#x6846;&#x67B6;&#x7684;&#x63A5;&#x53E3;</p>
-<h4 id="Collection-&#x7684;&#x5B50;&#x63A5;&#x53E3;"><a href="#Collection-&#x7684;&#x5B50;&#x63A5;&#x53E3;" class="headerlink" title="Collection &#x7684;&#x5B50;&#x63A5;&#x53E3;"></a>Collection &#x7684;&#x5B50;&#x63A5;&#x53E3;</h4>
+<h3 id="2-java-集合分类"><a href="#2-java-集合分类" class="headerlink" title="2.java 集合分类"></a>2.java 集合分类</h3><p>Collection 和 Map,是集合框架的接口</p>
+<h4 id="Collection-的子接口"><a href="#Collection-的子接口" class="headerlink" title="Collection 的子接口"></a>Collection 的子接口</h4>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/4ca75bdb.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ce3641e9.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="hongyu liu">
-      <meta itemprop="description" content="保持好奇，保持热爱">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hongyu`s blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/article/ce3641e9.html" class="post-title-link" itemprop="url">锁面试知识点(持续更新)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-11 14:04:23" itemprop="dateCreated datePublished" datetime="2021-03-11T14:04:23+08:00">2021-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="synchronized-&#x548C;-ReentrantLock-&#x533A;&#x522B;"><a href="#synchronized-&#x548C;-ReentrantLock-&#x533A;&#x522B;" class="headerlink" title="synchronized &#x548C; ReentrantLock &#x533A;&#x522B;"></a>synchronized &#x548C; ReentrantLock &#x533A;&#x522B;</h3><ul>
-<li><p>&#x90FD;&#x662F;&#x53EF;&#x91CD;&#x5165;&#x9501;</p>
-</li>
-<li><p>synchronized &#x662F; JVM &#x5C42;&#x9762;&#x7684;&#x9501;,&#x662F; java &#x5173;&#x952E;&#x5B57;,Reentrantlock &#x662F; lock &#x63A5;&#x53E3;&#x7684;&#x5B9E;&#x73B0;,&#x662F; API &#x5C42;&#x9762;&#x7684;&#x9501;</p>
-</li>
-<li><p>Reentrantlock &#x663E;&#x5F0F;&#x83B7;&#x5F97;&#x9501;,&#x91CA;&#x653E;&#x9501;,synchronized &#x9690;&#x5F0F;&#x83B7;&#x53D6;&#x9501;,&#x91CA;&#x653E;&#x9501;</p>
-</li>
-<li><p>ReentrantLock &#x53EF;&#x54CD;&#x5E94;&#x4E2D;&#x65AD;,synchronized &#x662F;&#x4E0D;&#x53EF;&#x4EE5;&#x54CD;&#x5E94;&#x4E2D;&#x65AD;&#x7684;,&#x7B49;&#x5F85;&#x7684;&#x7EBF;&#x7A0B;&#x4F1A;&#x4E00;&#x76F4;&#x7B49;&#x5F85;</p>
-</li>
-<li><p>synchronized &#x7684;&#x5B9E;&#x73B0;&#x6D89;&#x53CA;&#x5230;&#x9501;&#x7684;&#x5347;&#x7EA7;,&#x662F;&#x540C;&#x6B65;&#x963B;&#x585E;,ReentrantLock &#x901A;&#x8FC7;&#x5229;&#x7528; CAS &#x81EA;&#x65CB;&#x673A;&#x5236;&#x4FDD;&#x8BC1;&#x7EBF;&#x7A0B;&#x64CD;&#x4F5C;&#x7684;&#x539F;&#x5B50;&#x6027;&#x548C; volatile &#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x53EF;&#x89C1;&#x6027;,&#x975E;&#x540C;&#x6B65;&#x963B;&#x585E;,&#x91C7;&#x7528;&#x7684;&#x662F;&#x4E50;&#x89C2;&#x5E76;&#x53D1;&#x7B56;&#x7565;</p>
-</li>
-<li><p>ReentrantLock &#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x516C;&#x5E73;&#x9501;</p>
-</li>
-<li><p>ReentrantLock &#x53EF;&#x4EE5;&#x901A;&#x8FC7; Condition &#x7ED1;&#x5B9A;&#x591A;&#x4E2A;&#x6761;&#x4EF6;</p>
-</li>
-<li><p>synchronized &#x5728;&#x53D1;&#x751F;&#x5F02;&#x5E38;&#x65F6;,&#x4F1A;&#x81EA;&#x52A8;&#x91CA;&#x653E;&#x7EBF;&#x7A0B;&#x5360;&#x6709;&#x9501;,&#x56E0;&#x6B64;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;&#x6B7B;&#x9501;&#x73B0;&#x8C61;,&#x800C; ReentrantLock &#x9700;&#x8981;&#x4E3B;&#x52A8;&#x91CA;&#x653E;&#x9501;&#x624D;&#x80FD;&#x907F;&#x514D;&#x6B7B;&#x9501;</p>
-</li>
-<li><p>ReentrantLock &#x53EF;&#x4EE5;&#x77E5;&#x9053;&#x6709;&#x6CA1;&#x6709;&#x6210;&#x529F;&#x83B7;&#x53D6;&#x9501;,synchronized &#x4E0D;&#x80FD;</p>
-</li>
-<li><p>synchronized &#x9501;&#x7684;&#x662F;&#x5BF9;&#x8C61;,&#x9501;&#x662F;&#x4FDD;&#x5B58;&#x5230;&#x5BF9;&#x8C61;&#x5934;&#x91CC;&#x9762;&#x7684;,&#x6839;&#x636E;&#x5BF9;&#x8C61;&#x5934;&#x6570;&#x636E;&#x6765;&#x6807;&#x8BC6;&#x662F;&#x5426;&#x6709;&#x7EBF;&#x7A0B;&#x83B7;&#x5F97;&#x9501;/&#x4E89;&#x62A2;&#x9501;,ReentrantLock &#x9501;&#x7684;&#x662F;&#x7EBF;&#x7A0B;,&#x6839;&#x636E;&#x8FDB;&#x5165;&#x7684;&#x7EBF;&#x7A0B;&#x548C; int &#x7C7B;&#x578B;&#x7684; state &#x6807;&#x8BC6;&#x9501;&#x7684;&#x83B7;&#x5F97;/&#x4E89;&#x62A2;</p>
-</li>
-<li><p>ReentrantLock &#x62D3;&#x5C55;&#x529F;&#x80FD;&#x66F4;&#x5F3A;&#x5927;</p>
-</li>
-</ul>
-<h3 id="synchronized-&#x4FDD;&#x8BC1;&#x4E86;&#x90A3;&#x4E9B;&#x7279;&#x6027;"><a href="#synchronized-&#x4FDD;&#x8BC1;&#x4E86;&#x90A3;&#x4E9B;&#x7279;&#x6027;" class="headerlink" title="synchronized &#x4FDD;&#x8BC1;&#x4E86;&#x90A3;&#x4E9B;&#x7279;&#x6027;"></a>synchronized &#x4FDD;&#x8BC1;&#x4E86;&#x90A3;&#x4E9B;&#x7279;&#x6027;</h3><ul>
-<li><p>&#x539F;&#x5B50;&#x6027;: &#x786E;&#x4FDD;&#x7EBF;&#x7A0B;&#x4E92;&#x65A5;&#x5730;&#x8BBF;&#x95EE;&#x540C;&#x6B65;&#x4EE3;&#x7801;</p>
-</li>
-<li><p>&#x53EF;&#x89C1;&#x6027;: &#x4FDD;&#x8BC1;&#x5171;&#x4EAB;&#x53D8;&#x91CF;&#x7684;&#x4FEE;&#x6539;&#x5BF9;&#x5176;&#x4ED6;&#x7EBF;&#x7A0B;&#x53EF;&#x89C1;.&#x7EBF;&#x7A0B;&#x52A0;&#x9501;&#x65F6;,&#x5C06;&#x6E05;&#x7A7A;&#x5DE5;&#x4F5C;&#x5185;&#x5B58;&#x4E2D;&#x5171;&#x4EAB;&#x53D8;&#x91CF;&#x7684;&#x503C;,&#x4ECE;&#x800C;&#x4F7F;&#x7528;&#x5171;&#x4EAB;&#x53D8;&#x91CF;&#x65F6;&#x9700;&#x8981;&#x4ECE;&#x4E3B;&#x5185;&#x5B58;&#x4E2D;&#x83B7;&#x53D6;&#x6700;&#x65B0;&#x7684;&#x503C;;&#x7EBF;&#x7A0B;&#x89E3;&#x9501;&#x524D;,&#x5FC5;&#x987B;&#x628A;&#x5171;&#x4EAB;&#x53D8;&#x91CF;&#x4E2D;&#x7684;&#x503C;&#x5237;&#x65B0;&#x5230;&#x4E3B;&#x5185;&#x5B58;&#x4E2D;;</p>
-</li>
-<li><p>&#x6709;&#x5E8F;&#x6027;: &#x5BF9;&#x4E00;&#x4E2A;&#x76D1;&#x89C6;&#x5668;&#x9501;&#x7684;&#x91CA;&#x653E;&#x64CD;&#x4F5C;&#x5148;&#x884C;&#x53D1;&#x751F;&#x4E8E;&#x540E;&#x9762;&#x5BF9;&#x8BE5;&#x76D1;&#x89C6;&#x5668;&#x9501;&#x7684;&#x83B7;&#x53D6;&#x64CD;&#x4F5C;(happens-before)</p>
-</li>
-</ul>
-<h3 id="java-&#x5BF9;&#x8C61;&#x5E03;&#x5C40;"><a href="#java-&#x5BF9;&#x8C61;&#x5E03;&#x5C40;" class="headerlink" title="java &#x5BF9;&#x8C61;&#x5E03;&#x5C40;"></a>java &#x5BF9;&#x8C61;&#x5E03;&#x5C40;</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/article/ce3641e9.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -936,13 +832,89 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>&#x5B66;&#x4E60;&#x4F7F;&#x7528; sentinel &#x6D41;&#x63A7;&#x529F;&#x80FD;</p>
-<h3 id="&#x914D;&#x7F6E;-sentinel-&#x63A7;&#x5236;&#x53F0;"><a href="#&#x914D;&#x7F6E;-sentinel-&#x63A7;&#x5236;&#x53F0;" class="headerlink" title="&#x914D;&#x7F6E; sentinel &#x63A7;&#x5236;&#x53F0;"></a>&#x914D;&#x7F6E; sentinel &#x63A7;&#x5236;&#x53F0;</h3><p>1.&#x53EF;&#x4EE5;&#x4ECE; github &#x83B7;&#x53D6;&#x6E90;&#x7801;&#x5230;&#x672C;&#x5730;&#x7F16;&#x8BD1;&#x6216;&#x8005;&#x76F4;&#x63A5;&#x4E0B;&#x8F7D;&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684; jar &#x5305;</p>
-<p>github &#x5730;&#x5740;:<a href="https://github.com/alibaba/Sentinel.git" target="_blank" rel="noopener">https://github.com/alibaba/Sentinel.git</a></p>
-<p>&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</p>
+          <p>学习使用 sentinel 流控功能</p>
+<h3 id="配置-sentinel-控制台"><a href="#配置-sentinel-控制台" class="headerlink" title="配置 sentinel 控制台"></a>配置 sentinel 控制台</h3><p>1.可以从 github 获取源码到本地编译或者直接下载官方提供的 jar 包</p>
+<p>github 地址:<a href="https://github.com/alibaba/Sentinel.git" target="_blank" rel="noopener">https://github.com/alibaba/Sentinel.git</a></p>
+<p>操作流程</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/32240ede.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/24f85607.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/24f85607.html" class="post-title-link" itemprop="url">使用nacos配置中心功能</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-13 16:24:21" itemprop="dateCreated datePublished" datetime="2020-12-13T16:24:21+08:00">2020-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>开始学习使用 spring-cloud-alibaba</p>
+<h3 id="使用-Nacos-配置中心功能"><a href="#使用-Nacos-配置中心功能" class="headerlink" title="使用 Nacos 配置中心功能"></a>使用 Nacos 配置中心功能</h3><p>1.创建一个 spring-cloud-alibaba 模块,添加以下依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--nacos配置中心--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2.创建测试 controller</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/24f85607.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1032,12 +1004,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
