@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="为什么要用分布式锁在开发过程中,涉及到单服务多实例同时运行,某些操作例如定时任务跑批/更新数据等,为了避免多个实例同时对同一共享资源进行多次操作或者重复操作,我们需要分布式锁来进行并发协调 单 Redis 实例实现分布式锁获取锁使用命令: SET resource_name my_random_value NX PX 30000 这个命令利用了 redis 2.6.12 版本以后提供的 set (">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-03-30T14:38:35.637Z">
+<meta property="og:updated_time" content="2021-04-06T14:13:58.081Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis实现分布式锁-单redis实例实现分布式锁">
 <meta name="twitter:description" content="为什么要用分布式锁在开发过程中,涉及到单服务多实例同时运行,某些操作例如定时任务跑批/更新数据等,为了避免多个实例同时对同一共享资源进行多次操作或者重复操作,我们需要分布式锁来进行并发协调 单 Redis 实例实现分布式锁获取锁使用命令: SET resource_name my_random_value NX PX 30000 这个命令利用了 redis 2.6.12 版本以后提供的 set (">
@@ -119,6 +119,16 @@
     <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
@@ -178,7 +188,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+                <time title="修改时间：2021-04-06 22:13:58" itemprop="dateModified" datetime="2021-04-06T22:13:58+08:00">2021-04-06</time>
               </span>
 
           
@@ -250,8 +260,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/article/ab613fab.html" rel="prev" title="redis两种持久化方式">
-      <i class="fa fa-chevron-left"></i> redis两种持久化方式
+    <a href="/article/0.html" rel="prev" title>
+      <i class="fa fa-chevron-left"></i> 
     </a></div>
       <div class="post-nav-item">
     <a href="/article/f431f94b.html" rel="next" title="关于缓存我的理解">
@@ -330,13 +340,15 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">27</span>
-        <span class="site-state-item-name">标签</span>
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>

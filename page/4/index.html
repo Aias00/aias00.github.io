@@ -117,6 +117,16 @@
     <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
@@ -141,6 +151,90 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/670c67ee.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/670c67ee.html" class="post-title-link" itemprop="url">查看redis所有key对应value占用内存大小</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-10 17:10:08" itemprop="dateCreated datePublished" datetime="2020-08-10T17:10:08+08:00">2020-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:00:38" itemprop="dateModified" datetime="2021-04-06T22:00:38+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>公司的一个服务用了一个单台 redis 服务器,本来配置 redis 的 maxmemory 只有 512M,但是服务跑了几个月都没什么问题,说明是够用的。</p>
+<p>但是最近不到一个月的时间的时间,这台服务器的 redis 报了两次内存不足,最开始是以为调用量慢慢上来了,所以只是单纯的修改 maxmemory 的值,修改到了 3g。</p>
+<p>昨天观察了一下发现内存占用已经到了 2.3g 了,这马上又快满了,觉得不对劲,所以想要分析一下是哪些 key 占用的空间比较大,看看能不能相应的优化一下代码</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+<li><p>CentOS Linux release 7.2.1511</p>
+</li>
+<li><p>redis-5.0.4</p>
+</li>
+<li><p>python2.7</p>
+</li>
+<li><p>git</p>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/670c67ee.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -176,7 +270,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+                <time title="修改时间：2021-04-06 22:00:22" itemprop="dateModified" datetime="2021-04-06T22:00:22+08:00">2021-04-06</time>
               </span>
 
           
@@ -250,7 +344,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+                <time title="修改时间：2021-04-06 22:00:27" itemprop="dateModified" datetime="2021-04-06T22:00:27+08:00">2021-04-06</time>
               </span>
 
           
@@ -327,7 +421,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+                <time title="修改时间：2021-04-06 22:00:34" itemprop="dateModified" datetime="2021-04-06T22:00:34+08:00">2021-04-06</time>
               </span>
 
           
@@ -402,7 +496,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+                <time title="修改时间：2021-04-06 22:13:58" itemprop="dateModified" datetime="2021-04-06T22:13:58+08:00">2021-04-06</time>
               </span>
 
           
@@ -445,7 +539,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ab613fab.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/0.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/img/avatar.jpg">
@@ -459,7 +553,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/article/ab613fab.html" class="post-title-link" itemprop="url">redis两种持久化方式</a>
+            <a href="/article/0.html" class="post-title-link" itemprop="url">未命名</a>
         </h2>
 
         <div class="post-meta">
@@ -476,7 +570,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
+                <time title="修改时间：2021-04-06 22:14:02" itemprop="dateModified" datetime="2021-04-06T22:14:02+08:00">2021-04-06</time>
               </span>
 
           
@@ -490,41 +584,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><ul>
-<li><p>Redis 的高性能是由于其将所有的数据都存储在了内存中,但是如果只是存在在内存中,重启之后数据就会全部丢失,为了尽量减少数据的丢失,我们需要将数据同步到磁盘上,这就是所谓的持久化</p>
-</li>
-<li><p>Redis 支持两种方式的持久化,一种是 RDB 模式,一种是 AOF 模式。</p>
-</li>
-<li><p>RDB 模式可以在指定的时间间隔内为你存储在 redis 中的数据集做快照,子进程将快照数据写入临时文件,然后定时刷新到磁盘,redis 在启动时会将生成的快照文件中的内容读取到内存中</p>
-</li>
-<li><p>AOF 模式是将服务器接执行的所有写入/删除指令记录下来,只允许追加操作,并在服务器启动时重构原有的数据集,日志以与服务器协议相同的格式记录,当日志文件过大时,redis 会对日志文件进行重写</p>
-</li>
-<li><p>我们可以不开启持久化配置,这样我们的数据只在 redis 服务启动时存在</p>
-</li>
-<li><p>我们也可以将 RDB 和 AOF 模式组合使用,在这种情况下,redis 服务器重启时会依据 AOF 方式读取数据,因为这种模式能够保证数据相对最完整</p>
-</li>
-</ul>
-<h3 id="RDB-模式的优点"><a href="#RDB-模式的优点" class="headerlink" title="RDB 模式的优点"></a>RDB 模式的优点</h3><ul>
-<li><p>RDB 是一种非常便捷的单文件实时存储模式</p>
-</li>
-<li><p>RDB 文件非常便于备份,我们可以每小时保存一份过去 24 小时内的 RDB 文件,也可以每天备份一次过去 30 天内生成的 RDB 文件,我们可以保存不同版本的快照文件以避免数据的丢失</p>
-</li>
-<li><p>RDB 模式非常适合数据恢复,我们可以将 RDB 文件复制到各种远程服务器进行数据加载</p>
-</li>
-<li><p>开启 RDB 模式,主进程只需要 Fork 出一个子进程来进行持久化操作,这样就可以极大的避免主进程执行 IO 操作了</p>
-</li>
-<li><p>相比于 AOF 模式,如果数据集很大,RDB 的启动效率会更高</p>
-</li>
-</ul>
-<h3 id="RDB-模式的缺点"><a href="#RDB-模式的缺点" class="headerlink" title="RDB 模式的缺点"></a>RDB 模式的缺点</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/article/ab613fab.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          
       
     </div>
 
@@ -574,7 +634,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-01 13:44:26" itemprop="dateModified" datetime="2021-04-01T13:44:26+08:00">2021-04-01</time>
+                <time title="修改时间：2021-04-06 22:13:48" itemprop="dateModified" datetime="2021-04-06T22:13:48+08:00">2021-04-06</time>
               </span>
 
           
@@ -649,7 +709,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-01 14:38:14" itemprop="dateModified" datetime="2021-04-01T14:38:14+08:00">2021-04-01</time>
+                <time title="修改时间：2021-04-06 22:14:39" itemprop="dateModified" datetime="2021-04-06T22:14:39+08:00">2021-04-06</time>
               </span>
 
           
@@ -759,13 +819,15 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">27</span>
-        <span class="site-state-item-name">标签</span>
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
