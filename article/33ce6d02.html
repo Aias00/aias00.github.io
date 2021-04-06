@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="1.dubbo &amp;#x8D1F;&amp;#x8F7D;&amp;#x5747;&amp;#x8861;&amp;#x7B56;&amp;#x7565; &amp;#x968F;&amp;#x673A;&amp;#x6A21;&amp;#x5F0F; RandomLoadBalance&amp;#xFF1A;&amp;#x6309;&amp;#x6743;&amp;#x91CD;&amp;#x8BBE;&amp;#x7F6E;&amp;#x968F;&amp;#x673A;&amp;#x6982;&amp;#x7387;,&amp;#x5728;&amp;#x4">
+  <meta name="description" content="1.dubbo 负载均衡策略 随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重  轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求  最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机">
 <meta name="keywords" content="dubbo, interview">
 <meta property="og:type" content="article">
 <meta property="og:title" content="dubbo面试知识点(持续更新)">
 <meta property="og:url" content="http://yoursite.com/article/33ce6d02.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="1.dubbo &amp;#x8D1F;&amp;#x8F7D;&amp;#x5747;&amp;#x8861;&amp;#x7B56;&amp;#x7565; &amp;#x968F;&amp;#x673A;&amp;#x6A21;&amp;#x5F0F; RandomLoadBalance&amp;#xFF1A;&amp;#x6309;&amp;#x6743;&amp;#x91CD;&amp;#x8BBE;&amp;#x7F6E;&amp;#x968F;&amp;#x673A;&amp;#x6982;&amp;#x7387;,&amp;#x5728;&amp;#x4">
+<meta property="og:description" content="1.dubbo 负载均衡策略 随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重  轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求  最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.734Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="dubbo面试知识点(持续更新)">
-<meta name="twitter:description" content="1.dubbo &amp;#x8D1F;&amp;#x8F7D;&amp;#x5747;&amp;#x8861;&amp;#x7B56;&amp;#x7565; &amp;#x968F;&amp;#x673A;&amp;#x6A21;&amp;#x5F0F; RandomLoadBalance&amp;#xFF1A;&amp;#x6309;&amp;#x6743;&amp;#x91CD;&amp;#x8BBE;&amp;#x7F6E;&amp;#x968F;&amp;#x673A;&amp;#x6982;&amp;#x7387;,&amp;#x5728;&amp;#x4">
+<meta name="twitter:description" content="1.dubbo 负载均衡策略 随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重  轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求  最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机">
 
 <link rel="canonical" href="http://yoursite.com/article/33ce6d02.html">
 
@@ -192,176 +192,176 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="1-dubbo-&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7B56;&#x7565;"><a href="#1-dubbo-&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7B56;&#x7565;" class="headerlink" title="1.dubbo &#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7B56;&#x7565;"></a>1.dubbo &#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7B56;&#x7565;</h3><ul>
-<li><p>&#x968F;&#x673A;&#x6A21;&#x5F0F; RandomLoadBalance&#xFF1A;&#x6309;&#x6743;&#x91CD;&#x8BBE;&#x7F6E;&#x968F;&#x673A;&#x6982;&#x7387;,&#x5728;&#x4E00;&#x4E2A;&#x622A;&#x9762;&#x4E0A;&#x78B0;&#x649E;&#x7684;&#x6982;&#x7387;&#x8F83;&#x9AD8;,&#x4F46;&#x8C03;&#x7528;&#x91CF;&#x8D8A;&#x5927;&#x5206;&#x5E03;&#x8D8A;&#x5747;&#x5300;,&#x800C;&#x4E14;&#x6309;&#x6982;&#x7387;&#x4F7F;&#x7528;&#x6743;&#x91CD;&#x540E;&#x4E5F;&#x6BD4;&#x8F83;&#x5747;&#x5300;,&#x6709;&#x5229;&#x4E8E;&#x52A8;&#x6001;&#x8C03;&#x6574;&#x63D0;&#x4F9B;&#x8005;&#x6743;&#x91CD;</p>
+        <h3 id="1-dubbo-负载均衡策略"><a href="#1-dubbo-负载均衡策略" class="headerlink" title="1.dubbo 负载均衡策略"></a>1.dubbo 负载均衡策略</h3><ul>
+<li><p>随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重</p>
 </li>
-<li><p>&#x8F6E;&#x8BE2;&#x6A21;&#x5F0F; RoundRobinLoadBlance&#xFF1A;&#x6309;&#x516C;&#x7EA6;&#x540E;&#x7684;&#x6743;&#x91CD;&#x8BBE;&#x7F6E;&#x8F6E;&#x8BE2;&#x6BD4;&#x4F8B;,&#x4F46;&#x5B58;&#x5728;&#x54CD;&#x5E94;&#x6162;&#x7684;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x4F1A;&#x5806;&#x79EF;&#x8BF7;&#x6C42;</p>
+<li><p>轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求</p>
 </li>
-<li><p>&#x6700;&#x5C11;&#x6D3B;&#x8DC3;&#x8C03;&#x7528; LeastActiveLoadBlance&#xFF1A;&#x76F8;&#x540C;&#x6D3B;&#x8DC3;&#x6570;&#x7684;&#x968F;&#x673A;,&#x6D3B;&#x8DC3;&#x6570;&#x6307;&#x8C03;&#x7528;&#x524D;&#x540E;&#x8BA1;&#x6570;&#x5DEE;,&#x4F7F;&#x6162;&#x7684;&#x63D0;&#x4F9B;&#x8005;&#x6536;&#x5230;&#x66F4;&#x5C11;&#x8BF7;&#x6C42;,&#x56E0;&#x4E3A;&#x8D8A;&#x6162;&#x7684;&#x63D0;&#x4F9B;&#x8005;&#x7684;&#x8C03;&#x7528;&#x524D;&#x540E;&#x8BA1;&#x6570;&#x5DEE;&#x4F1A;&#x8D8A;&#x5927;</p>
+<li><p>最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机,活跃数指调用前后计数差,使慢的提供者收到更少请求,因为越慢的提供者的调用前后计数差会越大</p>
 </li>
-<li><p>&#x4E00;&#x81F4;&#x6027; hash &#x8C03;&#x7528; ConsistentHashLoadBalance&#xFF1A;&#x76F8;&#x540C;&#x53C2;&#x6570;&#x7684;&#x8BF7;&#x6C42;&#x603B;&#x662F;&#x53D1;&#x5230;&#x7EDF;&#x4E00;&#x63D0;&#x4F9B;&#x8005;,&#x5F53;&#x67D0;&#x53F0;&#x63D0;&#x4F9B;&#x8005;&#x6302;&#x6389;&#x65F6;,&#x539F;&#x672C;&#x53D1;&#x5F80;&#x8BE5;&#x63D0;&#x4F9B;&#x8005;&#x7684;&#x8BF7;&#x6C42;,&#x57FA;&#x4E8E;&#x865A;&#x62DF;&#x8282;&#x70B9;,&#x5E73;&#x644A;&#x5230;&#x5176;&#x4ED6;&#x63D0;&#x4F9B;&#x8005;,&#x4E0D;&#x4F1A;&#x5F15;&#x8D77;&#x5267;&#x70C8;&#x53D8;&#x52A8;</p>
-</li>
-</ul>
-<h3 id="2-dubbo-&#x96C6;&#x7FA4;&#x5BB9;&#x9519;"><a href="#2-dubbo-&#x96C6;&#x7FA4;&#x5BB9;&#x9519;" class="headerlink" title="2.dubbo &#x96C6;&#x7FA4;&#x5BB9;&#x9519;"></a>2.dubbo &#x96C6;&#x7FA4;&#x5BB9;&#x9519;</h3><ul>
-<li><p>Failover cluster&#xFF1A;&#x5931;&#x8D25;&#x91CD;&#x8BD5;,&#x5F53;&#x670D;&#x52A1;&#x6D88;&#x8D39;&#x8005;&#x8C03;&#x7528;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x5931;&#x8D25;&#x540E;&#x81EA;&#x52A8;&#x5207;&#x6362;&#x5230;&#x5176;&#x4ED6;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x8FDB;&#x884C;&#x91CD;&#x8BD5;,&#x901A;&#x5E38;&#x7528;&#x4E8E;&#x8BFB;&#x64CD;&#x4F5C;&#x6216;&#x8005;&#x5177;&#x6709;&#x5E42;&#x7B49;&#x7684;&#x5199;&#x64CD;&#x4F5C;,&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#x91CD;&#x8BD5;&#x4F1A;&#x5E26;&#x6765;&#x66F4;&#x957F;&#x5EF6;&#x8FDF;.&#x53EF;&#x901A;&#x8FC7; retries=2 &#x6765;&#x8BBE;&#x7F6E;&#x91CD;&#x8BD5;&#x6B21;&#x6570;&#xFF08;&#x4E0D;&#x542B;&#x7B2C;&#x4E00;&#x6B21;&#xFF09;</p>
-</li>
-<li><p>Failfast cluster&#xFF1A;&#x5FEB;&#x901F;&#x5931;&#x8D25;,&#x5F53;&#x670D;&#x52A1;&#x6D88;&#x8D39;&#x65B9;&#x8C03;&#x7528;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x5931;&#x8D25;&#x540E;,&#x7ACB;&#x5373;&#x62A5;&#x9519;,&#x4E5F;&#x5C31;&#x662F;&#x53EA;&#x8C03;&#x7528;&#x4E00;&#x6B21;,&#x901A;&#x5E38;&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x7528;&#x4E8E;&#x975E;&#x5E42;&#x7B49;&#x6027;&#x7684;&#x5199;&#x64CD;&#x4F5C;</p>
-</li>
-<li><p>Failsafe cluster&#xFF1A;&#x5931;&#x8D25;&#x5B89;&#x5168;,&#x5F53;&#x670D;&#x52A1;&#x6D88;&#x8D39;&#x8005;&#x8C03;&#x7528;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x51FA;&#x73B0;&#x5F02;&#x5E38;&#x65F6;,&#x76F4;&#x63A5;&#x5FFD;&#x7565;&#x5F02;&#x5E38;.&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x901A;&#x5E38;&#x7528;&#x4E8E;&#x5199;&#x5165;&#x5BA1;&#x8BA1;&#x65E5;&#x5FD7;&#x7B49;&#x64CD;&#x4F5C;</p>
-</li>
-<li><p>Failback cluster&#xFF1A;&#x5931;&#x8D25;&#x81EA;&#x52A8;&#x6062;&#x590D;.&#x5F53;&#x670D;&#x52A1;&#x6D88;&#x8D39;&#x8005;&#x8C03;&#x7528;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x51FA;&#x73B0;&#x5F02;&#x5E38;&#x4E4B;&#x540E;,&#x5728;&#x540E;&#x53F0;&#x8BB0;&#x5F55;&#x5931;&#x8D25;&#x7684;&#x8BF7;&#x6C42;,&#x5E76;&#x6309;&#x7167;&#x4E00;&#x5B9A;&#x7684;&#x7B56;&#x7565;&#x540E;&#x671F;&#x518D;&#x8FDB;&#x884C;&#x91CD;&#x8BD5;,&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x901A;&#x5E38;&#x7528;&#x4E8E;&#x6D88;&#x606F;&#x901A;&#x77E5;&#x64CD;&#x4F5C;</p>
-</li>
-<li><p>Forking cluster&#xFF1A;&#x5E76;&#x884C;&#x8C03;&#x7528;.&#x5F53;&#x6D88;&#x8D39;&#x8005;&#x8C03;&#x7528;&#x4E00;&#x4E2A;&#x63A5;&#x53E3;&#x65B9;&#x6CD5;&#x540E;,dubboclient &#x4F1A;&#x5E76;&#x884C;&#x8C03;&#x7528;&#x591A;&#x4E2A;&#x63D0;&#x4F9B;&#x8005;&#x63D0;&#x4F9B;&#x7684;&#x670D;&#x52A1;,&#x53EA;&#x8981;&#x4E00;&#x4E2A;&#x6210;&#x529F;&#x8FD4;&#x56DE;,&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x901A;&#x5E38;&#x7528;&#x4E8E;&#x5B9E;&#x65F6;&#x6027;&#x8981;&#x6C42;&#x8F83;&#x9AD8;&#x7684;&#x8BFB;&#x64CD;&#x4F5C;,&#x4F46;&#x9700;&#x8981;&#x6D6A;&#x8D39;&#x66F4;&#x591A;&#x670D;&#x52A1;&#x8D44;&#x6E90;,&#x53EF;&#x901A;&#x8FC7; forks=2 &#x6765;&#x8BBE;&#x7F6E;&#x6700;&#x5927;&#x5E76;&#x884C;&#x6570;</p>
-</li>
-<li><p>Broadcast cluster&#xFF1A;&#x5E7F;&#x64AD;&#x8C03;&#x7528;.&#x5F53;&#x6D88;&#x8D39;&#x8005;&#x8C03;&#x7528;&#x4E00;&#x4E2A;&#x63A5;&#x53E3;&#x65B9;&#x6CD5;&#x540E;,dubboclient &#x4F1A;&#x9010;&#x4E2A;&#x8C03;&#x7528;&#x6240;&#x6709;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;,&#x4EFB;&#x610F;&#x4E00;&#x53F0;&#x8C03;&#x7528;&#x5F02;&#x5E38;&#x5219;&#x8FD9;&#x6B21;&#x8C03;&#x7528;&#x5C31;&#x6807;&#x5FD7;&#x5931;&#x8D25;,&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x901A;&#x5E38;&#x7528;&#x4E8E;&#x901A;&#x77E5;&#x6240;&#x6709;&#x63D0;&#x4F9B;&#x8005;&#x66F4;&#x65B0;&#x7F13;&#x5B58;&#x6216;&#x65E5;&#x5FD7;&#x7B49;&#x672C;&#x5730;&#x8D44;&#x6E90;&#x4FE1;&#x606F;.</p>
+<li><p>一致性 hash 调用 ConsistentHashLoadBalance：相同参数的请求总是发到统一提供者,当某台提供者挂掉时,原本发往该提供者的请求,基于虚拟节点,平摊到其他提供者,不会引起剧烈变动</p>
 </li>
 </ul>
-<h3 id="3-dubbo-&#x652F;&#x6301;&#x7684;&#x534F;&#x8BAE;"><a href="#3-dubbo-&#x652F;&#x6301;&#x7684;&#x534F;&#x8BAE;" class="headerlink" title="3.dubbo &#x652F;&#x6301;&#x7684;&#x534F;&#x8BAE;"></a>3.dubbo &#x652F;&#x6301;&#x7684;&#x534F;&#x8BAE;</h3><h4 id="dubbo-&#x534F;&#x8BAE;&#xFF08;&#x9ED8;&#x8BA4;&#xFF09;"><a href="#dubbo-&#x534F;&#x8BAE;&#xFF08;&#x9ED8;&#x8BA4;&#xFF09;" class="headerlink" title="dubbo &#x534F;&#x8BAE;&#xFF08;&#x9ED8;&#x8BA4;&#xFF09;"></a>dubbo &#x534F;&#x8BAE;&#xFF08;&#x9ED8;&#x8BA4;&#xFF09;</h4><ul>
-<li><p>&#x91C7;&#x7528;&#x5355;&#x4E00;&#x957F;&#x8FDE;&#x63A5;&#x548C; NIO &#x5F02;&#x6B65;&#x901A;&#x8BAF;,&#x9002;&#x5408;&#x5C0F;&#x6570;&#x636E;&#x91CF;&#x5927;&#x5E76;&#x53D1;&#x7684;&#x670D;&#x52A1;&#x8C03;&#x7528;,&#x4EE5;&#x53CA;&#x670D;&#x52A1;&#x6D88;&#x8D39;&#x8005;&#x673A;&#x5668;&#x8FDC;&#x5927;&#x4E8E;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x673A;&#x5668;&#x6570;&#x7684;&#x60C5;&#x51B5;,&#x4E0D;&#x9002;&#x5408;&#x4F20;&#x9001;&#x5927;&#x6570;&#x636E;&#x91CF;&#x7684;&#x670D;&#x52A1;,&#x6BD4;&#x5982;&#x4F20;&#x6587;&#x4EF6;&#x3001;&#x4F20;&#x89C6;&#x9891;&#x7B49;,&#x9664;&#x975E;&#x8BF7;&#x6C42;&#x91CF;&#x5F88;&#x4F4E;;</p>
+<h3 id="2-dubbo-集群容错"><a href="#2-dubbo-集群容错" class="headerlink" title="2.dubbo 集群容错"></a>2.dubbo 集群容错</h3><ul>
+<li><p>Failover cluster：失败重试,当服务消费者调用服务提供者失败后自动切换到其他服务提供者进行重试,通常用于读操作或者具有幂等的写操作,需要注意的是重试会带来更长延迟.可通过 retries=2 来设置重试次数（不含第一次）</p>
 </li>
-<li><p>&#x8FDE;&#x63A5;&#x4E2A;&#x6570;&#xFF1A;&#x5355;&#x8FDE;&#x63A5;,</p>
+<li><p>Failfast cluster：快速失败,当服务消费方调用服务提供者失败后,立即报错,也就是只调用一次,通常这种模式用于非幂等性的写操作</p>
 </li>
-<li><p>&#x8FDE;&#x63A5;&#x65B9;&#x5F0F;&#xFF1A;&#x957F;&#x8FDE;&#x63A5;,</p>
+<li><p>Failsafe cluster：失败安全,当服务消费者调用服务提供者出现异常时,直接忽略异常.这种模式通常用于写入审计日志等操作</p>
 </li>
-<li><p>&#x4F20;&#x8F93;&#x534F;&#x8BAE;: TCP,</p>
+<li><p>Failback cluster：失败自动恢复.当服务消费者调用服务提供者出现异常之后,在后台记录失败的请求,并按照一定的策略后期再进行重试,这种模式通常用于消息通知操作</p>
 </li>
-<li><p>&#x4F20;&#x8F93;&#x65B9;&#x5F0F;: NIO &#x5F02;&#x6B65;&#x4F20;&#x8F93;,</p>
+<li><p>Forking cluster：并行调用.当消费者调用一个接口方法后,dubboclient 会并行调用多个提供者提供的服务,只要一个成功返回,这种模式通常用于实时性要求较高的读操作,但需要浪费更多服务资源,可通过 forks=2 来设置最大并行数</p>
 </li>
-<li><p>&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;: Hessian &#x4E8C;&#x8FDB;&#x5236;&#x5E8F;&#x5217;&#x5316;,</p>
-</li>
-<li><p>&#x9002;&#x7528;&#x573A;&#x666F;&#xFF1A;&#x5E38;&#x89C4;&#x8FDC;&#x7A0B;&#x670D;&#x52A1;&#x65B9;&#x6CD5;&#x8C03;&#x7528;</p>
-</li>
-<li><p>dubbo &#x534F;&#x8BAE;&#x7F3A;&#x7701;&#x6BCF;&#x670D;&#x52A1;&#x6BCF;&#x63D0;&#x4F9B;&#x8005;&#x6BCF;&#x6D88;&#x8D39;&#x8005;&#x4F7F;&#x7528;&#x5355;&#x4E00;&#x957F;&#x8FDE;&#x63A5;,&#x5982;&#x679C;&#x6570;&#x636E;&#x91CF;&#x8F83;&#x5927;,&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x591A;&#x4E2A;&#x8FDE;&#x63A5;</p>
-</li>
-<li><p>&#x4E3A;&#x9632;&#x6B62;&#x5927;&#x91CF;&#x8FDE;&#x63A5;&#x6491;&#x6302;,&#x53EF;&#x4EE5;&#x5728;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x65B9;&#x9650;&#x5236;&#x5927;&#x8FDE;&#x63A5;&#x63A5;&#x53D7;&#x6570;,&#x4EE5;&#x5B9E;&#x73B0;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x65B9;&#x81EA;&#x6211;&#x4FDD;&#x62A4;</p>
+<li><p>Broadcast cluster：广播调用.当消费者调用一个接口方法后,dubboclient 会逐个调用所有服务提供者,任意一台调用异常则这次调用就标志失败,这种模式通常用于通知所有提供者更新缓存或日志等本地资源信息.</p>
 </li>
 </ul>
-<h5 id="&#x5E38;&#x89C1;&#x95EE;&#x9898;"><a href="#&#x5E38;&#x89C1;&#x95EE;&#x9898;" class="headerlink" title="&#x5E38;&#x89C1;&#x95EE;&#x9898;"></a>&#x5E38;&#x89C1;&#x95EE;&#x9898;</h5><ul>
-<li><p>&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x6D88;&#x8D39;&#x8005;&#x6BD4;&#x63D0;&#x4F9B;&#x8005;&#x4E2A;&#x6570;&#x591A;&#xFF1A;&#x56E0;&#x4E3A; dubbo &#x534F;&#x8BAE;&#x91C7;&#x7528;&#x5355;&#x4E00;&#x957F;&#x8FDE;&#x63A5;,&#x5047;&#x8BBE;&#x7F51;&#x7EDC;&#x4E3A;&#x5343;&#x5146;&#x7F51;&#x5361;&#xFF08;1024Mbit=128MByte&#xFF09;,&#x6839;&#x636E;&#x6D4B;&#x8BD5;&#x7ECF;&#x9A8C;&#x6570;&#x636E;&#x6BCF;&#x6761;&#x8FDE;&#x63A5;&#x6700;&#x591A;&#x53EA;&#x80FD;&#x538B;&#x6EE1; 7MByte,&#x7406;&#x8BBA;&#x4E0A; 1 &#x4E2A;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x9700;&#x8981; 20 &#x4E2A;&#x670D;&#x52A1;&#x6D88;&#x8D39;&#x8005;&#x624D;&#x80FD;&#x538B;&#x6EE1;&#x7F51;&#x5361;</p>
+<h3 id="3-dubbo-支持的协议"><a href="#3-dubbo-支持的协议" class="headerlink" title="3.dubbo 支持的协议"></a>3.dubbo 支持的协议</h3><h4 id="dubbo-协议（默认）"><a href="#dubbo-协议（默认）" class="headerlink" title="dubbo 协议（默认）"></a>dubbo 协议（默认）</h4><ul>
+<li><p>采用单一长连接和 NIO 异步通讯,适合小数据量大并发的服务调用,以及服务消费者机器远大于服务提供者机器数的情况,不适合传送大数据量的服务,比如传文件、传视频等,除非请求量很低;</p>
 </li>
-<li><p>&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x4F20;&#x5927;&#x5305;&#xFF1A;&#x56E0;&#x4E3A; dubbo &#x534F;&#x8BAE;&#x91C7;&#x7528;&#x5355;&#x4E00;&#x957F;&#x8FDE;&#x63A5;,&#x5982;&#x679C;&#x6BCF;&#x6B21;&#x8BF7;&#x6C42;&#x7684;&#x6570;&#x636E;&#x5305;&#x5927;&#x5C0F;&#x4E3A; 500KByte,&#x5047;&#x8BBE;&#x7F51;&#x7EDC;&#x4E3A;&#x5343;&#x5146;&#x7F51;&#x5361;,&#x6BCF;&#x6761;&#x8FDE;&#x63A5;&#x6700;&#x5927; 7MByte,&#x5355;&#x4E2A;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x7684; TPS&#xFF08;&#x6BCF;&#x79D2;&#x5904;&#x7406;&#x4E8B;&#x52A1;&#x6570;&#xFF09;&#x6700;&#x5927;&#x4E3A;&#xFF1A;128MByte/500KByte=262.&#x5355;&#x4E2A;&#x6D88;&#x8D39;&#x8005;&#x8C03;&#x7528;&#x5355;&#x4E2A;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x7684; TPS &#x6700;&#x5927;&#x4E3A;&#xFF1A;7MByte/500KByte=14.&#x5982;&#x679C;&#x80FD;&#x63A5;&#x53D7;,&#x53EF;&#x4EE5;&#x8003;&#x8651;&#x4F7F;&#x7528;,&#x5426;&#x5219;&#x7F51;&#x7EDC;&#x5C06;&#x6210;&#x4E3A;&#x74F6;&#x9888;</p>
+<li><p>连接个数：单连接,</p>
 </li>
-<li><p>&#x4E3A;&#x4EC0;&#x4E48;&#x91C7;&#x7528;&#x5F02;&#x6B65;&#x5355;&#x4E00;&#x957F;&#x8FDE;&#x63A5;&#xFF1A;&#x56E0;&#x4E3A;&#x670D;&#x52A1;&#x7684;&#x73B0;&#x72B6;&#x5927;&#x90FD;&#x662F;&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x5C11;,&#x901A;&#x5E38;&#x53EA;&#x6709;&#x51E0;&#x53F0;&#x673A;&#x5668;,&#x800C;&#x670D;&#x52A1;&#x7684;&#x6D88;&#x8D39;&#x8005;&#x591A;,&#x53EF;&#x80FD;&#x6574;&#x4E2A;&#x7F51;&#x7AD9;&#x90FD;&#x5728;&#x8BBF;&#x95EE;&#x8BE5;&#x670D;&#x52A1;,&#x5982;&#x679C;&#x91C7;&#x7528;&#x5E38;&#x89C4;&#x7684; Hessian &#x670D;&#x52A1;,&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x5F88;&#x5BB9;&#x6613;&#x5C31;&#x88AB;&#x538B;&#x57AE;,&#x901A;&#x8FC7;&#x5355;&#x4E00;&#x8FDE;&#x63A5;,&#x4FDD;&#x8BC1;&#x5355;&#x4E00;&#x6D88;&#x8D39;&#x8005;&#x4E0D;&#x4F1A;&#x538B;&#x6B7B;&#x63D0;&#x4F9B;&#x8005;,&#x957F;&#x8FDE;&#x63A5;,&#x51CF;&#x5C11;&#x8FDE;&#x63A5;&#x63E1;&#x624B;&#x9A8C;&#x8BC1;,&#x5E76;&#x91C7;&#x7528;&#x5F02;&#x6B65; IO,&#x590D;&#x7528;&#x8FDE;&#x63A5;&#x6C60;,&#x9632;&#x6B62; C10K &#x95EE;&#x9898;</p>
+<li><p>连接方式：长连接,</p>
 </li>
-</ul>
-<h4 id="rmi-&#x534F;&#x8BAE;"><a href="#rmi-&#x534F;&#x8BAE;" class="headerlink" title="rmi &#x534F;&#x8BAE;"></a>rmi &#x534F;&#x8BAE;</h4><ul>
-<li><p>&#x91C7;&#x7528; JDK &#x6807;&#x51C6;&#x7684; java.rmi.*&#x5B9E;&#x73B0;,&#x91C7;&#x7528;&#x963B;&#x585E;&#x5F0F;&#x77ED;&#x8FDE;&#x63A5;&#x548C; JDK &#x6807;&#x51C6;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;</p>
+<li><p>传输协议: TCP,</p>
 </li>
-<li><p>&#x8FDE;&#x63A5;&#x4E2A;&#x6570;&#xFF1A;&#x591A;&#x8FDE;&#x63A5;</p>
+<li><p>传输方式: NIO 异步传输,</p>
 </li>
-<li><p>&#x8FDE;&#x63A5;&#x65B9;&#x5F0F;&#xFF1A;&#x77ED;&#x8FDE;&#x63A5;</p>
+<li><p>序列化方式: Hessian 二进制序列化,</p>
 </li>
-<li><p>&#x4F20;&#x8F93;&#x534F;&#x8BAE;&#xFF1A;TCP</p>
+<li><p>适用场景：常规远程服务方法调用</p>
 </li>
-<li><p>&#x4F20;&#x8F93;&#x65B9;&#x5F0F;&#xFF1A;&#x540C;&#x6B65;&#x4F20;&#x8F93;</p>
+<li><p>dubbo 协议缺省每服务每提供者每消费者使用单一长连接,如果数据量较大,可以使用多个连接</p>
 </li>
-<li><p>&#x5E8F;&#x5217;&#x5316;&#xFF1A;Java &#x6807;&#x51C6;&#x4E8C;&#x8FDB;&#x5236;&#x5E8F;&#x5217;&#x5316;</p>
-</li>
-<li><p>&#x9002;&#x7528;&#x8303;&#x56F4;&#xFF1A;&#x4F20;&#x5165;&#x4F20;&#x51FA;&#x53C2;&#x6570;&#x6570;&#x636E;&#x5305;&#x5927;&#x5C0F;&#x6DF7;&#x5408;,&#x6D88;&#x8D39;&#x8005;&#x4E0E;&#x63D0;&#x4F9B;&#x8005;&#x4E2A;&#x6570;&#x5DEE;&#x4E0D;&#x591A;,&#x53EF;&#x4EE5;&#x4F20;&#x6587;&#x4EF6;</p>
-</li>
-<li><p>&#x9002;&#x7528;&#x573A;&#x666F;&#xFF1A;&#x5E38;&#x89C4;&#x8FDC;&#x7A0B;&#x65B9;&#x6CD5;&#x8C03;&#x7528;,&#x4E0E;&#x539F;&#x751F; rmi &#x670D;&#x52A1;&#x4E92;&#x64CD;&#x4F5C;</p>
+<li><p>为防止大量连接撑挂,可以在服务提供方限制大连接接受数,以实现服务提供方自我保护</p>
 </li>
 </ul>
-<h4 id="Hessian-&#x534F;&#x8BAE;"><a href="#Hessian-&#x534F;&#x8BAE;" class="headerlink" title="Hessian &#x534F;&#x8BAE;"></a>Hessian &#x534F;&#x8BAE;</h4><ul>
-<li><p>Hessian &#x534F;&#x8BAE;&#x7528;&#x4E8E;&#x96C6;&#x6210; Hessian &#x670D;&#x52A1;,Hessian &#x5E95;&#x5C42;&#x91C7;&#x7528; http &#x901A;&#x8BAF;,&#x91C7;&#x7528; servlet &#x66B4;&#x9732;&#x670D;&#x52A1;,dubbo &#x7F3A;&#x7701;&#x5185;&#x7F6E; Jetty &#x4F5C;&#x4E3A;&#x670D;&#x52A1;&#x5668;&#x5B9E;&#x73B0;</p>
+<h5 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h5><ul>
+<li><p>为什么要消费者比提供者个数多：因为 dubbo 协议采用单一长连接,假设网络为千兆网卡（1024Mbit=128MByte）,根据测试经验数据每条连接最多只能压满 7MByte,理论上 1 个服务提供者需要 20 个服务消费者才能压满网卡</p>
 </li>
-<li><p>dubbo &#x7684; Hessian &#x534F;&#x8BAE;&#x53EF;&#x4EE5;&#x548C;&#x539F;&#x751F;&#x7684; Hessian &#x670D;&#x52A1;&#x4E92;&#x64CD;&#x4F5C;,&#x5373;&#x63D0;&#x4F9B;&#x8005;&#x7528; dubbo &#x7684; Hessian &#x534F;&#x8BAE;&#x66B4;&#x9732;&#x670D;&#x52A1;,&#x6D88;&#x8D39;&#x8005;&#x76F4;&#x63A5;&#x7528;&#x6807;&#x51C6; Hessian &#x63A5;&#x53E3;&#x8C03;&#x7528;;&#x6216;&#x8005;&#x63D0;&#x4F9B;&#x65B9;&#x7528;&#x6807;&#x51C6; Hessian &#x66B4;&#x9732;&#x670D;&#x52A1;,&#x6D88;&#x8D39;&#x65B9;&#x7528; dubbo &#x7684; Hessian &#x534F;&#x8BAE;&#x8C03;&#x7528;</p>
+<li><p>为什么不能传大包：因为 dubbo 协议采用单一长连接,如果每次请求的数据包大小为 500KByte,假设网络为千兆网卡,每条连接最大 7MByte,单个服务提供者的 TPS（每秒处理事务数）最大为：128MByte/500KByte=262.单个消费者调用单个服务提供者的 TPS 最大为：7MByte/500KByte=14.如果能接受,可以考虑使用,否则网络将成为瓶颈</p>
 </li>
-<li><p>&#x8FDE;&#x63A5;&#x4E2A;&#x6570;&#xFF1A;&#x591A;&#x8FDE;&#x63A5;</p>
-</li>
-<li><p>&#x8FDE;&#x63A5;&#x65B9;&#x5F0F;&#xFF1A;&#x77ED;&#x8FDE;&#x63A5;</p>
-</li>
-<li><p>&#x4F20;&#x8F93;&#x534F;&#x8BAE;&#xFF1A; http</p>
-</li>
-<li><p>&#x4F20;&#x8F93;&#x65B9;&#x5F0F;&#xFF1A;&#x540C;&#x6B65;&#x4F20;&#x8F93;</p>
-</li>
-<li><p>&#x5E8F;&#x5217;&#x5316;&#xFF1A; Hessian &#x4E8C;&#x8FDB;&#x5236;&#x5E8F;&#x5217;&#x5316;</p>
-</li>
-<li><p>&#x9002;&#x7528;&#x8303;&#x56F4;&#xFF1A;&#x4F20;&#x5165;&#x4F20;&#x51FA;&#x53C2;&#x6570;&#x6570;&#x636E;&#x5305;&#x8F83;&#x5927;,&#x63D0;&#x4F9B;&#x8005;&#x6BD4;&#x6D88;&#x8D39;&#x8005;&#x4E2A;&#x6570;&#x591A;,&#x63D0;&#x4F9B;&#x8005;&#x538B;&#x529B;&#x8F83;&#x5927;,&#x53EF;&#x4F20;&#x6587;&#x4EF6;</p>
-</li>
-<li><p>&#x9002;&#x7528;&#x573A;&#x666F;&#xFF1A;&#x9875;&#x9762;&#x4F20;&#x8F93;,&#x6587;&#x4EF6;&#x4F20;&#x8F93;,&#x6216;&#x4E0E;&#x539F;&#x751F; Hessian &#x670D;&#x52A1;&#x4E92;&#x64CD;&#x4F5C;</p>
-</li>
-<li><p>&#x53C2;&#x6570;&#x53CA;&#x8FD4;&#x56DE;&#x503C;&#x9700;&#x5B9E;&#x73B0;&#x5E8F;&#x5217;&#x5316;&#x63A5;&#x53E3;</p>
-</li>
-<li><p>&#x53C2;&#x6570;&#x53CA;&#x8FD4;&#x56DE;&#x503C;&#x4E0D;&#x80FD;&#x81EA;&#x5B9A;&#x4E49;&#x5B9E;&#x73B0; List,Map,Number,Date,Calender &#x7B49;&#x63A5;&#x53E3;,&#x53EA;&#x80FD;&#x7528; JDK &#x81EA;&#x5E26;&#x7684;&#x5B9E;&#x73B0;,&#x56E0;&#x4E3A; Hessian &#x4F1A;&#x505A;&#x7279;&#x6B8A;&#x5904;&#x7406;,&#x81EA;&#x5B9A;&#x4E49;&#x5B9E;&#x73B0;&#x7C7B;&#x4E2D;&#x7684;&#x5C5E;&#x6027;&#x503C;&#x90FD;&#x4F1A;&#x4E22;&#x5931;</p>
+<li><p>为什么采用异步单一长连接：因为服务的现状大都是服务提供者少,通常只有几台机器,而服务的消费者多,可能整个网站都在访问该服务,如果采用常规的 Hessian 服务,服务提供者很容易就被压垮,通过单一连接,保证单一消费者不会压死提供者,长连接,减少连接握手验证,并采用异步 IO,复用连接池,防止 C10K 问题</p>
 </li>
 </ul>
-<h4 id="http-&#x534F;&#x8BAE;"><a href="#http-&#x534F;&#x8BAE;" class="headerlink" title="http &#x534F;&#x8BAE;"></a>http &#x534F;&#x8BAE;</h4><ul>
-<li><p>&#x57FA;&#x4E8E; http &#x8868;&#x5355;&#x7684;&#x8FDC;&#x7A0B;&#x8C03;&#x7528;&#x534F;&#x8BAE;</p>
+<h4 id="rmi-协议"><a href="#rmi-协议" class="headerlink" title="rmi 协议"></a>rmi 协议</h4><ul>
+<li><p>采用 JDK 标准的 java.rmi.*实现,采用阻塞式短连接和 JDK 标准序列化方式</p>
 </li>
-<li><p>&#x8FDE;&#x63A5;&#x4E2A;&#x6570;&#xFF1A;&#x591A;&#x8FDE;&#x63A5;</p>
+<li><p>连接个数：多连接</p>
 </li>
-<li><p>&#x8FDE;&#x63A5;&#x65B9;&#x5F0F;&#xFF1A;&#x77ED;&#x8FDE;&#x63A5;</p>
+<li><p>连接方式：短连接</p>
 </li>
-<li><p>&#x4F20;&#x8F93;&#x534F;&#x8BAE;&#xFF1A;http</p>
+<li><p>传输协议：TCP</p>
 </li>
-<li><p>&#x4F20;&#x8F93;&#x65B9;&#x5F0F;&#xFF1A;&#x540C;&#x6B65;&#x4F20;&#x8F93;</p>
+<li><p>传输方式：同步传输</p>
 </li>
-<li><p>&#x5E8F;&#x5217;&#x5316;&#xFF1A;&#x8868;&#x5355;&#x5E8F;&#x5217;&#x5316;,&#x5373; json</p>
+<li><p>序列化：Java 标准二进制序列化</p>
 </li>
-<li><p>&#x9002;&#x7528;&#x8303;&#x56F4;&#xFF1A;&#x4F20;&#x5165;&#x4F20;&#x51FA;&#x53C2;&#x6570;&#x6570;&#x636E;&#x5305;&#x5927;&#x5C0F;&#x6DF7;&#x5408;,&#x63D0;&#x4F9B;&#x8005;&#x6BD4;&#x6D88;&#x8D39;&#x8005;&#x4E2A;&#x6570;&#x591A;,&#x53EF;&#x7528;&#x6D4F;&#x89C8;&#x5668;&#x67E5;&#x770B;,&#x53EF;&#x7528;&#x8868;&#x5355;&#x6216;&#x8005; url &#x4F20;&#x5165;&#x53C2;&#x6570;,&#x6682;&#x4E0D;&#x652F;&#x6301;&#x4F20;&#x6587;&#x4EF6;</p>
+<li><p>适用范围：传入传出参数数据包大小混合,消费者与提供者个数差不多,可以传文件</p>
 </li>
-<li><p>&#x9002;&#x7528;&#x573A;&#x666F;&#xFF1A;&#x9700;&#x540C;&#x65F6;&#x7ED9;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x548C;&#x6D4F;&#x89C8;&#x5668; JS &#x4F7F;&#x7528;&#x7684;&#x670D;&#x52A1;</p>
-</li>
-</ul>
-<h4 id="webservice-&#x534F;&#x8BAE;"><a href="#webservice-&#x534F;&#x8BAE;" class="headerlink" title="webservice &#x534F;&#x8BAE;"></a>webservice &#x534F;&#x8BAE;</h4><ul>
-<li><p>&#x57FA;&#x4E8E; webservice &#x7684;&#x8FDC;&#x7A0B;&#x8C03;&#x7528;&#x534F;&#x8BAE;,&#x57FA;&#x4E8E; Apache CXF &#x7684; fronted-simple &#x548C; transports-http &#x5B9E;&#x73B0;</p>
-</li>
-<li><p>&#x53EF;&#x4EE5;&#x548C;&#x539F;&#x751F; webservice &#x670D;&#x52A1;&#x4E92;&#x64CD;&#x4F5C;&#xFF1A;&#x63D0;&#x4F9B;&#x8005;&#x7528; dubbo &#x7684; webservice &#x534F;&#x8BAE;&#x66B4;&#x9732;&#x670D;&#x52A1;,&#x6D88;&#x8D39;&#x8005;&#x76F4;&#x63A5;&#x7528;&#x6807;&#x51C6;&#x7684; webservice &#x63A5;&#x53E3;&#x8C03;&#x7528;;&#x6216;&#x63D0;&#x4F9B;&#x8005;&#x7528;&#x6807;&#x51C6;&#x7684; webservice &#x66B4;&#x9732;&#x670D;&#x52A1;,&#x6D88;&#x8D39;&#x8005;&#x7528; dubbo &#x7684; webservice &#x534F;&#x8BAE;&#x8C03;&#x7528;</p>
-</li>
-<li><p>&#x8FDE;&#x63A5;&#x4E2A;&#x6570;&#xFF1A;&#x591A;&#x8FDE;&#x63A5;</p>
-</li>
-<li><p>&#x8FDE;&#x63A5;&#x65B9;&#x5F0F;&#xFF1A;&#x77ED;&#x8FDE;&#x63A5;</p>
-</li>
-<li><p>&#x4F20;&#x8F93;&#x534F;&#x8BAE;&#xFF1A;http</p>
-</li>
-<li><p>&#x4F20;&#x8F93;&#x65B9;&#x5F0F;&#xFF1A;&#x540C;&#x6B65;&#x4F20;&#x8F93;</p>
-</li>
-<li><p>&#x5E8F;&#x5217;&#x5316;&#xFF1A;soap &#x6587;&#x672C;&#x5E8F;&#x5217;&#x5316;</p>
-</li>
-<li><p>&#x9002;&#x7528;&#x573A;&#x666F;&#xFF1A;&#x7CFB;&#x7EDF;&#x96C6;&#x6210;,&#x8DE8;&#x8BED;&#x8A00;&#x8C03;&#x7528;</p>
-</li>
-<li><p>&#x53C2;&#x6570;&#x53CA;&#x8FD4;&#x56DE;&#x503C;&#x9700;&#x5B9E;&#x73B0;&#x5E8F;&#x5217;&#x5316;&#x63A5;&#x53E3;</p>
-</li>
-<li><p>&#x53C2;&#x6570;&#x5C3D;&#x91CF;&#x4F7F;&#x7528;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x548C; POJO</p>
+<li><p>适用场景：常规远程方法调用,与原生 rmi 服务互操作</p>
 </li>
 </ul>
-<h4 id="thrift-&#x534F;&#x8BAE;"><a href="#thrift-&#x534F;&#x8BAE;" class="headerlink" title="thrift &#x534F;&#x8BAE;"></a>thrift &#x534F;&#x8BAE;</h4><ul>
-<li><p>&#x5F53;&#x4EB2; dubbo &#x652F;&#x6301;&#x7684; thrift &#x534F;&#x8BAE;&#x662F;&#x5BF9; thrift &#x539F;&#x751F;&#x534F;&#x8BAE;&#x7684;&#x62D3;&#x5C55;,&#x5728;&#x539F;&#x751F;&#x534F;&#x8BAE;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x6DFB;&#x52A0;&#x4E86;&#x4E00;&#x4E9B;&#x989D;&#x5916;&#x7684;&#x5934;&#x4FE1;&#x606F;,&#x6BD4;&#x5982; service name, magic number &#x7B49;.</p>
+<h4 id="Hessian-协议"><a href="#Hessian-协议" class="headerlink" title="Hessian 协议"></a>Hessian 协议</h4><ul>
+<li><p>Hessian 协议用于集成 Hessian 服务,Hessian 底层采用 http 通讯,采用 servlet 暴露服务,dubbo 缺省内置 Jetty 作为服务器实现</p>
 </li>
-<li><p>&#x4F7F;&#x7528; dubbo thrift &#x534F;&#x8BAE;&#x540C;&#x6837;&#x9700;&#x8981;&#x4F7F;&#x7528; thrift &#x7684; idl compiler &#x7F16;&#x8BD1;&#x751F;&#x6210;&#x76F8;&#x5E94;&#x7684; Java &#x4EE3;&#x7801;</p>
+<li><p>dubbo 的 Hessian 协议可以和原生的 Hessian 服务互操作,即提供者用 dubbo 的 Hessian 协议暴露服务,消费者直接用标准 Hessian 接口调用;或者提供方用标准 Hessian 暴露服务,消费方用 dubbo 的 Hessian 协议调用</p>
 </li>
-<li><p>thrift &#x4E0D;&#x652F;&#x6301; null &#x503C;,&#x4E0D;&#x80FD;&#x5728;&#x534F;&#x8BAE;&#x4E2D;&#x4F20; null</p>
+<li><p>连接个数：多连接</p>
+</li>
+<li><p>连接方式：短连接</p>
+</li>
+<li><p>传输协议： http</p>
+</li>
+<li><p>传输方式：同步传输</p>
+</li>
+<li><p>序列化： Hessian 二进制序列化</p>
+</li>
+<li><p>适用范围：传入传出参数数据包较大,提供者比消费者个数多,提供者压力较大,可传文件</p>
+</li>
+<li><p>适用场景：页面传输,文件传输,或与原生 Hessian 服务互操作</p>
+</li>
+<li><p>参数及返回值需实现序列化接口</p>
+</li>
+<li><p>参数及返回值不能自定义实现 List,Map,Number,Date,Calender 等接口,只能用 JDK 自带的实现,因为 Hessian 会做特殊处理,自定义实现类中的属性值都会丢失</p>
 </li>
 </ul>
-<h4 id="memcached-&#x534F;&#x8BAE;"><a href="#memcached-&#x534F;&#x8BAE;" class="headerlink" title="memcached &#x534F;&#x8BAE;"></a>memcached &#x534F;&#x8BAE;</h4><ul>
-<li>&#x57FA;&#x4E8E; memcached &#x5B9E;&#x73B0;&#x7684; rpc &#x534F;&#x8BAE;</li>
+<h4 id="http-协议"><a href="#http-协议" class="headerlink" title="http 协议"></a>http 协议</h4><ul>
+<li><p>基于 http 表单的远程调用协议</p>
+</li>
+<li><p>连接个数：多连接</p>
+</li>
+<li><p>连接方式：短连接</p>
+</li>
+<li><p>传输协议：http</p>
+</li>
+<li><p>传输方式：同步传输</p>
+</li>
+<li><p>序列化：表单序列化,即 json</p>
+</li>
+<li><p>适用范围：传入传出参数数据包大小混合,提供者比消费者个数多,可用浏览器查看,可用表单或者 url 传入参数,暂不支持传文件</p>
+</li>
+<li><p>适用场景：需同时给应用程序和浏览器 JS 使用的服务</p>
+</li>
 </ul>
-<h4 id="redis-&#x534F;&#x8BAE;"><a href="#redis-&#x534F;&#x8BAE;" class="headerlink" title="redis &#x534F;&#x8BAE;"></a>redis &#x534F;&#x8BAE;</h4><ul>
-<li>&#x57FA;&#x4E8E; redis &#x5B9E;&#x73B0;&#x7684; rpc &#x534F;&#x8BAE;</li>
+<h4 id="webservice-协议"><a href="#webservice-协议" class="headerlink" title="webservice 协议"></a>webservice 协议</h4><ul>
+<li><p>基于 webservice 的远程调用协议,基于 Apache CXF 的 fronted-simple 和 transports-http 实现</p>
+</li>
+<li><p>可以和原生 webservice 服务互操作：提供者用 dubbo 的 webservice 协议暴露服务,消费者直接用标准的 webservice 接口调用;或提供者用标准的 webservice 暴露服务,消费者用 dubbo 的 webservice 协议调用</p>
+</li>
+<li><p>连接个数：多连接</p>
+</li>
+<li><p>连接方式：短连接</p>
+</li>
+<li><p>传输协议：http</p>
+</li>
+<li><p>传输方式：同步传输</p>
+</li>
+<li><p>序列化：soap 文本序列化</p>
+</li>
+<li><p>适用场景：系统集成,跨语言调用</p>
+</li>
+<li><p>参数及返回值需实现序列化接口</p>
+</li>
+<li><p>参数尽量使用基本类型和 POJO</p>
+</li>
 </ul>
-<h4 id="rest-&#x534F;&#x8BAE;"><a href="#rest-&#x534F;&#x8BAE;" class="headerlink" title="rest &#x534F;&#x8BAE;"></a>rest &#x534F;&#x8BAE;</h4><ul>
-<li>&#x57FA;&#x4E8E;&#x6807;&#x51C6;&#x7684; java rest api&#x2013;JAX-RS2.0 &#x5B9E;&#x73B0;&#x7684; REST &#x8C03;&#x7528;&#x652F;&#x6301;</li>
+<h4 id="thrift-协议"><a href="#thrift-协议" class="headerlink" title="thrift 协议"></a>thrift 协议</h4><ul>
+<li><p>当亲 dubbo 支持的 thrift 协议是对 thrift 原生协议的拓展,在原生协议的基础上添加了一些额外的头信息,比如 service name, magic number 等.</p>
+</li>
+<li><p>使用 dubbo thrift 协议同样需要使用 thrift 的 idl compiler 编译生成相应的 Java 代码</p>
+</li>
+<li><p>thrift 不支持 null 值,不能在协议中传 null</p>
+</li>
 </ul>
-<h3 id="4-dubbo-&#x63A8;&#x8350;&#x7528;&#x4EC0;&#x4E48;&#x534F;&#x8BAE;"><a href="#4-dubbo-&#x63A8;&#x8350;&#x7528;&#x4EC0;&#x4E48;&#x534F;&#x8BAE;" class="headerlink" title="4.dubbo &#x63A8;&#x8350;&#x7528;&#x4EC0;&#x4E48;&#x534F;&#x8BAE;"></a>4.dubbo &#x63A8;&#x8350;&#x7528;&#x4EC0;&#x4E48;&#x534F;&#x8BAE;</h3><p>&#x9ED8;&#x8BA4;&#x4F7F;&#x7528; dubbo &#x534F;&#x8BAE;</p>
-<h3 id="5-dubbo-&#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x4EC0;&#x4E48;&#x5E8F;&#x5217;&#x5316;&#x6846;&#x67B6;"><a href="#5-dubbo-&#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x4EC0;&#x4E48;&#x5E8F;&#x5217;&#x5316;&#x6846;&#x67B6;" class="headerlink" title="5.dubbo &#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x4EC0;&#x4E48;&#x5E8F;&#x5217;&#x5316;&#x6846;&#x67B6;"></a>5.dubbo &#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x4EC0;&#x4E48;&#x5E8F;&#x5217;&#x5316;&#x6846;&#x67B6;</h3><p>dubbo &#x534F;&#x8BAE;&#x9ED8;&#x8BA4;&#x4F7F;&#x7528; Hessian2 &#x5E8F;&#x5217;&#x5316;</p>
-<p>rmi &#x534F;&#x8BAE;&#x9ED8;&#x8BA4;&#x4F7F;&#x7528; java &#x5E8F;&#x5217;&#x5316;</p>
-<p>http &#x534F;&#x8BAE;&#x9ED8;&#x8BA4;&#x4E3A; json</p>
-<p>Hessian &#x534F;&#x8BAE;&#x9ED8;&#x8BA4; Hessian &#x5E8F;&#x5217;&#x5316;</p>
-<p>webservice &#x534F;&#x8BAE;&#x9ED8;&#x8BA4; soap &#x6587;&#x672C;&#x5E8F;&#x5217;&#x5316;</p>
-<p>&#x4E5F;&#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x7B2C;&#x4E09;&#x65B9;&#x7684;&#x5E8F;&#x5217;&#x5316;&#x6846;&#x67B6;,&#x6BD4;&#x5982; kryo,FST &#x7B49;</p>
-<h3 id="6-SpringCloud-&#x548C;-dubbo-&#x5BF9;&#x6BD4;"><a href="#6-SpringCloud-&#x548C;-dubbo-&#x5BF9;&#x6BD4;" class="headerlink" title="6.SpringCloud &#x548C; dubbo &#x5BF9;&#x6BD4;"></a>6.SpringCloud &#x548C; dubbo &#x5BF9;&#x6BD4;</h3><ul>
-<li><p>dubbo &#x7531;&#x4E8E;&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x7684;&#x4F20;&#x8F93;,&#x5360;&#x7528;&#x5E26;&#x5BBD;&#x4F1A;&#x66F4;&#x5C11;</p>
+<h4 id="memcached-协议"><a href="#memcached-协议" class="headerlink" title="memcached 协议"></a>memcached 协议</h4><ul>
+<li>基于 memcached 实现的 rpc 协议</li>
+</ul>
+<h4 id="redis-协议"><a href="#redis-协议" class="headerlink" title="redis 协议"></a>redis 协议</h4><ul>
+<li>基于 redis 实现的 rpc 协议</li>
+</ul>
+<h4 id="rest-协议"><a href="#rest-协议" class="headerlink" title="rest 协议"></a>rest 协议</h4><ul>
+<li>基于标准的 java rest api–JAX-RS2.0 实现的 REST 调用支持</li>
+</ul>
+<h3 id="4-dubbo-推荐用什么协议"><a href="#4-dubbo-推荐用什么协议" class="headerlink" title="4.dubbo 推荐用什么协议"></a>4.dubbo 推荐用什么协议</h3><p>默认使用 dubbo 协议</p>
+<h3 id="5-dubbo-默认使用什么序列化框架"><a href="#5-dubbo-默认使用什么序列化框架" class="headerlink" title="5.dubbo 默认使用什么序列化框架"></a>5.dubbo 默认使用什么序列化框架</h3><p>dubbo 协议默认使用 Hessian2 序列化</p>
+<p>rmi 协议默认使用 java 序列化</p>
+<p>http 协议默认为 json</p>
+<p>Hessian 协议默认 Hessian 序列化</p>
+<p>webservice 协议默认 soap 文本序列化</p>
+<p>也可以指定第三方的序列化框架,比如 kryo,FST 等</p>
+<h3 id="6-SpringCloud-和-dubbo-对比"><a href="#6-SpringCloud-和-dubbo-对比" class="headerlink" title="6.SpringCloud 和 dubbo 对比"></a>6.SpringCloud 和 dubbo 对比</h3><ul>
+<li><p>dubbo 由于是二进制的传输,占用带宽会更少</p>
 </li>
-<li><p>SpringCloud &#x662F; http &#x534F;&#x8BAE;&#x4F20;&#x8F93;,&#x5E26;&#x5BBD;&#x4F1A;&#x6BD4;&#x8F83;&#x591A;,&#x540C;&#x65F6;&#x4F7F;&#x7528; Http &#x534F;&#x8BAE;&#x4E00;&#x822C;&#x4F1A;&#x4F7F;&#x7528; json &#x62A5;&#x6587;,&#x6D88;&#x8017;&#x66F4;&#x5927;</p>
+<li><p>SpringCloud 是 http 协议传输,带宽会比较多,同时使用 Http 协议一般会使用 json 报文,消耗更大</p>
 </li>
-<li><p>dubbo &#x7684;&#x5F00;&#x53D1;&#x96BE;&#x5EA6;&#x8F83;&#x5927;,&#x539F;&#x56E0;&#x662F; dubbo &#x7684; jar &#x5305;&#x4F9D;&#x8D56;&#x95EE;&#x9898;&#x5F88;&#x591A;&#x5927;&#x578B;&#x5DE5;&#x7A0B;&#x65E0;&#x6CD5;&#x89E3;&#x51B3;</p>
+<li><p>dubbo 的开发难度较大,原因是 dubbo 的 jar 包依赖问题很多大型工程无法解决</p>
 </li>
-<li><p>SpringCloud &#x7684;&#x63A5;&#x53E3;&#x534F;&#x8BAE;&#x7EA6;&#x5B9A;&#x6BD4;&#x8F83;&#x81EA;&#x7531;&#x677E;&#x6563;,&#x9700;&#x8981;&#x6709;&#x5F3A;&#x6709;&#x529B;&#x7684;&#x884C;&#x653F;&#x63AA;&#x65BD;&#x6765;&#x9650;&#x5236;&#x63A5;&#x53E3;&#x65E0;&#x5E8F;&#x5347;&#x7EA7;</p>
+<li><p>SpringCloud 的接口协议约定比较自由松散,需要有强有力的行政措施来限制接口无序升级</p>
 </li>
-<li><p>dubbo &#x7684;&#x6CE8;&#x518C;&#x4E2D;&#x5FC3;&#x53EF;&#x4EE5;&#x9009;&#x62E9; zk,redis &#x7B49;,SpringCloud &#x7684;&#x6CE8;&#x518C;&#x4E2D;&#x5FC3;&#x53EF;&#x4EE5;&#x9009; eureka &#x6216;&#x8005; Consul</p>
+<li><p>dubbo 的注册中心可以选择 zk,redis 等,SpringCloud 的注册中心可以选 eureka 或者 Consul</p>
 </li>
-<li><p>SpringCloud &#x63D0;&#x4F9B;&#x4E86;&#x4E30;&#x5BCC;&#x7684;&#x7EC4;&#x4EF6;:&#x5982;&#x670D;&#x52A1;&#x7F51;&#x5173;\&#x65AD;&#x8DEF;&#x5668;\&#x5206;&#x5E03;&#x5F0F;&#x914D;&#x7F6E;\&#x94FE;&#x8DEF;&#x8FFD;&#x8E2A;&#x7B49;</p>
+<li><p>SpringCloud 提供了丰富的组件:如服务网关\断路器\分布式配置\链路追踪等</p>
 </li>
 </ul>
 
@@ -462,7 +462,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -145,6 +145,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/32240ede.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/32240ede.html" class="post-title-link" itemprop="url">学习接入sentinel</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-15 19:54:09" itemprop="dateCreated datePublished" datetime="2020-12-15T19:54:09+08:00">2020-12-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-01 14:13:23" itemprop="dateModified" datetime="2021-04-01T14:13:23+08:00">2021-04-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>学习使用 sentinel 流控功能</p>
+<h3 id="配置-sentinel-控制台"><a href="#配置-sentinel-控制台" class="headerlink" title="配置 sentinel 控制台"></a>配置 sentinel 控制台</h3><p>1.可以从 github 获取源码到本地编译或者直接下载官方提供的 jar 包</p>
+<p>github 地址:<a href="https://github.com/alibaba/Sentinel.git" target="_blank" rel="noopener">https://github.com/alibaba/Sentinel.git</a></p>
+<p>操作流程</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/32240ede.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/24f85607.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -344,11 +419,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>&#x67D0;&#x5929;&#x51CC;&#x6668;&#x63A5;&#x5230;&#x552E;&#x540E;&#x7684;&#x7535;&#x8BDD;,&#x8BF4;&#x7EBF;&#x4E0A;&#x8BBE;&#x5907;&#x51FA;&#x73B0;&#x4E86;&#x6279;&#x91CF;&#x79BB;&#x7EBF;&#x7684;&#x95EE;&#x9898;,&#x4E0B;&#x610F;&#x8BC6;&#x4EE5;&#x4E3A;&#x662F;&#x4E4B;&#x524D; Netty &#x76F8;&#x5173;&#x670D;&#x52A1;&#x4EE3;&#x7801;&#x5BFC;&#x81F4;&#x7684;&#x95EE;&#x9898;&#x53C8;&#x590D;&#x73B0;&#x4E86;,&#x4F46;&#x662F;&#x6392;&#x67E5;&#x4E86;&#x4E00;&#x4E0B;&#x53D1;&#x73B0;&#x5E76;&#x4E0D;&#x662F;&#x8FD9;&#x4E2A;&#x539F;&#x56E0;<br>&#x73B0;&#x5728;&#x628A;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x8BB0;&#x5F55;&#x4E0B;&#x6765;,&#x867D;&#x7136;&#x81F3;&#x4ECA;&#x8FD8;&#x6CA1;&#x6709;&#x627E;&#x5230;&#x5177;&#x4F53;&#x539F;&#x56E0;&#x4F46;&#x662F;&#x5DF2;&#x7ECF;&#x5927;&#x81F4;&#x7F29;&#x5C0F;&#x4E86;&#x8303;&#x56F4;</p>
-<p>1.&#x5404;&#x4E2A;&#x670D;&#x52A1;&#x5E73;&#x53F0;&#x62A5;&#x51FA;&#x65E0;&#x6CD5;&#x4E0E; mq &#x5EFA;&#x7ACB;&#x8FDE;&#x63A5;&#x7684;&#x9519;&#x8BEF;</p>
-<p>2.&#x67E5;&#x8BE2; mq &#x670D;&#x52A1;&#x8FDB;&#x7A0B;&#x53D1;&#x73B0;&#x8FDB;&#x7A0B; pid &#x8FD8;&#x5728;&#x4F46;&#x662F;&#x7AEF;&#x53E3;&#x53F7;&#x5374;&#x6CA1;&#x4E86;</p>
-<p>3.&#x56E0;&#x4E3A;&#x6025;&#x7740;&#x89E3;&#x51B3;&#x95EE;&#x9898;,&#x4E8E;&#x662F;&#x8054;&#x7CFB;&#x8FD0;&#x7EF4;&#x91CD;&#x542F;&#x4E86; mq &#x670D;&#x52A1;(&#x8FD9;&#x91CC;&#x4E0D;&#x5E94;&#x8BE5;,&#x5176;&#x5B9E;&#x5E94;&#x8BE5;&#x5148;&#x67E5;&#x4E00;&#x4E0B; mq &#x8FDB;&#x7A0B;&#x7684;&#x72B6;&#x6001;,&#x8FD9;&#x91CC;&#x76F4;&#x63A5;&#x91CD;&#x542F;&#x5BFC;&#x81F4;&#x540E;&#x9762;&#x65E0;&#x6CD5;&#x7EC6;&#x81F4;&#x6392;&#x67E5;)</p>
-<p>4.&#x4E8B;&#x540E;&#x5206;&#x6790; mq &#x65E5;&#x5FD7;&#x53CA;&#x6E90;&#x7801;,&#x53D1;&#x73B0;&#x5728;&#x51FA;&#x73B0;&#x95EE;&#x9898;&#x4E4B;&#x524D;&#x7684;&#x4E00;&#x4E9B;&#x8FF9;&#x8C61;:</p>
+          <p>某天凌晨接到售后的电话,说线上设备出现了批量离线的问题,下意识以为是之前 Netty 相关服务代码导致的问题又复现了,但是排查了一下发现并不是这个原因<br>现在把这个问题记录下来,虽然至今还没有找到具体原因但是已经大致缩小了范围</p>
+<p>1.各个服务平台报出无法与 mq 建立连接的错误</p>
+<p>2.查询 mq 服务进程发现进程 pid 还在但是端口号却没了</p>
+<p>3.因为急着解决问题,于是联系运维重启了 mq 服务(这里不应该,其实应该先查一下 mq 进程的状态,这里直接重启导致后面无法细致排查)</p>
+<p>4.事后分析 mq 日志及源码,发现在出现问题之前的一些迹象:</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/5883ff82.html#more" rel="contents">
@@ -420,9 +495,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>&#x672C;&#x7BC7;&#x4E0D;&#x5199;&#x53C2;&#x4E0E;&#x8BD5;&#x7528;&#x65B9;&#x6CD5;,&#x53EA;&#x8BB0;&#x5F55;&#x542F;&#x52A8;&#x5B9E;&#x4F8B;&#x4E4B;&#x540E;&#x505A;&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x64CD;&#x4F5C;,&#x53EA;&#x8981;&#x662F; ubuntu-18.04 &#x7248;&#x672C;&#x7684;&#x7CFB;&#x7EDF;&#x90FD;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x6B64;&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</p>
-<h3 id="&#x66F4;&#x65B0;-apt"><a href="#&#x66F4;&#x65B0;-apt" class="headerlink" title="&#x66F4;&#x65B0; apt"></a>&#x66F4;&#x65B0; apt</h3><p><code>apt-get update</code></p>
-<h3 id="&#x5B89;&#x88C5;-shadowsocks-libev"><a href="#&#x5B89;&#x88C5;-shadowsocks-libev" class="headerlink" title="&#x5B89;&#x88C5; shadowsocks-libev"></a>&#x5B89;&#x88C5; shadowsocks-libev</h3><p>&#x56E0;&#x4E3A;&#x670D;&#x52A1;&#x5668;&#x5728;&#x4E1C;&#x4EAC;,&#x6B63;&#x597D;&#x624B;&#x5934;&#x6CA1;&#x6709;&#x5408;&#x9002;&#x7684;&#x68AF;&#x5B50;,&#x4E0D;&#x5229;&#x7528;&#x8D77;&#x6765;&#x5C31;&#x662F;&#x6D6A;&#x8D39;</p>
+          <p>本篇不写参与试用方法,只记录启动实例之后做的一系列操作,只要是 ubuntu-18.04 版本的系统都可以参考此操作流程</p>
+<h3 id="更新-apt"><a href="#更新-apt" class="headerlink" title="更新 apt"></a>更新 apt</h3><p><code>apt-get update</code></p>
+<h3 id="安装-shadowsocks-libev"><a href="#安装-shadowsocks-libev" class="headerlink" title="安装 shadowsocks-libev"></a>安装 shadowsocks-libev</h3><p>因为服务器在东京,正好手头没有合适的梯子,不利用起来就是浪费</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/db8ef88b.html#more" rel="contents">
@@ -494,10 +569,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="&#x4E8B;&#x6545;&#x63CF;&#x8FF0;"><a href="#&#x4E8B;&#x6545;&#x63CF;&#x8FF0;" class="headerlink" title="&#x4E8B;&#x6545;&#x63CF;&#x8FF0;"></a>&#x4E8B;&#x6545;&#x63CF;&#x8FF0;</h3><p>&#x516C;&#x53F8;&#x7684;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x548C;&#x8BBE;&#x5907;&#x7F51;&#x5173;&#x670D;&#x52A1;&#x662F;&#x4EE5; TCP &#x957F;&#x8FDE;&#x63A5;&#x65B9;&#x5F0F;&#x901A;&#x8BAF;&#x7684;,&#x7F51;&#x5173;&#x670D;&#x52A1;&#x7528;&#x5230;&#x4E86; Netty</p>
-<p>&#x524D;&#x6BB5;&#x65F6;&#x95F4;&#x7A81;&#x7136;&#x7EBF;&#x4E0A;&#x4E00;&#x6279;&#x65B0;&#x7684;&#x8BBE;&#x5907;&#x96C6;&#x4F53;&#x79BB;&#x7EBF;, &#x67E5;&#x770B;&#x8BBE;&#x5907;&#x7F51;&#x5173;&#x53D1;&#x73B0;&#x7F51;&#x5173;&#x8FDB;&#x7A0B;&#x7684; netstat &#x5B58;&#x5728;&#x5927;&#x91CF;&#x7684; CLOSE_WAIT &#x72B6;&#x6001;&#x8FDE;&#x63A5;</p>
-<p>&#x7B2C;&#x4E00;&#x65F6;&#x95F4;&#x91CD;&#x542F;&#x4E86;&#x8BBE;&#x5907;&#x7F51;&#x5173;,&#x5F88;&#x5FEB;&#x8BBE;&#x5907;&#x6B63;&#x5E38;&#x4E0A;&#x7EBF;&#x4E86;,&#x89C2;&#x5BDF;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#x4E4B;&#x540E;&#x53D1;&#x73B0;&#x53C8;&#x5F00;&#x59CB;&#x9646;&#x7EED;&#x51FA;&#x73B0; CLOSE_WAIT &#x72B6;&#x6001;&#x7684;&#x8FDE;&#x63A5;</p>
-<h3 id="&#x5206;&#x6790;&#x539F;&#x56E0;"><a href="#&#x5206;&#x6790;&#x539F;&#x56E0;" class="headerlink" title="&#x5206;&#x6790;&#x539F;&#x56E0;"></a>&#x5206;&#x6790;&#x539F;&#x56E0;</h3>
+          <h3 id="事故描述"><a href="#事故描述" class="headerlink" title="事故描述"></a>事故描述</h3><p>公司的硬件设备和设备网关服务是以 TCP 长连接方式通讯的,网关服务用到了 Netty</p>
+<p>前段时间突然线上一批新的设备集体离线, 查看设备网关发现网关进程的 netstat 存在大量的 CLOSE_WAIT 状态连接</p>
+<p>第一时间重启了设备网关,很快设备正常上线了,观察一段时间之后发现又开始陆续出现 CLOSE_WAIT 状态的连接</p>
+<h3 id="分析原因"><a href="#分析原因" class="headerlink" title="分析原因"></a>分析原因</h3>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/f2cdca07.html#more" rel="contents">
@@ -569,14 +644,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>&#x6700;&#x8FD1;&#x5728;&#x5F00;&#x53D1;&#x4E2D;&#x4F7F;&#x7528;&#x4E86; RedisTemplate &#x6765;&#x64CD;&#x4F5C; redis &#x7F13;&#x5B58;,SpringBoot &#x96C6;&#x5408; RedisTemplate &#x611F;&#x89C9;&#x7528;&#x8D77;&#x6765;&#x4E5F;&#x4E0D;&#x9519;,&#x540C;&#x65F6;&#x5728;&#x5F00;&#x53D1;&#x8FC7;&#x7A0B;&#x4E2D;&#x4E5F;&#x9047;&#x5230;&#x4E86;&#x4E00;&#x4E9B;&#x95EE;&#x9898;,&#x5728;&#x8FD9;&#x91CC;&#x8BB0;&#x5F55;&#x4E00;&#x4E0B;&#x6574;&#x4E2A;&#x8FC7;&#x7A0B;</p>
-<h3 id="&#x914D;&#x7F6E;"><a href="#&#x914D;&#x7F6E;" class="headerlink" title="&#x914D;&#x7F6E;"></a>&#x914D;&#x7F6E;</h3><ul>
-<li>&#x521B;&#x5EFA; SrpingBoot &#x9879;&#x76EE;&#x6216;&#x8005;&#x6A21;&#x5757;&#x5DE5;&#x7A0B;,&#x5F15;&#x5165;&#x4F9D;&#x8D56;</li>
+          <p>最近在开发中使用了 RedisTemplate 来操作 redis 缓存,SpringBoot 集合 RedisTemplate 感觉用起来也不错,同时在开发过程中也遇到了一些问题,在这里记录一下整个过程</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><ul>
+<li>创建 SrpingBoot 项目或者模块工程,引入依赖</li>
 </ul>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-commons<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>&#x6DFB;&#x52A0; redis &#x914D;&#x7F6E;&#x53C2;&#x6570;</li>
+<li>添加 redis 配置参数</li>
 </ul>
           <!--noindex-->
             <div class="post-button">
@@ -649,18 +724,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>&#x5728;&#x5E94;&#x7528; spring &#x6846;&#x67B6;&#x8FDB;&#x884C;&#x5F00;&#x53D1;&#x65F6;,&#x6211;&#x4EEC;&#x5E38;&#x5E38;&#x7528;@Resource &#x548C;@Autowired &#x6CE8;&#x89E3;&#x8FDB;&#x884C;&#x4F9D;&#x8D56;&#x6CE8;&#x5165;</p>
-<p>&#x5728;&#x5F00;&#x53D1;&#x8FC7;&#x7A0B;&#x4E2D;&#x4EFF;&#x4F5B;&#x8FD9;&#x4E24;&#x8005;&#x5E94;&#x7528;&#x8D77;&#x6765;&#x5E76;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x533A;&#x522B;,&#x4F46;&#x662F;&#x5176;&#x5B9E;&#x8FD9;&#x4E24;&#x4E2A;&#x6CE8;&#x89E3;&#x672C;&#x8D28;&#x4E0A;&#x5C31;&#x662F;&#x4E0D;&#x4E00;&#x6837;&#x7684;</p>
-<p>&#x533A;&#x522B;&#x5982;&#x4E0B;:</p>
+          <p>在应用 spring 框架进行开发时,我们常常用@Resource 和@Autowired 注解进行依赖注入</p>
+<p>在开发过程中仿佛这两者应用起来并没有什么区别,但是其实这两个注解本质上就是不一样的</p>
+<p>区别如下:</p>
 <ul>
-<li><p>@Resource &#x662F;&#x7531; java &#x63D0;&#x4F9B;&#x7684;&#x6CE8;&#x89E3;,&#x800C;@Autowired &#x662F;&#x7531; spring &#x63D0;&#x4F9B;&#x7684;</p>
+<li><p>@Resource 是由 java 提供的注解,而@Autowired 是由 spring 提供的</p>
 </li>
-<li><p>@Resource &#x662F; ByName,&#x800C;@Autowired &#x662F; ByType</p>
+<li><p>@Resource 是 ByName,而@Autowired 是 ByType</p>
 </li>
-<li><p>@Autowire &#x6CE8;&#x5165;&#x65F6; ByType &#x5982;&#x679C;&#x8981;&#x4F7F;&#x7528; ByName &#x9700;&#x8981;&#x914D;&#x5408;@Qualifier</p>
+<li><p>@Autowire 注入时 ByType 如果要使用 ByName 需要配合@Qualifier</p>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowire</span></span><br><span class="line"><span class="meta">@Qualifier</span>&#xFF08;<span class="string">&quot;orderService&quot;</span>&#xFF09;</span><br><span class="line"><span class="keyword">private</span> OrderService orderService;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowire</span></span><br><span class="line"><span class="meta">@Qualifier</span>（<span class="string">"orderService"</span>）</span><br><span class="line"><span class="keyword">private</span> OrderService orderService;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/759d9b9f.html#more" rel="contents">
@@ -732,10 +807,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="&#x5173;&#x4E8E;"><a href="#&#x5173;&#x4E8E;" class="headerlink" title="&#x5173;&#x4E8E;"></a>&#x5173;&#x4E8E;</h3><p>&#x5728;&#x5DE5;&#x4F5C;&#x4E2D;&#x9047;&#x5230;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x4E0D;&#x540C;,&#x9700;&#x8981;&#x91C7;&#x7528;&#x4E0D;&#x540C;&#x7684;&#x65B9;&#x5F0F;&#x5904;&#x7406;,&#x5E38;&#x89C1;&#x7684;&#x5199;&#x6CD5;&#x662F;&#x6839;&#x636E;&#x6761;&#x4EF6;&#x8FDB;&#x884C;&#x5224;&#x65AD;,&#x91C7;&#x7528; if&#x2026;else&#x2026; &#x6216;&#x8005; switch &#x7684;&#x65B9;&#x5F0F;</p>
-<p>&#x6BD4;&#x5982;&#x6211;&#x6700;&#x8FD1;&#x5728;&#x5199;&#x7684;&#x5DE5;&#x5355;,&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x5DE5;&#x5355;&#x9700;&#x8981;&#x7684;&#x6570;&#x636E;&#x548C;&#x5904;&#x7406;&#x903B;&#x8F91;&#x5404;&#x6709;&#x533A;&#x522B;</p>
-<p>&#x7531;&#x4E8E;&#x5DE5;&#x5355;&#x7C7B;&#x578B;&#x6BD4;&#x8F83;&#x591A;,&#x60F3;&#x5230;&#x8981;&#x5199;&#x4E00;&#x5806; if&#x2026;else&#x2026;&#x6211;&#x5C31;&#x5934;&#x5927;,&#x8FD9;&#x6837;&#x7684;&#x4EE3;&#x7801;&#x592A;&#x4E11;,&#x6211;&#x4E0D;&#x559C;&#x6B22;&#x2026;</p>
-<p>&#x7565;&#x4E00;&#x601D;&#x8003;,&#x7528;&#x7B56;&#x7565;&#x6A21;&#x5F0F;&#x53BB;&#x5B9E;&#x73B0;,&#x5C31;&#x6E05;&#x723D;&#x5F88;&#x591A;</p>
+          <h3 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h3><p>在工作中遇到数据类型不同,需要采用不同的方式处理,常见的写法是根据条件进行判断,采用 if…else… 或者 switch 的方式</p>
+<p>比如我最近在写的工单,不同类型工单需要的数据和处理逻辑各有区别</p>
+<p>由于工单类型比较多,想到要写一堆 if…else…我就头大,这样的代码太丑,我不喜欢…</p>
+<p>略一思考,用策略模式去实现,就清爽很多</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/f4f8ffc6.html#more" rel="contents">
@@ -807,10 +882,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>&#x516C;&#x53F8;&#x7684;&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x5355;&#x53F0; redis &#x670D;&#x52A1;&#x5668;,&#x672C;&#x6765;&#x914D;&#x7F6E; redis &#x7684; maxmemory &#x53EA;&#x6709; 512M,&#x4F46;&#x662F;&#x670D;&#x52A1;&#x8DD1;&#x4E86;&#x51E0;&#x4E2A;&#x6708;&#x90FD;&#x6CA1;&#x4EC0;&#x4E48;&#x95EE;&#x9898;,&#x8BF4;&#x660E;&#x662F;&#x591F;&#x7528;&#x7684;&#x3002;</p>
-<p>&#x4F46;&#x662F;&#x6700;&#x8FD1;&#x4E0D;&#x5230;&#x4E00;&#x4E2A;&#x6708;&#x7684;&#x65F6;&#x95F4;&#x7684;&#x65F6;&#x95F4;,&#x8FD9;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x7684; redis &#x62A5;&#x4E86;&#x4E24;&#x6B21;&#x5185;&#x5B58;&#x4E0D;&#x8DB3;,&#x6700;&#x5F00;&#x59CB;&#x662F;&#x4EE5;&#x4E3A;&#x8C03;&#x7528;&#x91CF;&#x6162;&#x6162;&#x4E0A;&#x6765;&#x4E86;,&#x6240;&#x4EE5;&#x53EA;&#x662F;&#x5355;&#x7EAF;&#x7684;&#x4FEE;&#x6539; maxmemory &#x7684;&#x503C;,&#x4FEE;&#x6539;&#x5230;&#x4E86; 3g&#x3002;</p>
-<p>&#x6628;&#x5929;&#x89C2;&#x5BDF;&#x4E86;&#x4E00;&#x4E0B;&#x53D1;&#x73B0;&#x5185;&#x5B58;&#x5360;&#x7528;&#x5DF2;&#x7ECF;&#x5230;&#x4E86; 2.3g &#x4E86;,&#x8FD9;&#x9A6C;&#x4E0A;&#x53C8;&#x5FEB;&#x6EE1;&#x4E86;,&#x89C9;&#x5F97;&#x4E0D;&#x5BF9;&#x52B2;,&#x6240;&#x4EE5;&#x60F3;&#x8981;&#x5206;&#x6790;&#x4E00;&#x4E0B;&#x662F;&#x54EA;&#x4E9B; key &#x5360;&#x7528;&#x7684;&#x7A7A;&#x95F4;&#x6BD4;&#x8F83;&#x5927;,&#x770B;&#x770B;&#x80FD;&#x4E0D;&#x80FD;&#x76F8;&#x5E94;&#x7684;&#x4F18;&#x5316;&#x4E00;&#x4E0B;&#x4EE3;&#x7801;</p>
-<h3 id="&#x73AF;&#x5883;"><a href="#&#x73AF;&#x5883;" class="headerlink" title="&#x73AF;&#x5883;"></a>&#x73AF;&#x5883;</h3><ul>
+          <p>公司的一个服务用了一个单台 redis 服务器,本来配置 redis 的 maxmemory 只有 512M,但是服务跑了几个月都没什么问题,说明是够用的。</p>
+<p>但是最近不到一个月的时间的时间,这台服务器的 redis 报了两次内存不足,最开始是以为调用量慢慢上来了,所以只是单纯的修改 maxmemory 的值,修改到了 3g。</p>
+<p>昨天观察了一下发现内存占用已经到了 2.3g 了,这马上又快满了,觉得不对劲,所以想要分析一下是哪些 key 占用的空间比较大,看看能不能相应的优化一下代码</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
 <li><p>CentOS Linux release 7.2.1511</p>
 </li>
 <li><p>redis-5.0.4</p>
@@ -823,80 +898,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/670c67ee.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/90da3a95.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="hongyu liu">
-      <meta itemprop="description" content="保持好奇，保持热爱">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hongyu`s blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/article/90da3a95.html" class="post-title-link" itemprop="url">缓存雪崩</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-09 18:47:31" itemprop="dateCreated datePublished" datetime="2020-08-09T18:47:31+08:00">2020-08-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-30 22:38:35" itemprop="dateModified" datetime="2021-03-30T22:38:35+08:00">2021-03-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x96EA;&#x5D29;"><a href="#&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x96EA;&#x5D29;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x96EA;&#x5D29;"></a>&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x96EA;&#x5D29;</h3><p>&#x7F13;&#x5B58;&#x96EA;&#x5D29;&#x901A;&#x5E38;&#x662F;&#x6307;&#x7F13;&#x5B58;&#x5927;&#x9762;&#x79EF;&#x5931;&#x6548;,&#x6216;&#x8005; Redis &#x5B95;&#x673A;,&#x5927;&#x91CF;&#x7684;&#x8BF7;&#x6C42;&#x76F4;&#x63A5;&#x53BB;&#x8BF7;&#x6C42;&#x5230;&#x4E86;&#x6570;&#x636E;&#x5E93;,&#x5728;&#x5E76;&#x53D1;&#x5927;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x53EF;&#x80FD;&#x76F4;&#x63A5;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5B95;&#x673A;</p>
-<h3 id="&#x51FA;&#x73B0;&#x7F13;&#x5B58;&#x96EA;&#x5D29;&#x7684;&#x539F;&#x56E0;"><a href="#&#x51FA;&#x73B0;&#x7F13;&#x5B58;&#x96EA;&#x5D29;&#x7684;&#x539F;&#x56E0;" class="headerlink" title="&#x51FA;&#x73B0;&#x7F13;&#x5B58;&#x96EA;&#x5D29;&#x7684;&#x539F;&#x56E0;"></a>&#x51FA;&#x73B0;&#x7F13;&#x5B58;&#x96EA;&#x5D29;&#x7684;&#x539F;&#x56E0;</h3><p>&#x5728;&#x5C06;&#x6570;&#x636E;&#x5B58;&#x5165;&#x7F13;&#x5B58;&#x7684;&#x65F6;&#x95F4;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x90FD;&#x9700;&#x8981;&#x4E3A;&#x7F13;&#x5B58;&#x8BBE;&#x7F6E;&#x8FC7;&#x671F;&#x65F6;&#x95F4;,&#x907F;&#x514D;&#x7F13;&#x5B58;&#x957F;&#x65F6;&#x95F4;&#x5360;&#x7528;&#x5185;&#x5B58;&#x8D44;&#x6E90;,&#x5F53;&#x7136;&#x4E5F;&#x4F1A;&#x914D;&#x5408; redis &#x7684;&#x6DD8;&#x6C70;&#x7B56;&#x7565;&#x5BF9;&#x7F13;&#x5B58;&#x8FDB;&#x884C;&#x5931;&#x6548;&#x6DD8;&#x6C70;</p>
-<p>&#x5047;&#x5982;&#x7F13;&#x5B58;&#x8BBE;&#x7F6E;&#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x662F;&#x76F8;&#x540C;&#x7684;&#x5E76;&#x4E14;&#x521A;&#x597D;&#x5728;&#x540C;&#x4E00;&#x65F6;&#x523B;&#x5168;&#x90E8;&#x5931;&#x6548;,&#x6216;&#x8005; Redis &#x5B95;&#x673A;,&#x5C31;&#x4F1A;&#x9020;&#x6210;&#x6240;&#x8C13;&#x7684;&#x7F13;&#x5B58;&#x96EA;&#x5D29;</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/article/90da3a95.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -986,7 +987,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

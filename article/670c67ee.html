@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="&amp;#x516C;&amp;#x53F8;&amp;#x7684;&amp;#x4E00;&amp;#x4E2A;&amp;#x670D;&amp;#x52A1;&amp;#x7528;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x5355;&amp;#x53F0; redis &amp;#x670D;&amp;#x52A1;&amp;#x5668;,&amp;#x672C;&amp;#x6765;&amp;#x914D;&amp;#x7F6E; redis &amp;#x7684; maxmemory &amp;#x53E">
+  <meta name="description" content="公司的一个服务用了一个单台 redis 服务器,本来配置 redis 的 maxmemory 只有 512M,但是服务跑了几个月都没什么问题,说明是够用的。 但是最近不到一个月的时间的时间,这台服务器的 redis 报了两次内存不足,最开始是以为调用量慢慢上来了,所以只是单纯的修改 maxmemory 的值,修改到了 3g。 昨天观察了一下发现内存占用已经到了 2.3g 了,这马上又快满了,觉得不">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="查看redis所有key对应value占用内存大小">
 <meta property="og:url" content="http://yoursite.com/article/670c67ee.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="&amp;#x516C;&amp;#x53F8;&amp;#x7684;&amp;#x4E00;&amp;#x4E2A;&amp;#x670D;&amp;#x52A1;&amp;#x7528;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x5355;&amp;#x53F0; redis &amp;#x670D;&amp;#x52A1;&amp;#x5668;,&amp;#x672C;&amp;#x6765;&amp;#x914D;&amp;#x7F6E; redis &amp;#x7684; maxmemory &amp;#x53E">
+<meta property="og:description" content="公司的一个服务用了一个单台 redis 服务器,本来配置 redis 的 maxmemory 只有 512M,但是服务跑了几个月都没什么问题,说明是够用的。 但是最近不到一个月的时间的时间,这台服务器的 redis 报了两次内存不足,最开始是以为调用量慢慢上来了,所以只是单纯的修改 maxmemory 的值,修改到了 3g。 昨天观察了一下发现内存占用已经到了 2.3g 了,这马上又快满了,觉得不">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.523Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="查看redis所有key对应value占用内存大小">
-<meta name="twitter:description" content="&amp;#x516C;&amp;#x53F8;&amp;#x7684;&amp;#x4E00;&amp;#x4E2A;&amp;#x670D;&amp;#x52A1;&amp;#x7528;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x5355;&amp;#x53F0; redis &amp;#x670D;&amp;#x52A1;&amp;#x5668;,&amp;#x672C;&amp;#x6765;&amp;#x914D;&amp;#x7F6E; redis &amp;#x7684; maxmemory &amp;#x53E">
+<meta name="twitter:description" content="公司的一个服务用了一个单台 redis 服务器,本来配置 redis 的 maxmemory 只有 512M,但是服务跑了几个月都没什么问题,说明是够用的。 但是最近不到一个月的时间的时间,这台服务器的 redis 报了两次内存不足,最开始是以为调用量慢慢上来了,所以只是单纯的修改 maxmemory 的值,修改到了 3g。 昨天观察了一下发现内存占用已经到了 2.3g 了,这马上又快满了,觉得不">
 
 <link rel="canonical" href="http://yoursite.com/article/670c67ee.html">
 
@@ -192,10 +192,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>&#x516C;&#x53F8;&#x7684;&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x5355;&#x53F0; redis &#x670D;&#x52A1;&#x5668;,&#x672C;&#x6765;&#x914D;&#x7F6E; redis &#x7684; maxmemory &#x53EA;&#x6709; 512M,&#x4F46;&#x662F;&#x670D;&#x52A1;&#x8DD1;&#x4E86;&#x51E0;&#x4E2A;&#x6708;&#x90FD;&#x6CA1;&#x4EC0;&#x4E48;&#x95EE;&#x9898;,&#x8BF4;&#x660E;&#x662F;&#x591F;&#x7528;&#x7684;&#x3002;</p>
-<p>&#x4F46;&#x662F;&#x6700;&#x8FD1;&#x4E0D;&#x5230;&#x4E00;&#x4E2A;&#x6708;&#x7684;&#x65F6;&#x95F4;&#x7684;&#x65F6;&#x95F4;,&#x8FD9;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x7684; redis &#x62A5;&#x4E86;&#x4E24;&#x6B21;&#x5185;&#x5B58;&#x4E0D;&#x8DB3;,&#x6700;&#x5F00;&#x59CB;&#x662F;&#x4EE5;&#x4E3A;&#x8C03;&#x7528;&#x91CF;&#x6162;&#x6162;&#x4E0A;&#x6765;&#x4E86;,&#x6240;&#x4EE5;&#x53EA;&#x662F;&#x5355;&#x7EAF;&#x7684;&#x4FEE;&#x6539; maxmemory &#x7684;&#x503C;,&#x4FEE;&#x6539;&#x5230;&#x4E86; 3g&#x3002;</p>
-<p>&#x6628;&#x5929;&#x89C2;&#x5BDF;&#x4E86;&#x4E00;&#x4E0B;&#x53D1;&#x73B0;&#x5185;&#x5B58;&#x5360;&#x7528;&#x5DF2;&#x7ECF;&#x5230;&#x4E86; 2.3g &#x4E86;,&#x8FD9;&#x9A6C;&#x4E0A;&#x53C8;&#x5FEB;&#x6EE1;&#x4E86;,&#x89C9;&#x5F97;&#x4E0D;&#x5BF9;&#x52B2;,&#x6240;&#x4EE5;&#x60F3;&#x8981;&#x5206;&#x6790;&#x4E00;&#x4E0B;&#x662F;&#x54EA;&#x4E9B; key &#x5360;&#x7528;&#x7684;&#x7A7A;&#x95F4;&#x6BD4;&#x8F83;&#x5927;,&#x770B;&#x770B;&#x80FD;&#x4E0D;&#x80FD;&#x76F8;&#x5E94;&#x7684;&#x4F18;&#x5316;&#x4E00;&#x4E0B;&#x4EE3;&#x7801;</p>
-<h3 id="&#x73AF;&#x5883;"><a href="#&#x73AF;&#x5883;" class="headerlink" title="&#x73AF;&#x5883;"></a>&#x73AF;&#x5883;</h3><ul>
+        <p>公司的一个服务用了一个单台 redis 服务器,本来配置 redis 的 maxmemory 只有 512M,但是服务跑了几个月都没什么问题,说明是够用的。</p>
+<p>但是最近不到一个月的时间的时间,这台服务器的 redis 报了两次内存不足,最开始是以为调用量慢慢上来了,所以只是单纯的修改 maxmemory 的值,修改到了 3g。</p>
+<p>昨天观察了一下发现内存占用已经到了 2.3g 了,这马上又快满了,觉得不对劲,所以想要分析一下是哪些 key 占用的空间比较大,看看能不能相应的优化一下代码</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
 <li><p>CentOS Linux release 7.2.1511</p>
 </li>
 <li><p>redis-5.0.4</p>
@@ -205,20 +205,20 @@
 <li><p>git</p>
 </li>
 </ul>
-<h3 id="&#x5DE5;&#x5177;"><a href="#&#x5DE5;&#x5177;" class="headerlink" title="&#x5DE5;&#x5177;"></a>&#x5DE5;&#x5177;</h3><p>&#x5728;&#x7F51;&#x4E0A;&#x67E5;&#x4E86;&#x4E00;&#x4E0B;,&#x53D1;&#x73B0;&#x4E86; redis-rdb-tools &#x8FD9;&#x4E2A;&#x5DE5;&#x5177;,redis-rdb-tools &#x662F;&#x4E00;&#x4E2A;&#x5FEB;&#x7167;&#x6587;&#x4EF6;&#x89E3;&#x6790;&#x5668;,&#x53EF;&#x4EE5;&#x5BF9; rdb &#x6587;&#x4EF6;&#x4E2D;&#x6240;&#x6709; key &#x5BF9;&#x5E94;&#x7684; value &#x7684;&#x5927;&#x5C0F;&#x7B49;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5206;&#x6790;,&#x53EF;&#x4EE5;&#x5BFC;&#x51FA; json/csv &#x7B49;&#x683C;&#x5F0F;&#x6587;&#x4EF6;</p>
-<h3 id="&#x5B89;&#x88C5;&#x6D41;&#x7A0B;"><a href="#&#x5B89;&#x88C5;&#x6D41;&#x7A0B;" class="headerlink" title="&#x5B89;&#x88C5;&#x6D41;&#x7A0B;"></a>&#x5B89;&#x88C5;&#x6D41;&#x7A0B;</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">yum install python-dev</span><br><span class="line"></span><br><span class="line">pip install rdbtools python-lzf</span><br><span class="line"></span><br><span class="line">git clone https://github.com/sripathikrishnan/redis-rdb-tools (&#x5230;&#x81EA;&#x5DF1;&#x9009;&#x5B9A;&#x7684;&#x8DEF;&#x5F84;&#x4E0B;&#x514B;&#x9686;)</span><br><span class="line"></span><br><span class="line">cd redis-rdb-tools</span><br><span class="line"></span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><p>在网上查了一下,发现了 redis-rdb-tools 这个工具,redis-rdb-tools 是一个快照文件解析器,可以对 rdb 文件中所有 key 对应的 value 的大小等数据进行分析,可以导出 json/csv 等格式文件</p>
+<h3 id="安装流程"><a href="#安装流程" class="headerlink" title="安装流程"></a>安装流程</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">yum install python-dev</span><br><span class="line"></span><br><span class="line">pip install rdbtools python-lzf</span><br><span class="line"></span><br><span class="line">git clone https://github.com/sripathikrishnan/redis-rdb-tools (到自己选定的路径下克隆)</span><br><span class="line"></span><br><span class="line">cd redis-rdb-tools</span><br><span class="line"></span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure>
 
-<h3 id="&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;"><a href="#&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;" class="headerlink" title="&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;"></a>&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</h3><ul>
-<li><p>&#x627E;&#x5230; redis &#x7684; dump.rdb &#x4F4D;&#x7F6E;, &#x5982;&#x6211;&#x4EEC;&#x7684; /Data/redis/dump.rdb</p>
+<h3 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h3><ul>
+<li><p>找到 redis 的 dump.rdb 位置, 如我们的 /Data/redis/dump.rdb</p>
 </li>
-<li><p>&#x5728;&#x5B89;&#x88C5; redis-rdb-tools &#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x6267;&#x884C;&#x6307;&#x4EE4; : rdb -c memory /Data/redis/dump.rdb &gt; /home/proview/redis.csv (&#x5C06; rdb &#x5185;&#x5B58;&#x5206;&#x6790;&#x7ED3;&#x679C;&#x5B58;&#x50A8;&#x5230;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x7684; csv &#x6587;&#x4EF6;&#x4E2D;)</p>
+<li><p>在安装 redis-rdb-tools 的目录下执行指令 : rdb -c memory /Data/redis/dump.rdb &gt; /home/proview/redis.csv (将 rdb 内存分析结果存储到指定目录的 csv 文件中)</p>
 </li>
-<li><p>&#x5728;&#x5B89;&#x88C5; redis-rdb-tools &#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x6267;&#x884C;&#x6307;&#x4EE4; : rdb &#x2013;command json /Data/redis/dump.rdb &gt; /home/proview/redis.json (&#x5C06; rdb &#x5185;&#x5B58;&#x5206;&#x6790;&#x7ED3;&#x679C;&#x5B58;&#x50A8;&#x5230;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x7684; json &#x6587;&#x4EF6;&#x4E2D;)</p>
+<li><p>在安装 redis-rdb-tools 的目录下执行指令 : rdb –command json /Data/redis/dump.rdb &gt; /home/proview/redis.json (将 rdb 内存分析结果存储到指定目录的 json 文件中)</p>
 </li>
-<li><p>&#x5728;&#x5B89;&#x88C5; redis-rdb-tools &#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x6267;&#x884C;&#x6307;&#x4EE4; : rdb &#x2013;command json &#x2013;key &#x201C;key1.*&#x201D; /Data/redis/dump.rdb &gt; /home/proview/redis-key.json (&#x5C06;&#x6307;&#x5B9A;key&#x7684; rdb &#x5185;&#x5B58;&#x5206;&#x6790;&#x7ED3;&#x679C;&#x5B58;&#x50A8;&#x5230;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x7684; json &#x6587;&#x4EF6;&#x4E2D;)</p>
+<li><p>在安装 redis-rdb-tools 的目录下执行指令 : rdb –command json –key “key1.*” /Data/redis/dump.rdb &gt; /home/proview/redis-key.json (将指定key的 rdb 内存分析结果存储到指定目录的 json 文件中)</p>
 </li>
 </ul>
-<p>&#x62FF;&#x4E0B;&#x6765;&#x8FD9;&#x4E2A; csv &#x4E00;&#x770B;,&#x6709;&#x4E2A; key &#x5360;&#x7528;&#x8FBE;&#x5230;&#x4E86; 2g,&#x7136;&#x540E;&#x5C31;&#x53BB;&#x5206;&#x6790;&#x4EE3;&#x7801;&#x5427;</p>
+<p>拿下来这个 csv 一看,有个 key 占用达到了 2g,然后就去分析代码吧</p>
 
     </div>
 
@@ -317,7 +317,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

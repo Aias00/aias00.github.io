@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="1.&amp;#x4EE3;&amp;#x7406;&amp;#x6A21;&amp;#x5F0F;&amp;#x6982;&amp;#x5FF5;&amp;#x4E3A;&amp;#x67D0;&amp;#x4E2A;&amp;#x5BF9;&amp;#x8C61;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E00;&amp;#x4E2A;&amp;#x4EE3;&amp;#x7406;,&amp;#x4EE5;&amp;#x63A7;&amp;#x5236;&amp;#x8FD9;&amp;#x4E2A;&amp;#x5BF9;&amp;#x8C61;&amp;#x76">
+  <meta name="description" content="1.代理模式概念为某个对象提供一个代理,以控制这个对象的访问;代理类负责为委托类预处理消息,过滤消息并转发消息,以及进行消息被委托类执行后的后续处理 通过代理类,能有效控制对委托类对象的直接访问,也可以很好的隐藏和保护委托类对象,同时也为实施不同控制策略预留了空间,从而在设计上获得了更大的灵活性 2.静态代理和动态代理的区别 静态代理要求委托类和代理类都实现同一个接口,代理对象的一个接口只服务于一">
 <meta name="keywords" content="proxy, interview">
 <meta property="og:type" content="article">
 <meta property="og:title" content="代理模式面试知识点(持续更新)">
 <meta property="og:url" content="http://yoursite.com/article/f72b9de4.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="1.&amp;#x4EE3;&amp;#x7406;&amp;#x6A21;&amp;#x5F0F;&amp;#x6982;&amp;#x5FF5;&amp;#x4E3A;&amp;#x67D0;&amp;#x4E2A;&amp;#x5BF9;&amp;#x8C61;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E00;&amp;#x4E2A;&amp;#x4EE3;&amp;#x7406;,&amp;#x4EE5;&amp;#x63A7;&amp;#x5236;&amp;#x8FD9;&amp;#x4E2A;&amp;#x5BF9;&amp;#x8C61;&amp;#x76">
+<meta property="og:description" content="1.代理模式概念为某个对象提供一个代理,以控制这个对象的访问;代理类负责为委托类预处理消息,过滤消息并转发消息,以及进行消息被委托类执行后的后续处理 通过代理类,能有效控制对委托类对象的直接访问,也可以很好的隐藏和保护委托类对象,同时也为实施不同控制策略预留了空间,从而在设计上获得了更大的灵活性 2.静态代理和动态代理的区别 静态代理要求委托类和代理类都实现同一个接口,代理对象的一个接口只服务于一">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.598Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="代理模式面试知识点(持续更新)">
-<meta name="twitter:description" content="1.&amp;#x4EE3;&amp;#x7406;&amp;#x6A21;&amp;#x5F0F;&amp;#x6982;&amp;#x5FF5;&amp;#x4E3A;&amp;#x67D0;&amp;#x4E2A;&amp;#x5BF9;&amp;#x8C61;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E00;&amp;#x4E2A;&amp;#x4EE3;&amp;#x7406;,&amp;#x4EE5;&amp;#x63A7;&amp;#x5236;&amp;#x8FD9;&amp;#x4E2A;&amp;#x5BF9;&amp;#x8C61;&amp;#x76">
+<meta name="twitter:description" content="1.代理模式概念为某个对象提供一个代理,以控制这个对象的访问;代理类负责为委托类预处理消息,过滤消息并转发消息,以及进行消息被委托类执行后的后续处理 通过代理类,能有效控制对委托类对象的直接访问,也可以很好的隐藏和保护委托类对象,同时也为实施不同控制策略预留了空间,从而在设计上获得了更大的灵活性 2.静态代理和动态代理的区别 静态代理要求委托类和代理类都实现同一个接口,代理对象的一个接口只服务于一">
 
 <link rel="canonical" href="http://yoursite.com/article/f72b9de4.html">
 
@@ -192,35 +192,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="1-&#x4EE3;&#x7406;&#x6A21;&#x5F0F;&#x6982;&#x5FF5;"><a href="#1-&#x4EE3;&#x7406;&#x6A21;&#x5F0F;&#x6982;&#x5FF5;" class="headerlink" title="1.&#x4EE3;&#x7406;&#x6A21;&#x5F0F;&#x6982;&#x5FF5;"></a>1.&#x4EE3;&#x7406;&#x6A21;&#x5F0F;&#x6982;&#x5FF5;</h3><p>&#x4E3A;&#x67D0;&#x4E2A;&#x5BF9;&#x8C61;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x4EE3;&#x7406;,&#x4EE5;&#x63A7;&#x5236;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#x7684;&#x8BBF;&#x95EE;;&#x4EE3;&#x7406;&#x7C7B;&#x8D1F;&#x8D23;&#x4E3A;&#x59D4;&#x6258;&#x7C7B;&#x9884;&#x5904;&#x7406;&#x6D88;&#x606F;,&#x8FC7;&#x6EE4;&#x6D88;&#x606F;&#x5E76;&#x8F6C;&#x53D1;&#x6D88;&#x606F;,&#x4EE5;&#x53CA;&#x8FDB;&#x884C;&#x6D88;&#x606F;&#x88AB;&#x59D4;&#x6258;&#x7C7B;&#x6267;&#x884C;&#x540E;&#x7684;&#x540E;&#x7EED;&#x5904;&#x7406;</p>
-<p>&#x901A;&#x8FC7;&#x4EE3;&#x7406;&#x7C7B;,&#x80FD;&#x6709;&#x6548;&#x63A7;&#x5236;&#x5BF9;&#x59D4;&#x6258;&#x7C7B;&#x5BF9;&#x8C61;&#x7684;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;,&#x4E5F;&#x53EF;&#x4EE5;&#x5F88;&#x597D;&#x7684;&#x9690;&#x85CF;&#x548C;&#x4FDD;&#x62A4;&#x59D4;&#x6258;&#x7C7B;&#x5BF9;&#x8C61;,&#x540C;&#x65F6;&#x4E5F;&#x4E3A;&#x5B9E;&#x65BD;&#x4E0D;&#x540C;&#x63A7;&#x5236;&#x7B56;&#x7565;&#x9884;&#x7559;&#x4E86;&#x7A7A;&#x95F4;,&#x4ECE;&#x800C;&#x5728;&#x8BBE;&#x8BA1;&#x4E0A;&#x83B7;&#x5F97;&#x4E86;&#x66F4;&#x5927;&#x7684;&#x7075;&#x6D3B;&#x6027;</p>
-<h3 id="2-&#x9759;&#x6001;&#x4EE3;&#x7406;&#x548C;&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x7684;&#x533A;&#x522B;"><a href="#2-&#x9759;&#x6001;&#x4EE3;&#x7406;&#x548C;&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x7684;&#x533A;&#x522B;" class="headerlink" title="2.&#x9759;&#x6001;&#x4EE3;&#x7406;&#x548C;&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x7684;&#x533A;&#x522B;"></a>2.&#x9759;&#x6001;&#x4EE3;&#x7406;&#x548C;&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x7684;&#x533A;&#x522B;</h3><ul>
-<li><p>&#x9759;&#x6001;&#x4EE3;&#x7406;&#x8981;&#x6C42;&#x59D4;&#x6258;&#x7C7B;&#x548C;&#x4EE3;&#x7406;&#x7C7B;&#x90FD;&#x5B9E;&#x73B0;&#x540C;&#x4E00;&#x4E2A;&#x63A5;&#x53E3;,&#x4EE3;&#x7406;&#x5BF9;&#x8C61;&#x7684;&#x4E00;&#x4E2A;&#x63A5;&#x53E3;&#x53EA;&#x670D;&#x52A1;&#x4E8E;&#x4E00;&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x5BF9;&#x8C61;</p>
+        <h3 id="1-代理模式概念"><a href="#1-代理模式概念" class="headerlink" title="1.代理模式概念"></a>1.代理模式概念</h3><p>为某个对象提供一个代理,以控制这个对象的访问;代理类负责为委托类预处理消息,过滤消息并转发消息,以及进行消息被委托类执行后的后续处理</p>
+<p>通过代理类,能有效控制对委托类对象的直接访问,也可以很好的隐藏和保护委托类对象,同时也为实施不同控制策略预留了空间,从而在设计上获得了更大的灵活性</p>
+<h3 id="2-静态代理和动态代理的区别"><a href="#2-静态代理和动态代理的区别" class="headerlink" title="2.静态代理和动态代理的区别"></a>2.静态代理和动态代理的区别</h3><ul>
+<li><p>静态代理要求委托类和代理类都实现同一个接口,代理对象的一个接口只服务于一种类型的对象</p>
 </li>
-<li><p>&#x9759;&#x6001;&#x4EE3;&#x7406;&#x4E2D;&#x4EE3;&#x7406;&#x7C7B;&#x5728;&#x7F16;&#x8BD1;&#x671F;&#x5C31;&#x5DF2;&#x7ECF;&#x786E;&#x5B9A;,&#x800C;&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5219;&#x662F;&#x8FD0;&#x884C;&#x671F;&#x95F4;&#x52A8;&#x6001;&#x751F;&#x6210;</p>
+<li><p>静态代理中代理类在编译期就已经确定,而动态代理则是运行期间动态生成</p>
 </li>
-<li><p>&#x9759;&#x6001;&#x4EE3;&#x7406;&#x7684;&#x6548;&#x7387;&#x76F8;&#x5BF9;&#x6765;&#x8BF4;&#x66F4;&#x9AD8;&#x4E00;&#x4E9B;,&#x4F46;&#x662F;&#x4EE3;&#x7801;&#x5197;&#x4F59;&#x5927;,&#x4E00;&#x65E6;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x63A5;&#x53E3;,&#x4EE3;&#x7406;&#x7C7B;&#x548C;&#x59D4;&#x6258;&#x7C7B;&#x90FD;&#x9700;&#x8981;&#x4FEE;&#x6539;</p>
+<li><p>静态代理的效率相对来说更高一些,但是代码冗余大,一旦需要修改接口,代理类和委托类都需要修改</p>
 </li>
-<li><p>&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x4F9D;&#x9760;&#x53CD;&#x5C04;&#x6765;&#x751F;&#x6210;&#x4EE3;&#x7406;&#x7C7B;</p>
+<li><p>动态代理依靠反射来生成代理类</p>
 </li>
 </ul>
-<h3 id="3-jdk-&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;"><a href="#3-jdk-&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;" class="headerlink" title="3.jdk &#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;"></a>3.jdk &#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;</h3><p>1.jdk &#x52A8;&#x6001;&#x4EE3;&#x7406;&#x53EA;&#x80FD;&#x7528;&#x4E8E;&#x4EE3;&#x7406;&#x63A5;&#x53E3;,&#x56E0;&#x6B64;&#x9700;&#x8981;&#x5148;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x63A5;&#x53E3;&#x4EE5;&#x53CA;&#x5176;&#x5B9E;&#x73B0;&#x7C7B;</p>
-<p>2.&#x521B;&#x5EFA;&#x4EE3;&#x7406;&#x7C7B;,&#x5B9E;&#x73B0; invocationHandler &#x63A5;&#x53E3;</p>
-<p>3.&#x5F15;&#x5165; Object &#x7C7B;&#x4F5C;&#x4E3A;&#x76EE;&#x6807;&#x5BF9;&#x8C61;,&#x91CD;&#x5199;&#x6709;&#x53C2;&#x6784;&#x9020;&#x5668;,&#x91CD;&#x5199; invoke &#x65B9;&#x6CD5;,&#x52A0;&#x5165;&#x4EE3;&#x7406;&#x65B9;&#x6CD5;,&#x5E76;&#x8C03;&#x7528; Object &#x7C7B;&#x7684;&#x65B9;&#x6CD5;</p>
-<p>4.&#x5229;&#x7528; Proxy.newInstance()&#x751F;&#x6210;&#x4EE3;&#x7406;&#x5BF9;&#x8C61;,&#x5E76;&#x8C03;&#x7528;&#x76EE;&#x6807;&#x65B9;&#x6CD5;</p>
-<h3 id="4-cglib-&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;"><a href="#4-cglib-&#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;" class="headerlink" title="4.cglib &#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;"></a>4.cglib &#x52A8;&#x6001;&#x4EE3;&#x7406;&#x5B9E;&#x73B0;&#x6B65;&#x9AA4;</h3><p>CGLIB&#xFF08;Code Generation Library&#xFF09;&#x662F;&#x4E00;&#x4E2A;&#x9AD8;&#x6027;&#x80FD;&#x5F00;&#x6E90;&#x7684;&#x4EE3;&#x7801;&#x751F;&#x6210;&#x5305;,&#x91C7;&#x7528;&#x975E;&#x5E38;&#x5E95;&#x5C42;&#x7684;&#x5B57;&#x8282;&#x7801;&#x6280;&#x672F;,&#x5BF9;&#x6307;&#x5B9A;&#x7684;&#x76EE;&#x6807;&#x7C7B;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x5B50;&#x7C7B;,&#x5E76;&#x5BF9;&#x5B50;&#x7C7B;&#x8FDB;&#x884C;&#x589E;&#x5F3A;</p>
-<p>1.&#x521B;&#x5EFA;&#x88AB;&#x4EE3;&#x7406;&#x7C7B;</p>
-<p>2.&#x521B;&#x5EFA;&#x4EE3;&#x7406;&#x7C7B;,&#x5B9E;&#x73B0; MethodInterceptor &#x63A5;&#x53E3;,&#x5B9E;&#x73B0; intercept &#x65B9;&#x6CD5;</p>
-<p>3.&#x5229;&#x7528; Enhancer &#x7ED1;&#x5B9A;&#x88AB;&#x4EE3;&#x7406;&#x5BF9;&#x8C61;&#x548C;&#x4EE3;&#x7406;&#x7C7B;,</p>
-<p>4.&#x5229;&#x7528; Enhancer.create()&#x65B9;&#x6CD5;&#x521B;&#x5EFA;&#x4EE3;&#x7406;&#x5BF9;&#x8C61;,&#x8C03;&#x7528;&#x4EE3;&#x7406;&#x5BF9;&#x8C61;&#x65B9;&#x6CD5;</p>
-<h3 id="5-&#x53CD;&#x5C04;&#x5E94;&#x7528;&#x573A;&#x666F;"><a href="#5-&#x53CD;&#x5C04;&#x5E94;&#x7528;&#x573A;&#x666F;" class="headerlink" title="5.&#x53CD;&#x5C04;&#x5E94;&#x7528;&#x573A;&#x666F;"></a>5.&#x53CD;&#x5C04;&#x5E94;&#x7528;&#x573A;&#x666F;</h3><ul>
-<li><p>&#x9006;&#x5411;&#x4EE3;&#x7801;</p>
+<h3 id="3-jdk-动态代理实现步骤"><a href="#3-jdk-动态代理实现步骤" class="headerlink" title="3.jdk 动态代理实现步骤"></a>3.jdk 动态代理实现步骤</h3><p>1.jdk 动态代理只能用于代理接口,因此需要先创建一个接口以及其实现类</p>
+<p>2.创建代理类,实现 invocationHandler 接口</p>
+<p>3.引入 Object 类作为目标对象,重写有参构造器,重写 invoke 方法,加入代理方法,并调用 Object 类的方法</p>
+<p>4.利用 Proxy.newInstance()生成代理对象,并调用目标方法</p>
+<h3 id="4-cglib-动态代理实现步骤"><a href="#4-cglib-动态代理实现步骤" class="headerlink" title="4.cglib 动态代理实现步骤"></a>4.cglib 动态代理实现步骤</h3><p>CGLIB（Code Generation Library）是一个高性能开源的代码生成包,采用非常底层的字节码技术,对指定的目标类生成一个子类,并对子类进行增强</p>
+<p>1.创建被代理类</p>
+<p>2.创建代理类,实现 MethodInterceptor 接口,实现 intercept 方法</p>
+<p>3.利用 Enhancer 绑定被代理对象和代理类,</p>
+<p>4.利用 Enhancer.create()方法创建代理对象,调用代理对象方法</p>
+<h3 id="5-反射应用场景"><a href="#5-反射应用场景" class="headerlink" title="5.反射应用场景"></a>5.反射应用场景</h3><ul>
+<li><p>逆向代码</p>
 </li>
-<li><p>&#x6CE8;&#x89E3;</p>
+<li><p>注解</p>
 </li>
-<li><p>&#x52A8;&#x6001;&#x751F;&#x6210;&#x7C7B;</p>
+<li><p>动态生成类</p>
 </li>
-<li><p>&#x751F;&#x6210;&#x52A8;&#x6001;&#x4EE3;&#x7406;</p>
+<li><p>生成动态代理</p>
 </li>
 </ul>
 
@@ -321,7 +321,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

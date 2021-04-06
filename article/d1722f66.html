@@ -21,18 +21,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="保持好奇，保持热爱">
-<meta property="og:type" content="website">
-<meta property="og:title" content="hongyu`s blog">
-<meta property="og:url" content="http://yoursite.com/tags/设计模式/index.html">
+  <meta name="description" content="volatile 变量具有以下特性： 1.可见性：任意对一个 volatile 变量的读，总能看到任意线程对这个 volatile 变量的最后的写入 2.原子性：对任意单个 volatile 变量的读/写操作具有原子性，但类似于 volatile++这类复合操作无法保证原子性 volatile 写的内存语义如下： 当写一个 volatile 变量时，JMM 会把该线程对应的工作内存的共享变量的值刷">
+<meta name="keywords" content="volatile, interview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="volatile关键字面试知识点（持续更新）">
+<meta property="og:url" content="http://yoursite.com/article/d1722f66.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="保持好奇，保持热爱">
+<meta property="og:description" content="volatile 变量具有以下特性： 1.可见性：任意对一个 volatile 变量的读，总能看到任意线程对这个 volatile 变量的最后的写入 2.原子性：对任意单个 volatile 变量的读/写操作具有原子性，但类似于 volatile++这类复合操作无法保证原子性 volatile 写的内存语义如下： 当写一个 volatile 变量时，JMM 会把该线程对应的工作内存的共享变量的值刷">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T11:51:30.650Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hongyu`s blog">
-<meta name="twitter:description" content="保持好奇，保持热爱">
+<meta name="twitter:title" content="volatile关键字面试知识点（持续更新）">
+<meta name="twitter:description" content="volatile 变量具有以下特性： 1.可见性：任意对一个 volatile 变量的读，总能看到任意线程对这个 volatile 变量的最后的写入 2.原子性：对任意单个 volatile 变量的读/写操作具有原子性，但类似于 volatile++这类复合操作无法保证原子性 volatile 写的内存语义如下： 当写一个 volatile 变量时，JMM 会把该线程对应的工作内存的共享变量的值刷">
 
-<link rel="canonical" href="http://yoursite.com/tags/设计模式/">
+<link rel="canonical" href="http://yoursite.com/article/d1722f66.html">
 
 
 <script id="page-configurations">
@@ -40,12 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: 设计模式 | hongyu`s blog</title>
+  <title>volatile关键字面试知识点（持续更新） | hongyu`s blog</title>
   
 
 
@@ -139,51 +141,102 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">设计模式
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/d1722f66.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          volatile关键字面试知识点（持续更新）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-06 15:37:45 / 修改时间：19:51:30" itemprop="dateCreated datePublished" datetime="2021-04-06T15:37:45+08:00">2021-04-06</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <p>volatile 变量具有以下特性：</p>
+<p>1.可见性：任意对一个 volatile 变量的读，总能看到任意线程对这个 volatile 变量的最后的写入</p>
+<p>2.原子性：对任意单个 volatile 变量的读/写操作具有原子性，但类似于 volatile++这类复合操作无法保证原子性</p>
+<p>volatile 写的内存语义如下：</p>
+<p>当写一个 volatile 变量时，JMM 会把该线程对应的工作内存的共享变量的值刷新到主内存</p>
+<p>volatile 读的内存语义如下：</p>
+<p>当读一个 volatile 变量时，JMM 会把该线程对应的工作内存的共享变量缓存置为无效，强制从主内存读取</p>
+<h3 id="volatile-指令重排序"><a href="#volatile-指令重排序" class="headerlink" title="volatile 指令重排序"></a>volatile 指令重排序</h3><p>volatile 变量的内存可见性是基于内存屏障(Memory Barrier)实现。JMM 内部会有指令重排，并且会有 as-if-serial 和 happened-before 的理念来保证指令重排的正确性。内存屏障就是基于 4 个汇编级别的关键字来禁止指令重排的，volatile 的重排规则如下：</p>
+<p>1.第一个为读操作时，第二个任何操作不可重排到第一个操作前面</p>
+<p>2.第二个为写操作时，第一个任何操作不可重排到第二个操作后面</p>
+<p>3.第一个为写操作时，第二个的读写操作也不运行重排序</p>
+<p><img data-src="https://i.loli.net/2021/04/06/G5lCHmaKWMo6SNg.png" alt="2021-04-06-18-06-5720210406180657"></p>
+<h3 id="volatile-底层实现"><a href="#volatile-底层实现" class="headerlink" title="volatile 底层实现"></a>volatile 底层实现</h3><p>JMM 对 volatile 的内存屏障插入策略</p>
+<p>1.在每个 volatile 写操作的前面插入一个 StoreStore 屏障，在每个 volatile 写操作后面插入一个 StoreLoad 屏障</p>
+<p><img data-src="https://i.loli.net/2021/04/06/ck86Z1XgFNCtmqy.png" alt="2021-04-06-19-06-0620210406190605"></p>
+<p>2.在每个 volatile 读操作的前面插入一个 LoadLoad 屏障，在每个 volatile 读操作后面插入一个 LoadStore 屏障</p>
+<p><img data-src="https://i.loli.net/2021/04/06/9tsXI6Kz1bhR7vB.png" alt="2021-04-06-19-09-5520210406190954"></p>
+<p>volatile 的实现原理</p>
+<p>有 volatile 修饰的共享变量进行读写操作的时候会使用 CPU 提供的 Lock 前缀指令。在 CPU 级别的功能如下：</p>
+<p>1.将当前处理器缓存行的数据写回到[系统内存]</p>
+<p>2.这个写回内存的操作会告知在其他 CPU 工作内存的变量无效，下一次使用的时候要重新从主内存读取</p>
+<p><img data-src="https://i.loli.net/2021/04/06/2JmDeF8xRsOrXib.png" alt="2021-04-06-19-48-0420210406194803"></p>
+<p><img data-src="https://i.loli.net/2021/04/06/gh86vLoAFsPYZmW.png" alt="2021-04-06-19-48-3820210406194837"></p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-10T21:51:20+08:00"
-              content="2020-08-10">
-          08-10
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/volatile-interview/" rel="tag"># volatile, interview</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/article/f4f8ffc6.html" itemprop="url">
-            <span itemprop="name">我是如何使用策略模式的</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/d1dca260.html" rel="prev" title="tree知识点(持续更新)">
+      <i class="fa fa-chevron-left"></i> tree知识点(持续更新)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -236,6 +289,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#volatile-指令重排序"><span class="nav-number">1.</span> <span class="nav-text">volatile 指令重排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#volatile-底层实现"><span class="nav-number">2.</span> <span class="nav-text">volatile 底层实现</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

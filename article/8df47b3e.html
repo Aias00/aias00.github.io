@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="redis &amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8FD9;&amp;#x4E48;&amp;#x5FEB;1.&amp;#x91C7;&amp;#x7528;&amp;#x4E86; IO &amp;#x591A;&amp;#x8DEF;&amp;#x590D;&amp;#x7528;&amp;#x975E;&amp;#x963B;&amp;#x585E; IO 2.&amp;#x6570;&amp;#x636E;&amp;#x7ED3;&amp;#x6784;&amp;#x7B80;&amp;#x5355;,&amp;#x64">
+  <meta name="description" content="redis 为什么这么快1.采用了 IO 多路复用非阻塞 IO 2.数据结构简单,操作节省时间 3.运行在内存中 4.单线程,省去了上下文切换的消耗,CPU 利用率高">
 <meta name="keywords" content="redis, interview">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis面试知识点总结(持续更新)">
 <meta property="og:url" content="http://yoursite.com/article/8df47b3e.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="redis &amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8FD9;&amp;#x4E48;&amp;#x5FEB;1.&amp;#x91C7;&amp;#x7528;&amp;#x4E86; IO &amp;#x591A;&amp;#x8DEF;&amp;#x590D;&amp;#x7528;&amp;#x975E;&amp;#x963B;&amp;#x585E; IO 2.&amp;#x6570;&amp;#x636E;&amp;#x7ED3;&amp;#x6784;&amp;#x7B80;&amp;#x5355;,&amp;#x64">
+<meta property="og:description" content="redis 为什么这么快1.采用了 IO 多路复用非阻塞 IO 2.数据结构简单,操作节省时间 3.运行在内存中 4.单线程,省去了上下文切换的消耗,CPU 利用率高">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.757Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis面试知识点总结(持续更新)">
-<meta name="twitter:description" content="redis &amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8FD9;&amp;#x4E48;&amp;#x5FEB;1.&amp;#x91C7;&amp;#x7528;&amp;#x4E86; IO &amp;#x591A;&amp;#x8DEF;&amp;#x590D;&amp;#x7528;&amp;#x975E;&amp;#x963B;&amp;#x585E; IO 2.&amp;#x6570;&amp;#x636E;&amp;#x7ED3;&amp;#x6784;&amp;#x7B80;&amp;#x5355;,&amp;#x64">
+<meta name="twitter:description" content="redis 为什么这么快1.采用了 IO 多路复用非阻塞 IO 2.数据结构简单,操作节省时间 3.运行在内存中 4.单线程,省去了上下文切换的消耗,CPU 利用率高">
 
 <link rel="canonical" href="http://yoursite.com/article/8df47b3e.html">
 
@@ -192,148 +192,148 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="redis-&#x4E3A;&#x4EC0;&#x4E48;&#x8FD9;&#x4E48;&#x5FEB;"><a href="#redis-&#x4E3A;&#x4EC0;&#x4E48;&#x8FD9;&#x4E48;&#x5FEB;" class="headerlink" title="redis &#x4E3A;&#x4EC0;&#x4E48;&#x8FD9;&#x4E48;&#x5FEB;"></a>redis &#x4E3A;&#x4EC0;&#x4E48;&#x8FD9;&#x4E48;&#x5FEB;</h2><p>1.&#x91C7;&#x7528;&#x4E86; IO &#x591A;&#x8DEF;&#x590D;&#x7528;&#x975E;&#x963B;&#x585E; IO</p>
-<p>2.&#x6570;&#x636E;&#x7ED3;&#x6784;&#x7B80;&#x5355;,&#x64CD;&#x4F5C;&#x8282;&#x7701;&#x65F6;&#x95F4;</p>
-<p>3.&#x8FD0;&#x884C;&#x5728;&#x5185;&#x5B58;&#x4E2D;</p>
-<p>4.&#x5355;&#x7EBF;&#x7A0B;,&#x7701;&#x53BB;&#x4E86;&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;&#x7684;&#x6D88;&#x8017;,CPU &#x5229;&#x7528;&#x7387;&#x9AD8;</p>
-<h2 id="1-redis-&#x652F;&#x6301;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;"><a href="#1-redis-&#x652F;&#x6301;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;" class="headerlink" title="1.redis &#x652F;&#x6301;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;"></a>1.redis &#x652F;&#x6301;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;</h2><p>redis &#x652F;&#x6301; 5 &#x79CD;&#x57FA;&#x672C;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x5206;&#x522B;&#x662F; string&#x3001;list&#x3001;set&#x3001;zset &#x548C; hash</p>
-<p>&#x540C;&#x65F6; redis &#x8FD8;&#x652F;&#x6301; 3 &#x79CD;&#x7279;&#x6B8A;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;&#x5206;&#x522B;&#x662F; geo&#x3001;bitmap &#x548C; hyperloglog</p>
+        <h2 id="redis-为什么这么快"><a href="#redis-为什么这么快" class="headerlink" title="redis 为什么这么快"></a>redis 为什么这么快</h2><p>1.采用了 IO 多路复用非阻塞 IO</p>
+<p>2.数据结构简单,操作节省时间</p>
+<p>3.运行在内存中</p>
+<p>4.单线程,省去了上下文切换的消耗,CPU 利用率高</p>
+<h2 id="1-redis-支持的数据结构"><a href="#1-redis-支持的数据结构" class="headerlink" title="1.redis 支持的数据结构"></a>1.redis 支持的数据结构</h2><p>redis 支持 5 种基本数据结构，分别是 string、list、set、zset 和 hash</p>
+<p>同时 redis 还支持 3 种特殊的数据类型，分别是 geo、bitmap 和 hyperloglog</p>
 <p>string:</p>
-<p>&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x5168;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x56FE;&#x7247;&#x4E8C;&#x8FDB;&#x5236;&#x6D41;&#x6216;&#x8005;&#x5E8F;&#x5217;&#x5316;&#x4E4B;&#x540E;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x6700;&#x5927;&#x4E0A;&#x9650; 512M</p>
-<p>&#x53EF;&#x4EE5;&#x4FDD;&#x5B58;&#xFF08;1&#xFF09;&#x4E8C;&#x8FDB;&#x5236;&#x5E8F;&#x5217;&#x5B57;&#x7B26;&#x4E32;&#xFF08;2&#xFF09;&#x6574;&#x5F62;&#x6570;&#x636E;&#xFF08;3&#xFF09;&#x6D6E;&#x70B9;&#x6570;&#x636E;</p>
-<p>&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x505A;&#x539F;&#x5B50;&#x8BA1;&#x6570;&#x5668;</p>
-<p>&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x5206;&#x5E03;&#x5F0F;&#x9501;&#xFF08;&#x62D3;&#x5C55;&#xFF1A;&#x5206;&#x5E03;&#x5F0F;&#x9501;&#xFF09;</p>
+<p>二进制安全的数据类型，可以用来存储图片二进制流或者序列化之后的对象，最大上限 512M</p>
+<p>可以保存（1）二进制序列字符串（2）整形数据（3）浮点数据</p>
+<p>可以用来做原子计数器</p>
+<p>可以用来实现分布式锁（拓展：分布式锁）</p>
 <p>list:</p>
-<p>&#x7B80;&#x5355;&#x7684; string &#x5217;&#x8868;&#xFF0C;&#x76F8;&#x5F53;&#x4E8E; java &#x4E2D;&#x7684; LinkedList&#xFF0C;&#x6309;&#x7167;&#x63D2;&#x5165;&#x987A;&#x5E8F;&#x6392;&#x5E8F;&#xFF0C;&#x5199;&#x64CD;&#x4F5C;&#x65F6;&#x95F4;&#x590D;&#x6742;&#x5EA6;&#x662F; O(1)&#xFF0C;&#x8BFB;&#x64CD;&#x4F5C;&#x65F6;&#x95F4;&#x590D;&#x6742;&#x5EA6;&#x662F; O(n)</p>
-<p>&#x53CC;&#x5411;&#x94FE;&#x8868;&#xFF0C;&#x53EF;&#x4EE5;&#x5934;&#x63D2;&#xFF08;LPUSH&#xFF09;&#x6216;&#x8005;&#x5C3E;&#x63D2;&#xFF08;RPUSH&#xFF09;</p>
-<p>list &#x6700;&#x5927;&#x957F;&#x5EA6;&#x662F; 2^32-1</p>
-<p>&#x53D1;&#x5E03;&#x8BA2;&#x9605;&#xFF0C;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x7B80;&#x5355;&#x7684;&#x6D88;&#x606F;&#x961F;&#x5217;</p>
-<p>&#x901A;&#x8FC7; list &#x88C1;&#x526A;&#x529F;&#x80FD;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x6392;&#x884C;&#x699C;</p>
+<p>简单的 string 列表，相当于 java 中的 LinkedList，按照插入顺序排序，写操作时间复杂度是 O(1)，读操作时间复杂度是 O(n)</p>
+<p>双向链表，可以头插（LPUSH）或者尾插（RPUSH）</p>
+<p>list 最大长度是 2^32-1</p>
+<p>发布订阅，可以实现简单的消息队列</p>
+<p>通过 list 裁剪功能可以实现排行榜</p>
 <p>set:</p>
-<p>string &#x7684;&#x65E0;&#x5E8F;&#x96C6;&#x5408;&#xFF0C;&#x76F8;&#x5F53;&#x4E8E; java &#x4E2D;&#x7684; HashSet&#xFF0C;set &#x5185;&#x90E8;&#x4F7F;&#x7528; hash &#x8868;&#x4FDD;&#x8BC1;&#x552F;&#x4E00;&#x6027;&#xFF0C;&#x6DFB;&#x52A0;&#x3001;&#x5220;&#x9664;&#x3001;&#x67E5;&#x627E;&#x7684;&#x65F6;&#x95F4;&#x590D;&#x6742;&#x5EA6;&#x90FD;&#x662F; O(1)</p>
-<p>set &#x6700;&#x5927;&#x6210;&#x5458;&#x4E2A;&#x6570;&#x662F; 2^32-1</p>
-<p>&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x6307;&#x4EE4;&#x5B9E;&#x73B0;&#x4EA4;&#x96C6;&#x3001;&#x5E76;&#x96C6;&#x7B49;&#x64CD;&#x4F5C;</p>
-<p>&#x53EF;&#x4EE5;&#x7528;&#x4E8E;&#x5B9E;&#x73B0;&#x53BB;&#x91CD;&#x64CD;&#x4F5C;</p>
+<p>string 的无序集合，相当于 java 中的 HashSet，set 内部使用 hash 表保证唯一性，添加、删除、查找的时间复杂度都是 O(1)</p>
+<p>set 最大成员个数是 2^32-1</p>
+<p>可以通过指令实现交集、并集等操作</p>
+<p>可以用于实现去重操作</p>
 <p>hash:</p>
-<p>string &#x7684;&#x952E;&#x503C;&#x5BF9;&#x96C6;&#x5408;&#xFF0C;&#x76F8;&#x5F53;&#x4E8E; java &#x4E2D;&#x7684; HashMap&#xFF0C;&#x7279;&#x522B;&#x9002;&#x5408;&#x7528;&#x6765;&#x5B58;&#x50A8;&#x5BF9;&#x8C61;&#x7ED3;&#x6784;</p>
-<p>hash &#x4E2D;&#x6700;&#x5927;&#x53EF;&#x4EE5;&#x5B58;&#x50A8; 2^32-1 &#x4E2A;&#x952E;&#x503C;&#x5BF9;</p>
-<p>&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x8D2D;&#x7269;&#x8F66;</p>
-<p>redis &#x6570;&#x636E;&#x5E93;&#x5C31;&#x662F;&#x7531; hash &#x6765;&#x5B9E;&#x73B0;&#x7684;</p>
-<p>&#x6E10;&#x8FDB;&#x5F0F; rehash&#xFF1A;&#x5728; redis &#x4E2D;&#x9488;&#x5BF9;&#x54C8;&#x5E0C;&#x51B2;&#x7A81;&#x91C7;&#x7528;&#x7684;&#x662F;&#x6E10;&#x8FDB;&#x5F0F; rehash &#x64CD;&#x4F5C;&#xFF0C;&#x6E10;&#x8FDB;&#x5F0F; rehash &#x4F1A;&#x4FDD;&#x7559;&#x65B0;&#x65E7;&#x4E24;&#x4E2A; hash &#x7ED3;&#x6784;&#xFF0C;&#x67E5;&#x8BE2;&#x65F6;&#x540C;&#x65F6;&#x95F4;&#x67E5;&#x8BE2;&#x4E24;&#x4E2A; hash &#x7ED3;&#x6784;&#xFF0C;&#x5728;&#x540E;&#x7EED;&#x7684;&#x5B9A;&#x65F6; &#x4EFB;&#x52A1;&#x53CA; hash &#x64CD;&#x4F5C;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#x5B8C;&#x6210;&#x4ECE;&#x65E7; hash &#x7ED3;&#x6784;&#x8FC1;&#x79FB;&#x5230;&#x65B0; hash &#x7ED3;&#x6784;&#x7684;&#x8FC7;&#x7A0B;</p>
+<p>string 的键值对集合，相当于 java 中的 HashMap，特别适合用来存储对象结构</p>
+<p>hash 中最大可以存储 2^32-1 个键值对</p>
+<p>可以用来实现购物车</p>
+<p>redis 数据库就是由 hash 来实现的</p>
+<p>渐进式 rehash：在 redis 中针对哈希冲突采用的是渐进式 rehash 操作，渐进式 rehash 会保留新旧两个 hash 结构，查询时同时间查询两个 hash 结构，在后续的定时 任务及 hash 操作的过程中完成从旧 hash 结构迁移到新 hash 结构的过程</p>
 <p>zset:</p>
-<p>zset &#x5373; sorted set&#xFF0C;&#x662F;&#x5E26;&#x6709;&#x6392;&#x5E8F;&#x529F;&#x80FD;&#x7684; string &#x96C6;&#x5408;&#xFF0C;&#x4E0D;&#x5141;&#x8BB8;&#x91CD;&#x590D;&#x7684;&#x6210;&#x5458;</p>
-<p>&#x901A;&#x8FC7;&#x4E3A;&#x6BCF;&#x4E2A;&#x5BF9;&#x8C61;&#x8BBE;&#x7F6E;&#x4E00;&#x4E2A; double &#x7C7B;&#x578B;&#x7684; score&#xFF08;&#x5206;&#x6570;&#xFF09;&#x6765;&#x5B9E;&#x73B0;&#x6392;&#x5E8F;&#xFF0C;&#x6839;&#x636E; score &#x503C;&#x4ECE;&#x5C0F;&#x5230;&#x5927;&#x5BF9;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x4E0D;&#x540C;&#x7684;&#x6210;&#x5458;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x76F8;&#x540C;&#x7684; score</p>
-<p>&#x589E;&#x52A0;&#x3001;&#x4FEE;&#x6539;&#x548C;&#x5220;&#x9664;&#x5143;&#x7D20;&#x7684;&#x65F6;&#x95F4;&#x590D;&#x5236;&#x5EA6;&#x4E3A; O(logN)</p>
-<p>&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x6392;&#x884C;&#x699C;</p>
-<p>&#xFF08;&#x62D3;&#x5C55;&#xFF1A;skipList&#xFF09;</p>
-<p>bitmap(2.2.0 &#x7248;&#x672C;&#x65B0;&#x589E;):</p>
-<p>&#x4F4D;&#x56FE;&#xFF0C;byte &#x6570;&#x7EC4;&#xFF0C;&#x7528;&#x4E8C;&#x8FDB;&#x5236;&#x8868;&#x793A;&#xFF0C;&#x53EA;&#x6709; 0 &#x548C; 1 &#x4E24;&#x4E2A;&#x6570;&#x5B57;&#xFF0C;&#x57FA;&#x4E8E; string &#x5B9E;&#x73B0;&#xFF0C;&#x8282;&#x7701;&#x5185;&#x5B58;</p>
-<p>&#x5B9E;&#x73B0;&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;&#xFF08;&#x62D3;&#x5C55;&#xFF1A;&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;&#xFF09;</p>
-<p>&#x53EF;&#x4EE5;&#x7528;&#x4E8E;&#x7EDF;&#x8BA1;&#x5458;&#x5DE5;&#x6BCF;&#x65E5;&#x6253;&#x5361;</p>
-<p>&#x7EDF;&#x8BA1;&#x7528;&#x6237;&#x5728;&#x7EBF;&#x72B6;&#x6001;</p>
-<p>hyperloglog(2.8.9 &#x7248;&#x672C;&#x65B0;&#x589E;):</p>
-<p>&#x7528;&#x4E8E;&#x57FA;&#x6570;&#x7EDF;&#x8BA1;</p>
-<p>&#x53EF;&#x4EE5;&#x7528;&#x4E8E;&#x57CB;&#x70B9;&#x7EDF;&#x8BA1;</p>
-<p>geo(3.2 &#x7248;&#x672C;&#x65B0;&#x589E;):</p>
-<p>&#x5B58;&#x50A8;&#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x4FE1;&#x606F;&#xFF0C;&#x5E95;&#x5C42;&#x7531; zset &#x5B9E;&#x73B0;</p>
-<p>&#x8BA1;&#x7B97;&#x4E24;&#x4E2A;&#x5750;&#x6807;&#x70B9;&#x76F4;&#x63A5;&#x7684;&#x8DDD;&#x79BB;</p>
-<p>&#x5B9E;&#x73B0;&#x9644;&#x8FD1;&#x7684;&#x4EBA;</p>
-<h2 id="2-&#x4E0E;-memcached-&#x6BD4;&#x8F83;"><a href="#2-&#x4E0E;-memcached-&#x6BD4;&#x8F83;" class="headerlink" title="2.&#x4E0E; memcached &#x6BD4;&#x8F83;"></a>2.&#x4E0E; memcached &#x6BD4;&#x8F83;</h2><p>redis &#x652F;&#x6301;&#x591A;&#x79CD;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;memcached &#x53EA;&#x652F;&#x6301; string &#x7C7B;&#x578B;</p>
-<p>redis &#x7684; string &#x7C7B;&#x578B;&#x6700;&#x5927;&#x53EF;&#x4EE5;&#x8FBE;&#x5230; 512M&#xFF0C;&#x800C; memcached &#x6700;&#x5927;&#x53EA;&#x652F;&#x6301; 1M</p>
-<p>memcached &#x53EA;&#x652F;&#x6301;&#x628A;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x5230;&#x5185;&#x5B58;&#xFF0C;&#x800C; redis &#x63D0;&#x4F9B;&#x4E86;&#x6301;&#x4E45;&#x5316;&#x65B9;&#x5F0F;</p>
-<p>memcached &#x672C;&#x8EAB;&#x4E0D;&#x652F;&#x6301;&#x5206;&#x5E03;&#x5F0F;&#xFF0C;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x5206;&#x5E03;&#x5F0F;&#x7B97;&#x6CD5;&#x5B9E;&#x73B0;&#x5206;&#x5E03;&#x5F0F;&#x96C6;&#x7FA4;&#xFF0C;&#x800C; redis &#x901A;&#x8FC7; redis cluster &#x63D0;&#x4F9B;&#x4E86;&#x5206;&#x5E03;&#x5F0F;&#x96C6;&#x7FA4;&#x529F;&#x80FD;&#xFF08;&#x62D3;&#x5C55;&#xFF1A;hash &#x7B97;&#x6CD5;&#xFF09;</p>
-<p>memcached &#x652F;&#x6301;&#x591A;&#x6838;&#x591A;&#x7EBF;&#x7A0B;&#xFF0C;&#x800C; redis &#x63A5;&#x6536;&#x6307;&#x4EE4;&#x53EA;&#x652F;&#x6301;&#x5355;&#x7EBF;&#x7A0B;</p>
-<h2 id="3-redis-&#x6301;&#x4E45;&#x5316;"><a href="#3-redis-&#x6301;&#x4E45;&#x5316;" class="headerlink" title="3.redis &#x6301;&#x4E45;&#x5316;"></a>3.redis &#x6301;&#x4E45;&#x5316;</h2><p>redis &#x63D0;&#x4F9B;&#x4E24;&#x79CD;&#x6301;&#x4E45;&#x5316;&#x65B9;&#x5F0F;&#xFF0C;&#x5206;&#x522B;&#x662F; RDB &#x548C; AOF</p>
+<p>zset 即 sorted set，是带有排序功能的 string 集合，不允许重复的成员</p>
+<p>通过为每个对象设置一个 double 类型的 score（分数）来实现排序，根据 score 值从小到大对对象进行排序，不同的成员可以设置相同的 score</p>
+<p>增加、修改和删除元素的时间复制度为 O(logN)</p>
+<p>可以实现排行榜</p>
+<p>（拓展：skipList）</p>
+<p>bitmap(2.2.0 版本新增):</p>
+<p>位图，byte 数组，用二进制表示，只有 0 和 1 两个数字，基于 string 实现，节省内存</p>
+<p>实现布隆过滤器（拓展：布隆过滤器）</p>
+<p>可以用于统计员工每日打卡</p>
+<p>统计用户在线状态</p>
+<p>hyperloglog(2.8.9 版本新增):</p>
+<p>用于基数统计</p>
+<p>可以用于埋点统计</p>
+<p>geo(3.2 版本新增):</p>
+<p>存储地理位置信息，底层由 zset 实现</p>
+<p>计算两个坐标点直接的距离</p>
+<p>实现附近的人</p>
+<h2 id="2-与-memcached-比较"><a href="#2-与-memcached-比较" class="headerlink" title="2.与 memcached 比较"></a>2.与 memcached 比较</h2><p>redis 支持多种数据类型，memcached 只支持 string 类型</p>
+<p>redis 的 string 类型最大可以达到 512M，而 memcached 最大只支持 1M</p>
+<p>memcached 只支持把数据存储到内存，而 redis 提供了持久化方式</p>
+<p>memcached 本身不支持分布式，需要通过客户端的分布式算法实现分布式集群，而 redis 通过 redis cluster 提供了分布式集群功能（拓展：hash 算法）</p>
+<p>memcached 支持多核多线程，而 redis 接收指令只支持单线程</p>
+<h2 id="3-redis-持久化"><a href="#3-redis-持久化" class="headerlink" title="3.redis 持久化"></a>3.redis 持久化</h2><p>redis 提供两种持久化方式，分别是 RDB 和 AOF</p>
 <p>RDB:</p>
-<p>&#x53EF;&#x4EE5;&#x5728;&#x6307;&#x5B9A;&#x7684;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#x5185;&#x5BF9;&#x5B58;&#x50A8;&#x5728; redis &#x670D;&#x52A1;&#x5668;&#x4E2D;&#x7684;&#x67D0;&#x4E2A;&#x65F6;&#x95F4;&#x70B9;&#x7684;&#x6570;&#x636E;&#x505A;&#x5FEB;&#x7167;&#xFF0C;&#x4E3B;&#x8FDB;&#x7A0B;&#x4F1A; fork &#x51FA;&#x4E00;&#x4E2A;&#x5B50;&#x8FDB;&#x7A0B;&#x5C06;&#x5FEB;&#x7167;&#x6570;&#x636E;&#x5199;&#x5165;&#x4E34;&#x65F6;&#x6587;&#x4EF6;&#x5E76;&#x5B9A;&#x671F;&#x5237;&#x65B0;&#x5230;&#x78C1;&#x76D8;&#xFF0C;redis &#x5728;&#x542F;&#x52A8;&#x65F6;&#x4F1A;&#x8BFB;&#x53D6;&#x4E4B;&#x524D;&#x751F;&#x6210;&#x7684;&#x5FEB;&#x7167;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x52A0;&#x8F7D;&#x5230;&#x5185;&#x5B58;&#x4E2D;&#x3002;</p>
+<p>可以在指定的时间间隔内对存储在 redis 服务器中的某个时间点的数据做快照，主进程会 fork 出一个子进程将快照数据写入临时文件并定期刷新到磁盘，redis 在启动时会读取之前生成的快照文件内容加载到内存中。</p>
 <p>AOF:</p>
-<p>&#x4EE5;&#x6307;&#x5B9A;&#x7684;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#x5C06;&#x670D;&#x52A1;&#x5668;&#x6267;&#x884C;&#x7684;&#x6240;&#x6709;&#x6307;&#x4EE4;&#x8BB0;&#x5F55;&#x4E0B;&#x6765;&#xFF0C;&#x4EE5;&#x8FFD;&#x52A0;&#x7684;&#x65B9;&#x5F0F;&#x5199;&#x5165;&#x5230;&#x6307;&#x5B9A;&#x7684;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x5F53;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x8FC7;&#x5927;&#x65F6;&#xFF0C;redis &#x4F1A;&#x521B;&#x5EFA;&#x5B50;&#x8FDB;&#x7A0B;&#x5BF9;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x91CD;&#x5199;&#x3002;redis &#x63D0;&#x4F9B;&#x4E86; 3 &#x79CD;&#x540C;&#x6B65;&#x7B56;&#x7565;&#xFF1A;&#x6BCF;&#x79D2;&#x540C;&#x6B65;/&#x6BCF;&#x6B21;&#x4FEE;&#x6539;&#x540C;&#x6B65;/&#x4E0D;&#x540C;&#x6B65;</p>
-<p>&#x6BD4;&#x8F83;&#xFF1A;</p>
-<p>redis &#x5148;&#x52A0;&#x8F7D; AOF &#x6587;&#x4EF6;&#x6765;&#x6062;&#x590D;&#x539F;&#x59CB;&#x6570;&#x636E;&#xFF0C;&#x56E0;&#x4E3A; AOF &#x6570;&#x636E;&#x6BD4; RDB &#x66F4;&#x5B8C;&#x6574;&#x3002;</p>
-<p>&#x4F46;&#x662F; AOF &#x6587;&#x4EF6;&#x5BB9;&#x6613;&#x88AB;&#x635F;&#x574F;&#xFF0C;&#x635F;&#x574F;&#x7684; AOF &#x6587;&#x4EF6;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; redis-check-aof &#x8FDB;&#x884C;&#x4FEE;&#x590D;</p>
-<p>RDB &#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x4E86;&#x538B;&#x7F29;&#xFF0C;&#x6240;&#x4EE5;&#x5360;&#x7528;&#x4F53;&#x79EF;&#x5C0F;&#xFF0C;&#x4F20;&#x8F93;&#x901F;&#x5EA6;&#x5FEB;&#xFF0C;&#x4F46;&#x662F;&#x5982;&#x679C;&#x8BBE;&#x7F6E;&#x5907;&#x4EFD;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#x592A;&#x957F;&#xFF0C;&#x4E22;&#x5931;&#x6570;&#x636E;&#x91CF;&#x8F83;&#x5927;&#xFF0C;&#x6570;&#x636E;&#x91CF;&#x8D8A;&#x5927;&#xFF0C;fork &#x5B50;&#x8FDB;&#x7A0B;&#x65F6;&#x95F4;&#x8D8A;&#x957F;&#xFF0C;&#x53EF;&#x80FD;&#x963B;&#x585E;&#x4E3B;&#x8FDB;&#x7A0B;&#xFF0C;&#x53EF;&#x8BFB;&#x6027;&#x5DEE;</p>
-<p>AOF &#x8BBE;&#x7F6E;&#x6BCF;&#x79D2;&#x8FFD;&#x52A0;&#x4E00;&#x6B21;&#xFF0C;&#x5982;&#x679C;&#x53D1;&#x751F;&#x5B95;&#x673A;&#x53EA;&#x4F1A;&#x4E22;&#x5931; 1s &#x5185;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x751F;&#x6210;&#x6587;&#x4EF6;&#x8F83;&#x5927;&#xFF0C;&#x76F8;&#x5BF9;&#x4E8E; RDB &#x6548;&#x7387;&#x4F4E;&#xFF0C;&#x542F;&#x52A8;&#x6062;&#x590D;&#x6162;</p>
-<p>&#x6DF7;&#x5408;&#x6A21;&#x5F0F;(4.0 &#x7248;&#x672C;&#x65B0;&#x589E;)&#xFF1A;</p>
-<p>&#x751F;&#x6210;&#x65B0;&#x7684; AOF &#x6587;&#x4EF6;&#x524D;&#x534A;&#x6BB5;&#x662F; RDB &#x6587;&#x4EF6;&#x7684;&#x5168;&#x91CF;&#x6570;&#x636E;&#xFF0C;&#x540E;&#x534A;&#x6BB5;&#x662F; AOF &#x6A21;&#x5F0F;&#x7684;&#x589E;&#x91CF;&#x6570;&#x636E;&#x3002;&#x5728;&#x91CD;&#x542F;&#x65F6;&#x52A0;&#x8F7D;&#x6B64; AOF &#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x6062;&#x590D;</p>
-<h2 id="4-redis-&#x5185;&#x5B58;&#x6DD8;&#x6C70;&#x7B56;&#x7565;"><a href="#4-redis-&#x5185;&#x5B58;&#x6DD8;&#x6C70;&#x7B56;&#x7565;" class="headerlink" title="4.redis &#x5185;&#x5B58;&#x6DD8;&#x6C70;&#x7B56;&#x7565;"></a>4.redis &#x5185;&#x5B58;&#x6DD8;&#x6C70;&#x7B56;&#x7565;</h2><p>redis &#x5728;&#x8FDB;&#x884C;&#x5185;&#x5B58;&#x6DD8;&#x6C70;&#x65F6;&#xFF0C;&#x91C7;&#x7528;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#xFF1A;&#x5B9A;&#x65F6;&#x626B;&#x63CF;&#x4E3B;&#x52A8;&#x6E05;&#x9664;+&#x60F0;&#x6027;&#x5220;&#x9664;&#xFF08;&#x8BBF;&#x95EE;&#x5230;&#x5DF2;&#x7ECF;&#x8FC7;&#x671F;&#x7684; key &#x65F6;&#x624D;&#x8FDB;&#x884C;&#x5220;&#x9664;&#xFF09;</p>
-<p>noeviction&#xFF1A;</p>
-<p>&#x5F53;&#x5185;&#x5B58;&#x8FBE;&#x5230; maxmemory &#x9650;&#x5236;&#x65F6;&#xFF0C;&#x76F4;&#x63A5;&#x62A5;&#x9519;</p>
-<p>volatile-lru&#xFF1A;</p>
-<p>&#x5728;&#x6240;&#x6709;&#x8BBE;&#x7F6E;&#x4E86;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x7684; key &#x4E2D;&#x6311;&#x9009;&#x6700;&#x8FD1;&#x6700;&#x5C11;&#x4F7F;&#x7528;&#x7684;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x6DD8;&#x6C70;&#xFF08;&#x62D3;&#x5C55;&#xFF1A;LRU &#x548C; LFU&#xFF09;</p>
-<p>volatile-random&#xFF1A;</p>
-<p>&#x5728;&#x6240;&#x6709;&#x8BBE;&#x7F6E;&#x4E86;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x7684; key &#x4E2D;&#x968F;&#x673A;&#x6311;&#x9009;&#x4E00;&#x4E9B;&#x8FDB;&#x884C;&#x6DD8;&#x6C70;</p>
-<p>volatile-ttl&#xFF1A;</p>
-<p>&#x5728;&#x6240;&#x6709;&#x8BBE;&#x7F6E;&#x4E86;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x7684; key &#x4E2D;&#xFF0C;&#x9009;&#x62E9;&#x4E00;&#x4E9B;&#x5373;&#x5C06;&#x8FC7;&#x671F;&#x7684; key &#x8FDB;&#x884C;&#x6DD8;&#x6C70;</p>
-<p>allkeys-random&#xFF1A;</p>
-<p>&#x5728;&#x6240;&#x6709; key &#x4E2D;&#x968F;&#x673A;&#x6311;&#x9009;&#x4E00;&#x4E9B;&#x8FDB;&#x884C;&#x6DD8;&#x6C70;</p>
-<p>allkeys-lru&#xFF1A;</p>
-<p>&#x5728;&#x6240;&#x6709; key &#x4E2D;&#x6311;&#x9009;&#x6700;&#x8FD1;&#x6700;&#x5C11;&#x4F7F;&#x7528;&#x7684;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x6DD8;&#x6C70;</p>
-<p>volatile-lru, volatile-random &#x548C; volatile-ttl &#x5728;&#x6CA1;&#x6709;&#x7B26;&#x5408;&#x6761;&#x4EF6;&#x7684; key &#x53EF;&#x4EE5;&#x88AB;&#x6DD8;&#x6C70;&#x65F6;&#xFF0C;&#x8868;&#x73B0;&#x548C; noeviction &#x4E00;&#x6837;</p>
-<p>volatile-lfu(4.0 &#x7248;&#x672C;&#x65B0;&#x589E;)&#xFF1A;</p>
-<p>&#x5728;&#x6240;&#x6709;&#x8BBE;&#x7F6E;&#x4E86;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x7684; key &#x4E2D;&#xFF0C;&#x6311;&#x9009;&#x6700;&#x8FD1;&#x6700;&#x4E0D;&#x7ECF;&#x5E38;&#x4F7F;&#x7528;&#x7684; key &#x8FDB;&#x884C;&#x6DD8;&#x6C70;</p>
-<p>allkeys-lfu(4.0 &#x7248;&#x672C;&#x65B0;&#x589E;):</p>
-<p>&#x5728;&#x6240;&#x6709; key &#x4E2D;&#x6311;&#x9009;&#x6700;&#x8FD1;&#x6700;&#x4E0D;&#x7ECF;&#x5E38;&#x4F7F;&#x7528;&#x7684; key &#x8FDB;&#x884C;&#x6DD8;&#x6C70;</p>
-<h2 id="5-&#x7F13;&#x5B58;&#x96EA;&#x5D29;-&#x7F13;&#x5B58;&#x51FB;&#x7A7F;-&#x7F13;&#x5B58;&#x7A7F;&#x900F;"><a href="#5-&#x7F13;&#x5B58;&#x96EA;&#x5D29;-&#x7F13;&#x5B58;&#x51FB;&#x7A7F;-&#x7F13;&#x5B58;&#x7A7F;&#x900F;" class="headerlink" title="5.&#x7F13;&#x5B58;&#x96EA;&#x5D29;/&#x7F13;&#x5B58;&#x51FB;&#x7A7F;/&#x7F13;&#x5B58;&#x7A7F;&#x900F;"></a>5.&#x7F13;&#x5B58;&#x96EA;&#x5D29;/&#x7F13;&#x5B58;&#x51FB;&#x7A7F;/&#x7F13;&#x5B58;&#x7A7F;&#x900F;</h2><p>&#x7F13;&#x5B58;&#x96EA;&#x5D29;&#xFF1A;</p>
-<p>&#x7F13;&#x5B58;&#x6570;&#x636E;&#x6279;&#x91CF;&#x8FC7;&#x671F;&#xFF0C;&#x5927;&#x91CF;&#x7684;&#x8BF7;&#x6C42;&#x7A7F;&#x8FC7;&#x7F13;&#x5B58;&#x76F4;&#x63A5;&#x6253;&#x5230;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x7ED9;&#x6570;&#x636E;&#x5E93;&#x5E26;&#x6765;&#x5F88;&#x5927;&#x538B;&#x529B;&#xFF0C;&#x4E25;&#x91CD;&#x7684;&#x60C5;&#x51B5;&#x53EF;&#x80FD;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5B95;&#x673A;</p>
-<p>&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF1A;</p>
-<p>&#x8BBE;&#x7F6E;&#x7F13;&#x5B58; key &#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x65F6;&#x589E;&#x52A0;&#x968F;&#x673A;&#x503C;&#xFF0C;&#x907F;&#x514D;&#x7F13;&#x5B58;&#x540C;&#x65F6;&#x5931;&#x6548;</p>
-<p>&#x5BF9;&#x70ED;&#x70B9;&#x7F13;&#x5B58; key &#x4E0D;&#x8BBE;&#x7F6E;&#x8FC7;&#x671F;&#x65F6;&#x95F4;</p>
-<p>&#x672C;&#x5730;&#x5185;&#x5B58;&#x7F13;&#x5B58;+redis &#x7F13;&#x5B58;+&#x670D;&#x52A1;&#x964D;&#x7EA7;</p>
-<p>&#x7F13;&#x5B58;&#x51FB;&#x7A7F;&#xFF1A;</p>
-<p>&#x7F13;&#x5B58;&#x4E2D;&#x7684;&#x70ED;&#x70B9;&#x6570;&#x636E;&#x5B58;&#x6D3B;&#x65F6;&#x95F4;&#x5230;&#x671F;&#x6216;&#x8005;&#x88AB;&#x8BEF;&#x5220;&#x9664;&#xFF0C;&#x5E76;&#x53D1;&#x67E5;&#x8BE2;&#x6B64;&#x7F13;&#x5B58;&#x6570;&#x636E;&#x7684;&#x8BF7;&#x6C42;&#x7A7F;&#x8FC7;&#x7F13;&#x5B58;&#x6253;&#x5230;&#x6570;&#x636E;&#x5E93;</p>
-<p>&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF1A;</p>
-<p>&#x5BF9;&#x70ED;&#x70B9;&#x7F13;&#x5B58; key &#x4E0D;&#x8BBE;&#x7F6E;&#x8FC7;&#x671F;&#x65F6;&#x95F4;</p>
-<p>&#x5206;&#x5E03;&#x5F0F;&#x9501;&#xFF0C;&#x9047;&#x5230;&#x70ED;&#x70B9;&#x7F13;&#x5B58; key &#x5931;&#x6548;&#x65F6;&#xFF0C;&#x53BB;&#x8BF7;&#x6C42;&#x5206;&#x5E03;&#x5F0F;&#x9501;&#xFF0C;&#x62FF;&#x5230;&#x9501;&#x7684;&#x7EBF;&#x7A0B;&#x624D;&#x80FD;&#x53BB;&#x8BF7;&#x6C42;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x4ECE;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x67E5;&#x8BE2;&#x5230;&#x6709;&#x6548;&#x7684;&#x6570;&#x636E;&#x4E4B;&#x540E;&#x653E;&#x5165;&#x7F13;&#x5B58;&#xFF0C;&#x8FD9;&#x6837;&#x540E;&#x7EED;&#x8FDB;&#x6765;&#x7684;&#x8BF7;&#x6C42;&#x90FD;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4ECE;&#x7F13;&#x5B58;&#x4E2D;&#x62FF;&#x5230;&#x6570;&#x636E;&#xFF0C;&#x51CF;&#x8F7B;&#x4E86;&#x6570;&#x636E;&#x5E93;&#x538B;&#x529B;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;&#x66F4;&#x65B0;&#x7F13;&#x5B58;&#xFF0C;&#x4EE5;&#x514D;&#x9020;&#x6210;&#x7F13;&#x5B58;&#x810F;&#x6570;&#x636E;</p>
-<p>&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#xFF1A;</p>
-<p>&#x67E5;&#x8BE2;&#x4E0D;&#x5B58;&#x5728;&#x4E8E;&#x7F13;&#x5B58;&#x4E5F;&#x4E0D;&#x5B58;&#x5728;&#x4E8E;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x8FD9;&#x6837;&#x8BF7;&#x6C42;&#x76F8;&#x5F53;&#x4E8E;&#x7F13;&#x5B58;&#x4E0D;&#x5B58;&#x5728;&#x76F4;&#x63A5;&#x8BF7;&#x6C42;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x5F53;&#x5E76;&#x53D1;&#x8BF7;&#x6C42;&#x91CF;&#x5927;&#x65F6;&#x4F1A;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x9020;&#x6210;&#x5F88;&#x5927;&#x538B;&#x529B;</p>
-<p>&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF1A;</p>
-<p>&#x63A5;&#x53E3;&#x5C42;&#x589E;&#x52A0;&#x53C2;&#x6570;&#x6821;&#x9A8C;</p>
-<p>&#x7F13;&#x5B58;&#x7A7A;&#x503C;&#xFF0C;&#x8BBE;&#x7F6E;&#x8F83;&#x77ED;&#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;</p>
-<p>&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;</p>
-<h2 id="6-redis-&#x96C6;&#x7FA4;&#x6A21;&#x5F0F;"><a href="#6-redis-&#x96C6;&#x7FA4;&#x6A21;&#x5F0F;" class="headerlink" title="6.redis &#x96C6;&#x7FA4;&#x6A21;&#x5F0F;"></a>6.redis &#x96C6;&#x7FA4;&#x6A21;&#x5F0F;</h2><p>&#x5355;&#x673A;&#x6A21;&#x5F0F;:</p>
-<p>&#x4F18;&#x70B9;:&#x7B80;&#x5355;</p>
-<p>&#x7F3A;&#x70B9;:&#x5185;&#x5B58;&#x5BB9;&#x91CF;&#x6709;&#x9650;,&#x5904;&#x7406;&#x80FD;&#x529B;&#x6709;&#x9650;,&#x65E0;&#x6CD5;&#x5B9E;&#x73B0;&#x9AD8;&#x53EF;&#x7528;</p>
-<p>&#x4E3B;&#x4ECE;&#x590D;&#x5236;:</p>
-<p>&#x4E3B;&#x4ECE;&#x590D;&#x5236;&#x5141;&#x8BB8;&#x4E00;&#x4E2A; redis &#x670D;&#x52A1;&#x5668;&#x521B;&#x5EFA;&#x591A;&#x4E2A;&#x590D;&#x5236;&#x54C1;,&#x88AB;&#x590D;&#x5236;&#x7684;&#x670D;&#x52A1;&#x5668;&#x4E3A; master,&#x4ECE; master &#x590D;&#x5236;&#x7684;&#x670D;&#x52A1;&#x5668;&#x4E3A; slave,master &#x4F1A;&#x5C06;&#x81EA;&#x8EAB;&#x7684;&#x6570;&#x636E;&#x901A;&#x8FC7;&#x7F51;&#x7EDC;&#x66F4;&#x65B0;&#x540C;&#x6B65;&#x7ED9; slave</p>
-<p>&#x4F18;&#x70B9;:&#x53EF;&#x4EE5;&#x901A;&#x8FC7; master &#x5199;&#x5165;&#x6570;&#x636E;,&#x901A;&#x8FC7; master/slave &#x8BFB;&#x53D6;&#x6570;&#x636E;</p>
-<p>&#x7F3A;&#x70B9;:&#x65E0;&#x6CD5;&#x5B9E;&#x73B0;&#x9AD8;&#x53EF;&#x7528;&#xFF0C;&#x6CA1;&#x6709;&#x89E3;&#x51B3; master &#x5199;&#x7684;&#x538B;&#x529B;</p>
-<p>&#x54E8;&#x5175; sentinel:</p>
-<p>&#x76D1;&#x63A7; redis &#x4E3B;&#x4ECE;&#x670D;&#x52A1;&#x5668;,&#x5E76;&#x5728; master &#x4E0B;&#x7EBF;&#x65F6;&#x81EA;&#x52A8;&#x8FDB;&#x884C;&#x6545;&#x969C;&#x8F6C;&#x79FB;</p>
-<p>&#x76D1;&#x63A7;(Monitoring):sentinel &#x4F1A;&#x4E0D;&#x65AD;&#x68C0;&#x67E5; master &#x548C; slave &#x662F;&#x5426;&#x6B63;&#x5E38;&#x8FD0;&#x884C;</p>
-<p>&#x63D0;&#x9192;(Notification):&#x5F53;&#x88AB;&#x76D1;&#x63A7;&#x7684;&#x67D0;&#x4E2A; redis &#x670D;&#x52A1;&#x5668;&#x51FA;&#x73B0;&#x95EE;&#x9898;&#x65F6;,sentinel &#x53EF;&#x4EE5;&#x901A;&#x8FC7; API &#x5411;&#x7BA1;&#x7406;&#x5458;&#x6216;&#x5176;&#x4ED6;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x53D1;&#x9001;&#x901A;&#x77E5;</p>
-<p>&#x81EA;&#x52A8;&#x6545;&#x969C;&#x8FC1;&#x79FB;(Automatic failover):&#x5F53;&#x4E00;&#x53F0; master &#x4E0D;&#x80FD;&#x6B63;&#x5E38;&#x8FD0;&#x884C;&#x65F6;,sentinel &#x4F1A;&#x5F00;&#x59CB;&#x4E00;&#x6B21;&#x81EA;&#x52A8;&#x6545;&#x969C;&#x8FC1;&#x79FB;&#x64CD;&#x4F5C;,&#x5C06;&#x6B64; master &#x7684;&#x4E00;&#x53F0; slave &#x5347;&#x7EA7;&#x6210;&#x4E3A; master,&#x5F53;&#x539F;&#x6765;&#x4E0B;&#x7EBF;&#x7684; master &#x6545;&#x969C;&#x6062;&#x590D;&#x4E4B;&#x540E;,&#x4F1A;&#x81EA;&#x52A8;&#x964D;&#x7EA7;&#x4E3A;&#x65B0;&#x7684; master &#x7684; slave&#xFF08;&#x62D3;&#x5C55;&#xFF1A;&#x54E8;&#x5175;&#x4E3B;&#x52A8;&#x5207;&#x6362;&#xFF09;</p>
-<p>&#x4F18;&#x70B9;:&#x4FDD;&#x8BC1;&#x9AD8;&#x53EF;&#x7528;&#xFF0C;&#x63D0;&#x4F9B;&#x8282;&#x70B9;&#x76D1;&#x63A7;&#x53CA;&#x62A5;&#x8B66;&#x529F;&#x80FD;</p>
-<p>&#x7F3A;&#x70B9;&#xFF1A;&#x5360;&#x7528;&#x670D;&#x52A1;&#x5668;&#x8D44;&#x6E90;&#xFF0C;&#x5207;&#x6362;&#x9700;&#x8981;&#x65F6;&#x95F4;&#xFF0C;&#x53EF;&#x80FD;&#x5B58;&#x5728;&#x4E22;&#x5931;&#x6570;&#x636E;&#x7684;&#x98CE;&#x9669;&#xFF0C;&#x6CA1;&#x6709;&#x89E3;&#x51B3; master &#x5199;&#x7684;&#x538B;&#x529B;</p>
-<p>&#x96C6;&#x7FA4;&#xFF08;&#x4EE3;&#x7406;&#xFF09;:</p>
-<p>&#x901A;&#x8FC7; Twemproxy &#x6216;&#x8005; codis &#x7B2C;&#x4E09;&#x65B9;&#x4EE3;&#x7406;&#x5B9E;&#x73B0; redis &#x96C6;&#x7FA4;&#x7684;&#x65B9;&#x5F0F;</p>
-<p>&#x4F18;&#x70B9;&#xFF1A;&#x652F;&#x6301;&#x591A;&#x79CD; hash &#x7B97;&#x6CD5;&#xFF0C;&#x63D0;&#x4F9B;&#x7B2C;&#x4E09;&#x65B9;&#x529F;&#x80FD;</p>
-<p>&#x7F3A;&#x70B9;&#xFF1A;&#x5F15;&#x5165;&#x4EE3;&#x7406;&#xFF0C;&#x7EF4;&#x62A4;&#x6210;&#x672C;&#x9AD8;&#xFF0C;failover &#x903B;&#x8F91;&#x9700;&#x8981;&#x81EA;&#x5DF1;&#x5B9E;&#x73B0;&#xFF0C;&#x5176;&#x672C;&#x8EAB;&#x4E0D;&#x80FD;&#x652F;&#x6301;&#x6545;&#x969C;&#x7684;&#x81EA;&#x52A8;&#x8F6C;&#x79FB;&#x53EF;&#x6269;&#x5C55;&#x6027;&#x5DEE;&#xFF0C;&#x8FDB;&#x884C;&#x6269;&#x7F29;&#x5BB9;&#x90FD;&#x9700;&#x8981;&#x624B;&#x52A8;&#x5E72;&#x9884;</p>
-<p>&#x96C6;&#x7FA4;&#xFF08;&#x76F4;&#x8FDE;&#xFF0C;3.0 &#x7248;&#x672C;&#x65B0;&#x589E;&#xFF09;:</p>
-<p>Redis-Cluster &#x96C6;&#x7FA4;&#xFF0C;&#x91C7;&#x7528;&#x65E0;&#x4E2D;&#x5FC3;&#x7ED3;&#x6784;&#xFF0C;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x4FDD;&#x5B58;&#x6570;&#x636E;&#x548C;&#x6574;&#x4E2A;&#x96C6;&#x7FA4;&#x72B6;&#x6001;,&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x90FD;&#x548C;&#x5176;&#x4ED6;&#x6240;&#x6709;&#x8282;&#x70B9;&#x8FDE;&#x63A5;&#x3002;</p>
-<p>&#x65E0;&#x4E2D;&#x5FC3;&#x67B6;&#x6784;&#x3002;&#x6570;&#x636E;&#x6309;&#x7167; slot &#x5B58;&#x50A8;&#x5728;&#x591A;&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x8282;&#x70B9;&#x95F4;&#x6570;&#x636E;&#x5171;&#x4EAB;&#xFF0C;&#x53EF;&#x4EE5;&#x52A8;&#x6001;&#x8C03;&#x6574;&#x6570;&#x636E;&#x5206;&#x5E03;&#xFF08;&#x62D3;&#x5C55;&#xFF1A;&#x4E00;&#x81F4;&#x6027; hash &#x7B97;&#x6CD5;&#xFF0C;hash &#x69FD;&#xFF09;&#x3002;&#x53EF;&#x62D3;&#x5C55;&#xFF0C;&#x8282;&#x70B9;&#x53EF;&#x4EE5;&#x52A8;&#x6001;&#x6DFB;&#x52A0;&#x6216;&#x5220;&#x9664;&#x3002;&#x9AD8;&#x53EF;&#x7528;&#xFF0C;&#x90E8;&#x5206;&#x8282;&#x70B9;&#x4E0D;&#x53EF;&#x7528;&#x4E0D;&#x5F71;&#x54CD;&#x6574;&#x4F53;&#x96C6;&#x7FA4;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5BF9;&#x8282;&#x70B9;&#x589E;&#x52A0; slave &#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x5907;&#x4EFD;&#x3002;&#x5B9E;&#x73B0;&#x6545;&#x969C;&#x81EA;&#x52A8; failover,&#x8282;&#x70B9;&#x95F4;&#x901A;&#x8FC7; gossip &#x534F;&#x8BAE;&#xFF08;&#x62D3;&#x5C55;&#xFF1A;gossip &#x534F;&#x8BAE;&#xFF09;&#x4EA4;&#x6362;&#x72B6;&#x6001;&#x4FE1;&#x606F;&#xFF0C;&#x7528;&#x6295;&#x7968;&#x673A;&#x5236;&#x5B8C;&#x6210;&#x4E3B;&#x4ECE;&#x89D2;&#x8272;&#x5207;&#x6362;&#x3002;</p>
-<p>&#x7F3A;&#x70B9;&#xFF1A;&#x8D44;&#x6E90;&#x9694;&#x79BB;&#x6027;&#x8F83;&#x5DEE;&#xFF0C;&#x5BB9;&#x6613;&#x76F8;&#x4E92;&#x5F71;&#x54CD;&#x3002;&#x6570;&#x636E;&#x901A;&#x8FC7;&#x5F02;&#x6B65;&#x590D;&#x5236;&#xFF0C;&#x4E0D;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x7684;&#x5F3A;&#x4E00;&#x81F4;&#x6027;&#x3002;</p>
-<h2 id="7-&#x5E38;&#x89C1;&#x7684;-redis-&#x5BA2;&#x6237;&#x7AEF;"><a href="#7-&#x5E38;&#x89C1;&#x7684;-redis-&#x5BA2;&#x6237;&#x7AEF;" class="headerlink" title="7.&#x5E38;&#x89C1;&#x7684; redis &#x5BA2;&#x6237;&#x7AEF;"></a>7.&#x5E38;&#x89C1;&#x7684; redis &#x5BA2;&#x6237;&#x7AEF;</h2><p>Jedis<br>&#x6BD4;&#x8F83;&#x5168;&#x9762;&#x7684; redis &#x64CD;&#x4F5C;&#x6307;&#x4EE4;&#xFF0C;&#x963B;&#x585E; IO&#xFF0C;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x662F;&#x540C;&#x6B65;&#x7684;&#xFF0C;&#x4E0D;&#x652F;&#x6301;&#x5F02;&#x6B65;&#xFF0C;&#x4E0D;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x9700;&#x8981;&#x914D;&#x5408;&#x8FDE;&#x63A5;&#x6C60;&#x6765;&#x4F7F;&#x7528;</p>
-<p>Redission<br>&#x57FA;&#x4E8E; Netty &#x6846;&#x67B6;&#x7684;&#x4E8B;&#x4EF6;&#x9A71;&#x52A8;&#x7684;&#x901A;&#x4FE1;&#x5C42;&#xFF0C;&#x63D0;&#x4F9B; redLock &#x5B9E;&#x73B0;&#xFF0C;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x662F;&#x5F02;&#x6B65;&#x7684;&#xFF0C;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#xFF0C;&#x4E0D;&#x652F;&#x6301;&#x5B57;&#x7B26;&#x4E32;&#x64CD;&#x4F5C;&#xFF0C;&#x4E0D;&#x652F;&#x6301;&#x6392;&#x5E8F;&#x3001;&#x4E8B;&#x52A1;&#x3001;&#x7BA1;&#x9053;&#x3001;&#x5206;&#x533A;&#x7B49; redis &#x7279;&#x6027;</p>
-<p>Lettuce<br>&#x57FA;&#x4E8E; Netty &#x6846;&#x67B6;&#x7684;&#x4E8B;&#x4EF6;&#x9A71;&#x52A8;&#x7684;&#x901A;&#x4FE1;&#x5C42;&#xFF0C;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x662F;&#x5F02;&#x6B65;&#x7684;&#xFF0C;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;</p>
-<h2 id="8-&#x5176;&#x4ED6;-redis-&#x95EE;&#x9898;"><a href="#8-&#x5176;&#x4ED6;-redis-&#x95EE;&#x9898;" class="headerlink" title="8.&#x5176;&#x4ED6; redis &#x95EE;&#x9898;"></a>8.&#x5176;&#x4ED6; redis &#x95EE;&#x9898;</h2><p>redis &#x5B9E;&#x73B0;&#x5206;&#x5E03;&#x5F0F;&#x9501;</p>
-<p>&#x5355;&#x673A;</p>
-<p>&#x52A0;&#x9501;&#xFF1A;setnx px(ex)</p>
-<p>&#x91CA;&#x653E;&#x9501;&#xFF1A;lua &#x811A;&#x672C;&#x539F;&#x5B50;&#x6027;&#x64CD;&#x4F5C;</p>
-<p>&#x4F18;&#x70B9;&#xFF1A;&#x7B80;&#x5355;&#xFF0C;&#x5355;&#x5B9E;&#x4F8B;&#x5B89;&#x5168;</p>
-<p>&#x7F3A;&#x70B9;&#xFF1A;&#x4E3B;&#x4ECE;&#x6216;&#x8005;&#x96C6;&#x7FA4;&#x6A21;&#x5F0F;&#x4E0B;&#xFF0C;&#x5982;&#x679C;&#x52A0;&#x9501;&#x6210;&#x529F;&#x540E;&#xFF0C;&#x9501;&#x5BF9;&#x8C61;&#x672A;&#x6765;&#x5F97;&#x53CA;&#x4ECE; master &#x540C;&#x6B65;&#x5230; slave&#xFF0C;slave &#x6302;&#x4E86;&#xFF0C;&#x53EF;&#x80FD;&#x4E5F;&#x4F1A;&#x51FA;&#x73B0;&#x591A;&#x5B9E;&#x4F8B;&#x83B7;&#x53D6;&#x5230;&#x9501;&#x7684;&#x73B0;&#x8C61;&#x3002;&#x5982;&#x679C;&#x9501;&#x4F4F;&#x7684;&#x4EE3;&#x7801;&#x5757;&#x903B;&#x8F91;&#x6267;&#x884C;&#x65F6;&#x95F4;&#x8FC7;&#x957F;&#xFF0C;&#x8D85;&#x8FC7;&#x7F13;&#x5B58;&#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#xFF0C;&#x9501;&#x81EA;&#x52A8;&#x91CA;&#x653E;&#xFF0C;&#x76F8;&#x540C;&#x7684;&#x903B;&#x8F91;&#x53EF;&#x80FD;&#x4F1A;&#x6267;&#x884C;&#x591A;&#x6B21;</p>
-<p>&#x96C6;&#x7FA4;</p>
-<p>redLock&#xFF08;&#x62D3;&#x5C55;&#xFF1A;redLock&#xFF09;</p>
-<p>redis &#x548C; mysql &#x5982;&#x4F55;&#x4FDD;&#x6301;&#x6570;&#x636E;&#x4E00;&#x81F4;&#x6027;</p>
-<p>&#x5148;&#x8BFB;&#x53D6;&#x7F13;&#x5B58;&#xFF0C;&#x7F13;&#x5B58;&#x4E2D;&#x6CA1;&#x6709;&#x518D;&#x53BB;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x8BFB;&#x53D6;&#x5230;&#x6570;&#x636E;&#x4E4B;&#x540E;&#x5C06;&#x6570;&#x636E;&#x7EF4;&#x62A4;&#x8FDB;&#x7F13;&#x5B58;</p>
-<p>&#x8BBE;&#x7F6E;&#x7F13;&#x5B58;&#x8FC7;&#x671F;&#x65F6;&#x95F4;</p>
-<p>&#x5220;&#x9664;&#x7F13;&#x5B58;&#x5931;&#x8D25;&#x91CD;&#x8BD5;</p>
-<p>1.&#x5EF6;&#x65F6;&#x53CC;&#x5220;</p>
-<p>&#x5148;&#x5220;&#x9664;&#x7F13;&#x5B58;&#xFF0C;&#x518D;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x4F11;&#x7720;&#x4E00;&#x5B9A;&#x65F6;&#x95F4;&#x4E4B;&#x540E;&#x518D;&#x66F4;&#x6B21;&#x5220;&#x9664;&#x7F13;&#x5B58;</p>
-<p>2.&#x5F02;&#x6B65;&#x5EF6;&#x65F6;&#x5220;&#x9664;</p>
-<p>&#x5148;&#x5220;&#x9664;&#x7F13;&#x5B58;&#xFF0C;&#x518D;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x53D1;&#x9001; MQ &#x6D88;&#x606F;&#x518D;&#x6B21;&#x5220;&#x9664;&#x7F13;&#x5B58;</p>
-<p>3.&#x76D1;&#x542C; binlog</p>
-<p>&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x76D1;&#x542C;&#x7A0B;&#x5E8F;&#x76D1;&#x542C;&#x5230; binlog &#x53D8;&#x5316;&#xFF0C;&#x5220;&#x9664;&#x7F13;&#x5B58;&#xFF0C;&#x5982;&#x679C;&#x5220;&#x9664;&#x5931;&#x8D25;&#xFF0C;&#x53D1;&#x9001; mq &#x6D88;&#x606F;&#x91CD;&#x8BD5;&#xFF0C;&#x76F4;&#x81F3;&#x5220;&#x9664;&#x6210;&#x529F;</p>
-<p>redis cluster &#x53EA;&#x652F;&#x6301; db0</p>
+<p>以指定的时间间隔将服务器执行的所有指令记录下来，以追加的方式写入到指定的日志文件中，当日志文件过大时，redis 会创建子进程对日志文件进行重写。redis 提供了 3 种同步策略：每秒同步/每次修改同步/不同步</p>
+<p>比较：</p>
+<p>redis 先加载 AOF 文件来恢复原始数据，因为 AOF 数据比 RDB 更完整。</p>
+<p>但是 AOF 文件容易被损坏，损坏的 AOF 文件可以通过 redis-check-aof 进行修复</p>
+<p>RDB 文件进行了压缩，所以占用体积小，传输速度快，但是如果设置备份时间间隔太长，丢失数据量较大，数据量越大，fork 子进程时间越长，可能阻塞主进程，可读性差</p>
+<p>AOF 设置每秒追加一次，如果发生宕机只会丢失 1s 内的数据，生成文件较大，相对于 RDB 效率低，启动恢复慢</p>
+<p>混合模式(4.0 版本新增)：</p>
+<p>生成新的 AOF 文件前半段是 RDB 文件的全量数据，后半段是 AOF 模式的增量数据。在重启时加载此 AOF 文件进行恢复</p>
+<h2 id="4-redis-内存淘汰策略"><a href="#4-redis-内存淘汰策略" class="headerlink" title="4.redis 内存淘汰策略"></a>4.redis 内存淘汰策略</h2><p>redis 在进行内存淘汰时，采用两种方式：定时扫描主动清除+惰性删除（访问到已经过期的 key 时才进行删除）</p>
+<p>noeviction：</p>
+<p>当内存达到 maxmemory 限制时，直接报错</p>
+<p>volatile-lru：</p>
+<p>在所有设置了过期时间的 key 中挑选最近最少使用的数据进行淘汰（拓展：LRU 和 LFU）</p>
+<p>volatile-random：</p>
+<p>在所有设置了过期时间的 key 中随机挑选一些进行淘汰</p>
+<p>volatile-ttl：</p>
+<p>在所有设置了过期时间的 key 中，选择一些即将过期的 key 进行淘汰</p>
+<p>allkeys-random：</p>
+<p>在所有 key 中随机挑选一些进行淘汰</p>
+<p>allkeys-lru：</p>
+<p>在所有 key 中挑选最近最少使用的数据进行淘汰</p>
+<p>volatile-lru, volatile-random 和 volatile-ttl 在没有符合条件的 key 可以被淘汰时，表现和 noeviction 一样</p>
+<p>volatile-lfu(4.0 版本新增)：</p>
+<p>在所有设置了过期时间的 key 中，挑选最近最不经常使用的 key 进行淘汰</p>
+<p>allkeys-lfu(4.0 版本新增):</p>
+<p>在所有 key 中挑选最近最不经常使用的 key 进行淘汰</p>
+<h2 id="5-缓存雪崩-缓存击穿-缓存穿透"><a href="#5-缓存雪崩-缓存击穿-缓存穿透" class="headerlink" title="5.缓存雪崩/缓存击穿/缓存穿透"></a>5.缓存雪崩/缓存击穿/缓存穿透</h2><p>缓存雪崩：</p>
+<p>缓存数据批量过期，大量的请求穿过缓存直接打到数据库，给数据库带来很大压力，严重的情况可能导致数据库宕机</p>
+<p>解决方案：</p>
+<p>设置缓存 key 过期时间时增加随机值，避免缓存同时失效</p>
+<p>对热点缓存 key 不设置过期时间</p>
+<p>本地内存缓存+redis 缓存+服务降级</p>
+<p>缓存击穿：</p>
+<p>缓存中的热点数据存活时间到期或者被误删除，并发查询此缓存数据的请求穿过缓存打到数据库</p>
+<p>解决方案：</p>
+<p>对热点缓存 key 不设置过期时间</p>
+<p>分布式锁，遇到热点缓存 key 失效时，去请求分布式锁，拿到锁的线程才能去请求数据库，从数据库中查询到有效的数据之后放入缓存，这样后续进来的请求都可以直接从缓存中拿到数据，减轻了数据库压力，也可以避免多个线程同时查询数据库更新缓存，以免造成缓存脏数据</p>
+<p>缓存穿透：</p>
+<p>查询不存在于缓存也不存在于数据库的数据，这样请求相当于缓存不存在直接请求数据库，当并发请求量大时会对数据库造成很大压力</p>
+<p>解决方案：</p>
+<p>接口层增加参数校验</p>
+<p>缓存空值，设置较短的过期时间</p>
+<p>布隆过滤器</p>
+<h2 id="6-redis-集群模式"><a href="#6-redis-集群模式" class="headerlink" title="6.redis 集群模式"></a>6.redis 集群模式</h2><p>单机模式:</p>
+<p>优点:简单</p>
+<p>缺点:内存容量有限,处理能力有限,无法实现高可用</p>
+<p>主从复制:</p>
+<p>主从复制允许一个 redis 服务器创建多个复制品,被复制的服务器为 master,从 master 复制的服务器为 slave,master 会将自身的数据通过网络更新同步给 slave</p>
+<p>优点:可以通过 master 写入数据,通过 master/slave 读取数据</p>
+<p>缺点:无法实现高可用，没有解决 master 写的压力</p>
+<p>哨兵 sentinel:</p>
+<p>监控 redis 主从服务器,并在 master 下线时自动进行故障转移</p>
+<p>监控(Monitoring):sentinel 会不断检查 master 和 slave 是否正常运行</p>
+<p>提醒(Notification):当被监控的某个 redis 服务器出现问题时,sentinel 可以通过 API 向管理员或其他应用程序发送通知</p>
+<p>自动故障迁移(Automatic failover):当一台 master 不能正常运行时,sentinel 会开始一次自动故障迁移操作,将此 master 的一台 slave 升级成为 master,当原来下线的 master 故障恢复之后,会自动降级为新的 master 的 slave（拓展：哨兵主动切换）</p>
+<p>优点:保证高可用，提供节点监控及报警功能</p>
+<p>缺点：占用服务器资源，切换需要时间，可能存在丢失数据的风险，没有解决 master 写的压力</p>
+<p>集群（代理）:</p>
+<p>通过 Twemproxy 或者 codis 第三方代理实现 redis 集群的方式</p>
+<p>优点：支持多种 hash 算法，提供第三方功能</p>
+<p>缺点：引入代理，维护成本高，failover 逻辑需要自己实现，其本身不能支持故障的自动转移可扩展性差，进行扩缩容都需要手动干预</p>
+<p>集群（直连，3.0 版本新增）:</p>
+<p>Redis-Cluster 集群，采用无中心结构，每个节点保存数据和整个集群状态,每个节点都和其他所有节点连接。</p>
+<p>无中心架构。数据按照 slot 存储在多个节点，节点间数据共享，可以动态调整数据分布（拓展：一致性 hash 算法，hash 槽）。可拓展，节点可以动态添加或删除。高可用，部分节点不可用不影响整体集群，可以通过对节点增加 slave 的方式进行数据备份。实现故障自动 failover,节点间通过 gossip 协议（拓展：gossip 协议）交换状态信息，用投票机制完成主从角色切换。</p>
+<p>缺点：资源隔离性较差，容易相互影响。数据通过异步复制，不保证数据的强一致性。</p>
+<h2 id="7-常见的-redis-客户端"><a href="#7-常见的-redis-客户端" class="headerlink" title="7.常见的 redis 客户端"></a>7.常见的 redis 客户端</h2><p>Jedis<br>比较全面的 redis 操作指令，阻塞 IO，调用方法是同步的，不支持异步，不是线程安全的，所以需要配合连接池来使用</p>
+<p>Redission<br>基于 Netty 框架的事件驱动的通信层，提供 redLock 实现，调用方法是异步的，线程安全，不支持字符串操作，不支持排序、事务、管道、分区等 redis 特性</p>
+<p>Lettuce<br>基于 Netty 框架的事件驱动的通信层，调用方法是异步的，线程安全</p>
+<h2 id="8-其他-redis-问题"><a href="#8-其他-redis-问题" class="headerlink" title="8.其他 redis 问题"></a>8.其他 redis 问题</h2><p>redis 实现分布式锁</p>
+<p>单机</p>
+<p>加锁：setnx px(ex)</p>
+<p>释放锁：lua 脚本原子性操作</p>
+<p>优点：简单，单实例安全</p>
+<p>缺点：主从或者集群模式下，如果加锁成功后，锁对象未来得及从 master 同步到 slave，slave 挂了，可能也会出现多实例获取到锁的现象。如果锁住的代码块逻辑执行时间过长，超过缓存的过期时间，锁自动释放，相同的逻辑可能会执行多次</p>
+<p>集群</p>
+<p>redLock（拓展：redLock）</p>
+<p>redis 和 mysql 如何保持数据一致性</p>
+<p>先读取缓存，缓存中没有再去读取数据库，读取到数据之后将数据维护进缓存</p>
+<p>设置缓存过期时间</p>
+<p>删除缓存失败重试</p>
+<p>1.延时双删</p>
+<p>先删除缓存，再更新数据库，休眠一定时间之后再更次删除缓存</p>
+<p>2.异步延时删除</p>
+<p>先删除缓存，再更新数据库，发送 MQ 消息再次删除缓存</p>
+<p>3.监听 binlog</p>
+<p>更新数据库，监听程序监听到 binlog 变化，删除缓存，如果删除失败，发送 mq 消息重试，直至删除成功</p>
+<p>redis cluster 只支持 db0</p>
 
     </div>
 
@@ -432,7 +432,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

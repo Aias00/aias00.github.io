@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x5206;&amp;#x5E03;&amp;#x5F0F;&amp;#x9501;&amp;#x5728;&amp;#x5F00;&amp;#x53D1;&amp;#x8FC7;&amp;#x7A0B;&amp;#x4E2D;,&amp;#x6D89;&amp;#x53CA;&amp;#x5230;&amp;#x5355;&amp;#x670D;&amp;#x52A1;&amp;#x591A;&amp;#x5B9E;&amp;#x4F8B;&amp;#x540C">
+  <meta name="description" content="为什么要用分布式锁在开发过程中,涉及到单服务多实例同时运行,某些操作例如定时任务跑批/更新数据等,为了避免多个实例同时对同一共享资源进行多次操作或者重复操作,我们需要分布式锁来进行并发协调 单 Redis 实例实现分布式锁获取锁使用命令: SET resource_name my_random_value NX PX 30000 这个命令利用了 redis 2.6.12 版本以后提供的 set (">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis实现分布式锁-单redis实例实现分布式锁">
 <meta property="og:url" content="http://yoursite.com/article/8dec7256.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x5206;&amp;#x5E03;&amp;#x5F0F;&amp;#x9501;&amp;#x5728;&amp;#x5F00;&amp;#x53D1;&amp;#x8FC7;&amp;#x7A0B;&amp;#x4E2D;,&amp;#x6D89;&amp;#x53CA;&amp;#x5230;&amp;#x5355;&amp;#x670D;&amp;#x52A1;&amp;#x591A;&amp;#x5B9E;&amp;#x4F8B;&amp;#x540C">
+<meta property="og:description" content="为什么要用分布式锁在开发过程中,涉及到单服务多实例同时运行,某些操作例如定时任务跑批/更新数据等,为了避免多个实例同时对同一共享资源进行多次操作或者重复操作,我们需要分布式锁来进行并发协调 单 Redis 实例实现分布式锁获取锁使用命令: SET resource_name my_random_value NX PX 30000 这个命令利用了 redis 2.6.12 版本以后提供的 set (">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.637Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis实现分布式锁-单redis实例实现分布式锁">
-<meta name="twitter:description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x5206;&amp;#x5E03;&amp;#x5F0F;&amp;#x9501;&amp;#x5728;&amp;#x5F00;&amp;#x53D1;&amp;#x8FC7;&amp;#x7A0B;&amp;#x4E2D;,&amp;#x6D89;&amp;#x53CA;&amp;#x5230;&amp;#x5355;&amp;#x670D;&amp;#x52A1;&amp;#x591A;&amp;#x5B9E;&amp;#x4F8B;&amp;#x540C">
+<meta name="twitter:description" content="为什么要用分布式锁在开发过程中,涉及到单服务多实例同时运行,某些操作例如定时任务跑批/更新数据等,为了避免多个实例同时对同一共享资源进行多次操作或者重复操作,我们需要分布式锁来进行并发协调 单 Redis 实例实现分布式锁获取锁使用命令: SET resource_name my_random_value NX PX 30000 这个命令利用了 redis 2.6.12 版本以后提供的 set (">
 
 <link rel="canonical" href="http://yoursite.com/article/8dec7256.html">
 
@@ -192,44 +192,44 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x5206;&#x5E03;&#x5F0F;&#x9501;"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x5206;&#x5E03;&#x5F0F;&#x9501;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x5206;&#x5E03;&#x5F0F;&#x9501;"></a>&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x5206;&#x5E03;&#x5F0F;&#x9501;</h3><p>&#x5728;&#x5F00;&#x53D1;&#x8FC7;&#x7A0B;&#x4E2D;,&#x6D89;&#x53CA;&#x5230;&#x5355;&#x670D;&#x52A1;&#x591A;&#x5B9E;&#x4F8B;&#x540C;&#x65F6;&#x8FD0;&#x884C;,&#x67D0;&#x4E9B;&#x64CD;&#x4F5C;&#x4F8B;&#x5982;&#x5B9A;&#x65F6;&#x4EFB;&#x52A1;&#x8DD1;&#x6279;/&#x66F4;&#x65B0;&#x6570;&#x636E;&#x7B49;,&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x591A;&#x4E2A;&#x5B9E;&#x4F8B;&#x540C;&#x65F6;&#x5BF9;&#x540C;&#x4E00;&#x5171;&#x4EAB;&#x8D44;&#x6E90;&#x8FDB;&#x884C;&#x591A;&#x6B21;&#x64CD;&#x4F5C;&#x6216;&#x8005;&#x91CD;&#x590D;&#x64CD;&#x4F5C;,&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5206;&#x5E03;&#x5F0F;&#x9501;&#x6765;&#x8FDB;&#x884C;&#x5E76;&#x53D1;&#x534F;&#x8C03;</p>
-<h3 id="&#x5355;-Redis-&#x5B9E;&#x4F8B;&#x5B9E;&#x73B0;&#x5206;&#x5E03;&#x5F0F;&#x9501;"><a href="#&#x5355;-Redis-&#x5B9E;&#x4F8B;&#x5B9E;&#x73B0;&#x5206;&#x5E03;&#x5F0F;&#x9501;" class="headerlink" title="&#x5355; Redis &#x5B9E;&#x4F8B;&#x5B9E;&#x73B0;&#x5206;&#x5E03;&#x5F0F;&#x9501;"></a>&#x5355; Redis &#x5B9E;&#x4F8B;&#x5B9E;&#x73B0;&#x5206;&#x5E03;&#x5F0F;&#x9501;</h3><p>&#x83B7;&#x53D6;&#x9501;&#x4F7F;&#x7528;&#x547D;&#x4EE4;: SET resource_name my_random_value NX PX 30000</p>
-<p>&#x8FD9;&#x4E2A;&#x547D;&#x4EE4;&#x5229;&#x7528;&#x4E86; redis 2.6.12 &#x7248;&#x672C;&#x4EE5;&#x540E;&#x63D0;&#x4F9B;&#x7684; set (ex nx px xx) &#x6307;&#x4EE4;, &#x8FD9;&#x4E2A;&#x6307;&#x4EE4;&#x652F;&#x6301;&#x5BF9; set &#x6307;&#x4EE4;&#x8BBE;&#x7F6E;&#x53C2;&#x6570;</p>
-<p>&#x5176;&#x4E2D;:</p>
+        <h3 id="为什么要用分布式锁"><a href="#为什么要用分布式锁" class="headerlink" title="为什么要用分布式锁"></a>为什么要用分布式锁</h3><p>在开发过程中,涉及到单服务多实例同时运行,某些操作例如定时任务跑批/更新数据等,为了避免多个实例同时对同一共享资源进行多次操作或者重复操作,我们需要分布式锁来进行并发协调</p>
+<h3 id="单-Redis-实例实现分布式锁"><a href="#单-Redis-实例实现分布式锁" class="headerlink" title="单 Redis 实例实现分布式锁"></a>单 Redis 实例实现分布式锁</h3><p>获取锁使用命令: SET resource_name my_random_value NX PX 30000</p>
+<p>这个命令利用了 redis 2.6.12 版本以后提供的 set (ex nx px xx) 指令, 这个指令支持对 set 指令设置参数</p>
+<p>其中:</p>
 <ul>
-<li><p>EX seconds : &#x5C06;&#x952E;&#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x8BBE;&#x7F6E;&#x4E3A; seconds &#x79D2;</p>
+<li><p>EX seconds : 将键的过期时间设置为 seconds 秒</p>
 </li>
-<li><p>PX: &#x5C06;&#x952E;&#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x8BBE;&#x7F6E;&#x4E3A; milliseconds &#x6BEB;&#x79D2;</p>
+<li><p>PX: 将键的过期时间设置为 milliseconds 毫秒</p>
 </li>
-<li><p>NX: &#x53EA;&#x6709;&#x952E;&#x4E0D;&#x5B58;&#x5728;&#x65F6;,&#x624D;&#x4F1A;&#x5BF9;&#x952E;&#x8FDB;&#x884C;&#x8BBE;&#x7F6E;&#x64CD;&#x4F5C;</p>
+<li><p>NX: 只有键不存在时,才会对键进行设置操作</p>
 </li>
-<li><p>XX: &#x53EA;&#x6709;&#x952E;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x65F6;,&#x624D;&#x5BF9;&#x952E;&#x8FDB;&#x884C;&#x8BBE;&#x7F6E;&#x64CD;&#x4F5C;</p>
+<li><p>XX: 只有键已经存在时,才对键进行设置操作</p>
 </li>
 </ul>
-<p>&#x8FD9;&#x4E2A;&#x6307;&#x4EE4;&#x53EA;&#x6709;&#x5728;&#x4E0D;&#x5B58;&#x5728; resource_name &#x8FD9;&#x4E2A; key &#x7684;&#x65F6;&#x5019;&#x624D;&#x80FD;&#x6267;&#x884C;&#x6210;&#x529F;,&#x5E76;&#x4E14;&#x4E3A;&#x8FD9;&#x4E2A; key &#x8BBE;&#x7F6E;&#x4E86;&#x4E00;&#x4E2A; 30s &#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;,&#x8FD9;&#x4E2A; key &#x7684;&#x503C;&#x662F;&#x4E00;&#x4E2A; random_value(&#x968F;&#x673A;&#x6570;)</p>
-<p>&#x8BBE;&#x7F6E;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x662F;&#x4E3A;&#x4E86;&#x4FDD;&#x8BC1;&#x64CD;&#x4F5C;&#x7EBF;&#x7A0B;&#x5982;&#x679C;&#x5728;&#x83B7;&#x53D6;&#x9501;&#x4E4B;&#x540E;&#x6302;&#x6389;&#x4E86;,&#x9501;&#x5230;&#x4E86;&#x8FC7;&#x671F;&#x65F6;&#x95F4;&#x4F9D;&#x65E7;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x91CA;&#x653E;,&#x907F;&#x514D;&#x4E86;&#x6B7B;&#x9501;&#x7684;&#x60C5;&#x51B5;&#x53D1;&#x751F;</p>
-<p>value &#x503C;&#x5FC5;&#x987B;&#x662F;&#x968F;&#x673A;&#x6570;&#x4E3B;&#x8981;&#x662F;&#x4E3A;&#x4E86;&#x80FD;&#x591F;&#x66F4;&#x5B89;&#x5168;&#x5730;&#x91CA;&#x653E;&#x9501;,&#x91CA;&#x653E;&#x9501;&#x7684;&#x64CD;&#x4F5C;&#x9700;&#x8981;&#x7ED3;&#x5408; lua &#x811A;&#x672C;&#x5B9E;&#x73B0;</p>
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> redis.call(<span class="string">&quot;get&quot;</span>,KEYS[<span class="number">1</span>]) == ARGV[<span class="number">1</span>] <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">return</span> redis.call(<span class="string">&quot;del&quot;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>这个指令只有在不存在 resource_name 这个 key 的时候才能执行成功,并且为这个 key 设置了一个 30s 的过期时间,这个 key 的值是一个 random_value(随机数)</p>
+<p>设置过期时间是为了保证操作线程如果在获取锁之后挂掉了,锁到了过期时间依旧可以自动释放,避免了死锁的情况发生</p>
+<p>value 值必须是随机数主要是为了能够更安全地释放锁,释放锁的操作需要结合 lua 脚本实现</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> redis.call(<span class="string">"get"</span>,KEYS[<span class="number">1</span>]) == ARGV[<span class="number">1</span>] <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">return</span> redis.call(<span class="string">"del"</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
-<p>&#x8FD9;&#x4E2A;&#x6307;&#x4EE4;&#x7684;&#x610F;&#x601D;&#x662F;:&#x53EA;&#x6709; key &#x5B58;&#x5728;&#x5E76;&#x4E14;&#x5B58;&#x50A8;&#x7684;&#x503C;&#x548C;&#x4F20;&#x5165;&#x7684;&#x503C;&#x4E00;&#x6837;&#x624D;&#x80FD;&#x8FDB;&#x884C;&#x5220;&#x9664;&#x64CD;&#x4F5C;,&#x5426;&#x5219;&#x8FD4;&#x56DE; 0</p>
-<p>&#x8FD9;&#x6837;&#x64CD;&#x4F5C;&#x7684;&#x662F;&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x4E00;&#x4E2A;&#x5B9E;&#x4F8B;&#x5220;&#x9664;&#x4E86;&#x5176;&#x4ED6;&#x5B9E;&#x4F8B;&#x83B7;&#x53D6;&#x7684;&#x9501;, &#x5220;&#x9664;&#x9501;&#x4E0D;&#x80FD;&#x5148; get &#x518D; del &#x56E0;&#x4E3A;&#x8FD9;&#x4E24;&#x6B65;&#x6CA1;&#x6709;&#x539F;&#x5B50;&#x6027;&#xFF0C;&#x5047;&#x8BBE; get &#x540E;&#x9501;&#x521A;&#x597D;&#x65F6;&#x95F4;&#x5230;&#x4E86;&#xFF0C;&#x8FC7;&#x671F;&#x4E86;&#xFF0C;&#x5C31;&#x4F1A;&#x628A;&#x522B;&#x4EBA;&#x4E0A;&#x7684;&#x9501;&#x5220;&#x6389;&#xFF0C;&#x800C; lua &#x811A;&#x672C;&#x5C31;&#x6709;&#x539F;&#x5B50;&#x6027;&#x7684;</p>
-<p>key &#x7684;&#x5931;&#x6548;&#x65F6;&#x95F4;&#xFF0C;&#x88AB;&#x79F0;&#x4F5C;&#x201C;&#x9501;&#x5B9A;&#x6709;&#x6548;&#x671F;&#x201D;&#x3002;&#x5B83;&#x4E0D;&#x4EC5;&#x662F; key &#x81EA;&#x52A8;&#x5931;&#x6548;&#x65F6;&#x95F4;&#xFF0C;&#x800C;&#x4E14;&#x8FD8;&#x662F;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x6301;&#x6709;&#x9501;&#x591A;&#x957F;&#x65F6;&#x95F4;&#x540E;&#x53EF;&#x4EE5;&#x88AB;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x91CD;&#x65B0;&#x83B7;&#x5F97;</p>
-<p>&#x7528; Java &#x7B80;&#x5355;&#x5B9E;&#x73B0;&#x7684;&#x6548;&#x679C;</p>
-<p>&#x52A0;&#x9501;:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(String key, String randomValue, <span class="keyword">int</span> seconds)</span> </span>{</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;OK&quot;</span>.equals(jedis.set(key, randomValue, <span class="string">&quot;NX&quot;</span>, <span class="string">&quot;EX&quot;</span>, seconds));</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>这个指令的意思是:只有 key 存在并且存储的值和传入的值一样才能进行删除操作,否则返回 0</p>
+<p>这样操作的是为了避免一个实例删除了其他实例获取的锁, 删除锁不能先 get 再 del 因为这两步没有原子性，假设 get 后锁刚好时间到了，过期了，就会把别人上的锁删掉，而 lua 脚本就有原子性的</p>
+<p>key 的失效时间，被称作“锁定有效期”。它不仅是 key 自动失效时间，而且还是一个客户端持有锁多长时间后可以被另外一个客户端重新获得</p>
+<p>用 Java 简单实现的效果</p>
+<p>加锁:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(String key, String randomValue, <span class="keyword">int</span> seconds)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"OK"</span>.equals(jedis.set(key, randomValue, <span class="string">"NX"</span>, <span class="string">"EX"</span>, seconds));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>&#x89E3;&#x9501;:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">releaseLock</span><span class="params">(String key, String randomValue)</span> </span>{</span><br><span class="line">    String luaScript = <span class="string">&quot;if redis.call(&apos;get&apos;, KEYS[1]) == ARGV[1] then &quot;</span> +</span><br><span class="line">            <span class="string">&quot;return redis.call(&apos;del&apos;, KEYS[1]) else return 0 end&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> jedis.eval(</span><br><span class="line">        luaScript,</span><br><span class="line">        Collections.singletonList(key),</span><br><span class="line">        Collections.singletonList(randomValue)</span><br><span class="line">    ).equals(<span class="number">1L</span>);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>解锁:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">releaseLock</span><span class="params">(String key, String randomValue)</span> </span>&#123;</span><br><span class="line">    String luaScript = <span class="string">"if redis.call('get', KEYS[1]) == ARGV[1] then "</span> +</span><br><span class="line">            <span class="string">"return redis.call('del', KEYS[1]) else return 0 end"</span>;</span><br><span class="line">    <span class="keyword">return</span> jedis.eval(</span><br><span class="line">        luaScript,</span><br><span class="line">        Collections.singletonList(key),</span><br><span class="line">        Collections.singletonList(randomValue)</span><br><span class="line">    ).equals(<span class="number">1L</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>&#x4F18;&#x70B9;:</p>
+<p>优点:</p>
 <ul>
-<li>&#x4EE3;&#x7801;&#x7B80;&#x6D01;,&#x5355; redis &#x5B9E;&#x4F8B;&#x5B89;&#x5168;</li>
+<li>代码简洁,单 redis 实例安全</li>
 </ul>
-<p>&#x7F3A;&#x70B9;:</p>
+<p>缺点:</p>
 <ul>
-<li><p>&#x53EA;&#x652F;&#x6301;&#x5355; redis &#x5B9E;&#x4F8B;,&#x96C6;&#x7FA4;/&#x4E3B;&#x4ECE;&#x6A21;&#x5F0F;&#x4E0B;,&#x5982;&#x679C;&#x52A0;&#x9501;&#x6210;&#x529F;&#x540E;,&#x9501;&#x7684; value &#x4ECE; Master &#x590D;&#x5236;&#x5230; Slave &#x7684;&#x65F6;&#x5019;&#x6302;&#x4E86;,&#x4E5F;&#x662F;&#x4F1A;&#x51FA;&#x73B0;&#x540C;&#x4E00;&#x8D44;&#x6E90;&#x88AB;&#x591A;&#x4E2A; Client &#x52A0;&#x9501;&#x7684;</p>
+<li><p>只支持单 redis 实例,集群/主从模式下,如果加锁成功后,锁的 value 从 Master 复制到 Slave 的时候挂了,也是会出现同一资源被多个 Client 加锁的</p>
 </li>
-<li><p>&#x5982;&#x679C;&#x9501;&#x4F4F;&#x7684;&#x4EE3;&#x7801;&#x5757;&#x903B;&#x8F91;&#x6267;&#x884C;&#x65F6;&#x95F4;&#x8FC7;&#x957F;,&#x53EF;&#x80FD;&#x4F1A;&#x8D85;&#x8FC7;&#x7F13;&#x5B58;&#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;,&#x9501;&#x81EA;&#x52A8;&#x91CA;&#x653E;,&#x76F8;&#x540C;&#x7684;&#x8D44;&#x6E90;&#x53EF;&#x80FD;&#x4F1A;&#x88AB;&#x64CD;&#x4F5C;&#x591A;&#x6B21;</p>
+<li><p>如果锁住的代码块逻辑执行时间过长,可能会超过缓存的过期时间,锁自动释放,相同的资源可能会被操作多次</p>
 </li>
 </ul>
 
@@ -330,7 +330,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

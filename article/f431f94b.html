@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x7F13;&amp;#x5B58;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;#x4E3A;&amp;#x4E86;&amp;#x652F;&amp;#x6301;&amp;#x9AD8;&amp;#x6027;&amp;#x80FD;/&amp;#x9AD8;&amp;#x5E76;&amp;#x53D1;&amp;#x7684;&amp;#x5904;&amp;#x7406">
+  <meta name="description" content="为什么要用缓存缓存主要是为了支持高性能/高并发的处理逻辑,以及缓解数据库的压力 不考虑持久化的情况,缓存中的数据基本上都是存在于内存中,相比于查询数据库,程序读取内存的速度要快的多 假设没有缓存,程序直接读取数据库,在高并发的情况下,很容易导致数据库宕机 什么是数据库缓存读写一致性">
 <meta name="keywords" content="cache">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于缓存我的理解">
 <meta property="og:url" content="http://yoursite.com/article/f431f94b.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x7F13;&amp;#x5B58;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;#x4E3A;&amp;#x4E86;&amp;#x652F;&amp;#x6301;&amp;#x9AD8;&amp;#x6027;&amp;#x80FD;/&amp;#x9AD8;&amp;#x5E76;&amp;#x53D1;&amp;#x7684;&amp;#x5904;&amp;#x7406">
+<meta property="og:description" content="为什么要用缓存缓存主要是为了支持高性能/高并发的处理逻辑,以及缓解数据库的压力 不考虑持久化的情况,缓存中的数据基本上都是存在于内存中,相比于查询数据库,程序读取内存的速度要快的多 假设没有缓存,程序直接读取数据库,在高并发的情况下,很容易导致数据库宕机 什么是数据库缓存读写一致性">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.470Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于缓存我的理解">
-<meta name="twitter:description" content="&amp;#x4E3A;&amp;#x4EC0;&amp;#x4E48;&amp;#x8981;&amp;#x7528;&amp;#x7F13;&amp;#x5B58;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;#x4E3A;&amp;#x4E86;&amp;#x652F;&amp;#x6301;&amp;#x9AD8;&amp;#x6027;&amp;#x80FD;/&amp;#x9AD8;&amp;#x5E76;&amp;#x53D1;&amp;#x7684;&amp;#x5904;&amp;#x7406">
+<meta name="twitter:description" content="为什么要用缓存缓存主要是为了支持高性能/高并发的处理逻辑,以及缓解数据库的压力 不考虑持久化的情况,缓存中的数据基本上都是存在于内存中,相比于查询数据库,程序读取内存的速度要快的多 假设没有缓存,程序直接读取数据库,在高并发的情况下,很容易导致数据库宕机 什么是数据库缓存读写一致性">
 
 <link rel="canonical" href="http://yoursite.com/article/f431f94b.html">
 
@@ -192,32 +192,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;"></a>&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x7528;&#x7F13;&#x5B58;</h3><p>&#x7F13;&#x5B58;&#x4E3B;&#x8981;&#x662F;&#x4E3A;&#x4E86;&#x652F;&#x6301;&#x9AD8;&#x6027;&#x80FD;/&#x9AD8;&#x5E76;&#x53D1;&#x7684;&#x5904;&#x7406;&#x903B;&#x8F91;,&#x4EE5;&#x53CA;&#x7F13;&#x89E3;&#x6570;&#x636E;&#x5E93;&#x7684;&#x538B;&#x529B;</p>
-<p>&#x4E0D;&#x8003;&#x8651;&#x6301;&#x4E45;&#x5316;&#x7684;&#x60C5;&#x51B5;,&#x7F13;&#x5B58;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x57FA;&#x672C;&#x4E0A;&#x90FD;&#x662F;&#x5B58;&#x5728;&#x4E8E;&#x5185;&#x5B58;&#x4E2D;,&#x76F8;&#x6BD4;&#x4E8E;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x7A0B;&#x5E8F;&#x8BFB;&#x53D6;&#x5185;&#x5B58;&#x7684;&#x901F;&#x5EA6;&#x8981;&#x5FEB;&#x7684;&#x591A;</p>
-<p>&#x5047;&#x8BBE;&#x6CA1;&#x6709;&#x7F13;&#x5B58;,&#x7A0B;&#x5E8F;&#x76F4;&#x63A5;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x5E93;,&#x5728;&#x9AD8;&#x5E76;&#x53D1;&#x7684;&#x60C5;&#x51B5;&#x4E0B;,&#x5F88;&#x5BB9;&#x6613;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x5B95;&#x673A;</p>
-<h3 id="&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;"><a href="#&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;"></a>&#x4EC0;&#x4E48;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x8BFB;&#x5199;&#x4E00;&#x81F4;&#x6027;</h3><p>&#x6240;&#x8C13;&#x7684;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x4E3B;&#x8981;&#x6307;&#x7684;&#x662F;&#x6700;&#x7EC8;&#x4E00;&#x81F4;&#x6027;,&#x56E0;&#x4E3A;&#x6570;&#x636E;&#x5E93;&#x548C;&#x7F13;&#x5B58;&#x672C;&#x6765;&#x5C31;&#x5C5E;&#x4E8E;&#x4E24;&#x4E2A;&#x4E2A;&#x4F53;,&#x6240;&#x4EE5;&#x8981;&#x8BA9;&#x4ED6;&#x4FE9;&#x65F6;&#x65F6;&#x523B;&#x523B;&#x4FDD;&#x6301;&#x6570;&#x636E;&#x4E00;&#x81F4;&#x57FA;&#x672C;&#x4E0A;&#x662F;&#x5F88;&#x96BE;&#x5B9E;&#x73B0;&#x7684;</p>
-<p>&#x5DE5;&#x4F5C;&#x4E2D;&#x5E38;&#x89C1;&#x7684;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x57FA;&#x672C;&#x6D41;&#x7A0B;&#x5982;&#x4E0B;:</p>
+        <h3 id="为什么要用缓存"><a href="#为什么要用缓存" class="headerlink" title="为什么要用缓存"></a>为什么要用缓存</h3><p>缓存主要是为了支持高性能/高并发的处理逻辑,以及缓解数据库的压力</p>
+<p>不考虑持久化的情况,缓存中的数据基本上都是存在于内存中,相比于查询数据库,程序读取内存的速度要快的多</p>
+<p>假设没有缓存,程序直接读取数据库,在高并发的情况下,很容易导致数据库宕机</p>
+<h3 id="什么是数据库缓存读写一致性"><a href="#什么是数据库缓存读写一致性" class="headerlink" title="什么是数据库缓存读写一致性"></a>什么是数据库缓存读写一致性</h3><p>所谓的数据库缓存一致性主要指的是最终一致性,因为数据库和缓存本来就属于两个个体,所以要让他俩时时刻刻保持数据一致基本上是很难实现的</p>
+<p>工作中常见的保证数据库一致性的基本流程如下:</p>
 <ul>
-<li><p>&#x67E5;&#x8BE2;:&#x5982;&#x679C;&#x5728;&#x7F13;&#x5B58;&#x4E2D;&#x67E5;&#x5230;&#x4E86;,&#x76F4;&#x63A5;&#x8FD4;&#x56DE;&#x67E5;&#x8BE2;&#x7ED3;&#x679C;;&#x5982;&#x679C;&#x5728;&#x7F13;&#x5B58;&#x4E2D;&#x6CA1;&#x6709;&#x67E5;&#x5230;,&#x5C31;&#x53BB;&#x67E5;&#x6570;&#x636E;&#x5E93;,&#x7136;&#x540E;&#x5C06;&#x7ED3;&#x679C;&#x5199;&#x5165;&#x7F13;&#x5B58;,&#x7136;&#x540E;&#x8FD4;&#x56DE;</p>
+<li><p>查询:如果在缓存中查到了,直接返回查询结果;如果在缓存中没有查到,就去查数据库,然后将结果写入缓存,然后返回</p>
 </li>
-<li><p>&#x66F4;&#x65B0;:&#x76F4;&#x63A5;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;,&#x5982;&#x679C;&#x66F4;&#x65B0;&#x6210;&#x529F;,&#x4F7F;&#x7F13;&#x5B58;&#x5931;&#x6548;;&#x8FD9;&#x6837;&#x518D;&#x4E0B;&#x4E00;&#x6B21;&#x67E5;&#x8BE2;&#x65F6;&#x5C31;&#x4F1A;&#x5C06;&#x67E5;&#x8BE2;&#x7ED3;&#x679C;&#x5199;&#x5165;&#x7F13;&#x5B58;</p>
+<li><p>更新:直接更新数据库,如果更新成功,使缓存失效;这样再下一次查询时就会将查询结果写入缓存</p>
 </li>
 </ul>
-<h3 id="&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;"></a>&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x80FD;&#x5199;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;&#x66F4;&#x65B0;&#x7F13;&#x5B58;</h3><p>&#x5199;&#x6570;&#x636E;&#x5E93;&#x548C;&#x5199;&#x7F13;&#x5B58;&#x662F;&#x4E24;&#x6B21;&#x5199;&#x5165;,&#x5B58;&#x5728;&#x65F6;&#x95F4;&#x5DEE;,&#x5047;&#x8BBE;&#x4E24;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x64CD;&#x4F5C;&#x4E00;&#x6761;&#x6570;&#x636E;,A &#x7EBF;&#x7A0B;&#x5148;&#x5199;&#x5165;&#x6570;&#x636E;&#x5E93;,B &#x7EBF;&#x7A0B;&#x540E;&#x5199;&#x5165;&#x6570;&#x636E;&#x5E93;,&#x4F46;&#x662F; B &#x7EBF;&#x7A0B;&#x5148;&#x66F4;&#x65B0;&#x5B8C;&#x7F13;&#x5B58;,&#x4E4B;&#x540E; A &#x7EBF;&#x7A0B;&#x624D;&#x66F4;&#x65B0;&#x7F13;&#x5B58;,&#x5C31;&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E0D;&#x4E00;&#x81F4;</p>
-<p>&#x800C;&#x4E14;&#x6211;&#x8BA4;&#x4E3A;,&#x5728;&#x66F4;&#x65B0;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x4E4B;&#x540E;,&#x6570;&#x636E;&#x5E76;&#x4E0D;&#x4E00;&#x5B9A;&#x9A6C;&#x4E0A;&#x5C31;&#x9700;&#x8981;&#x88AB;&#x7528;&#x5230;,&#x53EF;&#x80FD;&#x5F88;&#x4E45;&#x4EE5;&#x540E;&#x624D;&#x4F1A;&#x67E5;&#x8BE2;&#x5230;,&#x90A3;&#x4E48;&#x66F4;&#x65B0;&#x5B8C;&#x6570;&#x636E;&#x5E93;&#x5C31;&#x653E;&#x8FDB;&#x7F13;&#x5B58;,&#x5C5E;&#x4E8E;&#x6D6A;&#x8D39;&#x8D44;&#x6E90;</p>
-<h3 id="&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;"><a href="#&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;" class="headerlink" title="&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;"></a>&#x5176;&#x4ED6;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x7684;&#x601D;&#x8DEF;</h3><ul>
+<h3 id="为什么不能写完数据库之后更新缓存"><a href="#为什么不能写完数据库之后更新缓存" class="headerlink" title="为什么不能写完数据库之后更新缓存"></a>为什么不能写完数据库之后更新缓存</h3><p>写数据库和写缓存是两次写入,存在时间差,假设两个线程同时操作一条数据,A 线程先写入数据库,B 线程后写入数据库,但是 B 线程先更新完缓存,之后 A 线程才更新缓存,就会导致数据库缓存不一致</p>
+<p>而且我认为,在更新完数据库之后,数据并不一定马上就需要被用到,可能很久以后才会查询到,那么更新完数据库就放进缓存,属于浪费资源</p>
+<h3 id="其他保证数据库缓存一致性的思路"><a href="#其他保证数据库缓存一致性的思路" class="headerlink" title="其他保证数据库缓存一致性的思路"></a>其他保证数据库缓存一致性的思路</h3><ul>
 <li>Read Through Pattern</li>
 </ul>
-<p>&#x7F13;&#x5B58;&#x5931;&#x6548;&#x4E4B;&#x540E;&#x7F13;&#x5B58;&#x81EA;&#x5DF1;&#x4ECE;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x52A0;&#x8F7D;&#x6570;&#x636E;</p>
+<p>缓存失效之后缓存自己从数据库中加载数据</p>
 <ul>
 <li>Write Through Pattern</li>
 </ul>
-<p>&#x5F53;&#x6709;&#x6570;&#x636E;&#x66F4;&#x65B0;&#x7684;&#x65F6;&#x5019;,&#x5982;&#x679C;&#x6CA1;&#x6709;&#x547D;&#x4E2D;&#x7F13;&#x5B58;,&#x76F4;&#x63A5;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;,&#x7136;&#x540E;&#x8FD4;&#x56DE;;&#x5982;&#x679C;&#x547D;&#x4E2D;&#x4E86;&#x7F13;&#x5B58;&#xFF0C;&#x5219;&#x66F4;&#x65B0;&#x7F13;&#x5B58;,&#x7136;&#x540E;&#x518D;&#x7531; Cache &#x81EA;&#x5DF1;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;&#xFF08;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x540C;&#x6B65;&#x64CD;&#x4F5C;&#xFF09;</p>
+<p>当有数据更新的时候,如果没有命中缓存,直接更新数据库,然后返回;如果命中了缓存，则更新缓存,然后再由 Cache 自己更新数据库（这是一个同步操作）</p>
 <ul>
 <li>Write Behind Caching Pattern</li>
 </ul>
-<p>&#x5728;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;,&#x53EA;&#x66F4;&#x65B0;&#x7F13;&#x5B58;,&#x4E0D;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;,&#x800C;&#x6211;&#x4EEC;&#x7684;&#x7F13;&#x5B58;&#x4F1A;&#x5F02;&#x6B65;&#x5730;&#x6279;&#x91CF;&#x66F4;&#x65B0;&#x6570;&#x636E;&#x5E93;</p>
-<h3 id="&#x63A8;&#x8350;"><a href="#&#x63A8;&#x8350;" class="headerlink" title="&#x63A8;&#x8350;"></a>&#x63A8;&#x8350;</h3><p>&#x9177;&#x58F3; <a href="https://coolshell.cn/articles/17416.html" title="&#x7F13;&#x5B58;&#x66F4;&#x65B0;&#x7684;&#x5957;&#x8DEF;" target="_blank" rel="noopener">&#x7F13;&#x5B58;&#x66F4;&#x65B0;&#x7684;&#x5957;&#x8DEF;</a></p>
+<p>在更新数据的时候,只更新缓存,不更新数据库,而我们的缓存会异步地批量更新数据库</p>
+<h3 id="推荐"><a href="#推荐" class="headerlink" title="推荐"></a>推荐</h3><p>酷壳 <a href="https://coolshell.cn/articles/17416.html" title="缓存更新的套路" target="_blank" rel="noopener">缓存更新的套路</a></p>
 
     </div>
 
@@ -316,7 +316,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

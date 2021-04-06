@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x7F13;&amp;#x5B58;&amp;#x7A7F;&amp;#x900F;&amp;#x548C;&amp;#x7F13;&amp;#x5B58;&amp;#x51FB;&amp;#x7A7F;&amp;#x7F13;&amp;#x5B58;&amp;#x7A7F;&amp;#x900F;&amp;#x548C;&amp;#x7F13;&amp;#x5B58;&amp;#x51FB;&amp;#x7A7F;&amp;#x662F;&amp;#x5B58;&amp;#x5728;&amp;#x533A;">
+  <meta name="description" content="什么是缓存穿透和缓存击穿缓存穿透和缓存击穿是存在区别的两种情况:  缓存穿透  要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。 在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库">
 <meta name="keywords" content="cache">
 <meta property="og:type" content="article">
 <meta property="og:title" content="缓存穿透和缓存击穿">
 <meta property="og:url" content="http://yoursite.com/article/6c6b9155.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x7F13;&amp;#x5B58;&amp;#x7A7F;&amp;#x900F;&amp;#x548C;&amp;#x7F13;&amp;#x5B58;&amp;#x51FB;&amp;#x7A7F;&amp;#x7F13;&amp;#x5B58;&amp;#x7A7F;&amp;#x900F;&amp;#x548C;&amp;#x7F13;&amp;#x5B58;&amp;#x51FB;&amp;#x7A7F;&amp;#x662F;&amp;#x5B58;&amp;#x5728;&amp;#x533A;">
+<meta property="og:description" content="什么是缓存穿透和缓存击穿缓存穿透和缓存击穿是存在区别的两种情况:  缓存穿透  要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。 在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.442Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="缓存穿透和缓存击穿">
-<meta name="twitter:description" content="&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x7F13;&amp;#x5B58;&amp;#x7A7F;&amp;#x900F;&amp;#x548C;&amp;#x7F13;&amp;#x5B58;&amp;#x51FB;&amp;#x7A7F;&amp;#x7F13;&amp;#x5B58;&amp;#x7A7F;&amp;#x900F;&amp;#x548C;&amp;#x7F13;&amp;#x5B58;&amp;#x51FB;&amp;#x7A7F;&amp;#x662F;&amp;#x5B58;&amp;#x5728;&amp;#x533A;">
+<meta name="twitter:description" content="什么是缓存穿透和缓存击穿缓存穿透和缓存击穿是存在区别的两种情况:  缓存穿透  要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。 在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库">
 
 <link rel="canonical" href="http://yoursite.com/article/6c6b9155.html">
 
@@ -192,38 +192,38 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x548C;&#x7F13;&#x5B58;&#x51FB;&#x7A7F;"><a href="#&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x548C;&#x7F13;&#x5B58;&#x51FB;&#x7A7F;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x548C;&#x7F13;&#x5B58;&#x51FB;&#x7A7F;"></a>&#x4EC0;&#x4E48;&#x662F;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x548C;&#x7F13;&#x5B58;&#x51FB;&#x7A7F;</h3><p>&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x548C;&#x7F13;&#x5B58;&#x51FB;&#x7A7F;&#x662F;&#x5B58;&#x5728;&#x533A;&#x522B;&#x7684;&#x4E24;&#x79CD;&#x60C5;&#x51B5;:</p>
+        <h3 id="什么是缓存穿透和缓存击穿"><a href="#什么是缓存穿透和缓存击穿" class="headerlink" title="什么是缓存穿透和缓存击穿"></a>什么是缓存穿透和缓存击穿</h3><p>缓存穿透和缓存击穿是存在区别的两种情况:</p>
 <ul>
-<li>&#x7F13;&#x5B58;&#x7A7F;&#x900F;</li>
+<li>缓存穿透</li>
 </ul>
-<p>&#x8981;&#x67E5;&#x8BE2;&#x7684;&#x6570;&#x636E;&#x672C;&#x6765;&#x5C31;&#x4E0D;&#x5B58;&#x5728;&#x4E8E;&#x7F13;&#x5B58;,&#x4E5F;&#x4E0D;&#x5B58;&#x5728;&#x4E8E;&#x6570;&#x636E;&#x5E93;&#x3002;&#x5F53;&#x5404;&#x79CD;&#x8BF7;&#x6C42;&#x8FDB;&#x6765;&#x67E5;&#x8BE2;&#x7684;&#x65F6;&#x5019;,&#x5148;&#x67E5;&#x7F13;&#x5B58;,&#x6CA1;&#x6709;&#x67E5;&#x5230;&#x5C31;&#x4F1A;&#x53BB;&#x6301;&#x4E45;&#x5C42;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x4F9D;&#x65E7;&#x67E5;&#x4E0D;&#x5230;&#x3002;&#x4E0B;&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#x518D;&#x6765;&#x67E5;&#x7684;&#x65F6;&#x5019;&#x8FD8;&#x662F;&#x76F8;&#x540C;&#x7684;&#x60C5;&#x51B5;&#x3002;</p>
-<p>&#x5728;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;,&#x7F13;&#x5B58;&#x8FD9;&#x4E00;&#x5C42;&#x76F8;&#x5F53;&#x4E8E;&#x4E0D;&#x5B58;&#x5728;,&#x6240;&#x6709;&#x8BF7;&#x6C42;&#x76F4;&#x63A5;&#x67E5;&#x8BE2;&#x4E86;&#x6570;&#x636E;&#x5E93;</p>
+<p>要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。</p>
+<p>在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库</p>
 <ul>
-<li>&#x7F13;&#x5B58;&#x51FB;&#x7A7F;</li>
+<li>缓存击穿</li>
 </ul>
-<p>&#x5982;&#x679C;&#x7F13;&#x5B58;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x56E0;&#x4E3A;&#x67D0;&#x79CD;&#x539F;&#x56E0;&#x5931;&#x6548;(&#x5B58;&#x6D3B;&#x65F6;&#x95F4;&#x5230;&#x671F;&#x6216;&#x8005;&#x88AB;&#x5220;&#x9664;&#x7B49;),&#x5E76;&#x53D1;&#x67E5;&#x8BE2;&#x8FD9;&#x6761;&#x6570;&#x636E;&#x7684;&#x8BF7;&#x6C42;&#x5728;&#x5931;&#x6548;&#x7684;&#x77AC;&#x95F4;&#x5C31;&#x4F1A;&#x7A7F;&#x8FC7;&#x7F13;&#x5B58;&#x53BB;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x5C31;&#x50CF;&#x5728;&#x7F13;&#x5B58;&#x8FD9;&#x5C42;&#x5F00;&#x4E86;&#x4E2A;&#x6D1E;,&#x6240;&#x4EE5;&#x88AB;&#x6210;&#x4E3A;&#x7F13;&#x5B58;&#x51FB;&#x7A7F;</p>
-<p>&#x4EE5;&#x4E0A;&#x8FD9;&#x4E24;&#x79CD;&#x60C5;&#x51B5;&#x5728;&#x5E76;&#x53D1;&#x91CF;&#x5927;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x4F1A;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x9020;&#x6210;&#x5F88;&#x5927;&#x538B;&#x529B;,&#x751A;&#x81F3;&#x53EF;&#x80FD;&#x5F15;&#x8D77;&#x6570;&#x636E;&#x5E93;&#x5B95;&#x673A;</p>
-<h3 id="&#x9762;&#x5BF9;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;"><a href="#&#x9762;&#x5BF9;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;" class="headerlink" title="&#x9762;&#x5BF9;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;"></a>&#x9762;&#x5BF9;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;</h3><ul>
-<li>&#x7F13;&#x5B58;&#x7A7A;&#x503C;</li>
+<p>如果缓存中的数据因为某种原因失效(存活时间到期或者被删除等),并发查询这条数据的请求在失效的瞬间就会穿过缓存去查询数据库,就像在缓存这层开了个洞,所以被成为缓存击穿</p>
+<p>以上这两种情况在并发量大的情况下会对数据库造成很大压力,甚至可能引起数据库宕机</p>
+<h3 id="面对缓存穿透一些解决办法"><a href="#面对缓存穿透一些解决办法" class="headerlink" title="面对缓存穿透一些解决办法"></a>面对缓存穿透一些解决办法</h3><ul>
+<li>缓存空值</li>
 </ul>
-<p>&#x9762;&#x5BF9;&#x7F13;&#x5B58;&#x7A7F;&#x900F;&#x7684;&#x60C5;&#x51B5;,&#x8FD9;&#x7C7B;&#x6570;&#x636E;&#x56E0;&#x4E3A;&#x672C;&#x6765;&#x5C31;&#x4E0D;&#x5B58;&#x5728;,&#x6240;&#x4EE5;&#x6700;&#x7EC8;&#x8BF7;&#x6C42;&#x5230;&#x7684;&#x7ED3;&#x679C;&#x4E5F;&#x662F;&#x7A7A;&#x503C;,&#x6240;&#x4EE5;&#x53EF;&#x4EE5;&#x5C06;&#x5BF9;&#x5E94;&#x7684; key &#x76F4;&#x63A5;&#x5B58;&#x5165;&#x7F13;&#x5B58;,value &#x76F8;&#x5E94;&#x8BBE;&#x7F6E;&#x4E3A; null &#x6216;&#x8005;&#x7A7A;&#x5B57;&#x7B26;&#x4E32;(&#x6839;&#x636E;&#x4E1A;&#x52A1;)</p>
-<p>&#x4E3A;&#x4E86;&#x4FDD;&#x8BC1;&#x8FD9;&#x4E9B;&#x7F13;&#x5B58;&#x6570;&#x636E;&#x4E0D;&#x4F1A;&#x5BF9;&#x540E;&#x671F;&#x771F;&#x5B9E;&#x5B58;&#x5728;&#x4E86;&#x7684;&#x6570;&#x636E;&#x6570;&#x636E;&#x9020;&#x6210;&#x5F71;&#x54CD;,&#x9700;&#x8981;&#x5BF9;&#x8FD9;&#x7C7B;&#x7F13;&#x5B58;&#x8BBE;&#x7F6E;&#x4E00;&#x4E2A;&#x76F8;&#x5BF9;&#x8F83;&#x77ED;&#x7684;&#x8FC7;&#x671F;&#x65F6;&#x95F4;,&#x800C;&#x4E14;&#x5E94;&#x8BE5;&#x4FDD;&#x8BC1;&#x5728;&#x771F;&#x6B63;&#x7684;&#x6570;&#x636E;&#x5165;&#x5E93;&#x6210;&#x529F;&#x4E4B;&#x540E;,&#x5C06;&#x8FD9;&#x4E9B;&#x7F13;&#x5B58;&#x5931;&#x6548;</p>
-<p>&#x56E0;&#x4E3A;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#x5728;&#x6709;&#x6548;&#x6570;&#x636E;&#x5165;&#x5E93;&#x6210;&#x529F;&#x4E4B;&#x540E;&#x548C;&#x4F7F;&#x7A7A;&#x503C;&#x7F13;&#x5B58;&#x5931;&#x6548;&#x4E4B;&#x524D;,&#x5B58;&#x5728;&#x4E00;&#x5B9A;&#x7684;&#x65F6;&#x95F4;&#x5DEE;,&#x8FD8;&#x662F;&#x53EF;&#x80FD;&#x9020;&#x6210;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#x7684;&#x6570;&#x636E;&#x4E0D;&#x4E00;&#x81F4;</p>
-<p>&#x800C;&#x4E14;&#x5C06;&#x7A7A;&#x503C;&#x5B58;&#x5165;&#x7F13;&#x5B58;&#x4E5F;&#x4F1A;&#x5360;&#x7528;&#x7F13;&#x5B58;&#x8D44;&#x6E90;,&#x9020;&#x6210;&#x5185;&#x5B58;&#x6D6A;&#x8D39;&#x3002;&#x5982;&#x679C;&#x906D;&#x53D7;&#x6076;&#x610F;&#x653B;&#x51FB;,&#x5C06;&#x5927;&#x91CF;&#x7A7A;&#x503C;&#x5B58;&#x5165;&#x7F13;&#x5B58;,&#x53EF;&#x80FD;&#x4F1A;&#x5C06;&#x5185;&#x5B58;&#x8D44;&#x6E90;&#x5360;&#x6EE1;,&#x9020;&#x6210;&#x7F13;&#x5B58;&#x670D;&#x52A1;&#x5668;&#x4E00;&#x5B9A;&#x65F6;&#x95F4;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;</p>
-<p>&#x8FD9;&#x79CD;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x7684;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x573A;&#x666F;&#x4E3A;: key &#x5168;&#x96C6;&#x6570;&#x636E;&#x6570;&#x636E;&#x91CF;&#x7EA7;&#x8F83;&#x5C0F;&#xFF0C;&#x5E76;&#x4E14;&#x5B8C;&#x5168;&#x53EF;&#x9884;&#x6D4B;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x63D0;&#x524D;&#x586B;&#x5145;&#x7684;&#x65B9;&#x5F0F;&#x76F4;&#x63A5;&#x5C06;&#x6570;&#x636E;&#x7F13;&#x5B58;</p>
+<p>面对缓存穿透的情况,这类数据因为本来就不存在,所以最终请求到的结果也是空值,所以可以将对应的 key 直接存入缓存,value 相应设置为 null 或者空字符串(根据业务)</p>
+<p>为了保证这些缓存数据不会对后期真实存在了的数据数据造成影响,需要对这类缓存设置一个相对较短的过期时间,而且应该保证在真正的数据入库成功之后,将这些缓存失效</p>
+<p>因为这种方法在有效数据入库成功之后和使空值缓存失效之前,存在一定的时间差,还是可能造成一段时间的数据不一致</p>
+<p>而且将空值存入缓存也会占用缓存资源,造成内存浪费。如果遭受恶意攻击,将大量空值存入缓存,可能会将内存资源占满,造成缓存服务器一定时间无法访问</p>
+<p>这种解决方案的建议使用场景为: key 全集数据数据量级较小，并且完全可预测，可以通过提前填充的方式直接将数据缓存</p>
 <ul>
-<li>&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;(BloomFilter)</li>
+<li>布隆过滤器(BloomFilter)</li>
 </ul>
-<p>&#x672C;&#x8D28;&#x4E0A;&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;&#x662F;&#x4E00;&#x79CD;&#x6570;&#x636E;&#x7ED3;&#x6784;,&#x6BD4;&#x8F83;&#x5DE7;&#x5999;&#x7684;&#x6982;&#x7387;&#x578B;&#x6570;&#x636E;&#x7ED3;&#x6784;,&#x7279;&#x70B9;&#x662F;&#x9AD8;&#x6548;&#x5730;&#x63D2;&#x5165;&#x548C;&#x67E5;&#x8BE2;,&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x544A;&#x8BC9;&#x4F60;&#x201D;&#x67D0;&#x6837;&#x4E1C;&#x897F;&#x4E00;&#x5B9A;&#x4E0D;&#x5B58;&#x5728;&#x6216;&#x8005;&#x53EF;&#x80FD;&#x5B58;&#x5728;&#x201D;</p>
-<p>&#x76F8;&#x6BD4;&#x4E8E;&#x4F20;&#x7EDF;&#x7684; List&#x3001;Set&#x3001;Map &#x7B49;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x5B83;&#x66F4;&#x9AD8;&#x6548;&#x3001;&#x5360;&#x7528;&#x7A7A;&#x95F4;&#x66F4;&#x5C11;,&#x4F46;&#x662F;&#x7F3A;&#x70B9;&#x662F;&#x5176;&#x8FD4;&#x56DE;&#x7684;&#x7ED3;&#x679C;&#x662F;&#x6982;&#x7387;&#x6027;&#x7684;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x786E;&#x5207;&#x7684;</p>
-<p>&#x901A;&#x5E38;&#x628A;&#x6709;&#x6570;&#x636E;&#x7684; key &#x90FD;&#x653E;&#x5230; BloomFilter &#x4E2D;,&#x6BCF;&#x6B21;&#x67E5;&#x8BE2;&#x7684;&#x65F6;&#x5019;&#x90FD;&#x5148;&#x53BB; BloomFilter &#x5224;&#x65AD;,&#x5982;&#x679C;&#x6CA1;&#x6709;&#x5C31;&#x76F4;&#x63A5;&#x8FD4;&#x56DE;&#x7A7A;</p>
-<p>&#x7531;&#x4E8E;&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;&#x4E0D;&#x652F;&#x6301;&#x5220;&#x9664;&#x64CD;&#x4F5C;,&#x5BF9;&#x4E8E;&#x5220;&#x9664;&#x7684; key,&#x67E5;&#x8BE2;&#x5C31;&#x4F1A;&#x7ECF;&#x8FC7; BloomFilter &#x7136;&#x540E;&#x67E5;&#x8BE2;&#x7F13;&#x5B58;&#x518D;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x6240;&#x4EE5; BloomFilter &#x5EFA;&#x8BAE;&#x7ED3;&#x5408;&#x7F13;&#x5B58;&#x7A7A;&#x503C;&#x7528;,&#x5BF9;&#x4E8E;&#x5220;&#x9664;&#x7684; key,&#x53EF;&#x4EE5;&#x5728;&#x7F13;&#x5B58;&#x4E2D;&#x7F13;&#x5B58;&#x7A7A;</p>
-<p>&#x540C;&#x6837;&#x5B83;&#x4E5F;&#x4E0D;&#x652F;&#x6301;&#x6269;&#x5BB9;&#x64CD;&#x4F5C;,&#x8FD9;&#x5C31;&#x8981;&#x6C42;&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;&#x5EFA;&#x7ACB;&#x521D;&#x671F;&#x5FC5;&#x987B;&#x8FDB;&#x884C;&#x4E25;&#x683C;&#x7684;&#x63A8;&#x7B97;,&#x786E;&#x4FDD;&#x540E;&#x671F;&#x4E0D;&#x9700;&#x8981;&#x6269;&#x5BB9;,&#x5426;&#x5219;&#x91CD;&#x5EFA;&#x5E03;&#x9686;&#x8FC7;&#x6EE4;&#x5668;&#x7684;&#x6210;&#x672C;&#x53EF;&#x80FD;&#x4F1A;&#x8D85;&#x4E4E;&#x60F3;&#x8C61;</p>
-<h3 id="&#x7F13;&#x5B58;&#x51FB;&#x7A7F;&#x7684;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;"><a href="#&#x7F13;&#x5B58;&#x51FB;&#x7A7F;&#x7684;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;" class="headerlink" title="&#x7F13;&#x5B58;&#x51FB;&#x7A7F;&#x7684;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;"></a>&#x7F13;&#x5B58;&#x51FB;&#x7A7F;&#x7684;&#x4E00;&#x4E9B;&#x89E3;&#x51B3;&#x529E;&#x6CD5;</h3><ul>
-<li>&#x4E92;&#x65A5;&#x9501;(&#x72EC;&#x5360;&#x9501;)</li>
+<p>本质上布隆过滤器是一种数据结构,比较巧妙的概率型数据结构,特点是高效地插入和查询,可以用来告诉你”某样东西一定不存在或者可能存在”</p>
+<p>相比于传统的 List、Set、Map 等数据结构，它更高效、占用空间更少,但是缺点是其返回的结果是概率性的，而不是确切的</p>
+<p>通常把有数据的 key 都放到 BloomFilter 中,每次查询的时候都先去 BloomFilter 判断,如果没有就直接返回空</p>
+<p>由于布隆过滤器不支持删除操作,对于删除的 key,查询就会经过 BloomFilter 然后查询缓存再查询数据库,所以 BloomFilter 建议结合缓存空值用,对于删除的 key,可以在缓存中缓存空</p>
+<p>同样它也不支持扩容操作,这就要求布隆过滤器建立初期必须进行严格的推算,确保后期不需要扩容,否则重建布隆过滤器的成本可能会超乎想象</p>
+<h3 id="缓存击穿的一些解决办法"><a href="#缓存击穿的一些解决办法" class="headerlink" title="缓存击穿的一些解决办法"></a>缓存击穿的一些解决办法</h3><ul>
+<li>互斥锁(独占锁)</li>
 </ul>
-<p>&#x5728;&#x7F13;&#x5B58;&#x5931;&#x6548;&#x7684;&#x65F6;&#x5019;,&#x5E76;&#x4E0D;&#x76F4;&#x63A5;&#x53BB;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x800C;&#x662F;&#x8981;&#x62FF;&#x5230;&#x9501;,&#x7531;&#x6210;&#x529F;&#x62A2;&#x5360;&#x5230;&#x9501;&#x8D44;&#x6E90;&#x7684;&#x7EBF;&#x7A0B;&#x53BB;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x5E76;&#x66F4;&#x65B0;&#x56DE;&#x7F13;&#x5B58;,&#x66F4;&#x65B0;&#x7F13;&#x5B58;&#x6210;&#x529F;,&#x91CA;&#x653E;&#x9501;&#x8D44;&#x6E90;,&#x540E;&#x7EED;</p>
-<p>&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x7A7F;&#x8FC7;&#x7F13;&#x5B58;&#x53BB;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;,&#x9632;&#x6B62;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x5BF9;&#x7F13;&#x5B58;&#x8FDB;&#x884C;&#x91CD;&#x590D;&#x66F4;&#x65B0;&#x7684;&#x60C5;&#x51B5;&#x53D1;&#x751F;</p>
+<p>在缓存失效的时候,并不直接去查询数据库,而是要拿到锁,由成功抢占到锁资源的线程去查询数据库,并更新回缓存,更新缓存成功,释放锁资源,后续</p>
+<p>这样可以避免多个线程同时穿过缓存去查询数据库,防止多个线程对缓存进行重复更新的情况发生</p>
 
     </div>
 
@@ -322,7 +322,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="&amp;#x672C;&amp;#x7BC7;&amp;#x4E0D;&amp;#x5199;&amp;#x53C2;&amp;#x4E0E;&amp;#x8BD5;&amp;#x7528;&amp;#x65B9;&amp;#x6CD5;,&amp;#x53EA;&amp;#x8BB0;&amp;#x5F55;&amp;#x542F;&amp;#x52A8;&amp;#x5B9E;&amp;#x4F8B;&amp;#x4E4B;&amp;#x540E;&amp;#x505A;&amp;#x7684;&amp;#x4E00;&amp;#x7CFB;&amp;#x5217;&amp;#x64CD">
+  <meta name="description" content="本篇不写参与试用方法,只记录启动实例之后做的一系列操作,只要是 ubuntu-18.04 版本的系统都可以参考此操作流程 更新 aptapt-get update 安装 shadowsocks-libev因为服务器在东京,正好手头没有合适的梯子,不利用起来就是浪费">
 <meta name="keywords" content="liunx">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在亚马逊免费试用ubuntu">
 <meta property="og:url" content="http://yoursite.com/article/db8ef88b.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="&amp;#x672C;&amp;#x7BC7;&amp;#x4E0D;&amp;#x5199;&amp;#x53C2;&amp;#x4E0E;&amp;#x8BD5;&amp;#x7528;&amp;#x65B9;&amp;#x6CD5;,&amp;#x53EA;&amp;#x8BB0;&amp;#x5F55;&amp;#x542F;&amp;#x52A8;&amp;#x5B9E;&amp;#x4F8B;&amp;#x4E4B;&amp;#x540E;&amp;#x505A;&amp;#x7684;&amp;#x4E00;&amp;#x7CFB;&amp;#x5217;&amp;#x64CD">
+<meta property="og:description" content="本篇不写参与试用方法,只记录启动实例之后做的一系列操作,只要是 ubuntu-18.04 版本的系统都可以参考此操作流程 更新 aptapt-get update 安装 shadowsocks-libev因为服务器在东京,正好手头没有合适的梯子,不利用起来就是浪费">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2021-03-30T14:38:35.433Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在亚马逊免费试用ubuntu">
-<meta name="twitter:description" content="&amp;#x672C;&amp;#x7BC7;&amp;#x4E0D;&amp;#x5199;&amp;#x53C2;&amp;#x4E0E;&amp;#x8BD5;&amp;#x7528;&amp;#x65B9;&amp;#x6CD5;,&amp;#x53EA;&amp;#x8BB0;&amp;#x5F55;&amp;#x542F;&amp;#x52A8;&amp;#x5B9E;&amp;#x4F8B;&amp;#x4E4B;&amp;#x540E;&amp;#x505A;&amp;#x7684;&amp;#x4E00;&amp;#x7CFB;&amp;#x5217;&amp;#x64CD">
+<meta name="twitter:description" content="本篇不写参与试用方法,只记录启动实例之后做的一系列操作,只要是 ubuntu-18.04 版本的系统都可以参考此操作流程 更新 aptapt-get update 安装 shadowsocks-libev因为服务器在东京,正好手头没有合适的梯子,不利用起来就是浪费">
 
 <link rel="canonical" href="http://yoursite.com/article/db8ef88b.html">
 
@@ -192,35 +192,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>&#x672C;&#x7BC7;&#x4E0D;&#x5199;&#x53C2;&#x4E0E;&#x8BD5;&#x7528;&#x65B9;&#x6CD5;,&#x53EA;&#x8BB0;&#x5F55;&#x542F;&#x52A8;&#x5B9E;&#x4F8B;&#x4E4B;&#x540E;&#x505A;&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x64CD;&#x4F5C;,&#x53EA;&#x8981;&#x662F; ubuntu-18.04 &#x7248;&#x672C;&#x7684;&#x7CFB;&#x7EDF;&#x90FD;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x6B64;&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;</p>
-<h3 id="&#x66F4;&#x65B0;-apt"><a href="#&#x66F4;&#x65B0;-apt" class="headerlink" title="&#x66F4;&#x65B0; apt"></a>&#x66F4;&#x65B0; apt</h3><p><code>apt-get update</code></p>
-<h3 id="&#x5B89;&#x88C5;-shadowsocks-libev"><a href="#&#x5B89;&#x88C5;-shadowsocks-libev" class="headerlink" title="&#x5B89;&#x88C5; shadowsocks-libev"></a>&#x5B89;&#x88C5; shadowsocks-libev</h3><p>&#x56E0;&#x4E3A;&#x670D;&#x52A1;&#x5668;&#x5728;&#x4E1C;&#x4EAC;,&#x6B63;&#x597D;&#x624B;&#x5934;&#x6CA1;&#x6709;&#x5408;&#x9002;&#x7684;&#x68AF;&#x5B50;,&#x4E0D;&#x5229;&#x7528;&#x8D77;&#x6765;&#x5C31;&#x662F;&#x6D6A;&#x8D39;</p>
-<p>1.&#x51C6;&#x5907;&#x7F16;&#x8BD1;&#x73AF;&#x5883;</p>
+        <p>本篇不写参与试用方法,只记录启动实例之后做的一系列操作,只要是 ubuntu-18.04 版本的系统都可以参考此操作流程</p>
+<h3 id="更新-apt"><a href="#更新-apt" class="headerlink" title="更新 apt"></a>更新 apt</h3><p><code>apt-get update</code></p>
+<h3 id="安装-shadowsocks-libev"><a href="#安装-shadowsocks-libev" class="headerlink" title="安装 shadowsocks-libev"></a>安装 shadowsocks-libev</h3><p>因为服务器在东京,正好手头没有合适的梯子,不利用起来就是浪费</p>
+<p>1.准备编译环境</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apt install --no-install-recommends build-essential autoconf libtool \</span><br><span class="line">    libssl-dev gawk debhelper dh-systemd init-system-helpers pkg-config asciidoc \</span><br><span class="line">    xmlto apg libpcre3-dev zlib1g-dev libev-dev libudns-dev libsodium-dev \</span><br><span class="line">    libmbedtls-dev libc-ares-dev automake</span><br></pre></td></tr></table></figure>
 
-<p>2.&#x5B89;&#x88C5; git</p>
+<p>2.安装 git</p>
 <p><code>apt install git -y</code></p>
-<p>3.&#x83B7;&#x53D6;&#x6E90;&#x7801;&#x5E76;&#x7F16;&#x8BD1;</p>
-<p>&#x9996;&#x5148;&#x8981;&#x8FDB;&#x5165;&#x5230;&#x4F60;&#x60F3;&#x8981;&#x4FDD;&#x5B58;&#x6E90;&#x7801;&#x7684;&#x76EE;&#x5F55;,&#x6BD4;&#x5982;/usr/local/xxx(&#x81EA;&#x5DF1;&#x5EFA;&#x7684;&#x6587;&#x4EF6;&#x5939;)</p>
+<p>3.获取源码并编译</p>
+<p>首先要进入到你想要保存源码的目录,比如/usr/local/xxx(自己建的文件夹)</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/shadowsocks/shadowsocks-libev.git</span><br><span class="line">cd shadowsocks-libev</span><br><span class="line">git submodule update --init</span><br><span class="line">./autogen.sh &amp;&amp; ./configure --disable-documentation &amp;&amp; make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
 
-<p>4.&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
+<p>4.创建配置文件</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /etc/shadowsocks-libev</span><br><span class="line">sudo vim /etc/shadowsocks-libev/config.json</span><br></pre></td></tr></table></figure>
 
-<p>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5185;&#x5BB9;,&#x8BB0;&#x5F97;&#x4FEE;&#x6539;&#x5BC6;&#x7801;</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="attr">&quot;server&quot;</span>: <span class="string">&quot;0.0.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;server_port&quot;</span>: <span class="number">8388</span>,</span><br><span class="line">  <span class="attr">&quot;local_port&quot;</span>: <span class="number">1080</span>,</span><br><span class="line">  <span class="attr">&quot;password&quot;</span>: <span class="string">&quot;password&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;timeout&quot;</span>: <span class="number">600</span>,</span><br><span class="line">  <span class="attr">&quot;method&quot;</span>: <span class="string">&quot;aes-256-cfb&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;fast_open&quot;</span>: <span class="literal">false</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>配置文件内容,记得修改密码</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"server"</span>: <span class="string">"0.0.0.0"</span>,</span><br><span class="line">  <span class="attr">"server_port"</span>: <span class="number">8388</span>,</span><br><span class="line">  <span class="attr">"local_port"</span>: <span class="number">1080</span>,</span><br><span class="line">  <span class="attr">"password"</span>: <span class="string">"password"</span>,</span><br><span class="line">  <span class="attr">"timeout"</span>: <span class="number">600</span>,</span><br><span class="line">  <span class="attr">"method"</span>: <span class="string">"aes-256-cfb"</span>,</span><br><span class="line">  <span class="attr">"fast_open"</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>5.&#x521B;&#x5EFA; Shadowsocks-libev.service &#x914D;&#x7F6E;&#x6587;&#x4EF6;,&#x7528;&#x4E8E;&#x914D;&#x7F6E;&#x670D;&#x52A1;&#x542F;&#x52A8;</p>
+<p>5.创建 Shadowsocks-libev.service 配置文件,用于配置服务启动</p>
 <p><code>sudo vim /etc/systemd/system/shadowsocks-libev.service</code></p>
-<p>&#x5185;&#x5BB9;&#x5982;&#x4E0B;:</p>
+<p>内容如下:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Shadowsocks-libev Server</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">ExecStart=/usr/local/bin/ss-server -c /etc/shadowsocks-libev/config.json -u</span><br><span class="line">Restart=on-abort</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
 
-<p>6.&#x542F;&#x52A8;&#x670D;&#x52A1;</p>
+<p>6.启动服务</p>
 <p><code>sudo systemctl start shadowsocks-libev</code></p>
-<p>7.&#x914D;&#x7F6E;&#x5F00;&#x673A;&#x542F;&#x52A8;</p>
+<p>7.配置开机启动</p>
 <p><code>sudo systemctl enable shadowsocks-libev</code></p>
-<p>&#x81F3;&#x6B64;,&#x914D;&#x7F6E;&#x5B8C;&#x6210;,&#x81EA;&#x5DF1;&#x627E;&#x627E;&#x5BA2;&#x6237;&#x7AEF;&#x8FDB;&#x884C;&#x8FDE;&#x63A5;,&#x4E0A;&#x7F51;&#x51B2;&#x6D6A;&#x5427;(&#x8BB0;&#x5F97;&#x5F00;&#x653E;&#x5B89;&#x5168;&#x7EC4;&#x7AEF;&#x53E3;&#x5662;)</p>
-<h3 id="&#x672A;&#x5B8C;&#x5F85;&#x7EED;"><a href="#&#x672A;&#x5B8C;&#x5F85;&#x7EED;" class="headerlink" title="&#x672A;&#x5B8C;&#x5F85;&#x7EED;"></a>&#x672A;&#x5B8C;&#x5F85;&#x7EED;</h3>
+<p>至此,配置完成,自己找找客户端进行连接,上网冲浪吧(记得开放安全组端口噢)</p>
+<h3 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h3>
     </div>
 
     
@@ -318,7 +318,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
