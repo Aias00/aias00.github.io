@@ -456,7 +456,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-06 22:13:53" itemprop="dateModified" datetime="2021-04-06T22:13:53+08:00">2021-04-06</time>
+                <time title="修改时间：2021-04-08 21:46:28" itemprop="dateModified" datetime="2021-04-08T21:46:28+08:00">2021-04-08</time>
               </span>
 
           
@@ -470,10 +470,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="redis-为什么这么快"><a href="#redis-为什么这么快" class="headerlink" title="redis 为什么这么快"></a>redis 为什么这么快</h2><p>1.采用了 IO 多路复用非阻塞 IO</p>
-<p>2.数据结构简单,操作节省时间</p>
-<p>3.运行在内存中</p>
-<p>4.单线程,省去了上下文切换的消耗,CPU 利用率高</p>
+          <h2 id="redis-数据丢失"><a href="#redis-数据丢失" class="headerlink" title="redis 数据丢失"></a>redis 数据丢失</h2><h3 id="Redis-哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失"><a href="#Redis-哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失" class="headerlink" title="Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失"></a>Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失</h3><h3 id="异步复制数据导致的数据丢失"><a href="#异步复制数据导致的数据丢失" class="headerlink" title="异步复制数据导致的数据丢失"></a>异步复制数据导致的数据丢失</h3><p>主节点异步同步数据给备用节点的过程中，主节点宕机了，导致有部分数据未同步到备用节点。而这个从节点又被选举为主节点，这时候就会有部分数据丢失</p>
+<h3 id="脑裂导致的数据丢失"><a href="#脑裂导致的数据丢失" class="headerlink" title="脑裂导致的数据丢失"></a>脑裂导致的数据丢失</h3>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/article/8df47b3e.html#more" rel="contents">
