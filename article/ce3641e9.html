@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="synchronized 和 ReentrantLock 区别 都是可重入锁  synchronized 是 JVM 层面的锁，是 java 关键字，Reentrantlock 是 lock 接口的实现，是 API 层面的锁  Reentrantlock 显式获得锁，释放锁，synchronized 隐式获取锁，释放锁  ReentrantLock 可响应中断，synchronized 是不可以响">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-11T08:08:37.251Z">
+<meta property="og:updated_time" content="2021-04-11T08:17:00.986Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="锁面试知识点(持续更新)">
 <meta name="twitter:description" content="synchronized 和 ReentrantLock 区别 都是可重入锁  synchronized 是 JVM 层面的锁，是 java 关键字，Reentrantlock 是 lock 接口的实现，是 API 层面的锁  Reentrantlock 显式获得锁，释放锁，synchronized 隐式获取锁，释放锁  ReentrantLock 可响应中断，synchronized 是不可以响">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-11 16:08:37" itemprop="dateModified" datetime="2021-04-11T16:08:37+08:00">2021-04-11</time>
+                <time title="修改时间：2021-04-11 16:17:00" itemprop="dateModified" datetime="2021-04-11T16:17:00+08:00">2021-04-11</time>
               </span>
 
           
@@ -315,11 +315,16 @@
 <h5 id="轻量级锁加锁流程"><a href="#轻量级锁加锁流程" class="headerlink" title="轻量级锁加锁流程"></a>轻量级锁加锁流程</h5><p>轻量级锁加锁的前提是锁对象不能带有偏向特征;加锁的过程可分为两种情况来讨论:一种是无锁状态(锁标志位为 01，偏向标志位为 00)，可直接尝试加锁;另一种是有锁状态，需要检查是否为当前线程持有的锁;</p>
 <p>无锁状态下可以直接加锁，流程:</p>
 <ul>
-<li>1.线程在自己的栈帧中创建锁记录 LockRecord</li>
-<li>2.线程将 MarkWord 拷贝到线程栈的 LockRecord 中，官方称之为 Displaced Mark Word</li>
-<li>3.将 LockRecord 中的 Owner 指针指向加锁的对象(存放对象地址)</li>
-<li>4.将锁对象的对象头的 MarkWord 替换为指向锁记录的指针</li>
-<li>5.锁标志位变成 00，表示轻量级锁</li>
+<li><p>1.线程在自己当前的栈帧中创建用于存储锁记录的空间 LockRecord</p>
+</li>
+<li><p>2.线程将 MarkWord 拷贝到线程栈的 LockRecord 中，官方称之为 Displaced Mark Word</p>
+</li>
+<li><p>3.将 LockRecord 中的 Owner 指针指向加锁的对象(存放对象地址)</p>
+</li>
+<li><p>4.CAS 将锁对象的对象头的 Mark Word 替换为指向锁记录的指针，如果成功，当前线程获取到锁，如果失败，表示其他线程竞争锁，当前线程便尝试自旋获取锁。</p>
+</li>
+<li><p>5.锁标志位变成 00，表示轻量级锁</p>
+</li>
 </ul>
 <p>有锁状态下，如果是当前线程持有的锁，说明是重入，不需要争抢锁，会在栈帧中创建 Displaced Mark Word 为空的 Lock Record，用来记录锁的重入次数<br>如果不是当前线程持有的锁，就要升级为重量级锁;</p>
 <h5 id="轻量级锁解锁"><a href="#轻量级锁解锁" class="headerlink" title="轻量级锁解锁"></a>轻量级锁解锁</h5><p>使用 CAS 操作将当前线程栈帧中的 Displaced Mark Word 替换回锁对象头中，替换成功则解锁成功;替换失败则膨胀成重量级锁之后再解锁</p>
