@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="synchronized 和 ReentrantLock 区别 都是可重入锁  synchronized 是 JVM 层面的锁,是 java 关键字,Reentrantlock 是 lock 接口的实现,是 API 层面的锁  Reentrantlock 显式获得锁,释放锁,synchronized 隐式获取锁,释放锁  ReentrantLock 可响应中断,synchronized 是不可以响">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-11T07:30:13.201Z">
+<meta property="og:updated_time" content="2021-04-11T07:31:46.799Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="锁面试知识点(持续更新)">
 <meta name="twitter:description" content="synchronized 和 ReentrantLock 区别 都是可重入锁  synchronized 是 JVM 层面的锁,是 java 关键字,Reentrantlock 是 lock 接口的实现,是 API 层面的锁  Reentrantlock 显式获得锁,释放锁,synchronized 隐式获取锁,释放锁  ReentrantLock 可响应中断,synchronized 是不可以响">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-11 15:30:13" itemprop="dateModified" datetime="2021-04-11T15:30:13+08:00">2021-04-11</time>
+                <time title="修改时间：2021-04-11 15:31:46" itemprop="dateModified" datetime="2021-04-11T15:31:46+08:00">2021-04-11</time>
               </span>
 
           
@@ -268,7 +268,7 @@
 </li>
 </ul>
 <h3 id="synchronized-锁升级及撤销"><a href="#synchronized-锁升级及撤销" class="headerlink" title="synchronized 锁升级及撤销"></a>synchronized 锁升级及撤销</h3><h4 id="1-无锁"><a href="#1-无锁" class="headerlink" title="1.无锁"></a>1.无锁</h4><p>无锁状态不可偏向也未偏向任何线程,不可变为偏向锁;</p>
-<h4 id="2-偏向锁"><a href="#2-偏向锁" class="headerlink" title="2.偏向锁"></a>2.偏向锁</h4><h5 id="偏向锁概念"><a href="#偏向锁概念" class="headerlink" title="偏向锁概念"></a>偏向锁概念</h5><p>偏向锁会偏向于第一个获得它的线程,会在对象头和栈帧中的锁记录里存储锁偏向的 ThreadId,以后该线程进入和退出同步块只需要检查是否为偏向锁,锁标志,以及 ThreadId 即可;</p>
+<h4 id="2-偏向锁"><a href="#2-偏向锁" class="headerlink" title="2.偏向锁"></a>2.偏向锁</h4><h5 id="偏向锁概念"><a href="#偏向锁概念" class="headerlink" title="偏向锁概念"></a>偏向锁概念</h5><p>偏向锁会偏向于第一个获得它的线程,会在对象头和栈帧中的锁记录里存储锁偏向的 ThreadId,以后该线程进入和退出同步块不需要进行 CAS 操作进行加锁和解锁，只需要简单地测试以下对象头的 Mark Word 里是否存储着指向当前线程的偏向锁。</p>
 <p>不过一旦出现多个线程竞争时必须撤销偏向锁,所以撤销偏向锁性能的消耗必须小于之前节省下来的 CAS 原子操作的性能消耗,不然就得不偿失了</p>
 <h5 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h5><ul>
 <li><p>虚拟机会把对象头的偏向锁标志设为 01,即偏向模式</p>
