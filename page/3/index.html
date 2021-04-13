@@ -150,6 +150,90 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/4004f64d.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/4004f64d.html" class="post-title-link" itemprop="url">事务相关面试知识点(持续更新)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-13 09:42:01" itemprop="dateCreated datePublished" datetime="2021-03-13T09:42:01+08:00">2021-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:15:11" itemprop="dateModified" datetime="2021-04-06T22:15:11+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-什么是事务"><a href="#1-什么是事务" class="headerlink" title="1.什么是事务"></a>1.什么是事务</h3><p>事务是访问数据库的一个操作序列，数据库应用系统通过事务来完成对数据库的存取。事务的正确执行使得数据库从一个状态转换为另一个状态</p>
+<p>事务有 ACID 的原则：</p>
+<ul>
+<li><p>原子性(atomicity):即不可分割,事务要么全部被执行,要么全部不被执行,如果事务中所有的子事务全部提交成功,则所有的数据库操作都被提交,数据库状态会发生变化;如果有子事务失败,则其他子事务的数据库操作全部被回滚,数据库回到执行事务之前的状态,不回发生状态变化</p>
+</li>
+<li><p>一致性(consistency):事务的执行使数据库从一种正确状态转换为另一种正确状态</p>
+</li>
+<li><p>隔离性(isolation):在事务正常提交之前,不允许把该事务对数据库数据的任何改变提供给其他事务,即在事务正确提交之前,它可能的结果对其他事务不可见</p>
+</li>
+<li><p>持久性(durability):事务正确提交之后,其结果将永远保存在数据库中,即使在事务提交之后有了其他故障,事务的处理结果也会得到保存</p>
+</li>
+</ul>
+<h3 id="2-并发下事务会产生的问题"><a href="#2-并发下事务会产生的问题" class="headerlink" title="2.并发下事务会产生的问题"></a>2.并发下事务会产生的问题</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/4004f64d.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/4ca75bdb.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +345,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-11 16:17:00" itemprop="dateModified" datetime="2021-04-11T16:17:00+08:00">2021-04-11</time>
+                <time title="修改时间：2021-04-12 17:53:45" itemprop="dateModified" datetime="2021-04-12T17:53:45+08:00">2021-04-12</time>
               </span>
 
           
@@ -282,7 +366,7 @@
 </li>
 <li><p>Reentrantlock 显式获得锁，释放锁，synchronized 隐式获取锁，释放锁</p>
 </li>
-<li><p>ReentrantLock 可响应中断，synchronized 是不可以响应中断的，等待的线程会一直等待</p>
+<li><p>ReentrantLock 可响应中断，synchronized 是不可以响应中断的，阻塞的线程会一直阻塞</p>
 </li>
 <li><p>synchronized 的实现涉及到锁的升级，是同步阻塞，ReentrantLock 通过利用 CAS 自旋机制保证线程操作的原子性和 volatile 保证数据可见性，非同步阻塞，采用的是乐观并发策略</p>
 </li>
@@ -290,19 +374,17 @@
 </li>
 <li><p>ReentrantLock 可以通过 Condition 绑定多个条件</p>
 </li>
-<li><p>synchronized 在发生异常时，会自动释放线程占有锁，因此不会导致死锁现象，而 ReentrantLock 需要主动释放锁才能避免死锁</p>
+<li><p>synchronized 在发生异常时，会自动释放线程占有的锁，因此不会导致死锁现象，而 ReentrantLock 需要主动释放锁才能避免死锁</p>
 </li>
 <li><p>ReentrantLock 可以知道有没有成功获取锁，synchronized 不能</p>
 </li>
 <li><p>synchronized 锁的是对象，锁是保存到对象头里面的，根据对象头数据来标识是否有线程获得锁/争抢锁，ReentrantLock 锁的是线程，根据进入的线程和 int 类型的 state 标识锁的获得/争抢</p>
 </li>
-<li><p>ReentrantLock 拓展功能更强大</p>
-</li>
 </ul>
 <h3 id="synchronized-保证了那些特性"><a href="#synchronized-保证了那些特性" class="headerlink" title="synchronized 保证了那些特性"></a>synchronized 保证了那些特性</h3><ul>
 <li><p>原子性: 确保线程互斥地访问同步代码</p>
 </li>
-<li><p>可见性: 保证共享变量的修改对其他线程可见.线程加锁时，将清空工作内存中共享变量的值，从而使用共享变量时需要从主内存中获取最新的值;线程解锁前，必须把共享变量中的值刷新到主内存中;</p>
+<li><p>可见性: 保证共享变量的修改对其他线程可见。线程加锁时，将清空工作内存中共享变量的值，从而使用共享变量时需要从主内存中获取最新的值。线程解锁前，必须把共享变量中的值刷新到主内存中。</p>
 </li>
 <li><p>有序性: 对一个监视器锁的释放操作先行发生于后面对该监视器锁的获取操作(happens-before)</p>
 </li>
@@ -884,81 +966,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/db8ef88b.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="hongyu liu">
-      <meta itemprop="description" content="保持好奇，保持热爱">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hongyu`s blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/article/db8ef88b.html" class="post-title-link" itemprop="url">在亚马逊免费试用ubuntu</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-12 10:08:58" itemprop="dateCreated datePublished" datetime="2020-12-12T10:08:58+08:00">2020-12-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-06 22:00:17" itemprop="dateModified" datetime="2021-04-06T22:00:17+08:00">2021-04-06</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本篇不写参与试用方法,只记录启动实例之后做的一系列操作,只要是 ubuntu-18.04 版本的系统都可以参考此操作流程</p>
-<h3 id="更新-apt"><a href="#更新-apt" class="headerlink" title="更新 apt"></a>更新 apt</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br></pre></td></tr></table></figure>
-
-<h3 id="安装-shadowsocks-libev"><a href="#安装-shadowsocks-libev" class="headerlink" title="安装 shadowsocks-libev"></a>安装 shadowsocks-libev</h3><p>因为服务器在东京,正好手头没有合适的梯子,不利用起来就是浪费</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/article/db8ef88b.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1029,7 +1036,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
