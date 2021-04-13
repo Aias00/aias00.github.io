@@ -150,6 +150,73 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/df4728df.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/df4728df.html" class="post-title-link" itemprop="url">java面试知识点(持续更新)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-27 17:17:40" itemprop="dateCreated datePublished" datetime="2021-03-27T17:17:40+08:00">2021-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:12:13" itemprop="dateModified" datetime="2021-04-06T22:12:13+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="finally-什么时候执行"><a href="#finally-什么时候执行" class="headerlink" title="finally 什么时候执行"></a>finally 什么时候执行</h3><p>1.finally 语句在 return 语句执行之后,return 返回之前执行的</p>
+<p>2.finally 中的 return 语句会覆盖 try 中的 return 语句</p>
+<p>3.finally 里的修改语句可能影响也可能不影响 try 或 catch 里 return 已经确定的返回值</p>
+<h3 id="static-private-final-static-哪些是线程安全的"><a href="#static-private-final-static-哪些是线程安全的" class="headerlink" title="static/private/final static 哪些是线程安全的"></a>static/private/final static 哪些是线程安全的</h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/adbddb32.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -820,89 +887,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/f72b9de4.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="hongyu liu">
-      <meta itemprop="description" content="保持好奇，保持热爱">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hongyu`s blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/article/f72b9de4.html" class="post-title-link" itemprop="url">代理模式面试知识点(持续更新)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-13 11:04:15" itemprop="dateCreated datePublished" datetime="2021-03-13T11:04:15+08:00">2021-03-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-06 22:13:17" itemprop="dateModified" datetime="2021-04-06T22:13:17+08:00">2021-04-06</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-代理模式概念"><a href="#1-代理模式概念" class="headerlink" title="1.代理模式概念"></a>1.代理模式概念</h3><p>为某个对象提供一个代理,以控制这个对象的访问;代理类负责为委托类预处理消息,过滤消息并转发消息,以及进行消息被委托类执行后的后续处理</p>
-<p>通过代理类,能有效控制对委托类对象的直接访问,也可以很好的隐藏和保护委托类对象,同时也为实施不同控制策略预留了空间,从而在设计上获得了更大的灵活性</p>
-<h3 id="2-静态代理和动态代理的区别"><a href="#2-静态代理和动态代理的区别" class="headerlink" title="2.静态代理和动态代理的区别"></a>2.静态代理和动态代理的区别</h3><ul>
-<li><p>静态代理要求委托类和代理类都实现同一个接口,代理对象的一个接口只服务于一种类型的对象</p>
-</li>
-<li><p>静态代理中代理类在编译期就已经确定,而动态代理则是运行期间动态生成</p>
-</li>
-<li><p>静态代理的效率相对来说更高一些,但是代码冗余大,一旦需要修改接口,代理类和委托类都需要修改</p>
-</li>
-<li><p>动态代理依靠反射来生成代理类</p>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/article/f72b9de4.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -973,7 +957,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

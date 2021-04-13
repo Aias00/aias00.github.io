@@ -150,6 +150,75 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/201b20ca.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/201b20ca.html" class="post-title-link" itemprop="url">redis性能优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-13 16:58:55 / 修改时间：17:38:39" itemprop="dateCreated datePublished" datetime="2021-04-13T16:58:55+08:00">2021-04-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈</p>
+<h3 id="优化网络延时"><a href="#优化网络延时" class="headerlink" title="优化网络延时"></a>优化网络延时</h3><p>redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令，客户端和 redis 的多个请求就如下图：</p>
+<p><img data-src="https://i.loli.net/2021/04/13/nY7z1mQFTS5AXcj.png" alt="2021-04-13-17-17-4020210413171739"></p>
+<p>（备注：如果要发送的 key 不是特别长，一个 TCP 包完全能放的下 redis 指令，所以只画了一个 push 包）</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/201b20ca.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/3ad60b.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -817,73 +886,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/df4728df.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="hongyu liu">
-      <meta itemprop="description" content="保持好奇，保持热爱">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hongyu`s blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/article/df4728df.html" class="post-title-link" itemprop="url">java面试知识点(持续更新)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-27 17:17:40" itemprop="dateCreated datePublished" datetime="2021-03-27T17:17:40+08:00">2021-03-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-06 22:12:13" itemprop="dateModified" datetime="2021-04-06T22:12:13+08:00">2021-04-06</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="finally-什么时候执行"><a href="#finally-什么时候执行" class="headerlink" title="finally 什么时候执行"></a>finally 什么时候执行</h3><p>1.finally 语句在 return 语句执行之后,return 返回之前执行的</p>
-<p>2.finally 中的 return 语句会覆盖 try 中的 return 语句</p>
-<p>3.finally 里的修改语句可能影响也可能不影响 try 或 catch 里 return 已经确定的返回值</p>
-<h3 id="static-private-final-static-哪些是线程安全的"><a href="#static-private-final-static-哪些是线程安全的" class="headerlink" title="static/private/final static 哪些是线程安全的"></a>static/private/final static 哪些是线程安全的</h3>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -954,7 +956,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

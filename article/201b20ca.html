@@ -21,18 +21,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="保持好奇，保持热爱">
-<meta property="og:type" content="website">
-<meta property="og:title" content="hongyu`s blog">
-<meta property="og:url" content="http://yoursite.com/archives/2021/04/index.html">
+  <meta name="description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis性能优化">
+<meta property="og:url" content="http://yoursite.com/article/201b20ca.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="保持好奇，保持热爱">
+<meta property="og:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-13T09:38:39.645Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hongyu`s blog">
-<meta name="twitter:description" content="保持好奇，保持热爱">
+<meta name="twitter:title" content="redis性能优化">
+<meta name="twitter:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令">
 
-<link rel="canonical" href="http://yoursite.com/archives/2021/04/">
+<link rel="canonical" href="http://yoursite.com/article/201b20ca.html">
 
 
 <script id="page-configurations">
@@ -40,12 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | hongyu`s blog</title>
+  <title>redis性能优化 | hongyu`s blog</title>
   
 
 
@@ -144,191 +146,107 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">还行! 目前共计 44 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/201b20ca.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis性能优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-13 16:58:55 / 修改时间：17:38:39" itemprop="dateCreated datePublished" datetime="2021-04-13T16:58:55+08:00">2021-04-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-13T16:58:55+08:00"
-              content="2021-04-13">
-          04-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/201b20ca.html" itemprop="url">
-            <span itemprop="name">redis性能优化</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-12T15:14:34+08:00"
-              content="2021-04-12">
-          04-12
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/3ad60b.html" itemprop="url">
-            <span itemprop="name">cas</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-09T16:05:01+08:00"
-              content="2021-04-09">
-          04-09
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/edea11bc.html" itemprop="url">
-            <span itemprop="name">synchronized</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-07T22:15:29+08:00"
-              content="2021-04-07">
-          04-07
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/a292cba5.html" itemprop="url">
-            <span itemprop="name">mq专题</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-07T22:14:47+08:00"
-              content="2021-04-07">
-          04-07
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/29e3bd78.html" itemprop="url">
-            <span itemprop="name">分布式专题</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-07T16:42:15+08:00"
-              content="2021-04-07">
-          04-07
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/7d4d786a.html" itemprop="url">
-            <span itemprop="name">map专题</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-06T21:55:14+08:00"
-              content="2021-04-06">
-          04-06
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/d1c9f364.html" itemprop="url">
-            <span itemprop="name">sql优化专题</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-06T15:37:45+08:00"
-              content="2021-04-06">
-          04-06
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/article/d1722f66.html" itemprop="url">
-            <span itemprop="name">volatile关键字面试知识点（持续更新）</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
+        <p>redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈</p>
+<h3 id="优化网络延时"><a href="#优化网络延时" class="headerlink" title="优化网络延时"></a>优化网络延时</h3><p>redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令，客户端和 redis 的多个请求就如下图：</p>
+<p><img data-src="https://i.loli.net/2021/04/13/nY7z1mQFTS5AXcj.png" alt="2021-04-13-17-17-4020210413171739"></p>
+<p>（备注：如果要发送的 key 不是特别长，一个 TCP 包完全能放的下 redis 指令，所以只画了一个 push 包）</p>
+<p>这样两次请求中，客户端都要经历一段网络传输时间</p>
+<h4 id="合并请求"><a href="#合并请求" class="headerlink" title="合并请求"></a>合并请求</h4><p>但如果有可能，完全可以使用 <strong>multi-key</strong> 类的指令来合并请求，比如两个 GET key 可以用 MGET key1 key2 合并。这样在实际通讯中，请求次数也减少了，延时自然减少了</p>
+<p>如果不能用 multi-key 指令来合并，比如一个 SET，一个 GET，无法合并，还有以下解决办法：</p>
+<ul>
+<li>MULTI/EXEC</li>
+</ul>
+<p>构建事务，可以合并多个指令为一个 request，通讯过程如下：</p>
+<p><img data-src="https://i.loli.net/2021/04/13/wqOlXuDyJpZ5gvE.png" alt="2021-04-13-17-26-1620210413172616"></p>
+<ul>
+<li>script</li>
+</ul>
+<p>最好利用缓存脚本的 <strong>sha1 hash key</strong> 来调起脚本，这样通讯量更小</p>
+<p>以上两种解决方案要求这个 <strong>transaction/script</strong> 中涉及的 key 在同一个 node 上，所以要酌情考虑</p>
+<h4 id="合并-response"><a href="#合并-response" class="headerlink" title="合并 response"></a>合并 response</h4><p>如果没有办法合并多个请求，还可以考虑合并多个 responses，比如把两个回复信息合并：</p>
+<p><img data-src="https://i.loli.net/2021/04/13/jpeSKcwoFd4yGnQ.png" alt="2021-04-13-17-33-3220210413173331"></p>
+<p>这样，理论上可以省去一次回复所用的网络传输时间，这就是 <strong>pipeline</strong> 的功能</p>
+<p>不是任意多个回复信息都可以放进一个 TCP 包中，如果请求数太多，回复的数据很长（比如 get 一个长字符串），TCP 还是会分包传输，但是使用 pipeline，依然可以减少传输次数</p>
+<p>pipeline 和上面其他的方法都不一样的是，它不具有原子性。所以在 cluster 状态下的集群，pipeline 更容易实现</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><ol>
+<li>使用 unix 进程间通信，如果单机部署</li>
+<li>使用 multi-key 指令合并多个指令，减少请求数</li>
+<li>使用 transaction、script 合并 requests 以及 responses</li>
+<li>使用 pipeline 合并 response</li>
+</ol>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/3ad60b.html" rel="prev" title="cas">
+      <i class="fa fa-chevron-left"></i> cas
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
@@ -381,6 +299,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#优化网络延时"><span class="nav-number">1.</span> <span class="nav-text">优化网络延时</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#合并请求"><span class="nav-number">1.1.</span> <span class="nav-text">合并请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#合并-response"><span class="nav-number">1.2.</span> <span class="nav-text">合并 response</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">1.3.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
