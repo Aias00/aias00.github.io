@@ -21,20 +21,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="事故描述公司的硬件设备和设备网关服务是以 TCP 长连接方式通讯的,网关服务用到了 Netty 前段时间突然线上一批新的设备集体离线, 查看设备网关发现网关进程的 netstat 存在大量的 CLOSE_WAIT 状态连接 第一时间重启了设备网关,很快设备正常上线了,观察一段时间之后发现又开始陆续出现 CLOSE_WAIT 状态的连接 分析原因">
-<meta name="keywords" content="ossClient,CLOSE_WAIT,线上问题">
+  <meta name="description" content="之前在网上看到一个面试题目：synchronzied 最好的锁对象是什么 当时第一反应是 new Object，但是后来看到这篇文章：Object vs byte[0] as lock 大意就是 new byte[0]作为锁对象会更好，能够减少字节码操作的次数 下面来验证一下 1234567public class ObjectSynchronizedDemo &amp;#123;    private">
+<meta name="keywords" content="synchronized">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Aliyun OssClient的错误案例">
-<meta property="og:url" content="http://yoursite.com/article/f2cdca07.html">
+<meta property="og:title" content="synchronized最好的锁对象">
+<meta property="og:url" content="http://yoursite.com/article/b56d6cb5.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="事故描述公司的硬件设备和设备网关服务是以 TCP 长连接方式通讯的,网关服务用到了 Netty 前段时间突然线上一批新的设备集体离线, 查看设备网关发现网关进程的 netstat 存在大量的 CLOSE_WAIT 状态连接 第一时间重启了设备网关,很快设备正常上线了,观察一段时间之后发现又开始陆续出现 CLOSE_WAIT 状态的连接 分析原因">
+<meta property="og:description" content="之前在网上看到一个面试题目：synchronzied 最好的锁对象是什么 当时第一反应是 new Object，但是后来看到这篇文章：Object vs byte[0] as lock 大意就是 new byte[0]作为锁对象会更好，能够减少字节码操作的次数 下面来验证一下 1234567public class ObjectSynchronizedDemo &amp;#123;    private">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-07T08:43:39.671Z">
+<meta property="og:updated_time" content="2021-04-19T02:22:34.097Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用Aliyun OssClient的错误案例">
-<meta name="twitter:description" content="事故描述公司的硬件设备和设备网关服务是以 TCP 长连接方式通讯的,网关服务用到了 Netty 前段时间突然线上一批新的设备集体离线, 查看设备网关发现网关进程的 netstat 存在大量的 CLOSE_WAIT 状态连接 第一时间重启了设备网关,很快设备正常上线了,观察一段时间之后发现又开始陆续出现 CLOSE_WAIT 状态的连接 分析原因">
+<meta name="twitter:title" content="synchronized最好的锁对象">
+<meta name="twitter:description" content="之前在网上看到一个面试题目：synchronzied 最好的锁对象是什么 当时第一反应是 new Object，但是后来看到这篇文章：Object vs byte[0] as lock 大意就是 new byte[0]作为锁对象会更好，能够减少字节码操作的次数 下面来验证一下 1234567public class ObjectSynchronizedDemo &amp;#123;    private">
 
-<link rel="canonical" href="http://yoursite.com/article/f2cdca07.html">
+<link rel="canonical" href="http://yoursite.com/article/b56d6cb5.html">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>使用Aliyun OssClient的错误案例 | hongyu`s blog</title>
+  <title>synchronized最好的锁对象 | hongyu`s blog</title>
   
 
 
@@ -153,7 +153,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/f2cdca07.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/b56d6cb5.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/img/avatar.jpg">
@@ -166,7 +166,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          使用Aliyun OssClient的错误案例
+          synchronized最好的锁对象
         </h1>
 
         <div class="post-meta">
@@ -176,14 +176,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-11-25 17:05:46" itemprop="dateCreated datePublished" datetime="2020-11-25T17:05:46+08:00">2020-11-25</time>
+              <time title="创建时间：2021-04-17 20:26:14" itemprop="dateCreated datePublished" datetime="2021-04-17T20:26:14+08:00">2021-04-17</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-07 16:43:39" itemprop="dateModified" datetime="2021-04-07T16:43:39+08:00">2021-04-07</time>
+                <time title="修改时间：2021-04-19 10:22:34" itemprop="dateModified" datetime="2021-04-19T10:22:34+08:00">2021-04-19</time>
               </span>
 
           
@@ -197,12 +197,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="事故描述"><a href="#事故描述" class="headerlink" title="事故描述"></a>事故描述</h3><p>公司的硬件设备和设备网关服务是以 TCP 长连接方式通讯的,网关服务用到了 Netty</p>
-<p>前段时间突然线上一批新的设备集体离线, 查看设备网关发现网关进程的 netstat 存在大量的 CLOSE_WAIT 状态连接</p>
-<p>第一时间重启了设备网关,很快设备正常上线了,观察一段时间之后发现又开始陆续出现 CLOSE_WAIT 状态的连接</p>
-<h3 id="分析原因"><a href="#分析原因" class="headerlink" title="分析原因"></a>分析原因</h3><p>仔细观察了一下这些连接,发现这些连接的目标地址都是阿里云的,不由得想到之前添加的一个将设备日志上报阿里云 oss 的小功能</p>
-<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>这个功能先是封装了一层请求阿里云 Oss 客户端的代码,然后将这个工具作为依赖引入到原有的项目中,在封装过程中想到为了避免重复创建 OssClient 引起资源消耗,所以定义了一个全局的 client,创建成功之后可以全局复用,所以没有显示调用 oss 的 shutdown()方法,正是这个想法导致了线上出现的问题;</p>
-<p>将全局 OssClient 改为每次上传前创建,上传完毕之后调用ossClient.shutdown()方法关闭连接,问题就再没复现过</p>
+        <p>之前在网上看到一个面试题目：synchronzied 最好的锁对象是什么</p>
+<p>当时第一反应是 new Object，但是后来看到这篇文章：<a href="https://stackoverflow.com/questions/2120437/object-vs-byte0-as-lock" target="_blank" rel="noopener">Object vs byte[0] as lock</a></p>
+<p>大意就是 new byte[0]作为锁对象会更好，能够减少字节码操作的次数</p>
+<p>下面来验证一下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectSynchronizedDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object obj = <span class="keyword">new</span> Object();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArraySynchronizedDemo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] lockObj = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">ObjectSynchronizedDemo.class</span><br><span class="line">&#123;</span><br><span class="line">  public com.aias.learn.test.ObjectSynchronizedDemo();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=3, locals=1, args_size=1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: aload_0</span><br><span class="line">         5: new           #2                  // class java/lang/Object</span><br><span class="line">         8: dup</span><br><span class="line">         9: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">        12: putfield      #3                  // Field obj:Ljava/lang/Object;</span><br><span class="line">        15: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 7: 0</span><br><span class="line">        line 8: 4</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0      16     0  this   Lcom/aias/learn/test/ObjectSynchronizedDemo;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ArraySynchronizedDemo.class</span><br><span class="line">&#123;</span><br><span class="line">  public com.aias.learn.test.ArraySynchronizedDemo();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=2, locals=1, args_size=1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: aload_0</span><br><span class="line">         5: iconst_0</span><br><span class="line">         6: newarray       byte</span><br><span class="line">         8: putfield      #2                  // Field lockObj:[B</span><br><span class="line">        11: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 7: 0</span><br><span class="line">        line 8: 4</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0      12     0  this   Lcom/aias/learn/test/ArraySynchronizedDemo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，new byte[0]确实比 new Object() 少 4 条字节码操作。</p>
+<p>再计算一下内存占用情况：</p>
+<p>new Object()内存占用：</p>
+<p>Mark Word(8 字节)+klass pointer(开启指针压缩，4 字节)+对齐填充(4 字节) = 16 字节</p>
+<p>new byte[0]内存占用：</p>
+<p>Mark Word(8 字节)+klass pointer(开启指针压缩，4 字节)+数组长度(int，4 字节) = 16 字节</p>
+<p>所以两种锁对象占用内存是相等的。</p>
 
     </div>
 
@@ -212,9 +221,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/ossClient/" rel="tag"># ossClient</a>
-              <a href="/tags/CLOSE-WAIT/" rel="tag"># CLOSE_WAIT</a>
-              <a href="/tags/线上问题/" rel="tag"># 线上问题</a>
+              <a href="/tags/synchronized/" rel="tag"># synchronized</a>
           </div>
 
         
@@ -223,13 +230,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/article/d84d4fa.html" rel="prev" title="redisTemplate反序列化时遇到的问题">
-      <i class="fa fa-chevron-left"></i> redisTemplate反序列化时遇到的问题
+    <a href="/article/3ad834c9.html" rel="prev" title="zookeeper">
+      <i class="fa fa-chevron-left"></i> zookeeper
     </a></div>
-      <div class="post-nav-item">
-    <a href="/article/db8ef88b.html" rel="next" title="在亚马逊免费试用ubuntu">
-      在亚马逊免费试用ubuntu <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -288,7 +292,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#事故描述"><span class="nav-number">1.</span> <span class="nav-text">事故描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分析原因"><span class="nav-number">2.</span> <span class="nav-text">分析原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决问题"><span class="nav-number">3.</span> <span class="nav-text">解决问题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

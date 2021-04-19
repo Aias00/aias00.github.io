@@ -150,6 +150,83 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/6c6b9155.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/6c6b9155.html" class="post-title-link" itemprop="url">缓存穿透和缓存击穿</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-09 17:51:00" itemprop="dateCreated datePublished" datetime="2020-08-09T17:51:00+08:00">2020-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:00:27" itemprop="dateModified" datetime="2021-04-06T22:00:27+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="什么是缓存穿透和缓存击穿"><a href="#什么是缓存穿透和缓存击穿" class="headerlink" title="什么是缓存穿透和缓存击穿"></a>什么是缓存穿透和缓存击穿</h3><p>缓存穿透和缓存击穿是存在区别的两种情况:</p>
+<ul>
+<li>缓存穿透</li>
+</ul>
+<p>要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。</p>
+<p>在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/6c6b9155.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/f431f94b.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -579,7 +656,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
