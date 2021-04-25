@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="mysql 客户端和服务端之间如何通信1.通信类型:长连接或短连接(mysql 都支持，一般为长连接，放在连接池中) 查看连接:show full processlist; 查看连接参数:show global status like ‘Thread%’">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-06T14:12:51.833Z">
+<meta property="og:updated_time" content="2021-04-22T03:31:15.364Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql面试知识点(持续更新)">
 <meta name="twitter:description" content="mysql 客户端和服务端之间如何通信1.通信类型:长连接或短连接(mysql 都支持，一般为长连接，放在连接池中) 查看连接:show full processlist; 查看连接参数:show global status like ‘Thread%’">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-06 22:12:51" itemprop="dateModified" datetime="2021-04-06T22:12:51+08:00">2021-04-06</time>
+                <time title="修改时间：2021-04-22 11:31:15" itemprop="dateModified" datetime="2021-04-22T11:31:15+08:00">2021-04-22</time>
               </span>
 
           
@@ -476,6 +476,152 @@
 <p>注意：在某些工作负载下，通过哈希索引查找带来的性能远大于额外的监控索引搜索情况和保持这个哈希表结构所带来的开销。但某些时候，在负载高的情况下，自适应哈希索引中添加的 read/write 锁也会带来竞争，比如高并发的 join 操作。like 操作和%的通配符也不适用于自适应哈希索引，可能要关闭自始应哈希索引。</p>
 <h3 id="为什么说-B-树比-B-树更适合实际应用中操作系统的文件索引和数据库索引"><a href="#为什么说-B-树比-B-树更适合实际应用中操作系统的文件索引和数据库索引" class="headerlink" title="为什么说 B+树比 B 树更适合实际应用中操作系统的文件索引和数据库索引"></a>为什么说 B+树比 B 树更适合实际应用中操作系统的文件索引和数据库索引</h3><p>1.B+树的磁盘读写代价更低，B+的内部节点并没有指向关键字具体信息的指针。因此其内部相对于 B 树更小。如果把所有同一内部节点的关键字存放于同一盘块中，那么盘块所能容纳的关键字数量也就越多。一次性读入内存中的需要查找的关键字也就越多。相对来说 IO 读写次数也就降低了</p>
 <p>2.B+树的查询效率更稳定，由于非叶子节点不是指向最终文件内容的节点，而只是叶子节点中关键字的索引。所以任何关键字的查找都必须走一条从根节点到叶子节点的路。所有关键字查询的路径长度相同，导致每一个数据的查询效率相当</p>
+<h3 id="为什么使用索引"><a href="#为什么使用索引" class="headerlink" title="为什么使用索引"></a>为什么使用索引</h3><ul>
+<li>通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性</li>
+<li>可以大大加快数据的检索速度</li>
+<li>帮助服务器避免排序和临时表</li>
+<li>将随机 IO 变为顺序 IO</li>
+<li>可以加速表和表之间的连接</li>
+</ul>
+<h3 id="MyISAM-和-InnoDB-实现-B-树索引方式的区别是什么"><a href="#MyISAM-和-InnoDB-实现-B-树索引方式的区别是什么" class="headerlink" title="MyISAM 和 InnoDB 实现 B+树索引方式的区别是什么"></a>MyISAM 和 InnoDB 实现 B+树索引方式的区别是什么</h3><ul>
+<li>MyISAM：B+ Tree 叶节点的 data 域存放的是数据记录的地址，在检索索引的时候，首先按照 B+ Tree 搜索算法搜索索引，如果指定的 key 存在，则取出其 data 域的值，然后以 data 域的值为地址读取相应的数据。这被称为”非聚簇索引”</li>
+<li>InnoDB：其数据本身就是索引文件，其表数据文件本身就是按 B+ Tree 组织的一个索引结构，树的叶节点 data 域保存了完整的数据记录，这个索引的 key 是数据表的主键，因此 InnoDB 表数据本身就是主索引，这被称为”聚簇索引”或者”聚集索引”。而其余的索引都作为辅助索引，辅助索引的 data 域存储相应记录主键的值而不是地址。</li>
+</ul>
+<p>在根据主索引搜索时，直接找到 Key 所在的节点即可取出数据；在根据辅助索引查找时，则需要先取出主键的值，再走一遍主索引。因此，在设计表的时候，不建议用过长的字段为主键，也不建议使用非单调的字段作为主键，这样会造成主索引频繁分裂。</p>
+<h3 id="MySQL-是如何执行一条-SQL-语句的"><a href="#MySQL-是如何执行一条-SQL-语句的" class="headerlink" title="MySQL 是如何执行一条 SQL 语句的"></a>MySQL 是如何执行一条 SQL 语句的</h3><p><img data-src="https://i.loli.net/2021/04/21/Edo3zeSs1ijxRTB.png" alt="一个mysql请求的处理流程图"></p>
+<ul>
+<li>连接器：管理连接，权限验证</li>
+<li>查询缓存：命中缓存则直接返回结果</li>
+<li>分析器：对 sql 进行词法分析、语法分析（查询判断的 sql 字段是否存在也是在这步）</li>
+<li>优化器：执行计划生成、选择索引</li>
+<li>执行器：操作引擎，返回结果</li>
+<li>存储引擎：存储数据、提供读写接口</li>
+</ul>
+<p>server 层按顺序执行 sql 的步骤为：</p>
+<ul>
+<li>客户端请求</li>
+<li>连接器（验证用户身份，给予权限）</li>
+<li>查询缓存（存在缓存则直接返回，不存在则继续后续操作）</li>
+<li>分析器（对 sql 进行词法分析和语法分析）</li>
+<li>优化器（对执行的 sql 优化，选择最优的执行方案）</li>
+<li>执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口）</li>
+<li>去引擎层获取数据返回（如果开启查询缓存则会尝试缓存查询结果）</li>
+</ul>
+<p>从上图可以看出，mysql 的处理流程主要分为 4 个步骤：</p>
+<ul>
+<li>客户端与服务端通信</li>
+<li>查询优化处理过程</li>
+<li>查询执行引擎</li>
+<li>返回结果给客户端</li>
+</ul>
+<h4 id="客户端与服务端通信"><a href="#客户端与服务端通信" class="headerlink" title="客户端与服务端通信"></a>客户端与服务端通信</h4><p>一般通信方式有 3 种：单工，半双工，全双工。单工就是只能单向传输，要么 A 端传给 B 端，要么 B 端传给 A 端；半双工是可以双向传输的，但是同一时间只能是一个方向传输，也就是 A 端传给 B 端的时候，B 端只能等待，反过来也是一样；全双工是双向随便传输</p>
+<p>mysql 客户端与服务端的通信方式是半双工的，也就是说，我们的一个数据库连接在向数据库发送数据的时候，此时这个数据库连接是不能给客户端返回数据的，一定是数据返回完毕以后，客户端才能再次发起查询操作。这也就是我们在做数据查询的时候用 where 条件和 limit 限制结果行数的原因，否则客户端连接需要等到数据库把所有的查询结果返回后，才能进行下一个操作。</p>
+<p>从上面的分析可以看出，MySQL 数据库半双工通信的一个重要特点是：客户端一旦开始发送指令，服务端需要接收完毕才能响应，客户端只有在完全接收到服务端响应的数据后，才能再次发送指令。我们在程序开发中，一般用多个连接进行数据交互，通过数据库连接池来进行管理。</p>
+<p>其实 mysql 的每一个连接都有其对应的状态来标识它目前所处的阶段，和线程类似，我们可以通过下面的命令查看数据库连接的状态：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> [<span class="keyword">full</span>] <span class="keyword">processlist</span>;</span><br></pre></td></tr></table></figure>
+
+<p>常用的几个状态描述：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>状态值</th>
+<th>状态描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>login</td>
+<td>连接线程的初始状态，直到客户端已经成功通过身份验证</td>
+</tr>
+<tr>
+<td>2</td>
+<td>executing</td>
+<td>该线程已开始执行一条语句</td>
+</tr>
+<tr>
+<td>3</td>
+<td>optimizing</td>
+<td>服务器正在对查询执行初始优化</td>
+</tr>
+<tr>
+<td>4</td>
+<td>updating</td>
+<td>线程正在搜搜或者更新要更新的行</td>
+</tr>
+<tr>
+<td>5</td>
+<td>sending data</td>
+<td>正在将数据发送到客户端，一般会执行大量的磁盘访问操作</td>
+</tr>
+<tr>
+<td>6</td>
+<td>sorting result</td>
+<td>正在对结果排序</td>
+</tr>
+<tr>
+<td>7</td>
+<td>waiting for commit lock</td>
+<td>正在等待提交锁</td>
+</tr>
+</tbody></table>
+<p>当发现数据连接长时间占用的时候，可以用 kill 命令杀死线程：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">kill</span> processlist_id;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查询优化处理过程"><a href="#查询优化处理过程" class="headerlink" title="查询优化处理过程"></a>查询优化处理过程</h4><p>解析器解析 sql 语句：通过 lex 此法分析器（就是把一个完整的 sql 语句分析成独立的单词）、yacc 语法分析器（就是分析是否符合语法规则，比如单引号是否闭合等）进行分析，将 sql 语句按 sql 标准解析成解析树（select_lex）对象，主要功能是把 sql 语句的字符串解析成数据库服务器可以处理的解析对象，便于后续进行预处理和生成执行计划</p>
+<p>预处理：预处理会根据 mysql 的语法规则对解析树对象进行合法性检查，比如检查表名列名是否存在、检查名字和别名保证没有歧义。预处理之后得到一个新的解析树</p>
+<p>优化器生成执行计划：优化器的主要作用是找到这个 sql 语句最优的执行计划，mysql 的查询优化器和 oracle 的类似，都是基于成本的计算，优化器会尝试使用不同的执行计划，以便于找到一个最优的执行计划（一般随机读取 4K 的数据库进行分析）</p>
+<p>可以使用以下命令查看查询的成本：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'Last_query_cost'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>优化器最终会把解析树变成一个查询执行计划。mysql 提供了一个执行计划的工具，我们在 sql 语句前面加上 explain，就可以看到执行计划的信息</p>
+<h4 id="查询执行引擎"><a href="#查询执行引擎" class="headerlink" title="查询执行引擎"></a>查询执行引擎</h4><p>查询执行模块，也就是查询执行引擎，根据优化器生成的最优执行计划调用对应存储引擎的 API 进行执行计划的执行，并获取查询应该返回的结果集</p>
+<h4 id="返回结果给客户端"><a href="#返回结果给客户端" class="headerlink" title="返回结果给客户端"></a>返回结果给客户端</h4><p>如果没有开启缓存，把查询到的结果集返回到客户端；如果开启了缓存，执行缓存操作，把结果集存入缓存，然后把结果返回给客户端，即使结果集是空的，也要返回。</p>
+<h3 id="mysql-的缓存介绍"><a href="#mysql-的缓存介绍" class="headerlink" title="mysql 的缓存介绍"></a>mysql 的缓存介绍</h3><p>一般情况下，我们不会用到数据库自带的缓存，所以 mysql 默认是不开启缓存的，只有以读为主的业务，数据不变化的情况下，可以开启数据库的缓存</p>
+<p>查看缓存是否开启：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'query_cache%'</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="https://i.loli.net/2021/04/22/7ZCJhj6oGITn9D1.png" alt="2021-04-22-09-54-45querycache"></p>
+<p>query_cache_type：OFF，表示缓存关闭，默认是关闭的，可以通过修改 MySQL 配置文件 my.cnf 进行调整，重启服务后生效</p>
+<p>query_cache_limit：1048576，表示单次查询缓存的结果集大小 1M，超过 1M 则不会缓存</p>
+<p>query_cache_size：1048576，表示缓存开辟的空间大小</p>
+<p>查看缓存操作情况：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'Qcache%'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>Qcache_hits：表示缓存命中次数</p>
+<p>Qcache_inserts：表示缓存插入次数</p>
+<p>缓存生效的条件是在缓存开启的情况下，执行的 sql 语句字符串一模一样的时候，可以从缓存直接读取数据，但是当缓存数据相关的表存在数据变化的时候，原有的缓存就会失效</p>
+<p>mysql 的缓存开启后，当 sql 查询语句带有 sqlnocache 关键字或者带有函数操作或者单次查询结果集超过 query_cache_limit 设置的值或者查询系统表时，不会用到缓存</p>
+<h3 id="drop、delete-于-truncate-的共同点和区别"><a href="#drop、delete-于-truncate-的共同点和区别" class="headerlink" title="drop、delete 于 truncate 的共同点和区别"></a>drop、delete 于 truncate 的共同点和区别</h3><h4 id="第一种回答"><a href="#第一种回答" class="headerlink" title="第一种回答"></a>第一种回答</h4><p>drop、delete、truncate 都表示删除，但是三者有一些区别</p>
+<p>delete 用来删除表的一部分数据，执行 delete 之后，用户需要提交（commit）或者回滚（rollback）来执行删除或者撤销删除，会触发这个表上所有的 delete 触发器</p>
+<p>truncate 删除表中所有的数据，这个操作不能回滚，也不会触发表上的触发器，truncate 比 delete 更快，占用的空间更小</p>
+<p>drop 命令从数据库中删除表，所有的数据行、索引和权限也会被删除，所有的 DML 触发器也不会被触发，这个命令也不会回滚</p>
+<p>因此，在不需要一张表的时候，用 drop；在想删除部分数据行的时候，用 delete；在保留表而删除所有数据的时候用 truncate</p>
+<h4 id="第二种回答"><a href="#第二种回答" class="headerlink" title="第二种回答"></a>第二种回答</h4><ul>
+<li>drop 直接删除表</li>
+<li>truncate 删除表中数据，再插入时自增 id 又从 1 开始</li>
+<li>delete 删除表中数据，可以加 where 子句</li>
+</ul>
+<h4 id="具体解析"><a href="#具体解析" class="headerlink" title="具体解析"></a>具体解析</h4><ul>
+<li>delete 语句执行删除的过程是每次从表中删除一条数据，并且同时将该行的删除操作作为事务记录在日志中保存以便进行回滚操作。truncate 则一次性的从表中删除所有的数据，并不把单独的删除操作记入日志保存，删除行是不能恢复的。并且在删除的过程中不会激活与表有关的删除触发器，执行速度快</li>
+<li>表和索引所占空间。当表被 truncate 后，这个表和索引所占的空间会恢复到初始大小，而 delete 操作不会减少表或索引所占用的空间，drop 语句将表所占用的空间全部释放掉</li>
+<li>一般而言，drop&gt;truncate&gt;delete</li>
+<li>应用范围：truncate 只能对 table，delete 可以是 table 和 view</li>
+<li>truncate 和 delete 只删除数据；而 drop 则删除整个表（结构和数据）</li>
+<li>truncate 与不带 where 的 delete 只删除数据，而不删除表的结构（定义）。drop 语句将删除表的结构、被依赖的约束（constrain）、触发器（trigger）、索引（index）；依赖于该表的存储过程、函数将被保留，但其状态会变为：invalid</li>
+<li>delete 语句为 DML（Data Manipulation Language），这个操作会被放到 rollback segment 中，事务提交后才生效。如果有相应的 trigger，执行的时候将被触发</li>
+<li>truncate、drop 是 DDL（Data Define Language），操作立即生效，原数据不放到 rollback segment 中，不能回滚</li>
+<li>在没有备份的情况下，谨慎使用 drop 与 truncate。要删除部分数据行采用 delete 且注意结和 where 来约束影响范围。回滚段要足够大。要删除表用 drop；若想保留表而将表中数据删除，如果与事务无关，用 truncate 即可实现。如果和事务有关，或者是想触发 trigger，还是用 delete</li>
+<li>truncate table 表名速度快而且效率高。因为 truncate 在功能上与不带 where 子句的 delete 语句相同：二者均删除表中的全部行。但 truncate 比 delete 速度快，且使用的系统和事务日志资源少。delete 语句每次删除一行并在事务日志中为所删除的每行记录一项。truncate 通过释放存储表数据所用的数据页来删除数据，并且只在事务日志中记录页的释放。</li>
+<li>truncate 删除表中的所有行，但表结构及其列、约束、索引等保持不变。新行标识所用的计数值重置。如果想保留标识计数值，请用 delete。如果要删除表定义及其数据，请用 drop</li>
+<li>对于有外键约束引用的表，不能使用 truncate，而应使用不带 where 子句的 delete。由于 truncate 不记录在日志中，所以它不能激活触发器</li>
+</ul>
+<h3 id="文件索引和数据库索引为什么使用-B-Tree"><a href="#文件索引和数据库索引为什么使用-B-Tree" class="headerlink" title="文件索引和数据库索引为什么使用 B+ Tree"></a>文件索引和数据库索引为什么使用 B+ Tree</h3><p>主要原因：B+树只要遍历叶子节点就可以实现整棵树的遍历，而且在数据库中基于范围查询时非常频繁的，而 B 树种只能中序遍历所有节点，效率太低</p>
+<p>文件与数据库都是需要较大的存储，也就是说，他们都不可能全部存储在内存中，故需要存储到磁盘上。而所谓索引，则为了数据的快读定位与查找，那么索引的结构组织要尽量减少查找过程中磁盘 I/O 的存取次数，因此 B+树相比于 B 树更加合适。数据库系统巧妙利用了局部性原理与磁盘预读原理，将一个节点的大小设为等于一个页，这样每个节点只需要一次 I/O 就可以完全读入，而红黑树这种结构，高度明显要深得多，并且由于逻辑上很近的节点（父子节点）物理上可能很远，无法利用局部性</p>
+<p>更重要的是，B+树还有一个更重要的好处：方便扫库</p>
+<p>B 树必须用中序排序的方式按序扫库，而 B+树直接从叶子节点挨个遍历就好。B+树支持 range-query 非常方便，而 B 树不支持，这是数据库选用 B+树的主要原因。</p>
+<p>B+树的磁盘读写代价更低：B+树的内部节点并没有指向关键字具体信息的指针，因此其内部结构相对于 B 树更小。如果把所有同一内部节点的关键字存放在同一块盘中，那么盘块所能容纳的关键字数量也就越多。一次性读入内存中的需要查找的关键字也就越多，相对来说 I/O 次数也就降低了；</p>
+<p>B+树的查询效率更加稳定：由于内部节点并不是最终指向文件内容的节点，而只是叶子节点中关键字的索引，所以，任何关键字的查找必须走一条从根节点到叶子节点的路，所有关键字查询的路径长度相同，导致每一个数据的查询效率相当。</p>
 
     </div>
 
@@ -559,7 +705,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-客户端和服务端之间如何通信"><span class="nav-number">1.</span> <span class="nav-text">mysql 客户端和服务端之间如何通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-mysql-如何配置主从同步"><span class="nav-number">2.</span> <span class="nav-text">1.mysql 如何配置主从同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-获取-mysql-自增主键的方法"><span class="nav-number">3.</span> <span class="nav-text">2.获取 mysql 自增主键的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-sql-优化"><span class="nav-number">4.</span> <span class="nav-text">3.sql 优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-主键索引和唯一索引的区别"><span class="nav-number">5.</span> <span class="nav-text">4.主键索引和唯一索引的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-多个单个索引和联合索引的区别"><span class="nav-number">6.</span> <span class="nav-text">5.多个单个索引和联合索引的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-建立索引的原则"><span class="nav-number">7.</span> <span class="nav-text">6.建立索引的原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-分库分表策略"><span class="nav-number">8.</span> <span class="nav-text">7.分库分表策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-mysql-两种常见引擎的对比"><span class="nav-number">9.</span> <span class="nav-text">8.mysql 两种常见引擎的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql-InnoDB-引擎主键的数据结构"><span class="nav-number">10.</span> <span class="nav-text">Mysql InnoDB 引擎主键的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么用自增列作为主键"><span class="nav-number">11.</span> <span class="nav-text">为什么用自增列作为主键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用数据索引能提高效率"><span class="nav-number">12.</span> <span class="nav-text">为什么使用数据索引能提高效率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引是什么"><span class="nav-number">13.</span> <span class="nav-text">索引是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引的优势和劣势"><span class="nav-number">14.</span> <span class="nav-text">索引的优势和劣势</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势"><span class="nav-number">14.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#劣势"><span class="nav-number">14.2.</span> <span class="nav-text">劣势</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引类型"><span class="nav-number">15.</span> <span class="nav-text">索引类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#主键索引"><span class="nav-number">15.1.</span> <span class="nav-text">主键索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#普通索引"><span class="nav-number">15.2.</span> <span class="nav-text">普通索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#唯一索引"><span class="nav-number">15.3.</span> <span class="nav-text">唯一索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全文索引"><span class="nav-number">15.4.</span> <span class="nav-text">全文索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#空间索引"><span class="nav-number">15.5.</span> <span class="nav-text">空间索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前缀索引"><span class="nav-number">15.6.</span> <span class="nav-text">前缀索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他（按照索引列数量分类）"><span class="nav-number">15.7.</span> <span class="nav-text">其他（按照索引列数量分类）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引的数据结构"><span class="nav-number">16.</span> <span class="nav-text">索引的数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash-表"><span class="nav-number">16.1.</span> <span class="nav-text">Hash 表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二叉查找树"><span class="nav-number">16.2.</span> <span class="nav-text">二叉查找树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#平衡二叉树"><span class="nav-number">16.3.</span> <span class="nav-text">平衡二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-树-改造二叉树"><span class="nav-number">16.4.</span> <span class="nav-text">B 树: 改造二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-树：改造-B-树"><span class="nav-number">16.5.</span> <span class="nav-text">B+树：改造 B 树</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#例如：等值查询"><span class="nav-number">16.5.1.</span> <span class="nav-text">例如：等值查询</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#范围查询"><span class="nav-number">16.5.2.</span> <span class="nav-text">范围查询</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-的索引实现"><span class="nav-number">17.</span> <span class="nav-text">mysql 的索引实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MyIsam-索引"><span class="nav-number">17.1.</span> <span class="nav-text">MyIsam 索引</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MyIsam-主键索引"><span class="nav-number">17.1.1.</span> <span class="nav-text">MyIsam 主键索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#根据主键等值查询"><span class="nav-number">17.1.1.1.</span> <span class="nav-text">根据主键等值查询</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#根据主键范围查询数据"><span class="nav-number">17.1.1.2.</span> <span class="nav-text">根据主键范围查询数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#备注"><span class="nav-number">17.1.1.3.</span> <span class="nav-text">备注</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MyIsam-辅助索引"><span class="nav-number">17.1.2.</span> <span class="nav-text">MyIsam 辅助索引</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InnoDB-索引"><span class="nav-number">17.2.</span> <span class="nav-text">InnoDB 索引</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-主键索引（聚簇索引）"><span class="nav-number">17.2.1.</span> <span class="nav-text">InnoDB 主键索引（聚簇索引）</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#等值查询数据"><span class="nav-number">17.2.1.1.</span> <span class="nav-text">等值查询数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-辅助索引"><span class="nav-number">17.2.2.</span> <span class="nav-text">InnoDB 辅助索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#辅助索引等值查询数据"><span class="nav-number">17.2.2.1.</span> <span class="nav-text">辅助索引等值查询数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-组合索引"><span class="nav-number">17.2.3.</span> <span class="nav-text">InnoDB 组合索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#组合索引的查询过程"><span class="nav-number">17.2.3.1.</span> <span class="nav-text">组合索引的查询过程</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-覆盖索引"><span class="nav-number">17.2.4.</span> <span class="nav-text">InnoDB 覆盖索引</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-树索引和哈希索引的区别"><span class="nav-number">18.</span> <span class="nav-text">B+树索引和哈希索引的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#哈希索引的优势"><span class="nav-number">18.1.</span> <span class="nav-text">哈希索引的优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#哈希索引不适用的情况"><span class="nav-number">18.2.</span> <span class="nav-text">哈希索引不适用的情况</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么说-B-树比-B-树更适合实际应用中操作系统的文件索引和数据库索引"><span class="nav-number">19.</span> <span class="nav-text">为什么说 B+树比 B 树更适合实际应用中操作系统的文件索引和数据库索引</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-客户端和服务端之间如何通信"><span class="nav-number">1.</span> <span class="nav-text">mysql 客户端和服务端之间如何通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-mysql-如何配置主从同步"><span class="nav-number">2.</span> <span class="nav-text">1.mysql 如何配置主从同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-获取-mysql-自增主键的方法"><span class="nav-number">3.</span> <span class="nav-text">2.获取 mysql 自增主键的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-sql-优化"><span class="nav-number">4.</span> <span class="nav-text">3.sql 优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-主键索引和唯一索引的区别"><span class="nav-number">5.</span> <span class="nav-text">4.主键索引和唯一索引的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-多个单个索引和联合索引的区别"><span class="nav-number">6.</span> <span class="nav-text">5.多个单个索引和联合索引的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-建立索引的原则"><span class="nav-number">7.</span> <span class="nav-text">6.建立索引的原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-分库分表策略"><span class="nav-number">8.</span> <span class="nav-text">7.分库分表策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-mysql-两种常见引擎的对比"><span class="nav-number">9.</span> <span class="nav-text">8.mysql 两种常见引擎的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql-InnoDB-引擎主键的数据结构"><span class="nav-number">10.</span> <span class="nav-text">Mysql InnoDB 引擎主键的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么用自增列作为主键"><span class="nav-number">11.</span> <span class="nav-text">为什么用自增列作为主键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用数据索引能提高效率"><span class="nav-number">12.</span> <span class="nav-text">为什么使用数据索引能提高效率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引是什么"><span class="nav-number">13.</span> <span class="nav-text">索引是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引的优势和劣势"><span class="nav-number">14.</span> <span class="nav-text">索引的优势和劣势</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势"><span class="nav-number">14.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#劣势"><span class="nav-number">14.2.</span> <span class="nav-text">劣势</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引类型"><span class="nav-number">15.</span> <span class="nav-text">索引类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#主键索引"><span class="nav-number">15.1.</span> <span class="nav-text">主键索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#普通索引"><span class="nav-number">15.2.</span> <span class="nav-text">普通索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#唯一索引"><span class="nav-number">15.3.</span> <span class="nav-text">唯一索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全文索引"><span class="nav-number">15.4.</span> <span class="nav-text">全文索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#空间索引"><span class="nav-number">15.5.</span> <span class="nav-text">空间索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前缀索引"><span class="nav-number">15.6.</span> <span class="nav-text">前缀索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他（按照索引列数量分类）"><span class="nav-number">15.7.</span> <span class="nav-text">其他（按照索引列数量分类）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引的数据结构"><span class="nav-number">16.</span> <span class="nav-text">索引的数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash-表"><span class="nav-number">16.1.</span> <span class="nav-text">Hash 表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二叉查找树"><span class="nav-number">16.2.</span> <span class="nav-text">二叉查找树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#平衡二叉树"><span class="nav-number">16.3.</span> <span class="nav-text">平衡二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-树-改造二叉树"><span class="nav-number">16.4.</span> <span class="nav-text">B 树: 改造二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-树：改造-B-树"><span class="nav-number">16.5.</span> <span class="nav-text">B+树：改造 B 树</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#例如：等值查询"><span class="nav-number">16.5.1.</span> <span class="nav-text">例如：等值查询</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#范围查询"><span class="nav-number">16.5.2.</span> <span class="nav-text">范围查询</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-的索引实现"><span class="nav-number">17.</span> <span class="nav-text">mysql 的索引实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MyIsam-索引"><span class="nav-number">17.1.</span> <span class="nav-text">MyIsam 索引</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MyIsam-主键索引"><span class="nav-number">17.1.1.</span> <span class="nav-text">MyIsam 主键索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#根据主键等值查询"><span class="nav-number">17.1.1.1.</span> <span class="nav-text">根据主键等值查询</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#根据主键范围查询数据"><span class="nav-number">17.1.1.2.</span> <span class="nav-text">根据主键范围查询数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#备注"><span class="nav-number">17.1.1.3.</span> <span class="nav-text">备注</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MyIsam-辅助索引"><span class="nav-number">17.1.2.</span> <span class="nav-text">MyIsam 辅助索引</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InnoDB-索引"><span class="nav-number">17.2.</span> <span class="nav-text">InnoDB 索引</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-主键索引（聚簇索引）"><span class="nav-number">17.2.1.</span> <span class="nav-text">InnoDB 主键索引（聚簇索引）</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#等值查询数据"><span class="nav-number">17.2.1.1.</span> <span class="nav-text">等值查询数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-辅助索引"><span class="nav-number">17.2.2.</span> <span class="nav-text">InnoDB 辅助索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#辅助索引等值查询数据"><span class="nav-number">17.2.2.1.</span> <span class="nav-text">辅助索引等值查询数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-组合索引"><span class="nav-number">17.2.3.</span> <span class="nav-text">InnoDB 组合索引</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#组合索引的查询过程"><span class="nav-number">17.2.3.1.</span> <span class="nav-text">组合索引的查询过程</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#InnoDB-覆盖索引"><span class="nav-number">17.2.4.</span> <span class="nav-text">InnoDB 覆盖索引</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-树索引和哈希索引的区别"><span class="nav-number">18.</span> <span class="nav-text">B+树索引和哈希索引的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#哈希索引的优势"><span class="nav-number">18.1.</span> <span class="nav-text">哈希索引的优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#哈希索引不适用的情况"><span class="nav-number">18.2.</span> <span class="nav-text">哈希索引不适用的情况</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么说-B-树比-B-树更适合实际应用中操作系统的文件索引和数据库索引"><span class="nav-number">19.</span> <span class="nav-text">为什么说 B+树比 B 树更适合实际应用中操作系统的文件索引和数据库索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用索引"><span class="nav-number">20.</span> <span class="nav-text">为什么使用索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MyISAM-和-InnoDB-实现-B-树索引方式的区别是什么"><span class="nav-number">21.</span> <span class="nav-text">MyISAM 和 InnoDB 实现 B+树索引方式的区别是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL-是如何执行一条-SQL-语句的"><span class="nav-number">22.</span> <span class="nav-text">MySQL 是如何执行一条 SQL 语句的</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端与服务端通信"><span class="nav-number">22.1.</span> <span class="nav-text">客户端与服务端通信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询优化处理过程"><span class="nav-number">22.2.</span> <span class="nav-text">查询优化处理过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询执行引擎"><span class="nav-number">22.3.</span> <span class="nav-text">查询执行引擎</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回结果给客户端"><span class="nav-number">22.4.</span> <span class="nav-text">返回结果给客户端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-的缓存介绍"><span class="nav-number">23.</span> <span class="nav-text">mysql 的缓存介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#drop、delete-于-truncate-的共同点和区别"><span class="nav-number">24.</span> <span class="nav-text">drop、delete 于 truncate 的共同点和区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一种回答"><span class="nav-number">24.1.</span> <span class="nav-text">第一种回答</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二种回答"><span class="nav-number">24.2.</span> <span class="nav-text">第二种回答</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体解析"><span class="nav-number">24.3.</span> <span class="nav-text">具体解析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件索引和数据库索引为什么使用-B-Tree"><span class="nav-number">25.</span> <span class="nav-text">文件索引和数据库索引为什么使用 B+ Tree</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
