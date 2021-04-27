@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="什么是 mvccmvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存 MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读 什么是当前读和快照读1">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-27T05:31:51.961Z">
+<meta property="og:updated_time" content="2021-04-27T05:53:35.866Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mvcc 多版本并发控制">
 <meta name="twitter:description" content="什么是 mvccmvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存 MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读 什么是当前读和快照读1">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-27 13:31:51" itemprop="dateModified" datetime="2021-04-27T13:31:51+08:00">2021-04-27</time>
+                <time title="修改时间：2021-04-27 13:53:35" itemprop="dateModified" datetime="2021-04-27T13:53:35+08:00">2021-04-27</time>
               </span>
 
           
@@ -212,7 +212,7 @@
 <p>读-写:有线程安全问题，可能会造成事务隔离性问题，可能遇到脏读，幻读，不可重复读</p>
 <p>写-写:有线程安全问题，可能会存在更新丢失问题，比如第一类更新丢失，第二类更新丢失</p>
 <p>MVCC 带来的好处是?</p>
-<p>MVCC 是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务开始前的数据库的快照，所以 MVCC 可以为数据库解决以下问题</p>
+<p>MVCC 是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务第一次快照读之前的数据库的快照，所以 MVCC 可以为数据库解决以下问题</p>
 <p>1.在并发读写数据库时，可以做到在读操作时不用阻塞写操作，写操作也不用阻塞读操作，提高了数据库并发读写的性能</p>
 <p>2.同时还可以解决脏读，幻读，不可重复读等事务隔离问题，但不能解决更新丢失问题</p>
 <p>组合:</p>
@@ -279,7 +279,7 @@
 <p>在上表的顺序下，事务 B 在事务 A 提交修改之后的快照读依旧是旧版本数据，而当前读是最新的数据</p>
 <p><img data-src="https://i.loli.net/2021/03/27/GcV5LjwKzxBEdh1.png" alt="mvcc-2021-03-27-15-55-3020210327155529"></p>
 <p>在第二张表的顺序下，事务 B 在事务 A 提交之后的快照读和当前读都是最新的数据 400。这里与第一张表的区别仅仅是第一张表的事务 B 在事务 A 修改金额前快照读过一次金额数据，而第二章表的事务 B 在事务 A 修改金额前没有进行过快照读</p>
-<p>所以我们直到事务中快照读的结果是非常依赖该事务首次出现快照读的地方，即某个事务中首次出现快照读的地方非常关键，它有决定该事务后续快照读结果的能力</p>
+<p>所以我们知道事务中快照读的结果是非常依赖该事务首次出现快照读的地方，即某个事务中首次出现快照读的地方非常关键，它有决定该事务后续快照读结果的能力</p>
 <p>这里展示的是更新的流程，同时删除也是一样的，如果事务 B 的快照读是在事务 A 操作之后进行的，事务 B 的快照读也能读到最新的数据</p>
 <h5 id="RC，RR-级别下的-InnoDB-快照读有什么不同"><a href="#RC，RR-级别下的-InnoDB-快照读有什么不同" class="headerlink" title="RC，RR 级别下的 InnoDB 快照读有什么不同"></a>RC，RR 级别下的 InnoDB 快照读有什么不同</h5><p>正是 read view 生成时机的不同，从而造成 RC，RR 级别下快照读的结果的不同</p>
 <ul>
