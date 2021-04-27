@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="什么是 mvccmvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存 MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读 什么是当前读和快照读1">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-27T03:21:41.667Z">
+<meta property="og:updated_time" content="2021-04-27T05:31:51.961Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mvcc 多版本并发控制">
 <meta name="twitter:description" content="什么是 mvccmvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存 MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读 什么是当前读和快照读1">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-27 11:21:41" itemprop="dateModified" datetime="2021-04-27T11:21:41+08:00">2021-04-27</time>
+                <time title="修改时间：2021-04-27 13:31:51" itemprop="dateModified" datetime="2021-04-27T13:31:51+08:00">2021-04-27</time>
               </span>
 
           
@@ -229,7 +229,7 @@
 <p><img data-src="https://i.loli.net/2021/03/27/DcY6TvGL7xl1Bq3.png" alt="mvcc-2021-03-27-11-56-1620210327115615"></p>
 <h4 id="undo-日志"><a href="#undo-日志" class="headerlink" title="undo 日志"></a>undo 日志</h4><p>undo log 主要分为两种:</p>
 <p>insert undo log:代表事务在 insert 新记录时产生的 undo log，只在事务回滚时需要，并且在事务提交后可以被立即丢弃</p>
-<p>update undo log:事务在进行 update 或者 delete 时产生的 undo log。不仅在事务回滚时需要，在快照读时也需要。所以不能随便删除，只有在快速读事务回滚不涉及该日志时，对应的日志才会被 purge 线程统一清除</p>
+<p>update undo log:事务在进行 update 或者 delete 时产生的 undo log。不仅在事务回滚时需要，在快照读时也需要。所以不能随便删除，只有在快速读或事务回滚不涉及该日志时，对应的日志才会被 purge 线程统一清除</p>
 <h5 id="purge-线程"><a href="#purge-线程" class="headerlink" title="purge 线程"></a>purge 线程</h5><p>从前面的分析可以看出，为了实现 InnoDB 的 mvcc 机制，更新或者删除操作都只是设置一下老记录的 deleted_bit，并不真正将过时的记录删除</p>
 <p>为了不影响磁盘空间，InnoDB 有专门的 purge 线程来清理 deleted_bit 为 true 的记录。为了不影响 MVCC 的正常工作，purge 线程自己也维护了一个 read view(这个 read view 相当于系统中最老活跃事务的 read view)。</p>
 <p>如果某个记录的 deleted_bit 为 true，并且 DB_TRX_ID 相对于 purge 线程的 read view 可见，那么这条记录一定是可以被安全清除的</p>
@@ -248,7 +248,7 @@
 <p>c.修改 age 为 25，并且修改隐藏字段事务 id 为当前事务 B 的 id，自增即为 2，回滚指针指向刚刚拷贝到 undo log 的副本记录</p>
 <p>d.提交事务，释放锁</p>
 <p><img data-src="https://i.loli.net/2021/03/27/WnqcEB7CONwSpmH.png" alt="mvcc-2021-03-27-13-24-5620210327132456"></p>
-<p>从上面我们就可以看出，不同事务或者相同事务对同一条记录进行修改，就会导致该记录的 undo log 称为一条记录版本线性表，即链表，undo log 的链首就是最新的旧记录，链尾就是最早的一条旧记录(当然就像之前说的该 undo log 的节点可能会被 purge 线程清除掉，像图中的第一条 insert undo log，其实在事务提交之后可能就被删除丢失了)</p>
+<p>从上面我们就可以看出，不同事务或者相同事务对同一条记录进行修改，就会导致该记录的 undo log 成为一条记录版本线性表，即链表，undo log 的链首就是最新的旧记录，链尾就是最早的一条旧记录(当然就像之前说的该 undo log 的节点可能会被 purge 线程清除掉，像图中的第一条 insert undo log，其实在事务提交之后可能就被删除丢失了)</p>
 <h4 id="read-view-读视图"><a href="#read-view-读视图" class="headerlink" title="read view (读视图)"></a>read view (读视图)</h4><p>什么是 read view</p>
 <p>read view 就是事务进行快照读操作的时候产生的读视图，在该事务执行的快照读的那一刻，会生成数据库系统当前的一个快照，记录并维护系统当前活跃事务的 ID(当每个事务开启时，都会被分配一个 ID，这个 ID 是递增的，所以最新的事务 ID 最大)</p>
 <p>read view 主要是用来做可见性判断的，主要是将要被修改的数据的最新记录中 DB_TRX_ID 取出来，与系统当前其他活跃事务的 ID(由 Read view 维护)去对比，如果 DB_TRX_ID 跟 Read View 的属性做了某些比较，不符合可见性，那就通过 DB_ROLL_PTR 回滚指针去取出 undo log 的 DB_TRX_ID 再比较，即遍历链表的 DB_TRX_ID(从链首到链尾，即从最近的一次修改查起)，直到找到满足特定条件的 DB_TRX_ID，那么这个 DB_TRX_ID 所在的旧记录就是当前事务能看见的最新的老版本</p>
