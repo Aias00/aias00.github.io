@@ -21,20 +21,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="什么是缓存雪崩缓存雪崩通常是指缓存大面积失效,或者 Redis 宕机,大量的请求直接去请求到了数据库,在并发大的情况下可能直接导致数据库宕机 出现缓存雪崩的原因在将数据存入缓存的时间我们通常都需要为缓存设置过期时间,避免缓存长时间占用内存资源,当然也会配合 redis 的淘汰策略对缓存进行失效淘汰 假如缓存设置的过期时间是相同的并且刚好在同一时刻全部失效,或者 Redis 宕机,就会造成所谓的缓存">
-<meta name="keywords" content="cache">
+  <meta name="description" content="开始学习使用 spring-cloud-alibaba 使用 nacos 配置中心功能1.创建一个 spring-cloud-alibaba 模块，添加以下依赖 12345&amp;lt;!--nacos配置中心--&amp;gt;&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;    &amp;lt;artifactId&amp;gt;">
+<meta name="keywords" content="nacos,spring-cloud-alibaba">
 <meta property="og:type" content="article">
-<meta property="og:title" content="缓存雪崩">
-<meta property="og:url" content="http://yoursite.com/article/90da3a95.html">
+<meta property="og:title" content="使用nacos配置中心功能">
+<meta property="og:url" content="http://yoursite.com/article/24f85607.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="什么是缓存雪崩缓存雪崩通常是指缓存大面积失效,或者 Redis 宕机,大量的请求直接去请求到了数据库,在并发大的情况下可能直接导致数据库宕机 出现缓存雪崩的原因在将数据存入缓存的时间我们通常都需要为缓存设置过期时间,避免缓存长时间占用内存资源,当然也会配合 redis 的淘汰策略对缓存进行失效淘汰 假如缓存设置的过期时间是相同的并且刚好在同一时刻全部失效,或者 Redis 宕机,就会造成所谓的缓存">
+<meta property="og:description" content="开始学习使用 spring-cloud-alibaba 使用 nacos 配置中心功能1.创建一个 spring-cloud-alibaba 模块，添加以下依赖 12345&amp;lt;!--nacos配置中心--&amp;gt;&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;    &amp;lt;artifactId&amp;gt;">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-06T14:00:22.604Z">
+<meta property="og:updated_time" content="2021-05-18T05:15:06.240Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="缓存雪崩">
-<meta name="twitter:description" content="什么是缓存雪崩缓存雪崩通常是指缓存大面积失效,或者 Redis 宕机,大量的请求直接去请求到了数据库,在并发大的情况下可能直接导致数据库宕机 出现缓存雪崩的原因在将数据存入缓存的时间我们通常都需要为缓存设置过期时间,避免缓存长时间占用内存资源,当然也会配合 redis 的淘汰策略对缓存进行失效淘汰 假如缓存设置的过期时间是相同的并且刚好在同一时刻全部失效,或者 Redis 宕机,就会造成所谓的缓存">
+<meta name="twitter:title" content="使用nacos配置中心功能">
+<meta name="twitter:description" content="开始学习使用 spring-cloud-alibaba 使用 nacos 配置中心功能1.创建一个 spring-cloud-alibaba 模块，添加以下依赖 12345&amp;lt;!--nacos配置中心--&amp;gt;&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;    &amp;lt;artifactId&amp;gt;">
 
-<link rel="canonical" href="http://yoursite.com/article/90da3a95.html">
+<link rel="canonical" href="http://yoursite.com/article/24f85607.html">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>缓存雪崩 | hongyu`s blog</title>
+  <title>使用nacos配置中心功能 | hongyu`s blog</title>
   
 
 
@@ -153,7 +153,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/90da3a95.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/24f85607.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/img/avatar.jpg">
@@ -166,7 +166,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          缓存雪崩
+          使用nacos配置中心功能
         </h1>
 
         <div class="post-meta">
@@ -175,16 +175,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-08-09 18:47:31" itemprop="dateCreated datePublished" datetime="2020-08-09T18:47:31+08:00">2020-08-09</time>
+              <time title="创建时间：2021-05-18 12:48:36 / 修改时间：13:15:06" itemprop="dateCreated datePublished" datetime="2021-05-18T12:48:36+08:00">2021-05-18</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-06 22:00:22" itemprop="dateModified" datetime="2021-04-06T22:00:22+08:00">2021-04-06</time>
-              </span>
 
           
 
@@ -197,19 +191,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="什么是缓存雪崩"><a href="#什么是缓存雪崩" class="headerlink" title="什么是缓存雪崩"></a>什么是缓存雪崩</h3><p>缓存雪崩通常是指缓存大面积失效,或者 Redis 宕机,大量的请求直接去请求到了数据库,在并发大的情况下可能直接导致数据库宕机</p>
-<h3 id="出现缓存雪崩的原因"><a href="#出现缓存雪崩的原因" class="headerlink" title="出现缓存雪崩的原因"></a>出现缓存雪崩的原因</h3><p>在将数据存入缓存的时间我们通常都需要为缓存设置过期时间,避免缓存长时间占用内存资源,当然也会配合 redis 的淘汰策略对缓存进行失效淘汰</p>
-<p>假如缓存设置的过期时间是相同的并且刚好在同一时刻全部失效,或者 Redis 宕机,就会造成所谓的缓存雪崩</p>
-<h3 id="如何避免缓存雪崩"><a href="#如何避免缓存雪崩" class="headerlink" title="如何避免缓存雪崩"></a>如何避免缓存雪崩</h3><ul>
-<li><p>在对缓存 key 设置过期时间的时候给这个过期时间加上一个随机值,尽量避免缓存同时失效的情况发生</p>
-</li>
-<li><p>一些热点数据可以不设置过期时间,这样缓存就不会过期,在更新数据成功之后再将缓存失效</p>
-</li>
-<li><p>为了避免 redis 宕机的情况,最好是采用 redis 哨兵或者集群模式部署,将热点数据分散存储在不同的 redis 库中也能避免雪崩的发生</p>
-</li>
-<li><p>最好是配合本地缓存+降级服务,这样如果缓存真的出了问题至少服务是可用的</p>
-</li>
-</ul>
+        <p>开始学习使用 spring-cloud-alibaba</p>
+<h3 id="使用-nacos-配置中心功能"><a href="#使用-nacos-配置中心功能" class="headerlink" title="使用 nacos 配置中心功能"></a>使用 nacos 配置中心功能</h3><p>1.创建一个 spring-cloud-alibaba 模块，添加以下依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--nacos配置中心--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2.创建测试 controller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RefreshScope</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;useLocalCache:false&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> useLocalCache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/get"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> useLocalCache;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.添加配置文件</p>
+<p>bootstarp.yml</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  application:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">coco-web</span></span><br><span class="line"><span class="attr">  profiles:</span></span><br><span class="line"><span class="attr">    active:</span> <span class="string">dev</span></span><br><span class="line"><span class="attr">  cloud:</span></span><br><span class="line"><span class="attr">    nacos:</span></span><br><span class="line"><span class="attr">      discovery:</span></span><br><span class="line"><span class="attr">        server-addr:</span> <span class="number">192.168</span><span class="number">.70</span><span class="number">.1</span><span class="string">:8848</span> <span class="comment">#注册中心地址</span></span><br><span class="line"><span class="attr">      config:</span></span><br><span class="line"><span class="attr">        server-addr:</span> <span class="number">192.168</span><span class="number">.70</span><span class="number">.1</span><span class="string">:8848</span> <span class="comment"># 配置中心地址</span></span><br><span class="line"><span class="attr">        file-extension:</span> <span class="string">yaml</span> <span class="comment"># 指定yaml格式的配置</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">9992</span></span><br></pre></td></tr></table></figure>
+
+<p>4.在 nacos 配置管理-&gt;配置列表中点击右侧+号新增配置</p>
+<p><img data-src="https://gitee.com/AtlsHY/picgo/raw/master/images/image-20210401133424970.png" alt></p>
+<p>并点击发布</p>
+<p>5.启动服务，访问接口</p>
+<p><img data-src="https://gitee.com/AtlsHY/picgo/raw/master/images/image-20210401133441929.png" alt></p>
+<p>6.查看配置列表，可以看见刚才发布的配置数据</p>
+<p><img data-src="https://gitee.com/AtlsHY/picgo/raw/master/images/image-20210401133458659.png" alt></p>
+<p>7.点击编辑，修改对应配置项的数值，点击发布</p>
+<p><img data-src="https://gitee.com/AtlsHY/picgo/raw/master/images/image-20210401133516106.png" alt></p>
+<p>8.再次访问接口，可以发现数值跟随 nacos 中的配置进行变更</p>
+<p><img data-src="https://gitee.com/AtlsHY/picgo/raw/master/images/image-20210401133530606.png" alt></p>
+<p>本文代码：<a href="https://gitee.com/AtlsHY/coco/tree/master/coco-web" target="_blank" rel="noopener">https://gitee.com/AtlsHY/coco/tree/master/coco-web</a></p>
 
     </div>
 
@@ -219,7 +223,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/cache/" rel="tag"># cache</a>
+              <a href="/tags/nacos/" rel="tag"># nacos</a>
+              <a href="/tags/spring-cloud-alibaba/" rel="tag"># spring-cloud-alibaba</a>
           </div>
 
         
@@ -228,13 +233,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/article/6c6b9155.html" rel="prev" title="缓存穿透和缓存击穿">
-      <i class="fa fa-chevron-left"></i> 缓存穿透和缓存击穿
+    <a href="/article/b56d6cb5.html" rel="prev" title="synchronized最好的锁对象">
+      <i class="fa fa-chevron-left"></i> synchronized最好的锁对象
     </a></div>
-      <div class="post-nav-item">
-    <a href="/article/670c67ee.html" rel="next" title="查看redis所有key对应value占用内存大小">
-      查看redis所有key对应value占用内存大小 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -293,7 +295,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是缓存雪崩"><span class="nav-number">1.</span> <span class="nav-text">什么是缓存雪崩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#出现缓存雪崩的原因"><span class="nav-number">2.</span> <span class="nav-text">出现缓存雪崩的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何避免缓存雪崩"><span class="nav-number">3.</span> <span class="nav-text">如何避免缓存雪崩</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-nacos-配置中心功能"><span class="nav-number">1.</span> <span class="nav-text">使用 nacos 配置中心功能</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
