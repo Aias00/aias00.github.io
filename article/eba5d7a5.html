@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 springboot 和 springmvc 的区别 算法：倒排">
+  <meta name="description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 dubbo消费者是如何调用到连接者的 两个消费者提供的服务名一样">
 <meta name="keywords" content="interview">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2021年春季面试记录">
 <meta property="og:url" content="http://yoursite.com/article/eba5d7a5.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 springboot 和 springmvc 的区别 算法：倒排">
+<meta property="og:description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 dubbo消费者是如何调用到连接者的 两个消费者提供的服务名一样">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-05-18T07:13:32.581Z">
+<meta property="og:updated_time" content="2021-05-19T06:49:00.389Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2021年春季面试记录">
-<meta name="twitter:description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 springboot 和 springmvc 的区别 算法：倒排">
+<meta name="twitter:description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 dubbo消费者是如何调用到连接者的 两个消费者提供的服务名一样">
 
 <link rel="canonical" href="http://yoursite.com/article/eba5d7a5.html">
 
@@ -175,10 +175,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-05-18 14:02:54 / 修改时间：15:13:32" itemprop="dateCreated datePublished" datetime="2021-05-18T14:02:54+08:00">2021-05-18</time>
+              <time title="创建时间：2021-05-18 14:02:54" itemprop="dateCreated datePublished" datetime="2021-05-18T14:02:54+08:00">2021-05-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-19 14:49:00" itemprop="dateModified" datetime="2021-05-19T14:49:00+08:00">2021-05-19</time>
+              </span>
 
           
 
@@ -202,6 +208,8 @@
 <li>分布式不用 queue 排队，如何实现抢工单</li>
 <li>分布式锁</li>
 <li>dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现</li>
+<li>dubbo消费者是如何调用到连接者的</li>
+<li>两个消费者提供的服务名一样 包名都一样</li>
 <li>springboot 和 springmvc 的区别</li>
 <li>算法：倒排链表</li>
 <li>JVM 结构</li>
@@ -216,6 +224,7 @@
 </ul>
 <h3 id="百度二面"><a href="#百度二面" class="headerlink" title="百度二面"></a>百度二面</h3><ul>
 <li>rabbitmq 如何保证消息不丢失，rabbitmq 顺序消费</li>
+<li>java内存模型哪个区域最容易发生内存泄漏</li>
 <li>加载一个类涉及到哪些内存区域</li>
 <li>dubbo 如何实现泛化（不引入 jar 包如何调用提供者的方法）</li>
 <li>共识算法</li>
@@ -229,6 +238,7 @@
 <li>concurrentHashMap1.7、1.8</li>
 <li>countDownLatch</li>
 <li>try 里面 return，finally 里面 return，会返回什么，finally 什么时候执行的</li>
+<li>spring如何做到ioc的</li>
 <li>spring bean 什么时候创建的，什么时候销毁的</li>
 <li>static/private static/final 哪些是线程安全的</li>
 <li>threadLocal</li>
