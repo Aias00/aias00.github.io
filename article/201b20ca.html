@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会成为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-08-03T13:50:35.419Z">
+<meta property="og:updated_time" content="2021-08-03T14:02:01.870Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis性能优化">
 <meta name="twitter:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会成为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-03 21:50:35" itemprop="dateModified" datetime="2021-08-03T21:50:35+08:00">2021-08-03</time>
+                <time title="修改时间：2021-08-03 22:02:01" itemprop="dateModified" datetime="2021-08-03T22:02:01+08:00">2021-08-03</time>
               </span>
 
           
@@ -252,7 +252,7 @@
 <ul>
 <li>CPU：intel 多种 cpu 都比 AMD 皓龙系列好</li>
 <li>虚拟化：实体机比虚拟机好，主要是因为部分虚拟机上，硬盘不是本地硬盘，监控软件导致 fork 指令的速度慢（持久化时会用到 fork），尤其是用 Xen 来做虚拟化时</li>
-<li>内存管理：在 linux 操作系统中，为了让 translation lookaside buffer 即 TLB，能够管理更多内存空间（TLB 只能缓存有限个 page），操作系统把一些 memory page 变得更大，比如 2MB 或者 1GB，而不是通常的 4096 字节，这些大的内存页叫做 huge pages。同时为了方便程序员使用这些大的 page，操作系统中实现了一个 transparent huge pages（THP）机制，使得大内存页对他们来说是透明的，可以像使用正常的内存 page 一样使用他们。但这种机制并不是数据库所需要的，可能是因为 THP 会把内存空间变得紧凑而连续，而数据库需要的是稀疏的内存空间，所以请近用掉 THP 功能。redis 也不例外，但 redis 官方博客上给出的理由是：使用大内存 page 会使 bgsave 时，fork 的速度变慢；如果 fork 之后，这些内存 page 在原进程中被修改了，他们就需要被复制（即 copy on write），这样的复制会消耗大量的内存，所以请禁止掉操作系统中的 transparent huge page 功能</li>
+<li>内存管理：在 linux 操作系统中，为了让 translation lookaside buffer 即 TLB，能够管理更多内存空间（TLB 只能缓存有限个 page），操作系统把一些 memory page 变得更大，比如 2MB 或者 1GB，而不是通常的 4096 字节，这些大的内存页叫做 huge pages。同时为了方便程序员使用这些大的 page，操作系统中实现了一个 transparent huge pages（THP）机制，使得大内存页对他们来说是透明的，可以像使用正常的内存 page 一样使用他们。但这种机制并不是数据库所需要的，可能是因为 THP 会把内存空间变得紧凑而连续，而数据库需要的是稀疏的内存空间，所以请禁用掉 THP 功能。redis 也不例外，但 redis 官方博客上给出的理由是：使用大内存 page 会使 bgsave 时，fork 的速度变慢；如果 fork 之后，这些内存 page 在原进程中被修改了，他们就需要被复制（即 copy on write），这样的复制会消耗大量的内存，所以请禁止掉操作系统中的 transparent huge page 功能</li>
 <li>交换空间：当一些内存 page 被存储在交换空间文件上，而 redis 又要请求那些数据，那么操作系统会阻塞 redis 进程，然后把想要的 page 从交换空间中拿出来，放进内存。这其中涉及整个内存的阻塞，所以可能会造成延时问题，一个解决方法是禁用交换空间</li>
 </ul>
 <h3 id="考虑持久化带来的开销"><a href="#考虑持久化带来的开销" class="headerlink" title="考虑持久化带来的开销"></a>考虑持久化带来的开销</h3><p>redis 的一项重要功能就是持久化，也就是把数据复制到硬盘上。基于持久化，才有了 redis 的数据恢复等功能</p>

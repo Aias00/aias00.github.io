@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="分库分表分库分表之扩容分库、分表、垂直拆分和水平拆分 分库：因一个数据库支持的最高并发访问数是有限的，可以将一个数据库的数据拆分到多个库中，来增加最高访问数  分表：因一个表的数据量太大，用索引来查询数据都搞不定了，所以可以将一张表的数据拆分到多张表，查询时只需要查拆分后的某一张表，SQL 语句的查询性能得到提升  分库分表优势：分库分表后，承受的并发增加了多倍；磁盘使用率大大降低；单表数据量减少">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-09T05:34:19.643Z">
+<meta property="og:updated_time" content="2021-08-03T14:25:47.229Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式专题">
 <meta name="twitter:description" content="分库分表分库分表之扩容分库、分表、垂直拆分和水平拆分 分库：因一个数据库支持的最高并发访问数是有限的，可以将一个数据库的数据拆分到多个库中，来增加最高访问数  分表：因一个表的数据量太大，用索引来查询数据都搞不定了，所以可以将一张表的数据拆分到多张表，查询时只需要查拆分后的某一张表，SQL 语句的查询性能得到提升  分库分表优势：分库分表后，承受的并发增加了多倍；磁盘使用率大大降低；单表数据量减少">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-09 13:34:19" itemprop="dateModified" datetime="2021-04-09T13:34:19+08:00">2021-04-09</time>
+                <time title="修改时间：2021-08-03 22:25:47" itemprop="dateModified" datetime="2021-08-03T22:25:47+08:00">2021-08-03</time>
               </span>
 
           
@@ -219,7 +219,7 @@
 </ul>
 <h4 id="垂直拆分带来的问题"><a href="#垂直拆分带来的问题" class="headerlink" title="垂直拆分带来的问题"></a>垂直拆分带来的问题</h4><ul>
 <li>依然存在单表数据量过大的问题</li>
-<li>部份表无法关联查询，只能通过接口聚合的方式解决，提升了开发的复杂度</li>
+<li>部分表无法关联查询，只能通过接口聚合的方式解决，提升了开发的复杂度</li>
 <li>分布式事务处理复杂</li>
 </ul>
 <h4 id="水平拆分带来的问题"><a href="#水平拆分带来的问题" class="headerlink" title="水平拆分带来的问题"></a>水平拆分带来的问题</h4><ul>
@@ -292,7 +292,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>在分布式的世界中，存在着各个服务之间相互调用，链路可能很长，如果有任何一方执行出错，则需要回滚设计到的其他服务的相关操作。比如订单服务下单成功，然后调用营销中心发券接口发了一张代金券，但是微信支付扣款失败，则需要退回发的那张券，且要将订单状态改为异常订单</p>
+<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>在分布式的世界中，存在着各个服务之间相互调用，链路可能很长，如果有任何一方执行出错，则需要回滚涉及到的其他服务的相关操作。比如订单服务下单成功，然后调用营销中心发券接口发了一张代金券，但是微信支付扣款失败，则需要退回发的那张券，且要将订单状态改为异常订单</p>
 <h3 id="分布式事务的几种主要方式"><a href="#分布式事务的几种主要方式" class="headerlink" title="分布式事务的几种主要方式"></a>分布式事务的几种主要方式</h3><ul>
 <li>XA 方案（两段式提交）</li>
 <li>TCC 方案（try、confirm、cancel）</li>
@@ -302,7 +302,7 @@
 </ul>
 <h4 id="XA-方案原理"><a href="#XA-方案原理" class="headerlink" title="XA 方案原理"></a>XA 方案原理</h4><p><img data-src="https://i.loli.net/2021/04/09/brVtGeCmkWMY36l.png" alt="2021-04-09-09-57-4420210409095743"></p>
 <ul>
-<li>事务管理器负责协调多个数据库的事务，先问问各个数据库准备好了吗？如果准备好了，则在数据库执行操作，如果任何一个数据库没有准备好，则执行事务</li>
+<li>事务管理器负责协调多个数据库的事务，先问问各个数据库准备好了吗？如果准备好了，则在数据库执行操作，如果任何一个数据库没有准备好，则不执行事务</li>
 <li>适合单体应用，不适合微服务架构，因为每个服务只能访问自己的数据库，不允许交叉访问其他微服务的数据库</li>
 </ul>
 <h4 id="TCC-方案"><a href="#TCC-方案" class="headerlink" title="TCC 方案"></a>TCC 方案</h4><ul>
@@ -349,12 +349,12 @@
 <p>基本原理：</p>
 <ul>
 <li>利用消息中间件<strong>RocketMQ</strong>来实现消息事务</li>
-<li>第一步：A 系统发送一个消息到 MQ，MQ 将消息状态标记为<strong>prepared</strong>（预备状态，半消息），该消息无法被订阅</li>
+<li>第一步：A 系统发送一个<strong>prepared</strong>（预备状态，半消息）消息到 MQ，该消息无法被订阅</li>
 <li>第二步：MQ 响应 A 系统，告诉 A 系统已经接收到消息了</li>
 <li>第三步：A 系统执行本地事务</li>
 <li>第四步：若 A 系统执行本地事务成功，将<strong>prepared</strong>消息改为<strong>commit</strong>（提交事务消息），B 系统就可以订阅到消息了</li>
 <li>第五步：MQ 也会定时轮询所有<strong>prepared</strong>消息，回调 A 系统，让 A 系统告诉 MQ 本地事务处理的怎么样了，是继续等待还是回滚</li>
-<li>第六步：A 系统检查本地事务的执行结果</li>
+<li>第六步：A 系统收到MQ回查，检查本地事务的执行结果</li>
 <li>第七步：若 A 系统执行本地事务失败，则 MQ 收到<strong>Rollback</strong>信号，丢弃消息。若执行本地事务成功，则 MQ 收到<strong>commit</strong>信号</li>
 <li>B 系统收到消息后，开始执行本地事务，如果执行失败，则自动不断重试直到成功。或 B 系统采取回滚的方式，同时要通过其他方式通知 A 系统也进行回滚</li>
 <li>B 系统需要保证幂等性</li>
