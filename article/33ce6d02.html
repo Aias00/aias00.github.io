@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.dubbo 负载均衡策略 随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重  轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求  最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机">
+<meta name="keywords" content="interview,dubbo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dubbo面试知识点(持续更新)">
+<meta property="og:url" content="http://yoursite.com/article/33ce6d02.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="1.dubbo 负载均衡策略 随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重  轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求  最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T14:03:56.450Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="dubbo面试知识点(持续更新)">
+<meta name="twitter:description" content="1.dubbo 负载均衡策略 随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重  轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求  最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机">
+
+<link rel="canonical" href="http://yoursite.com/article/33ce6d02.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>dubbo面试知识点(持续更新) | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/33ce6d02.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          dubbo面试知识点(持续更新)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-09 14:59:07" itemprop="dateCreated datePublished" datetime="2021-03-09T14:59:07+08:00">2021-03-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:03:56" itemprop="dateModified" datetime="2021-04-06T22:03:56+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-dubbo-负载均衡策略"><a href="#1-dubbo-负载均衡策略" class="headerlink" title="1.dubbo 负载均衡策略"></a>1.dubbo 负载均衡策略</h3><ul>
+<li><p>随机模式 RandomLoadBalance：按权重设置随机概率,在一个截面上碰撞的概率较高,但调用量越大分布越均匀,而且按概率使用权重后也比较均匀,有利于动态调整提供者权重</p>
+</li>
+<li><p>轮询模式 RoundRobinLoadBlance：按公约后的权重设置轮询比例,但存在响应慢的服务提供者会堆积请求</p>
+</li>
+<li><p>最少活跃调用 LeastActiveLoadBlance：相同活跃数的随机,活跃数指调用前后计数差,使慢的提供者收到更少请求,因为越慢的提供者的调用前后计数差会越大</p>
+</li>
+<li><p>一致性 hash 调用 ConsistentHashLoadBalance：相同参数的请求总是发到统一提供者,当某台提供者挂掉时,原本发往该提供者的请求,基于虚拟节点,平摊到其他提供者,不会引起剧烈变动</p>
+</li>
+</ul>
+<h3 id="2-dubbo-集群容错"><a href="#2-dubbo-集群容错" class="headerlink" title="2.dubbo 集群容错"></a>2.dubbo 集群容错</h3><ul>
+<li><p>Failover cluster：失败重试,当服务消费者调用服务提供者失败后自动切换到其他服务提供者进行重试,通常用于读操作或者具有幂等的写操作,需要注意的是重试会带来更长延迟.可通过 retries=2 来设置重试次数（不含第一次）</p>
+</li>
+<li><p>Failfast cluster：快速失败,当服务消费方调用服务提供者失败后,立即报错,也就是只调用一次,通常这种模式用于非幂等性的写操作</p>
+</li>
+<li><p>Failsafe cluster：失败安全,当服务消费者调用服务提供者出现异常时,直接忽略异常.这种模式通常用于写入审计日志等操作</p>
+</li>
+<li><p>Failback cluster：失败自动恢复.当服务消费者调用服务提供者出现异常之后,在后台记录失败的请求,并按照一定的策略后期再进行重试,这种模式通常用于消息通知操作</p>
+</li>
+<li><p>Forking cluster：并行调用.当消费者调用一个接口方法后,dubboclient 会并行调用多个提供者提供的服务,只要一个成功返回,这种模式通常用于实时性要求较高的读操作,但需要浪费更多服务资源,可通过 forks=2 来设置最大并行数</p>
+</li>
+<li><p>Broadcast cluster：广播调用.当消费者调用一个接口方法后,dubboclient 会逐个调用所有服务提供者,任意一台调用异常则这次调用就标志失败,这种模式通常用于通知所有提供者更新缓存或日志等本地资源信息.</p>
+</li>
+</ul>
+<h3 id="3-dubbo-支持的协议"><a href="#3-dubbo-支持的协议" class="headerlink" title="3.dubbo 支持的协议"></a>3.dubbo 支持的协议</h3><h4 id="dubbo-协议（默认）"><a href="#dubbo-协议（默认）" class="headerlink" title="dubbo 协议（默认）"></a>dubbo 协议（默认）</h4><ul>
+<li><p>采用单一长连接和 NIO 异步通讯,适合小数据量大并发的服务调用,以及服务消费者机器远大于服务提供者机器数的情况,不适合传送大数据量的服务,比如传文件、传视频等,除非请求量很低;</p>
+</li>
+<li><p>连接个数：单连接,</p>
+</li>
+<li><p>连接方式：长连接,</p>
+</li>
+<li><p>传输协议: TCP,</p>
+</li>
+<li><p>传输方式: NIO 异步传输,</p>
+</li>
+<li><p>序列化方式: Hessian 二进制序列化,</p>
+</li>
+<li><p>适用场景：常规远程服务方法调用</p>
+</li>
+<li><p>dubbo 协议缺省每服务每提供者每消费者使用单一长连接,如果数据量较大,可以使用多个连接</p>
+</li>
+<li><p>为防止大量连接撑挂,可以在服务提供方限制大连接接受数,以实现服务提供方自我保护</p>
+</li>
+</ul>
+<h5 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h5><ul>
+<li><p>为什么要消费者比提供者个数多：因为 dubbo 协议采用单一长连接,假设网络为千兆网卡（1024Mbit=128MByte）,根据测试经验数据每条连接最多只能压满 7MByte,理论上 1 个服务提供者需要 20 个服务消费者才能压满网卡</p>
+</li>
+<li><p>为什么不能传大包：因为 dubbo 协议采用单一长连接,如果每次请求的数据包大小为 500KByte,假设网络为千兆网卡,每条连接最大 7MByte,单个服务提供者的 TPS（每秒处理事务数）最大为：128MByte/500KByte=262.单个消费者调用单个服务提供者的 TPS 最大为：7MByte/500KByte=14.如果能接受,可以考虑使用,否则网络将成为瓶颈</p>
+</li>
+<li><p>为什么采用异步单一长连接：因为服务的现状大都是服务提供者少,通常只有几台机器,而服务的消费者多,可能整个网站都在访问该服务,如果采用常规的 Hessian 服务,服务提供者很容易就被压垮,通过单一连接,保证单一消费者不会压死提供者,长连接,减少连接握手验证,并采用异步 IO,复用连接池,防止 C10K 问题</p>
+</li>
+</ul>
+<h4 id="rmi-协议"><a href="#rmi-协议" class="headerlink" title="rmi 协议"></a>rmi 协议</h4><ul>
+<li><p>采用 JDK 标准的 java.rmi.*实现,采用阻塞式短连接和 JDK 标准序列化方式</p>
+</li>
+<li><p>连接个数：多连接</p>
+</li>
+<li><p>连接方式：短连接</p>
+</li>
+<li><p>传输协议：TCP</p>
+</li>
+<li><p>传输方式：同步传输</p>
+</li>
+<li><p>序列化：Java 标准二进制序列化</p>
+</li>
+<li><p>适用范围：传入传出参数数据包大小混合,消费者与提供者个数差不多,可以传文件</p>
+</li>
+<li><p>适用场景：常规远程方法调用,与原生 rmi 服务互操作</p>
+</li>
+</ul>
+<h4 id="Hessian-协议"><a href="#Hessian-协议" class="headerlink" title="Hessian 协议"></a>Hessian 协议</h4><ul>
+<li><p>Hessian 协议用于集成 Hessian 服务,Hessian 底层采用 http 通讯,采用 servlet 暴露服务,dubbo 缺省内置 Jetty 作为服务器实现</p>
+</li>
+<li><p>dubbo 的 Hessian 协议可以和原生的 Hessian 服务互操作,即提供者用 dubbo 的 Hessian 协议暴露服务,消费者直接用标准 Hessian 接口调用;或者提供方用标准 Hessian 暴露服务,消费方用 dubbo 的 Hessian 协议调用</p>
+</li>
+<li><p>连接个数：多连接</p>
+</li>
+<li><p>连接方式：短连接</p>
+</li>
+<li><p>传输协议： http</p>
+</li>
+<li><p>传输方式：同步传输</p>
+</li>
+<li><p>序列化： Hessian 二进制序列化</p>
+</li>
+<li><p>适用范围：传入传出参数数据包较大,提供者比消费者个数多,提供者压力较大,可传文件</p>
+</li>
+<li><p>适用场景：页面传输,文件传输,或与原生 Hessian 服务互操作</p>
+</li>
+<li><p>参数及返回值需实现序列化接口</p>
+</li>
+<li><p>参数及返回值不能自定义实现 List,Map,Number,Date,Calender 等接口,只能用 JDK 自带的实现,因为 Hessian 会做特殊处理,自定义实现类中的属性值都会丢失</p>
+</li>
+</ul>
+<h4 id="http-协议"><a href="#http-协议" class="headerlink" title="http 协议"></a>http 协议</h4><ul>
+<li><p>基于 http 表单的远程调用协议</p>
+</li>
+<li><p>连接个数：多连接</p>
+</li>
+<li><p>连接方式：短连接</p>
+</li>
+<li><p>传输协议：http</p>
+</li>
+<li><p>传输方式：同步传输</p>
+</li>
+<li><p>序列化：表单序列化,即 json</p>
+</li>
+<li><p>适用范围：传入传出参数数据包大小混合,提供者比消费者个数多,可用浏览器查看,可用表单或者 url 传入参数,暂不支持传文件</p>
+</li>
+<li><p>适用场景：需同时给应用程序和浏览器 JS 使用的服务</p>
+</li>
+</ul>
+<h4 id="webservice-协议"><a href="#webservice-协议" class="headerlink" title="webservice 协议"></a>webservice 协议</h4><ul>
+<li><p>基于 webservice 的远程调用协议,基于 Apache CXF 的 fronted-simple 和 transports-http 实现</p>
+</li>
+<li><p>可以和原生 webservice 服务互操作：提供者用 dubbo 的 webservice 协议暴露服务,消费者直接用标准的 webservice 接口调用;或提供者用标准的 webservice 暴露服务,消费者用 dubbo 的 webservice 协议调用</p>
+</li>
+<li><p>连接个数：多连接</p>
+</li>
+<li><p>连接方式：短连接</p>
+</li>
+<li><p>传输协议：http</p>
+</li>
+<li><p>传输方式：同步传输</p>
+</li>
+<li><p>序列化：soap 文本序列化</p>
+</li>
+<li><p>适用场景：系统集成,跨语言调用</p>
+</li>
+<li><p>参数及返回值需实现序列化接口</p>
+</li>
+<li><p>参数尽量使用基本类型和 POJO</p>
+</li>
+</ul>
+<h4 id="thrift-协议"><a href="#thrift-协议" class="headerlink" title="thrift 协议"></a>thrift 协议</h4><ul>
+<li><p>当亲 dubbo 支持的 thrift 协议是对 thrift 原生协议的拓展,在原生协议的基础上添加了一些额外的头信息,比如 service name, magic number 等.</p>
+</li>
+<li><p>使用 dubbo thrift 协议同样需要使用 thrift 的 idl compiler 编译生成相应的 Java 代码</p>
+</li>
+<li><p>thrift 不支持 null 值,不能在协议中传 null</p>
+</li>
+</ul>
+<h4 id="memcached-协议"><a href="#memcached-协议" class="headerlink" title="memcached 协议"></a>memcached 协议</h4><ul>
+<li>基于 memcached 实现的 rpc 协议</li>
+</ul>
+<h4 id="redis-协议"><a href="#redis-协议" class="headerlink" title="redis 协议"></a>redis 协议</h4><ul>
+<li>基于 redis 实现的 rpc 协议</li>
+</ul>
+<h4 id="rest-协议"><a href="#rest-协议" class="headerlink" title="rest 协议"></a>rest 协议</h4><ul>
+<li>基于标准的 java rest api–JAX-RS2.0 实现的 REST 调用支持</li>
+</ul>
+<h3 id="4-dubbo-推荐用什么协议"><a href="#4-dubbo-推荐用什么协议" class="headerlink" title="4.dubbo 推荐用什么协议"></a>4.dubbo 推荐用什么协议</h3><p>默认使用 dubbo 协议</p>
+<h3 id="5-dubbo-默认使用什么序列化框架"><a href="#5-dubbo-默认使用什么序列化框架" class="headerlink" title="5.dubbo 默认使用什么序列化框架"></a>5.dubbo 默认使用什么序列化框架</h3><p>dubbo 协议默认使用 Hessian2 序列化</p>
+<p>rmi 协议默认使用 java 序列化</p>
+<p>http 协议默认为 json</p>
+<p>Hessian 协议默认 Hessian 序列化</p>
+<p>webservice 协议默认 soap 文本序列化</p>
+<p>也可以指定第三方的序列化框架,比如 kryo,FST 等</p>
+<h3 id="6-SpringCloud-和-dubbo-对比"><a href="#6-SpringCloud-和-dubbo-对比" class="headerlink" title="6.SpringCloud 和 dubbo 对比"></a>6.SpringCloud 和 dubbo 对比</h3><ul>
+<li><p>dubbo 由于是二进制的传输,占用带宽会更少</p>
+</li>
+<li><p>SpringCloud 是 http 协议传输,带宽会比较多,同时使用 Http 协议一般会使用 json 报文,消耗更大</p>
+</li>
+<li><p>dubbo 的开发难度较大,原因是 dubbo 的 jar 包依赖问题很多大型工程无法解决</p>
+</li>
+<li><p>SpringCloud 的接口协议约定比较自由松散,需要有强有力的行政措施来限制接口无序升级</p>
+</li>
+<li><p>dubbo 的注册中心可以选择 zk,redis 等,SpringCloud 的注册中心可以选 eureka 或者 Consul</p>
+</li>
+<li><p>SpringCloud 提供了丰富的组件:如服务网关\断路器\分布式配置\链路追踪等</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+              <a href="/tags/dubbo/" rel="tag"># dubbo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/a8db1400.html" rel="prev" title="rabbit-mq面试知识点(持续更新)">
+      <i class="fa fa-chevron-left"></i> rabbit-mq面试知识点(持续更新)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/ce3641e9.html" rel="next" title="锁面试知识点(持续更新)">
+      锁面试知识点(持续更新) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-dubbo-负载均衡策略"><span class="nav-number">1.</span> <span class="nav-text">1.dubbo 负载均衡策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-dubbo-集群容错"><span class="nav-number">2.</span> <span class="nav-text">2.dubbo 集群容错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-dubbo-支持的协议"><span class="nav-number">3.</span> <span class="nav-text">3.dubbo 支持的协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#dubbo-协议（默认）"><span class="nav-number">3.1.</span> <span class="nav-text">dubbo 协议（默认）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#常见问题"><span class="nav-number">3.1.1.</span> <span class="nav-text">常见问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rmi-协议"><span class="nav-number">3.2.</span> <span class="nav-text">rmi 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hessian-协议"><span class="nav-number">3.3.</span> <span class="nav-text">Hessian 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http-协议"><span class="nav-number">3.4.</span> <span class="nav-text">http 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#webservice-协议"><span class="nav-number">3.5.</span> <span class="nav-text">webservice 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#thrift-协议"><span class="nav-number">3.6.</span> <span class="nav-text">thrift 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#memcached-协议"><span class="nav-number">3.7.</span> <span class="nav-text">memcached 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis-协议"><span class="nav-number">3.8.</span> <span class="nav-text">redis 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rest-协议"><span class="nav-number">3.9.</span> <span class="nav-text">rest 协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-dubbo-推荐用什么协议"><span class="nav-number">4.</span> <span class="nav-text">4.dubbo 推荐用什么协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-dubbo-默认使用什么序列化框架"><span class="nav-number">5.</span> <span class="nav-text">5.dubbo 默认使用什么序列化框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-SpringCloud-和-dubbo-对比"><span class="nav-number">6.</span> <span class="nav-text">6.SpringCloud 和 dubbo 对比</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

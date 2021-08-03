@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="new Object()占多少个字节 mark word(8 字节)+klass(4 字节,默认开启指针压缩)+padding(4 字节) = 16 字节  mark word(8 字节)+klass(8 字节,不开启指针压缩) = 16 字节   User (int id,String name) User u = new User(1,”李四”)mark word(8 字节)+klass(4">
+<meta name="keywords" content="interview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试问题及答案">
+<meta property="og:url" content="http://yoursite.com/article/b0523a70.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="new Object()占多少个字节 mark word(8 字节)+klass(4 字节,默认开启指针压缩)+padding(4 字节) = 16 字节  mark word(8 字节)+klass(8 字节,不开启指针压缩) = 16 字节   User (int id,String name) User u = new User(1,”李四”)mark word(8 字节)+klass(4">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-12T09:26:39.503Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试问题及答案">
+<meta name="twitter:description" content="new Object()占多少个字节 mark word(8 字节)+klass(4 字节,默认开启指针压缩)+padding(4 字节) = 16 字节  mark word(8 字节)+klass(8 字节,不开启指针压缩) = 16 字节   User (int id,String name) User u = new User(1,”李四”)mark word(8 字节)+klass(4">
+
+<link rel="canonical" href="http://yoursite.com/article/b0523a70.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>面试问题及答案 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/b0523a70.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          面试问题及答案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-20 22:56:46" itemprop="dateCreated datePublished" datetime="2021-03-20T22:56:46+08:00">2021-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-12 17:26:39" itemprop="dateModified" datetime="2021-04-12T17:26:39+08:00">2021-04-12</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="new-Object-占多少个字节"><a href="#new-Object-占多少个字节" class="headerlink" title="new Object()占多少个字节"></a>new Object()占多少个字节</h3><ul>
+<li><p>mark word(8 字节)+klass(4 字节,默认开启指针压缩)+padding(4 字节) = 16 字节</p>
+</li>
+<li><p>mark word(8 字节)+klass(8 字节,不开启指针压缩) = 16 字节</p>
+</li>
+</ul>
+<h3 id="User-int-id-String-name-User-u-new-User-1-”李四”"><a href="#User-int-id-String-name-User-u-new-User-1-”李四”" class="headerlink" title="User (int id,String name) User u = new User(1,”李四”)"></a>User (int id,String name) User u = new User(1,”李四”)</h3><p>mark word(8 字节)+klass(4 字节,默认开启指针压缩)+instance data int(4 字节) + 开启普通对象指针压缩后 String(4 字节)+padding(4 字节) = 24 字节</p>
+<h3 id="线程交替打印"><a href="#线程交替打印" class="headerlink" title="线程交替打印"></a>线程交替打印</h3><p>实现两个线程交替打印,实现字母在前数字在后,可以用信号量,synchronized 关键字和 Lock 实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.CountDownLatch;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.Condition;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.Lock;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> Lock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> Condition c1 = lock.newCondition();</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> Condition c2 = lock.newCondition();</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> CountDownLatch count = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">  String c = <span class="string">"ABCDEFGHI"</span>;</span><br><span class="line">  <span class="keyword">char</span>[] ca = c.toCharArray();</span><br><span class="line">  String n = <span class="string">"123456789"</span>;</span><br><span class="line">  <span class="keyword">char</span>[] na = n.toCharArray();</span><br><span class="line"></span><br><span class="line">  Thread t1 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">    lock.lock();</span><br><span class="line">    count.countDown();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">char</span> caa : ca) &#123;</span><br><span class="line">     c1.signal();</span><br><span class="line">     System.out.print(caa);</span><br><span class="line">     c2.await();</span><br><span class="line">    &#125;</span><br><span class="line">    c1.signal();</span><br><span class="line">   &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">   &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    lock.unlock();</span><br><span class="line">   &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  Thread t2 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">    count.await();</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">char</span> naa : na) &#123;</span><br><span class="line">     c2.signal();</span><br><span class="line">     System.out.print(naa);</span><br><span class="line">     c1.await();</span><br><span class="line">    &#125;</span><br><span class="line">    c2.signal();</span><br><span class="line">   &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">   &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    lock.unlock();</span><br><span class="line">   &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  t1.start();</span><br><span class="line">  t2.start();</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="线程之间如何通信"><a href="#线程之间如何通信" class="headerlink" title="线程之间如何通信"></a>线程之间如何通信</h3><ul>
+<li><p>共享内存: 隐式通信</p>
+</li>
+<li><p>消息传递: 显示通信</p>
+</li>
+</ul>
+<h3 id="线程之间如何同步"><a href="#线程之间如何同步" class="headerlink" title="线程之间如何同步"></a>线程之间如何同步</h3><ul>
+<li><p>在共享内存的并发模型中,同步是显示做的; synchronized</p>
+</li>
+<li><p>在消息传递的并发模型中,由于消息发布必须在消息接收之前,所以同步是隐式</p>
+</li>
+</ul>
+<h3 id="volatile-和-Synchronized-区别"><a href="#volatile-和-Synchronized-区别" class="headerlink" title="volatile 和 Synchronized 区别"></a>volatile 和 Synchronized 区别</h3><h4 id="volatile-可见性-原子性-不能做到复合操作的原子性"><a href="#volatile-可见性-原子性-不能做到复合操作的原子性" class="headerlink" title="volatile 可见性/原子性,不能做到复合操作的原子性"></a>volatile 可见性/原子性,不能做到复合操作的原子性</h4><p>1.对于声明了 volatile 的变量进行写操作的时候,JVM 会向处理器发送一条 Lock 前缀的指令,会把这个变量所在缓存行的数据写回到主内存</p>
+<p>2.在多处理器的情况下,保证各个处理器缓存一致性的特点,就会实现缓存一致性协议</p>
+<h4 id="synchronized-可重入锁-互斥性-可见性-有序性"><a href="#synchronized-可重入锁-互斥性-可见性-有序性" class="headerlink" title="synchronized 可重入锁/互斥性/可见性/有序性"></a>synchronized 可重入锁/互斥性/可见性/有序性</h4><h3 id="如何保证多线程顺序执行"><a href="#如何保证多线程顺序执行" class="headerlink" title="如何保证多线程顺序执行"></a>如何保证多线程顺序执行</h3><ul>
+<li>通过 join: 让主线程等待子线程执行结束之后才能继续进行</li>
+<li>单线程的线程池: Executors.newSingleThreadExecuotr();</li>
+</ul>
+<h3 id="Lock-和-Synchronized-区别"><a href="#Lock-和-Synchronized-区别" class="headerlink" title="Lock 和 Synchronized 区别"></a>Lock 和 Synchronized 区别</h3><p>Lock: java5 以后出现的 JUC 包中的(java.util.concurrent.locks)</p>
+<p>1.Synchronized 锁什么时候释放</p>
+<ul>
+<li><p>获取锁的线程执行完了该代码块</p>
+</li>
+<li><p>线程执行出现异常</p>
+</li>
+</ul>
+<h3 id="线程和进程的概念"><a href="#线程和进程的概念" class="headerlink" title="线程和进程的概念"></a>线程和进程的概念</h3><p>每个应用程序是一个进程,一个进程里可以运行多个线程,多个线程是为了更好的利用 CPU 资源</p>
+<h3 id="两个-Integer-的引用对象传给一个-swap-方法在方法内部进行交换-返回后-两个引用的值是否会发生变化"><a href="#两个-Integer-的引用对象传给一个-swap-方法在方法内部进行交换-返回后-两个引用的值是否会发生变化" class="headerlink" title="两个 Integer 的引用对象传给一个 swap 方法在方法内部进行交换,返回后,两个引用的值是否会发生变化"></a>两个 Integer 的引用对象传给一个 swap 方法在方法内部进行交换,返回后,两个引用的值是否会发生变化</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(Integer a, Integer b)</span> <span class="keyword">throws</span> NoSuchFieldException, IllegalAccessException </span>&#123;</span><br><span class="line">        Field field = Integer.class.getDeclaredField(<span class="string">"value"</span>);</span><br><span class="line">        field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        Integer temp = <span class="keyword">new</span> Integer(a.intValue());</span><br><span class="line">        field.set(a, b);</span><br><span class="line">        field.set(b, temp);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="阻塞-IO-和非阻塞-IO"><a href="#阻塞-IO-和非阻塞-IO" class="headerlink" title="阻塞 IO 和非阻塞 IO"></a>阻塞 IO 和非阻塞 IO</h3><h3 id="七层网络模型"><a href="#七层网络模型" class="headerlink" title="七层网络模型"></a>七层网络模型</h3><p>应用层<br>表示层<br>会话层<br>传输层<br>网络层<br>数据链路层<br>物理层</p>
+<h3 id="mysql-的-binlog"><a href="#mysql-的-binlog" class="headerlink" title="mysql 的 binlog"></a>mysql 的 binlog</h3><p>记录 mysql 的数据更新和潜在更新</p>
+<p>主从复制依赖 binlog</p>
+<p>master 写数据之后写到 binlog,发送事件通知</p>
+<p>slave IO 线程读取 binlog,写入 relay log</p>
+<p>slave sql 线程从 relay log 读取语句执行</p>
+<p>三种格式:<br>statement: 基于 sql 语句</p>
+<p>row: 基于行模式,记录变更的数据</p>
+<p>mixed: 混合模式,</p>
+<h3 id="cookie-和-session-的关联关系"><a href="#cookie-和-session-的关联关系" class="headerlink" title="cookie 和 session 的关联关系"></a>cookie 和 session 的关联关系</h3><p>cookie 在客户端保存信息,session 在服务端保存信息</p>
+<p>服务端生成 JSESSIONID,当作 key 存入 ConcurrentHashMap,value 存储客户端信息,将 JSESSIONID 返回给客户端</p>
+<p>客户端将 JSESSIONID 存入 cookie</p>
+<p>把用户信息存储到 session 中,关闭浏览器,session 就失效了</p>
+<p>分布式架构 session 共享和 session 复制</p>
+<p>1.session 复制:每个节点都复制 session</p>
+<p>2.客户端保存唯一 id,服务端把 session 存入 redis</p>
+<p>3.jwt</p>
+<h3 id="AOP-底层实现原理"><a href="#AOP-底层实现原理" class="headerlink" title="AOP 底层实现原理"></a>AOP 底层实现原理</h3><ul>
+<li><p>动态代理</p>
+</li>
+<li><p>字节码</p>
+</li>
+</ul>
+<h3 id="为什么不能直接调用-run-方法启动线程"><a href="#为什么不能直接调用-run-方法启动线程" class="headerlink" title="为什么不能直接调用 run()方法启动线程"></a>为什么不能直接调用 run()方法启动线程</h3><p>JVM 执行 start()方法,会另外启动一个线程去执行 thread 的 run()方法,这时执行 start()的方法和执行 run()方法的线程会并行,</p>
+<p>重复执行 start()方法,会抛出 IllegalThreadStateException</p>
+<h3 id="如何保证多线程下-i-结果正确"><a href="#如何保证多线程下-i-结果正确" class="headerlink" title="如何保证多线程下 i++结果正确"></a>如何保证多线程下 i++结果正确</h3><ul>
+<li><p>使用 CAS+原子类</p>
+</li>
+<li><p>使用锁机制</p>
+</li>
+<li><p>使用 synchronized</p>
+</li>
+</ul>
+<h3 id="谈谈你理解的-HashMap-讲讲其中的-get-put-过程"><a href="#谈谈你理解的-HashMap-讲讲其中的-get-put-过程" class="headerlink" title="谈谈你理解的 HashMap,讲讲其中的 get put 过程"></a>谈谈你理解的 HashMap,讲讲其中的 get put 过程</h3><h4 id="1-8-做了什么优化"><a href="#1-8-做了什么优化" class="headerlink" title="1.8 做了什么优化?"></a>1.8 做了什么优化?</h4><h4 id="是线程安全的嘛"><a href="#是线程安全的嘛" class="headerlink" title="是线程安全的嘛?"></a>是线程安全的嘛?</h4><h4 id="不安全会导致哪些问题"><a href="#不安全会导致哪些问题" class="headerlink" title="不安全会导致哪些问题?"></a>不安全会导致哪些问题?</h4><h4 id="如何解决-有没有线程安全的并发容器"><a href="#如何解决-有没有线程安全的并发容器" class="headerlink" title="如何解决?有没有线程安全的并发容器?"></a>如何解决?有没有线程安全的并发容器?</h4><h3 id="ConcurrentHashMap-是如何实现的-1-7、1-8-实现有何不同-为什么这么做"><a href="#ConcurrentHashMap-是如何实现的-1-7、1-8-实现有何不同-为什么这么做" class="headerlink" title="ConcurrentHashMap 是如何实现的?1.7、1.8 实现有何不同,为什么这么做"></a>ConcurrentHashMap 是如何实现的?1.7、1.8 实现有何不同,为什么这么做</h3><h3 id="1-8-中-ConcurrentHashMap-的-sizeCtl-作用-大致说下协助扩容跟标志位"><a href="#1-8-中-ConcurrentHashMap-的-sizeCtl-作用-大致说下协助扩容跟标志位" class="headerlink" title="1.8 中 ConcurrentHashMap 的 sizeCtl 作用,大致说下协助扩容跟标志位"></a>1.8 中 ConcurrentHashMap 的 sizeCtl 作用,大致说下协助扩容跟标志位</h3><h3 id="HashMap-为什么不用跳表替换红黑树呢"><a href="#HashMap-为什么不用跳表替换红黑树呢" class="headerlink" title="HashMap 为什么不用跳表替换红黑树呢?"></a>HashMap 为什么不用跳表替换红黑树呢?</h3><h3 id="synchronized-跟-ReentrantLock-使用区别跟底层实现以及重入底层原理"><a href="#synchronized-跟-ReentrantLock-使用区别跟底层实现以及重入底层原理" class="headerlink" title="synchronized 跟 ReentrantLock 使用区别跟底层实现以及重入底层原理"></a>synchronized 跟 ReentrantLock 使用区别跟底层实现以及重入底层原理</h3><h3 id="描述下锁的四种状态跟升级过程"><a href="#描述下锁的四种状态跟升级过程" class="headerlink" title="描述下锁的四种状态跟升级过程"></a>描述下锁的四种状态跟升级过程</h3><h3 id="CAS-是什么-CAS-的弊端是什么"><a href="#CAS-是什么-CAS-的弊端是什么" class="headerlink" title="CAS 是什么?CAS 的弊端是什么?"></a>CAS 是什么?CAS 的弊端是什么?</h3><h3 id="你对-volatile-的理解-可见性跟指令重排咋实现的"><a href="#你对-volatile-的理解-可见性跟指令重排咋实现的" class="headerlink" title="你对 volatile 的理解,可见性跟指令重排咋实现的"></a>你对 volatile 的理解,可见性跟指令重排咋实现的</h3><h3 id="一个对象创建过程是怎么样的对象在内存中如何分布的-看-JVM-即可"><a href="#一个对象创建过程是怎么样的对象在内存中如何分布的-看-JVM-即可" class="headerlink" title="一个对象创建过程是怎么样的对象在内存中如何分布的,看 JVM 即可"></a>一个对象创建过程是怎么样的对象在内存中如何分布的,看 JVM 即可</h3><h3 id="聊一聊单例模式-为什么-DCL-要用-volatile"><a href="#聊一聊单例模式-为什么-DCL-要用-volatile" class="headerlink" title="聊一聊单例模式,为什么 DCL 要用 volatile"></a>聊一聊单例模式,为什么 DCL 要用 volatile</h3><h3 id="你对-as-if-serial-跟-happpends-before-的理解"><a href="#你对-as-if-serial-跟-happpends-before-的理解" class="headerlink" title="你对 as-if-serial 跟 happpends-before 的理解"></a>你对 as-if-serial 跟 happpends-before 的理解</h3><h3 id="ThreadLocal-说一说-咋解决内存泄露"><a href="#ThreadLocal-说一说-咋解决内存泄露" class="headerlink" title="ThreadLocal 说一说,咋解决内存泄露"></a>ThreadLocal 说一说,咋解决内存泄露</h3><h3 id="自旋锁一定比重量级锁效率高吗-偏向锁是否效率一定提高"><a href="#自旋锁一定比重量级锁效率高吗-偏向锁是否效率一定提高" class="headerlink" title="自旋锁一定比重量级锁效率高吗?偏向锁是否效率一定提高"></a>自旋锁一定比重量级锁效率高吗?偏向锁是否效率一定提高</h3><h3 id="线程池聊一聊如何用-注意细节-如何实现"><a href="#线程池聊一聊如何用-注意细节-如何实现" class="headerlink" title="线程池聊一聊如何用 注意细节,如何实现"></a>线程池聊一聊如何用 注意细节,如何实现</h3><h3 id="你对-JMM-理解"><a href="#你对-JMM-理解" class="headerlink" title="你对 JMM 理解?"></a>你对 JMM 理解?</h3><h3 id="Synchronized-可以实现指令重排么-它是如何保证有序性的"><a href="#Synchronized-可以实现指令重排么-它是如何保证有序性的" class="headerlink" title="Synchronized 可以实现指令重排么?它是如何保证有序性的?"></a>Synchronized 可以实现指令重排么?它是如何保证有序性的?</h3><h3 id="聊一聊-AQS-为什么-AQS-底层是-CAS-Volatile"><a href="#聊一聊-AQS-为什么-AQS-底层是-CAS-Volatile" class="headerlink" title="聊一聊 AQS,为什么 AQS 底层是 CAS + Volatile"></a>聊一聊 AQS,为什么 AQS 底层是 CAS + Volatile</h3><h3 id="为什么不建议用-uuid-做-MySQL-的主键"><a href="#为什么不建议用-uuid-做-MySQL-的主键" class="headerlink" title="为什么不建议用 uuid 做 MySQL 的主键"></a>为什么不建议用 uuid 做 MySQL 的主键</h3><h4 id="1-适用自增-id-的内部结构"><a href="#1-适用自增-id-的内部结构" class="headerlink" title="1.适用自增 id 的内部结构"></a>1.适用自增 id 的内部结构</h4><p><img data-src="https://i.loli.net/2021/04/08/1SZF4tA7e6s2NJl.png" alt="2021-04-08-14-07-4420210408140743"></p>
+<p>自增主键的值是顺序的，所以 innoDB 把每一条记录都存储在之前记录的后面。当达到页面的最大填充因子的时候（innoDB 默认的最大填充因子是页大小的 15/16，会留出 1/16 的空间留作以后的修改）</p>
+<p>这样做的好处是：</p>
+<ul>
+<li><p>下一条记录就会写入新的页中，一旦数据按照这种顺序的方式加载，主键页就会近乎于顺序的记录填满，提升了页面的最大填充率，不会有页的浪费</p>
+</li>
+<li><p>新插入的行一定会在原有的最大行的下一行，mysql 定位和寻址很快，不会为计算新行的位置而做出额外的消耗</p>
+</li>
+<li><p>减少了页分裂和碎片的产生</p>
+</li>
+</ul>
+<h4 id="2-使用-uuid-的索引内部结构"><a href="#2-使用-uuid-的索引内部结构" class="headerlink" title="2.使用 uuid 的索引内部结构"></a>2.使用 uuid 的索引内部结构</h4><p><img data-src="https://i.loli.net/2021/04/08/QtkPNfz9H85voxZ.png" alt="2021-04-08-14-35-0820210408143507"></p>
+<p>插入 UUID：新的记录可能会插入之前记录的中间，新的行需要强制移动之前的记录</p>
+<p>被写满已经刷新到磁盘上的页可能会被重新读取</p>
+<p>因为 UUID 相对顺序的自增 id 来说是毫无规律可言的，新行的值不一定要比之前的主键的值大，所以 innoDB 无法做到总是把新行插入到索引的最后，而是需要为新行寻找新的合适的位置从而来分配新的空间</p>
+<p>这个过程需要做很多额外的操作，数据的毫无顺序会导致数据分布散乱。将会导致以下的问题：</p>
+<ul>
+<li><p>写入的目标页很可能已经刷新到磁盘上并且从缓存中移除，或者还没有被加载到缓存中，innoDB 在插入之前不得不先找到并从磁盘读取目标页到内存中，这将导致大量的随机 IO</p>
+</li>
+<li><p>因为写入时乱序的，innoDB 不得不频繁的做页分裂操作，以便为新的行分配空间，页分裂导致移动大量的数据，一次插入最少需要修改 3 个页以上</p>
+</li>
+<li><p>由于频繁的页分裂，页会变得稀疏并被不规则的填充，最终会导致数据有碎片</p>
+</li>
+</ul>
+<p>在把随机值载入到聚簇索引以后，有时候会需要做一次 OPTIMEIZE TABLE 来重建表并优化页的填充，这将又需要一定的时间消耗</p>
+<p>结论：使用 innodb 应该尽可能的按主键的自增顺序插入，并且尽可能使用单调的增加的聚簇键的值来插入新行</p>
+<h4 id="3-使用自增-id-的缺点"><a href="#3-使用自增-id-的缺点" class="headerlink" title="3.使用自增 id 的缺点"></a>3.使用自增 id 的缺点</h4><p>自增 id 也会存在以下几点问题：</p>
+<ul>
+<li><p>1.别人一旦爬取你的数据库，就可以根据数据库的自增 id 获取到你的业务增长信息，很容易分析出你的经营情况</p>
+</li>
+<li><p>2.对于高并发的负载，innodb 在按主键进行插入的时候会造成明显的锁竞争，主键的上界会成为争抢的热点，因为所有的插入都发生在这里，并发插入会导致间隙锁竞争</p>
+</li>
+<li><p>3.Auto_Increment 锁机制会造成自增锁的抢夺，有一定的性能损失</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/1bbbbb30.html" rel="prev" title="多线程面试知识点(持续更新)">
+      <i class="fa fa-chevron-left"></i> 多线程面试知识点(持续更新)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/52ae1042.html" rel="next" title="raft算法">
+      raft算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#new-Object-占多少个字节"><span class="nav-number">1.</span> <span class="nav-text">new Object()占多少个字节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#User-int-id-String-name-User-u-new-User-1-”李四”"><span class="nav-number">2.</span> <span class="nav-text">User (int id,String name) User u = new User(1,”李四”)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程交替打印"><span class="nav-number">3.</span> <span class="nav-text">线程交替打印</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程之间如何通信"><span class="nav-number">4.</span> <span class="nav-text">线程之间如何通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程之间如何同步"><span class="nav-number">5.</span> <span class="nav-text">线程之间如何同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#volatile-和-Synchronized-区别"><span class="nav-number">6.</span> <span class="nav-text">volatile 和 Synchronized 区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-可见性-原子性-不能做到复合操作的原子性"><span class="nav-number">6.1.</span> <span class="nav-text">volatile 可见性/原子性,不能做到复合操作的原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#synchronized-可重入锁-互斥性-可见性-有序性"><span class="nav-number">6.2.</span> <span class="nav-text">synchronized 可重入锁/互斥性/可见性/有序性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何保证多线程顺序执行"><span class="nav-number">7.</span> <span class="nav-text">如何保证多线程顺序执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock-和-Synchronized-区别"><span class="nav-number">8.</span> <span class="nav-text">Lock 和 Synchronized 区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程和进程的概念"><span class="nav-number">9.</span> <span class="nav-text">线程和进程的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两个-Integer-的引用对象传给一个-swap-方法在方法内部进行交换-返回后-两个引用的值是否会发生变化"><span class="nav-number">10.</span> <span class="nav-text">两个 Integer 的引用对象传给一个 swap 方法在方法内部进行交换,返回后,两个引用的值是否会发生变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞-IO-和非阻塞-IO"><span class="nav-number">11.</span> <span class="nav-text">阻塞 IO 和非阻塞 IO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七层网络模型"><span class="nav-number">12.</span> <span class="nav-text">七层网络模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-的-binlog"><span class="nav-number">13.</span> <span class="nav-text">mysql 的 binlog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie-和-session-的关联关系"><span class="nav-number">14.</span> <span class="nav-text">cookie 和 session 的关联关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOP-底层实现原理"><span class="nav-number">15.</span> <span class="nav-text">AOP 底层实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么不能直接调用-run-方法启动线程"><span class="nav-number">16.</span> <span class="nav-text">为什么不能直接调用 run()方法启动线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何保证多线程下-i-结果正确"><span class="nav-number">17.</span> <span class="nav-text">如何保证多线程下 i++结果正确</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#谈谈你理解的-HashMap-讲讲其中的-get-put-过程"><span class="nav-number">18.</span> <span class="nav-text">谈谈你理解的 HashMap,讲讲其中的 get put 过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-8-做了什么优化"><span class="nav-number">18.1.</span> <span class="nav-text">1.8 做了什么优化?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#是线程安全的嘛"><span class="nav-number">18.2.</span> <span class="nav-text">是线程安全的嘛?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不安全会导致哪些问题"><span class="nav-number">18.3.</span> <span class="nav-text">不安全会导致哪些问题?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何解决-有没有线程安全的并发容器"><span class="nav-number">18.4.</span> <span class="nav-text">如何解决?有没有线程安全的并发容器?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConcurrentHashMap-是如何实现的-1-7、1-8-实现有何不同-为什么这么做"><span class="nav-number">19.</span> <span class="nav-text">ConcurrentHashMap 是如何实现的?1.7、1.8 实现有何不同,为什么这么做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-中-ConcurrentHashMap-的-sizeCtl-作用-大致说下协助扩容跟标志位"><span class="nav-number">20.</span> <span class="nav-text">1.8 中 ConcurrentHashMap 的 sizeCtl 作用,大致说下协助扩容跟标志位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap-为什么不用跳表替换红黑树呢"><span class="nav-number">21.</span> <span class="nav-text">HashMap 为什么不用跳表替换红黑树呢?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-跟-ReentrantLock-使用区别跟底层实现以及重入底层原理"><span class="nav-number">22.</span> <span class="nav-text">synchronized 跟 ReentrantLock 使用区别跟底层实现以及重入底层原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#描述下锁的四种状态跟升级过程"><span class="nav-number">23.</span> <span class="nav-text">描述下锁的四种状态跟升级过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS-是什么-CAS-的弊端是什么"><span class="nav-number">24.</span> <span class="nav-text">CAS 是什么?CAS 的弊端是什么?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#你对-volatile-的理解-可见性跟指令重排咋实现的"><span class="nav-number">25.</span> <span class="nav-text">你对 volatile 的理解,可见性跟指令重排咋实现的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个对象创建过程是怎么样的对象在内存中如何分布的-看-JVM-即可"><span class="nav-number">26.</span> <span class="nav-text">一个对象创建过程是怎么样的对象在内存中如何分布的,看 JVM 即可</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聊一聊单例模式-为什么-DCL-要用-volatile"><span class="nav-number">27.</span> <span class="nav-text">聊一聊单例模式,为什么 DCL 要用 volatile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#你对-as-if-serial-跟-happpends-before-的理解"><span class="nav-number">28.</span> <span class="nav-text">你对 as-if-serial 跟 happpends-before 的理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal-说一说-咋解决内存泄露"><span class="nav-number">29.</span> <span class="nav-text">ThreadLocal 说一说,咋解决内存泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自旋锁一定比重量级锁效率高吗-偏向锁是否效率一定提高"><span class="nav-number">30.</span> <span class="nav-text">自旋锁一定比重量级锁效率高吗?偏向锁是否效率一定提高</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池聊一聊如何用-注意细节-如何实现"><span class="nav-number">31.</span> <span class="nav-text">线程池聊一聊如何用 注意细节,如何实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#你对-JMM-理解"><span class="nav-number">32.</span> <span class="nav-text">你对 JMM 理解?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Synchronized-可以实现指令重排么-它是如何保证有序性的"><span class="nav-number">33.</span> <span class="nav-text">Synchronized 可以实现指令重排么?它是如何保证有序性的?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聊一聊-AQS-为什么-AQS-底层是-CAS-Volatile"><span class="nav-number">34.</span> <span class="nav-text">聊一聊 AQS,为什么 AQS 底层是 CAS + Volatile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么不建议用-uuid-做-MySQL-的主键"><span class="nav-number">35.</span> <span class="nav-text">为什么不建议用 uuid 做 MySQL 的主键</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-适用自增-id-的内部结构"><span class="nav-number">35.1.</span> <span class="nav-text">1.适用自增 id 的内部结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用-uuid-的索引内部结构"><span class="nav-number">35.2.</span> <span class="nav-text">2.使用 uuid 的索引内部结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-使用自增-id-的缺点"><span class="nav-number">35.3.</span> <span class="nav-text">3.使用自增 id 的缺点</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

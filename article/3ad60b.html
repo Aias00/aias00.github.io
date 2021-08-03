@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的 CAS 算法涉及到 3 个操作数：  需要读写的内存值 V 进行比较的值 A 要写入的新值 B  当且仅当 V 的值等于 A 时，CAS 通过原子方式用新值 B 来更新 V 的值">
+<meta name="keywords" content="cas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cas">
+<meta property="og:url" content="http://yoursite.com/article/3ad60b.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的 CAS 算法涉及到 3 个操作数：  需要读写的内存值 V 进行比较的值 A 要写入的新值 B  当且仅当 V 的值等于 A 时，CAS 通过原子方式用新值 B 来更新 V 的值">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-19T08:52:30.901Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cas">
+<meta name="twitter:description" content="CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的 CAS 算法涉及到 3 个操作数：  需要读写的内存值 V 进行比较的值 A 要写入的新值 B  当且仅当 V 的值等于 A 时，CAS 通过原子方式用新值 B 来更新 V 的值">
+
+<link rel="canonical" href="http://yoursite.com/article/3ad60b.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>cas | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/3ad60b.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cas
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-12 15:14:34" itemprop="dateCreated datePublished" datetime="2021-04-12T15:14:34+08:00">2021-04-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-19 16:52:30" itemprop="dateModified" datetime="2021-04-19T16:52:30+08:00">2021-04-19</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的</p>
+<p>CAS 算法涉及到 3 个操作数：</p>
+<ul>
+<li>需要读写的内存值 V</li>
+<li>进行比较的值 A</li>
+<li>要写入的新值 B</li>
+</ul>
+<p>当且仅当 V 的值等于 A 时，CAS 通过原子方式用新值 B 来更新 V 的值（”比较”+”更新”，整体是一个原子操作），否则不会执行任何操作。一般情况下，”更新”是一个不断重试的操作</p>
+<p>AtomicInteger 源码：</p>
+<p><img data-src="https://i.loli.net/2021/04/12/DfLJnte9r8AS7wV.png" alt="2021-04-12-15-24-1120210412152410"></p>
+<p>根据定义我们可以看出各属性的作用：</p>
+<ul>
+<li>unsafe：获取并操作内存的数据</li>
+<li>valueOffset：存储 value 在 AtomicInteger 中的偏移量</li>
+<li>value：存储 AtomicInteger 的 int 值，该属性需要借助 volatile 关键字保证其在线程间是可见的</li>
+</ul>
+<p>接下来查看 AtomicInteger 的自增函数 incrementAndGet()的源码，发现自增函数底层调用的是 unsafe.getAndAddInt()。但是由于 JDK 本身只有 Unsafe.class，只通过 class 文件中的参数名，并不能很好的了解方法的作用，所以通过 OpenJDK8 来查看 Unsafe 的源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ------------------------- JDK 8 -------------------------</span></span><br><span class="line"><span class="comment">// AtomicInteger 自增方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">incrementAndGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> unsafe.getAndAddInt(<span class="keyword">this</span>, valueOffset, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unsafe.class</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndAddInt</span><span class="params">(Object var1, <span class="keyword">long</span> var2, <span class="keyword">int</span> var4)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> var5;</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">      var5 = <span class="keyword">this</span>.getIntVolatile(var1, var2);</span><br><span class="line">  &#125; <span class="keyword">while</span>(!<span class="keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));</span><br><span class="line">  <span class="keyword">return</span> var5;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ------------------------- OpenJDK 8 -------------------------</span></span><br><span class="line"><span class="comment">// Unsafe.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndAddInt</span><span class="params">(Object o, <span class="keyword">long</span> offset, <span class="keyword">int</span> delta)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">int</span> v;</span><br><span class="line">   <span class="keyword">do</span> &#123;</span><br><span class="line">       v = getIntVolatile(o, offset);</span><br><span class="line">   &#125; <span class="keyword">while</span> (!compareAndSwapInt(o, offset, v, v + delta));</span><br><span class="line">   <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据 OpenJDK8 的源码我们可以看出，getAndAddInt 循环获取给定对象 o 中的偏移量处的值 v，然后判断内存值是否等于 v。如果相等则将内存值设为 v+delta，否则返回 false，继续循环进行重试，知道设置成功才能退出循环，并将旧值返回。整个”比较+更新”操作封装在 compareAndSwapInt()中，在 JNI 里是借助一个 CPU 指令完成的，属于原子操作，可以保证多个线程都能看到同一个变量的修改值。</p>
+<p>后续 JDK 通过 CPU 的 cmpxchg 指令，去比较寄存器中的 A 和内存中的值 V。如果相等，就把要写入的新值 B 存入内存中。如果不相等，就将内存值 V 赋值给寄存器中的值 A，然后通过 java 代码中的 while 循环再次调用 cmpxchg 指令进行重试，直到设置成功为止</p>
+<p>CAS 虽然很高效，但是也存在三大问题：</p>
+<ul>
+<li>ABA 问题：CAS 需要在操作值的时候检查内存值是否发生变化，没有发生变化才会更新内存值。但是如果内存值原来是 A，后来变成了 B，然后又变成了 A，那么 CAS 进行检查时会发现值没有发生变化，但是实际上是有变化的。ABA 问题的解决思路就是在变量前面加版本号，每次变量更新的时候都把版本号+1，这样变化过程就从”A-B-A”变成了”1A-2B-3A”。<ul>
+<li>JDK 从 1.5 版本开始提供了 AtomicStampedReference 类来解决 ABA 问题，具体操作封装在 compareAndSet()中。compareAndSet()首先检查当前引用和当前标志与预期引用和预期标志是否相等，如果都相等，则以原子方式将引用值和标志的值设置为给定的更新值</li>
+</ul>
+</li>
+<li>循环时间长开销大：CAS 操作如果长时间不成功，会导致其一直自旋，给 CPU 带来很大负担</li>
+<li>只能保证一个共享变量的原子操作：对一个共享变量执行操作时，CAS 能够保证原子操作，但是对多个共享变量操作时，CAS 是无法保证操作的原子性的<ul>
+<li>java 从 1.5 版本开始提供了 AtomicStampedReference 类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行 CAS 操作</li>
+</ul>
+</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>1.假设有多个线程同时在对同一块内存进行 CAS 操作的话：两个线程 T1、T2 同时执行，V 存储同一块内存地址，A 当然也是旧的预期值，那么这种情况下 T1 和 T2 是否都可以更新成功</p>
+<p>在多个线程同时 CAS 的情况下是不会发生多个线程 CAS 成功的情况的，因为计算机底层实现保证了 V 指向内存的互斥性和立即可见性，可以理解为 CAS 操作是底层保证的线程安全</p>
+<p>一个线程 T 在 CAS 操作时，其他线程无法访问 V 指向的内存地址，并且一旦 T 更新了 V 指向内存的值，其他所有线程的 V 指向内存都变得无效</p>
+<ul>
+<li>处理器实现原子操作有两种做法<ul>
+<li>一是总线锁：在多 CPU 下，当其中一个处理器要对共享内存进行操作的时候，在总线上发出一个 LOCK#信号，这个信号使得其他处理器无法通过总线来访问到共享内存中的数据</li>
+<li>二是缓存锁：如果共享内存已经被缓存，那么锁总线没有意义。缓存锁核心是使用了缓存一致性协议，如 MESI 协议<ul>
+<li>MESI 表示缓存行的四种状态<ul>
+<li>M(Modify)：表示共享数据只缓存在当前 CPU 缓存中，并且是被修改状态，也就是缓存的数据和主内存的数据不一致</li>
+<li>E(Exclusive)：表示缓存的独占状态，数据只缓存在当前 CPU 缓存中，并且没有被修改</li>
+<li>S(Shared)：表示数据可能被多个 CPU 缓存，并且各个缓存中的数据和主内存数据一致</li>
+<li>I(Invalid)：表示缓存已经失效</li>
+</ul>
+</li>
+<li>在 MESI 协议中，每个缓存的缓存控制器不仅知道自己的读写操作，而且也监听(snoop)其他 cache 的读写操作</li>
+<li>CPU 在读数据时，如果缓存行状态是 I，则需要从主内存中取出，并把缓存行状态置为 S；如果不是 I，则可以直接读取缓存中的值，但在此之前必须要等待对其他 CPU 的监听结果，如果其他 CPU 也有该数据的缓存并且状态是 M，则需要等待其把缓存更新到内存后再读取</li>
+<li>CPU 可以将状态为 M/E/S 的缓存写入内存，其中如果缓存行状态为 S，则其他 CPU 缓存了相同数据的缓存行会无效化</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cas/" rel="tag"># cas</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/a292cba5.html" rel="prev" title="mq专题">
+      <i class="fa fa-chevron-left"></i> mq专题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/201b20ca.html" rel="next" title="redis性能优化">
+      redis性能优化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

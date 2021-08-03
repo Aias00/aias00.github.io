@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.rabbitmq 作用 优缺点作用： 解耦,异步,削峰 优点： 延迟低,可用性高,并发能力强,开源管理界面,社区活跃">
+<meta name="keywords" content="interview,rabbitmq">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbit-mq面试知识点(持续更新)">
+<meta property="og:url" content="http://yoursite.com/article/a8db1400.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="1.rabbitmq 作用 优缺点作用： 解耦,异步,削峰 优点： 延迟低,可用性高,并发能力强,开源管理界面,社区活跃">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T14:13:24.813Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rabbit-mq面试知识点(持续更新)">
+<meta name="twitter:description" content="1.rabbitmq 作用 优缺点作用： 解耦,异步,削峰 优点： 延迟低,可用性高,并发能力强,开源管理界面,社区活跃">
+
+<link rel="canonical" href="http://yoursite.com/article/a8db1400.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>rabbit-mq面试知识点(持续更新) | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/a8db1400.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rabbit-mq面试知识点(持续更新)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-08 20:23:14" itemprop="dateCreated datePublished" datetime="2021-03-08T20:23:14+08:00">2021-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:13:24" itemprop="dateModified" datetime="2021-04-06T22:13:24+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-rabbitmq-作用-优缺点"><a href="#1-rabbitmq-作用-优缺点" class="headerlink" title="1.rabbitmq 作用 优缺点"></a>1.rabbitmq 作用 优缺点</h3><p>作用：</p>
+<p>解耦,异步,削峰</p>
+<p>优点：</p>
+<p>延迟低,可用性高,并发能力强,开源管理界面,社区活跃</p>
+<p>缺点：</p>
+<p>吞吐量相对较差,阅读源码门槛高,集群动态拓展麻烦,增加 mq 之后增加系统复杂性,可能降低系统可用性,</p>
+<h3 id="2-rabbitmq-中的角色"><a href="#2-rabbitmq-中的角色" class="headerlink" title="2.rabbitmq 中的角色"></a>2.rabbitmq 中的角色</h3><ul>
+<li>消息代理 broker</li>
+<li>生产者 producer</li>
+<li>消费者 consumer</li>
+<li>消息队列 queue</li>
+<li>交换机 exchange</li>
+<li>绑定 binding</li>
+<li>路由键 routingKey</li>
+</ul>
+<h3 id="3-如何保证消息的可靠性传递（如何处理消息丢失的问题）"><a href="#3-如何保证消息的可靠性传递（如何处理消息丢失的问题）" class="headerlink" title="3.如何保证消息的可靠性传递（如何处理消息丢失的问题）"></a>3.如何保证消息的可靠性传递（如何处理消息丢失的问题）</h3><ul>
+<li>生产者丢失数据的情况</li>
+</ul>
+<p>生产者在发送数据到 mq 时,可能消息还没到达服务端,因为网络通信等原因消息就丢失了,</p>
+<h4 id="transaction-机制"><a href="#transaction-机制" class="headerlink" title="transaction 机制"></a>transaction 机制</h4><p>此时可以采用 rabbitmq 提供的事务消息功能,就是生产者发送数据之前开启 rabbitmq 事务（channel.txSelect）,然后发送消息,如果消息没有被 rabbitmq 成功接收到,生产者就会收到异常报错信息,此时就可以回滚事务（channel.txRollback）,然后重试发送消息；如果收到了消息,那么可以提交事务（channel.txCommit）。但是问题是 rabbitmq 开启事务消息之后会因为消耗性能,影响吞吐量</p>
+<h4 id="confirm-机制"><a href="#confirm-机制" class="headerlink" title="confirm 机制"></a>confirm 机制</h4><p>所以一般来说,如果要确保写入 rabbitmq 的消息不丢失,可以开启 confirm 模式,在生产者那里开启 confirm 之后,每次写的消息都会被分配一个唯一 id,如果消息成功写入 rabbitmq 中,rabbitmq 会回调 ack 接口,通知生产者这个消息写入成功。如果 rabbitmq 没能成功处理这条消息,会回调 nack 接口,通知生产者消息处理失败,此时可以进行重试。而且用户可以结合这个机制在内存中维护每个消息 id 的状态,如果超过一定时间没有收到消息的回调通知,可以操作重发</p>
+<p>事务机制和 confirm 机制最大的不同在于,事务机制是同步的,提交事务之后会阻塞,但是 confirm 是异步的,发送消息不需要等待返回结果,而是通过 rabbitmq 异步回调通知接口</p>
+<p>所以一般为了避免生产者数据丢失,都是用 confirm 机制</p>
+<ul>
+<li>rabbitmq 丢失数据</li>
+</ul>
+<p>rabbitmq 自己弄丢数据,比如内存爆满、服务器宕机等情况,会导致已经存储到 rabbitmq 上的数据丢失,此时必须开启 rabbitmq 的持久化功能,将数据存储到磁盘,开启之后即使 rabbitmq 服务挂了,在重启之后会自动读取之前存储的数据进行恢复,极为罕见的是 rabbitmq 还没有进行持久化的操作,服务就已经挂了,可能会导致少量数据丢失</p>
+<p>设置持久化有两个步骤,第一个是创建 queue 的时候将其设置为持久化的,这样可以保证 rabbitmq 持久化 queue 的元数据,但是不会持久化 queue 里存的数据；第二步是发送消息的时候将消息的 deliverMode 设置为 2,也就是将消息设置为持久化的,此时 rabbitmq 就会将消息持久化到磁盘上去。必须要同时设置这两个持久化才行,才能保证 rabbitmq 重启之后,可以恢复 queue 然后恢复 queue 中的数据</p>
+<p>哪怕是给 rabbitmq 开启了持久化,也可能在消息写到 rabbitmq 之后,持久化到磁盘之前,服务宕机,就会导致这部分数据丢失</p>
+<ul>
+<li>消费者丢失数据</li>
+</ul>
+<p>消费者丢失数据一般出现在刚刚接收到消息还没有进行处理的时候,这个时候出现了消费者服务宕机或者异常中断导致消息丢失,rabbitmq 认为消费者已经消费完毕,数据就会丢失了</p>
+<p>这时候需要用到 rabbitmq 提供的 ack 机制,关闭 rabbitmq 的自动 ack,在程序处理完成之后进行手动的 ack,没有收到 ack 消息 rabbitmq 是不会丢弃消息的</p>
+<h3 id="4-如何保证消息队列的高可用"><a href="#4-如何保证消息队列的高可用" class="headerlink" title="4.如何保证消息队列的高可用"></a>4.如何保证消息队列的高可用</h3><p>rabbitmq 有三种模式：单机模式,普通集群模式,镜像集群模式</p>
+<p>单机模式：</p>
+<p>单台服务器</p>
+<p>普通集群模式：</p>
+<p>多台服务器上启动多个 rabbitmq 实例,但是创建的 queue 只会放到一个实例上,但是每个实例都会同步 queue 的元数据,消费的时候如果链接到了另外一台 rabbitmq 实例,这个实例会从 queue 所在实例上拉取数据</p>
+<p>这种模式需要消费者每次随机链接一个实例之后拉取数据,或者固定链接到 queue 所在实例进行消费,前者有拉取数据的开销,后者导致单实例性能瓶颈化,而且如果 queue 所在的实例宕机,会导致其他实例无法进行 queue 数据的拉取,如果开启了消息持久化,数据不一定会丢失,但是要等实例恢复了才能从此 queue 消费</p>
+<p>这个方案主要是为了提高吞吐量,就是说让集群中多个节点来服务某个 queue 的读写操作</p>
+<p>镜像集群模式：</p>
+<p>这种模式才是所谓的 rabbitmq 的高可用模式,跟普通集群模式不同的是,创建的 queue 无论是元数据还是 queue 中的消息都会存在于多个实例上,然后每次生产者将消息写入到 queue 中时,都会自动把消息同步到多个实例中的 queue 中</p>
+<p>这样的好处在于,任何一台实例宕机了都不会对消息的生产和消费造成影响。坏处在于,第一性能开销太大,消息同步所有实例,导致网络带宽的压力和消耗很重,第二没有拓展性,每台实例的机器压力都很容易达到性能瓶颈</p>
+<p>如何开启镜像集群模式,在 rabbitmq 控制台新增一个策略,这个策略是镜像集群模式的策略,指定的时候可以要求数据同步到所有节点,也可以要求数据只同步到指定数量的节点或者指定名称的节点,然后再次创建 queue 的时候,应用此策略,就会自动将数据同步到其他节点上</p>
+<h3 id="5-如何保证消息不被重复消费（如何保证消息消费时的幂等性）"><a href="#5-如何保证消息不被重复消费（如何保证消息消费时的幂等性）" class="headerlink" title="5.如何保证消息不被重复消费（如何保证消息消费时的幂等性）"></a>5.如何保证消息不被重复消费（如何保证消息消费时的幂等性）</h3><p>数据库记录消息保证唯一</p>
+<p>消息带唯一标识,通过 redis 避免重复消费</p>
+<h3 id="6-如何保证消息的顺序性"><a href="#6-如何保证消息的顺序性" class="headerlink" title="6.如何保证消息的顺序性"></a>6.如何保证消息的顺序性</h3><ul>
+<li>rabbitmq 为什么要保证消费的顺序性</li>
+</ul>
+<p>queue 中的数据只能被一个消费者所消费,多个消费者在消费过程中是无序的,多个消费者同时消费一个 queue,顺序错乱就会导致数据的不一致,这和我们预期的结果不符</p>
+<ul>
+<li>如何保证顺序性</li>
+</ul>
+<ol>
+<li><p>拆分多个 queue,每个 queue 对应一个 consumer</p>
+</li>
+<li><p>一个 queue 对应一个 consumer,然后这个 consumer 内部用内存队列做排队,然后底层分发给不同的 worker 去处理</p>
+</li>
+</ol>
+<h3 id="7-如何解决消息队列的延时及过期失效问题？消息队列满了应该怎么办？有几百万消息持续积压几个小时-如何解决？"><a href="#7-如何解决消息队列的延时及过期失效问题？消息队列满了应该怎么办？有几百万消息持续积压几个小时-如何解决？" class="headerlink" title="7.如何解决消息队列的延时及过期失效问题？消息队列满了应该怎么办？有几百万消息持续积压几个小时,如何解决？"></a>7.如何解决消息队列的延时及过期失效问题？消息队列满了应该怎么办？有几百万消息持续积压几个小时,如何解决？</h3><p>原因：消费端出问题了,消息无法被消费或者消费缓慢,消息队列集群的磁盘可能都快写满了,积压时间过长,rabbitmq 设置了消息过期时间消息可能没被消费就过期了</p>
+<p>举例：消费端每次消费之后都要写入 mysql,结果 mysql 挂了,消费端 hang 住无法继续消费消息,或者其他原因导致消费者消费缓慢</p>
+<p>分析：</p>
+<h4 id="1-大量消息在-mq-积压几个小时"><a href="#1-大量消息在-mq-积压几个小时" class="headerlink" title="1.大量消息在 mq 积压几个小时"></a>1.大量消息在 mq 积压几个小时</h4><p>消费者出现问题,即使恢复也需要等待消息被消费,等待时间可能会很长,需要操作临时紧急扩容</p>
+<ul>
+<li><p>先修复 consumer 的问题,确保其恢复消费速度,然后将现有 consumer 都停掉</p>
+</li>
+<li><p>新建一个 topic,partition 是原来的 10 倍,临时建立好原先 10 倍或者 20 倍的 queue 数量</p>
+</li>
+<li><p>然后写一个临时的分发数据的 consumer 程序,这个程序部署上去消费积压的数据,消费之后不做耗时的处理,直接轮询写入临时建立好的 10 倍数量的 queue</p>
+</li>
+<li><p>接着用临时征用 10 倍的机器来部署 consumer,每一批 consumer 消费一个临时 queue 的数据</p>
+</li>
+<li><p>这种做法相当于是临时将 queue 资源和 consumer 资源扩大 10 倍,以正常 10 倍的速度来消费数据</p>
+</li>
+<li><p>等快速消费完积压数据之后,得恢复原先架构部署,重新用原来的 consumer 机器来消费消息</p>
+</li>
+</ul>
+<h4 id="2-假设设置了消息过期时间-也就是-TTL-如果消息在-queue-中积压超过一定时间就会被-rabbitmq-给清理掉-这个数据就会丢失"><a href="#2-假设设置了消息过期时间-也就是-TTL-如果消息在-queue-中积压超过一定时间就会被-rabbitmq-给清理掉-这个数据就会丢失" class="headerlink" title="2.假设设置了消息过期时间,也就是 TTL,如果消息在 queue 中积压超过一定时间就会被 rabbitmq 给清理掉,这个数据就会丢失"></a>2.假设设置了消息过期时间,也就是 TTL,如果消息在 queue 中积压超过一定时间就会被 rabbitmq 给清理掉,这个数据就会丢失</h4><ul>
+<li>写临时程序根据数据逻辑重新生成丢失的消息,重新写入 mq 中</li>
+</ul>
+<h3 id="8-如何设计一个消息队列"><a href="#8-如何设计一个消息队列" class="headerlink" title="8.如何设计一个消息队列"></a>8.如何设计一个消息队列</h3><h4 id="1-支持可伸缩性-支持快速扩容-便于增加吞吐量和容量"><a href="#1-支持可伸缩性-支持快速扩容-便于增加吞吐量和容量" class="headerlink" title="1.支持可伸缩性,支持快速扩容,便于增加吞吐量和容量"></a>1.支持可伸缩性,支持快速扩容,便于增加吞吐量和容量</h4><p>分布式系统,broker-&gt;topic-&gt;partition,每个 partition 加一台机器,就存一部分数据,如果当前资源不够了,就给 topic 增加 partition,做数据迁移,增加机器</p>
+<h4 id="2-持久化-保证数据不丢失"><a href="#2-持久化-保证数据不丢失" class="headerlink" title="2.持久化,保证数据不丢失"></a>2.持久化,保证数据不丢失</h4><p>顺序写,这样就没有磁盘随机读写的寻址开销,磁盘顺序写的性能是很高的</p>
+<h4 id="3-可用性"><a href="#3-可用性" class="headerlink" title="3.可用性"></a>3.可用性</h4><p>多副本-&gt;leader&amp;follower-&gt;broker 挂了重新选举 leader 提供对外服务</p>
+<h3 id="9-rabbitmq-通信全过程"><a href="#9-rabbitmq-通信全过程" class="headerlink" title="9.rabbitmq 通信全过程"></a>9.rabbitmq 通信全过程</h3><ul>
+<li><p>生产者生产消息后,将消息发布给交换机 exchange</p>
+</li>
+<li><p>交换机根据路由规则将消息路由到队列 queue</p>
+</li>
+<li><p>broker 再将 queue 中的消息投递给订阅该队列的消费者,或者是消费者从队列中获取消息</p>
+</li>
+<li><p>给 exchange 绑定一个备份交换机,当到达原 exchange 的消息不能被正确路由到任何队列时,消息被发送给备份交换机</p>
+</li>
+<li><p>备份交换机将消息根据路由规则路由到备份队列,存储</p>
+</li>
+<li><p>由于可以给消息设置过期时间,所以当原 queue 中的消息达到过期时间仍未被消费时,会被发送到死信交换机；或者发送给消费者的消息被拒绝后,也会被发送到死信交换机</p>
+</li>
+<li><p>死信交换机根据路由规则将消息路由到死信队列,存储</p>
+</li>
+</ul>
+<h3 id="10-rabbitmq-实现订单超时自动关闭"><a href="#10-rabbitmq-实现订单超时自动关闭" class="headerlink" title="10.rabbitmq 实现订单超时自动关闭"></a>10.rabbitmq 实现订单超时自动关闭</h3><ul>
+<li><p>死信队列：下单投放消息到 A 交换机,设置过期时间,消息到 AA 队列,为 AA 队列绑定死信交换机,不设置 AA 队列的消费者,让消息不会被消费,消息过期后会投递到死信交换机,死信队列,由死信消费者消费,判断订单是否已经完成支付,已支付则无需处理,未支付执行关闭订单、返还库存等逻辑</p>
+</li>
+<li><p>延时队列：下单发送延时消息到延时队列交换机,消息会保持在 broker 中,并不是立即投递给消费者,只有在到达指定延时时间之后才会投递给消费者,在延时队列消费者中判断订单是否已经完成支付,已支付则无需处理,未支付执行关闭订单、返还库存等逻辑</p>
+</li>
+<li><p>两种方案对比：延时队列需要插件支持,需要实例化更多的 Bean</p>
+</li>
+<li><p>其他方案：定时任务（不准）,线程休眠（重启影响）,监听 redis 键值过期时间,监听 zookeeper 节点过期时间</p>
+</li>
+</ul>
+<h3 id="11-rabbitmq-工作模式"><a href="#11-rabbitmq-工作模式" class="headerlink" title="11.rabbitmq 工作模式"></a>11.rabbitmq 工作模式</h3><h4 id="简单模式"><a href="#简单模式" class="headerlink" title="简单模式"></a>简单模式</h4><p>一个生产者,一个消费者</p>
+<h4 id="工作队列模式"><a href="#工作队列模式" class="headerlink" title="工作队列模式"></a>工作队列模式</h4><p>一个生产者,多个消费者,每个消费者获取到的消息唯一,默认轮询获取</p>
+<h3 id="12-Exchange-模式"><a href="#12-Exchange-模式" class="headerlink" title="12.Exchange 模式"></a>12.Exchange 模式</h3><ul>
+<li><p>发布订阅模式（fanout）：一个生产者发送的消息会被多个消费者获取,发送到 fanout exchange 的消息都会被转发到与 exchange 绑定的所有 queue 上,这种模式不需要 routingkey,需要提前将 exchange 与 queue 进行绑定,一个 exchange 可以绑定多个 queue,一个 queue 可以和多个 exchange 绑定,如果接收到消息的 exchange 没有与任何 queue 绑定,则消息会丢失</p>
+</li>
+<li><p>路由模式（direct）：任何发送到 direct exchange 的消息都会被转发到 routingKey 指定的 queue,这种模式不需要 exchange 进行任何绑定,消息传递时需要一个 routingkey,可以简单理解为要发送到的队列名称,如果 vhost 中不存在该队列名,消息会丢失</p>
+</li>
+<li><p>匹配订阅模式（topic）：任何发送到 topic exchange 的消息都会被转发到所有关心 routingkey 指定 Topic 的 queue 中,就是每个队列都有其关心的 Topic,所有的 Topic 都带有一个 routingkey,exchange 会将消息转发到所有关注 Topic 能与 routingkey 模糊匹配的队列。这种模式需要 routingkey 并且提前绑定 exchange 与 queue,在进行绑定时要提供一个该队列对应的 Topic,’#’表示 0 或者若干个关键字,’*‘表示一个关键字,如果 exchange 没有发现能够与 routingkey 匹配的 queue,消息会丢失</p>
+</li>
+<li><p>headers 模式：header exchange 主要通过发送的 request message 中的 header 进行匹配,其中匹配规则（x-match）又分为 all 和 any,all 表示必须所有的键值对匹配,any 表示只要有一个键值对匹配即可,headers exchange 的默认匹配规则（x-match）是 any</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+              <a href="/tags/rabbitmq/" rel="tag"># rabbitmq</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/8df47b3e.html" rel="prev" title="redis面试知识点总结(持续更新)">
+      <i class="fa fa-chevron-left"></i> redis面试知识点总结(持续更新)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/33ce6d02.html" rel="next" title="dubbo面试知识点(持续更新)">
+      dubbo面试知识点(持续更新) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-rabbitmq-作用-优缺点"><span class="nav-number">1.</span> <span class="nav-text">1.rabbitmq 作用 优缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-rabbitmq-中的角色"><span class="nav-number">2.</span> <span class="nav-text">2.rabbitmq 中的角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-如何保证消息的可靠性传递（如何处理消息丢失的问题）"><span class="nav-number">3.</span> <span class="nav-text">3.如何保证消息的可靠性传递（如何处理消息丢失的问题）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#transaction-机制"><span class="nav-number">3.1.</span> <span class="nav-text">transaction 机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#confirm-机制"><span class="nav-number">3.2.</span> <span class="nav-text">confirm 机制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-如何保证消息队列的高可用"><span class="nav-number">4.</span> <span class="nav-text">4.如何保证消息队列的高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-如何保证消息不被重复消费（如何保证消息消费时的幂等性）"><span class="nav-number">5.</span> <span class="nav-text">5.如何保证消息不被重复消费（如何保证消息消费时的幂等性）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-如何保证消息的顺序性"><span class="nav-number">6.</span> <span class="nav-text">6.如何保证消息的顺序性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-如何解决消息队列的延时及过期失效问题？消息队列满了应该怎么办？有几百万消息持续积压几个小时-如何解决？"><span class="nav-number">7.</span> <span class="nav-text">7.如何解决消息队列的延时及过期失效问题？消息队列满了应该怎么办？有几百万消息持续积压几个小时,如何解决？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-大量消息在-mq-积压几个小时"><span class="nav-number">7.1.</span> <span class="nav-text">1.大量消息在 mq 积压几个小时</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-假设设置了消息过期时间-也就是-TTL-如果消息在-queue-中积压超过一定时间就会被-rabbitmq-给清理掉-这个数据就会丢失"><span class="nav-number">7.2.</span> <span class="nav-text">2.假设设置了消息过期时间,也就是 TTL,如果消息在 queue 中积压超过一定时间就会被 rabbitmq 给清理掉,这个数据就会丢失</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-如何设计一个消息队列"><span class="nav-number">8.</span> <span class="nav-text">8.如何设计一个消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-支持可伸缩性-支持快速扩容-便于增加吞吐量和容量"><span class="nav-number">8.1.</span> <span class="nav-text">1.支持可伸缩性,支持快速扩容,便于增加吞吐量和容量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-持久化-保证数据不丢失"><span class="nav-number">8.2.</span> <span class="nav-text">2.持久化,保证数据不丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-可用性"><span class="nav-number">8.3.</span> <span class="nav-text">3.可用性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-rabbitmq-通信全过程"><span class="nav-number">9.</span> <span class="nav-text">9.rabbitmq 通信全过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-rabbitmq-实现订单超时自动关闭"><span class="nav-number">10.</span> <span class="nav-text">10.rabbitmq 实现订单超时自动关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-rabbitmq-工作模式"><span class="nav-number">11.</span> <span class="nav-text">11.rabbitmq 工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#简单模式"><span class="nav-number">11.1.</span> <span class="nav-text">简单模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#工作队列模式"><span class="nav-number">11.2.</span> <span class="nav-text">工作队列模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-Exchange-模式"><span class="nav-number">12.</span> <span class="nav-text">12.Exchange 模式</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

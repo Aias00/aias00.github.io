@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="synchronized 和 ReentrantLock 区别 都是可重入锁  synchronized 是 JVM 层面的锁，是 java 关键字，Reentrantlock 是 lock 接口的实现，是 API 层面的锁  Reentrantlock 显式获得锁，释放锁，synchronized 隐式获取锁，释放锁  ReentrantLock 可响应中断，synchronized 是不可以响">
+<meta name="keywords" content="interview,synchronized,lock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="锁面试知识点(持续更新)">
+<meta property="og:url" content="http://yoursite.com/article/ce3641e9.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="synchronized 和 ReentrantLock 区别 都是可重入锁  synchronized 是 JVM 层面的锁，是 java 关键字，Reentrantlock 是 lock 接口的实现，是 API 层面的锁  Reentrantlock 显式获得锁，释放锁，synchronized 隐式获取锁，释放锁  ReentrantLock 可响应中断，synchronized 是不可以响">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-13T05:07:22.894Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="锁面试知识点(持续更新)">
+<meta name="twitter:description" content="synchronized 和 ReentrantLock 区别 都是可重入锁  synchronized 是 JVM 层面的锁，是 java 关键字，Reentrantlock 是 lock 接口的实现，是 API 层面的锁  Reentrantlock 显式获得锁，释放锁，synchronized 隐式获取锁，释放锁  ReentrantLock 可响应中断，synchronized 是不可以响">
+
+<link rel="canonical" href="http://yoursite.com/article/ce3641e9.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>锁面试知识点(持续更新) | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ce3641e9.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          锁面试知识点(持续更新)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-11 14:04:23" itemprop="dateCreated datePublished" datetime="2021-03-11T14:04:23+08:00">2021-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-13 13:07:22" itemprop="dateModified" datetime="2021-04-13T13:07:22+08:00">2021-04-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="synchronized-和-ReentrantLock-区别"><a href="#synchronized-和-ReentrantLock-区别" class="headerlink" title="synchronized 和 ReentrantLock 区别"></a>synchronized 和 ReentrantLock 区别</h3><ul>
+<li><p>都是可重入锁</p>
+</li>
+<li><p>synchronized 是 JVM 层面的锁，是 java 关键字，Reentrantlock 是 lock 接口的实现，是 API 层面的锁</p>
+</li>
+<li><p>Reentrantlock 显式获得锁，释放锁，synchronized 隐式获取锁，释放锁</p>
+</li>
+<li><p>ReentrantLock 可响应中断，synchronized 是不可以响应中断的，阻塞的线程会一直阻塞</p>
+</li>
+<li><p>synchronized 的实现涉及到锁的升级，是同步阻塞，ReentrantLock 通过利用 CAS 自旋机制保证线程操作的原子性和 volatile 保证数据可见性，非同步阻塞，采用的是乐观并发策略</p>
+</li>
+<li><p>ReentrantLock 可以实现公平锁</p>
+</li>
+<li><p>ReentrantLock 可以通过 Condition 绑定多个条件</p>
+</li>
+<li><p>synchronized 在发生异常时，会自动释放线程占有的锁，因此不会导致死锁现象，而 ReentrantLock 需要主动释放锁才能避免死锁</p>
+</li>
+<li><p>ReentrantLock 可以知道有没有成功获取锁，synchronized 不能</p>
+</li>
+<li><p>synchronized 锁的是对象，锁是保存到对象头里面的，根据对象头数据来标识是否有线程获得锁/争抢锁，ReentrantLock 锁的是线程，根据进入的线程和 int 类型的 state 标识锁的获得/争抢</p>
+</li>
+</ul>
+<h3 id="synchronized-保证了那些特性"><a href="#synchronized-保证了那些特性" class="headerlink" title="synchronized 保证了那些特性"></a>synchronized 保证了那些特性</h3><ul>
+<li><p>原子性: 确保线程互斥地访问同步代码</p>
+</li>
+<li><p>可见性: 保证共享变量的修改对其他线程可见。线程加锁时，将清空工作内存中共享变量的值，从而使用共享变量时需要从主内存中获取最新的值。线程解锁前，必须把共享变量中的值刷新到主内存中。</p>
+</li>
+<li><p>有序性: 对一个监视器锁的释放操作先行发生于后面对该监视器锁的获取操作(happens-before)</p>
+</li>
+</ul>
+<h3 id="java-对象布局"><a href="#java-对象布局" class="headerlink" title="java 对象布局"></a>java 对象布局</h3><p>一个对象包括对象头，实例数据和对齐填充。</p>
+<h4 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h4><p><img data-src="https://i.loli.net/2021/04/12/JorHIv395VpRdqB.png" alt="对象头布局"></p>
+<h5 id="Mark-Word"><a href="#Mark-Word" class="headerlink" title="Mark Word"></a>Mark Word</h5><p>用于存储对象自身的运行数据，如 hashCode、GC 分代年龄、垃圾回收标志、锁状态标志、线程持的有锁、偏向线程 id、偏向时间戳等。这些信息都是与对象自身定义无关的数据，所以 Mark Word 被设计成一个非固定的数据结构以便在极小的空间内存存储尽量多的数据，它会根据对象的状态复用自己的存储空间，也就是说在运行期间 Mark Word 里存储的数据会随着锁标志位的变化而变化。这部分数据的长度在 32 位和 64 位(未开启指针压缩)中分别为 32 位和 64 位</p>
+<p><img data-src="https://i.loli.net/2021/04/12/YSjCKdcPNAmnvUu.png" alt="Mark Word"></p>
+<h5 id="klass-指针"><a href="#klass-指针" class="headerlink" title="klass 指针"></a>klass 指针</h5><p>对象指针，对象指向它的类的元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。并不是所有的虚拟机实现都必须在对象数据上保留类型指针，换句话说查找对象的元数据信息并不一定要经过对象本身</p>
+<h5 id="数组长度"><a href="#数组长度" class="headerlink" title="数组长度"></a>数组长度</h5><p>如果对象是一个数组，那在对象头中还必须有一块区域用于记录数组长度。</p>
+<h4 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h4><ul>
+<li><p>是对象真正存储的有效信息，也就是程序代码中定义的各种类型的字段内容</p>
+</li>
+<li><p>无论是从父类继承的还是子类定义的都要记录起来</p>
+</li>
+<li><p>这部分的存储顺序会受到虚拟机分配策略参数和字段在 Java 源码中定义顺序的影响</p>
+</li>
+</ul>
+<h4 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h4><ul>
+<li>对齐填充不是必然存在的，仅仅起着占位符的作用</li>
+<li>由于 HotSpot VM 的自动内存管理系统要求对象起始地址必须是 8 字节的整数倍，也就是对象的大小必须是 8 字节的整数倍</li>
+</ul>
+<h3 id="synchronized-原理"><a href="#synchronized-原理" class="headerlink" title="synchronized 原理"></a>synchronized 原理</h3><h4 id="1-synchronized-修饰代码块"><a href="#1-synchronized-修饰代码块" class="headerlink" title="1.synchronized 修饰代码块"></a>1.synchronized 修饰代码块</h4><p>synchronized 代码块是由 monitorenter 和 monitorexit 指令实现的，monitor 对象是同步的基本实现单元。</p>
+<h4 id="2-synchronized-修饰方法"><a href="#2-synchronized-修饰方法" class="headerlink" title="2.synchronized 修饰方法"></a>2.synchronized 修饰方法</h4><p>方法的同步并没有通过指令 monitorenter 和 monitorexit 来完成，不过相对于普通方法，其常量池中多了 ACC_SYNCHRONIZED 标识符，JVM 就是通过该标识符来实现方法的同步的：当方法调用时，调用指令检查方法的 ACC_SYNCHRONIZED 访问标志是否被设置，如果设置了，执行线程将先获取 monitor，获取成功之后才能执行方法体，方法执行完成之后再释放 monitor。在方法执行期间，任何其他线程都无法再获取同一个 monitor 对象</p>
+<h5 id="monitor"><a href="#monitor" class="headerlink" title="monitor"></a>monitor</h5><p>Monitor 可以理解为一个同步工具或者一种同步机制，通常被描述为一个对象。每一个 Java 对象就有一把看不见的锁，称为内部锁或者 Monitor 锁</p>
+<p>Monitor 是线程私有的数据结构，每一个线程都有一个可用 monitor record 列表，同时还有一个全局的可用列表。每一个被锁住的对象都会和一个 monitor 关联，同时 monitor 中有一个 Owner 字段存放拥有该锁的线程的唯一标识，表示该锁被这个线程占用</p>
+<h5 id="monitorenter"><a href="#monitorenter" class="headerlink" title="monitorenter"></a>monitorenter</h5><p>每个对象有一个监视器锁(monitor)，当 monitor 处于占用时就会处于锁定状态，线程执行 monitorenter 指令尝试获取 monitor 对象的所有权，过程如下</p>
+<ul>
+<li><p>1.如果 monitor 的进入数为 0，则该线程占有 monitor，然后将进入数置 1，该线程即为 monitor 的所有者</p>
+</li>
+<li><p>2.如果线程已经占有该 monitor，重复进入，则将 monitor 的进入数+1</p>
+</li>
+<li><p>3.如果其他线程已经占有了 monitor，则该线程进入阻塞状态，直到 monitor 的进入数为 0，再重新尝试获取 monitor 的所有权</p>
+</li>
+</ul>
+<h5 id="monitorexit"><a href="#monitorexit" class="headerlink" title="monitorexit"></a>monitorexit</h5><p>执行 monitorexit 的线程必须是 monitor 的所有者</p>
+<ul>
+<li><p>1.指令执行时，monitor 的进入数-1</p>
+</li>
+<li><p>2.如果减 1 后进入数为 0，则线程释放 monitor 的所有权</p>
+</li>
+<li><p>3.其他被这个 monitor 阻塞的线程可以尝试去获取这个 monitor 的所有权</p>
+</li>
+</ul>
+<h3 id="synchronized-锁升级及撤销"><a href="#synchronized-锁升级及撤销" class="headerlink" title="synchronized 锁升级及撤销"></a>synchronized 锁升级及撤销</h3><h4 id="1-无锁"><a href="#1-无锁" class="headerlink" title="1.无锁"></a>1.无锁</h4><p>无锁没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功</p>
+<p>无锁的特点就是修改操作在循环内进行，线程会不断的尝试修改共享资源。如果没有冲突就修改成功并退出，否则就会继续循环尝试。如果有多个线程修改同一个值，必定会有一个线程能修改成功，而其他修改失败的线程会不断重试直到修改成功。CAS 的原理及应用即是无锁的实现。无锁无法全面代替有锁，但无锁在某些场合下的性能是非常高的</p>
+<h4 id="2-偏向锁"><a href="#2-偏向锁" class="headerlink" title="2.偏向锁"></a>2.偏向锁</h4><h5 id="偏向锁概念"><a href="#偏向锁概念" class="headerlink" title="偏向锁概念"></a>偏向锁概念</h5><p>偏向锁会偏向于第一个获得它的线程，会在对象头和栈帧中的锁记录里存储锁偏向的 ThreadId，以后该线程进入和退出同步块不需要进行 CAS 操作进行加锁和解锁，只需要简单地测试以下对象头的 Mark Word 里是否存储着指向当前线程的偏向锁。</p>
+<p>不过一旦出现多个线程竞争时必须撤销偏向锁，所以撤销偏向锁性能的消耗必须小于之前节省下来的 CAS 原子操作的性能消耗，不然就得不偿失了</p>
+<h5 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h5><ul>
+<li><p>虚拟机会把对象头的偏向锁标志设为 01，即偏向模式</p>
+</li>
+<li><p>同时使用 CAS 操作把获取到这个锁的线程 id 记录在对象的 MarkWord 中，如果 CAS 操作成功，持有偏向锁的线程以后每次进入这个锁相关的同步块时，虚拟机都可以不再进行任何同步操作</p>
+</li>
+<li><p>它同样是个带有效益权衡性质的优化，也就是说它并不一定总是对程序运行有利，如果程序中大多数的锁总是被多个不同的线程访问比如线程池，那偏向模式就是多余的</p>
+</li>
+<li><p>在 JDK5 中偏向锁默认是关闭的，而到了 JDK6 中偏向锁已经默认开启。但在应用程序启动几秒钟之后才激活，可以通过调整设置关闭延迟，如果确定应用程序中所有锁通常情况下处于竞争状态，也可以关闭偏向锁</p>
+</li>
+</ul>
+<p><img data-src="https://i.loli.net/2021/04/11/8e7YIhLRcMbBtAj.png" alt="偏向锁"></p>
+<h5 id="偏向锁有三种状态"><a href="#偏向锁有三种状态" class="headerlink" title="偏向锁有三种状态"></a>偏向锁有三种状态</h5><ul>
+<li><p>匿名偏向: 这是允许偏向锁的初始状态，MarkWord 中的 ThreadId 为 0，第一个试图获取该对象锁的线程会遇到这种状态，可以通过 CAS 操作修改 ThreadId 来获取这个对象的锁</p>
+</li>
+<li><p>可重偏向: 这个状态下 Epoch(偏向时间戳)是无效的，下一个线程会遇到这种情况，在批量重偏向操作中，所有未被线程持有的对象都会被设置成这个状态，然后在下个线程获取的时候能够重偏向</p>
+</li>
+<li><p>已偏向: 这个状态最简单，就是被线程持有着，此时 ThreadId 为其偏向的线程</p>
+</li>
+</ul>
+<h5 id="批量重偏向和批量撤销"><a href="#批量重偏向和批量撤销" class="headerlink" title="批量重偏向和批量撤销"></a>批量重偏向和批量撤销</h5><ul>
+<li><p>批量重偏向: 当一个线程创建了大量对象(同一个 class 的)并执行了初始的同步操作，后来另一个线程也来将这些对象作为锁对象进行操作，会导致偏向锁重偏向操作。Hotspot 默认是 20 个，可以调整。重偏向只能触发一次</p>
+</li>
+<li><p>批量撤销: 批量撤销就是如果线程 B 在达到批量重偏向之后继续获取对象锁，这个数量达到了批量撤销阈值(40 个)，那么 JVM 就认为当前场景存在多线程竞争，会标记该 class 不可偏向，之后再对于该 class 对象的锁直接走轻量级锁流程。触发批量撤销的线程仍然能够使用偏向锁，是从下一个线程开始变成轻量级锁</p>
+</li>
+</ul>
+<h5 id="偏向锁加锁及升级逻辑"><a href="#偏向锁加锁及升级逻辑" class="headerlink" title="偏向锁加锁及升级逻辑"></a>偏向锁加锁及升级逻辑</h5><p>1.线程 A 第一次访问同步块时，先检测对象头 Mark Word 中的标志位是否为 01，依此判断此时对象锁是否处于无锁状态或者偏向锁状态</p>
+<p>2.然后判断偏向锁标志位是否为 1，如果不是，则进入轻量级锁逻辑，如果是，则进入下一步流程</p>
+<p>3.判断是偏向锁时，检查对象头 Mark Word 中记录的 ThreadId 是否是当前线程的 id，如果是，表明当前线程已经获得对象锁，以后该线程进入同步块时，不需要 CAS 进行加锁</p>
+<p>4.如果对象头 Mark Word 中的 ThreadId 不是当前线程的 id，则进行 CAS 操作，尝试将当 MarkWord 中的 ThreadId 替换为当前线程 id。如果当前对象锁状态处于匿名偏向锁状态(可偏向未锁定)，则会替换成功(将 MarkWord 中的 ThreadId 由匿名 0 改为当前线程 id)，获取到锁，执行同步代码块</p>
+<p>5.如果对象锁已经被其他线程占用，则会替换失败，开始进行偏向锁撤销，这也是偏向锁的特点，一旦出现线程竞争，就会撤销偏向锁</p>
+<p>偏向锁的撤销是指在获取偏向锁的过程中因不满足条件导致要将锁对象改为非偏向状态，而偏向锁释放是指退出同步块时的过程</p>
+<p>6.偏向锁的撤销需要等待全局安全点(safe point，代表了一个状态，在该状态下所有线程都是暂停的)，暂停持有偏向锁的线程，检查持有偏向锁的线程状态(遍历当前 JVM 所有线程，如果能找到，说明偏向线程还存活)，如果线程还存活则检查线程是否在执行同步代码块中的代码，如果是则升级为轻量级锁，进行 CAS 竞争。</p>
+<p>每次进入同步块(即执行 monitorenter)的时候都会以从高往低的顺序在栈中找到第一个可用的 Lock Record，并设置偏向线程 ID。每次解锁(monitorexit)的时候都会从最低的一个 Lock Record 移除。所以如果能够找到对应的 LockRecord 说明偏向的线程还在执行同步代码块</p>
+<p>7.如果持有偏向锁的线程未存活，或者持有偏向锁的线程未在执行同步代码块，则进行校验是否允许重偏向，如果不允许重偏向则撤销偏向锁，将 MarkWord 设置为无锁状态(未锁定不可偏向状态)，然后升级为轻量级锁，进行 CAS 竞争锁。</p>
+<p>8.如果允许重偏向，设置为匿名偏向锁状态，CAS 将偏向锁重新指向当前线程</p>
+<p>9.唤醒暂停的线程，从安全点继续执行代码</p>
+<h5 id="偏向锁释放逻辑"><a href="#偏向锁释放逻辑" class="headerlink" title="偏向锁释放逻辑"></a>偏向锁释放逻辑</h5><p>偏向锁的释放并不是主动的，而是被动的，持有偏向锁的线程执行完同步代码后不会主动释放锁，而是等待其他线程来竞争才会释放锁，也就是 ThreadId 不会改变，退出同步块释放偏向锁时，则依次删除对应的 Lock Record，但是不会修改对象头中的 ThreadId</p>
+<h5 id="偏向锁关闭"><a href="#偏向锁关闭" class="headerlink" title="偏向锁关闭"></a>偏向锁关闭</h5><p>偏向锁在 Java6 和 Java7 中是默认启用的，但是它在应用程序启动几秒之后才激活，如果有必要可以使用 JVM 参数来关闭延迟：-XX:BaisedLockingStartupDelay=0。如果确定应用程序中所有的锁通常情况下处于竞争状态，可以通过 JVM 参数关闭偏向锁：-XX:-UseBaisedLocking=false，那么程序默认会进入轻量级锁状态</p>
+<h5 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h5><p>偏向锁是在只有一个线程执行同步块时进一步提高性能，适用于一个线程反复获取同一个锁的情况.偏向锁可以提高带有同步但无竞争的程序性能</p>
+<h4 id="3-轻量级锁"><a href="#3-轻量级锁" class="headerlink" title="3.轻量级锁"></a>3.轻量级锁</h4><h5 id="轻量级锁概念"><a href="#轻量级锁概念" class="headerlink" title="轻量级锁概念"></a>轻量级锁概念</h5><p>轻量级锁是 JDK6 引进的，它的轻量是相较于通过系统互斥量实现的传统锁，轻量锁并不是为了取代重量级锁，而是在没有大量线程竞争的情况下，减少系统互斥量的使用，降低性能的损耗。</p>
+<p>轻量级锁能够提升程序性能的依据是”对绝大部分的锁，在整个同步周期内都不会存在竞争”。</p>
+<p>轻量级锁适用的场景是线程交替执行同步块的场景，如果存在同一时间访问同一锁的场景，就会导致轻量级锁膨胀为重量级锁</p>
+<h5 id="轻量级锁加锁流程"><a href="#轻量级锁加锁流程" class="headerlink" title="轻量级锁加锁流程"></a>轻量级锁加锁流程</h5><p>轻量级锁加锁的前提是锁对象不能带有偏向特征。加锁的过程可分为两种情况来讨论:一种是无锁状态(锁标志位为 01，偏向标志位为 00)，可直接尝试加锁。另一种是有锁状态，需要检查是否为当前线程持有的锁。</p>
+<p>无锁状态下可以直接加锁，流程:</p>
+<ul>
+<li><p>1.线程在自己当前的栈帧中创建用于存储锁记录的空间 LockRecord</p>
+</li>
+<li><p>2.线程将 MarkWord 拷贝到线程栈的 LockRecord 中，官方称之为 Displaced Mark Word</p>
+</li>
+<li><p>3.将 LockRecord 中的 Owner 指针指向加锁的对象(存放对象地址)</p>
+</li>
+<li><p>4.CAS 将锁对象的对象头的 Mark Word 替换为指向锁记录的指针，如果成功，当前线程获取到锁，如果失败，表示其他线程竞争锁，当前线程便尝试自旋获取锁。</p>
+</li>
+<li><p>5.锁标志位变成 00，表示轻量级锁</p>
+</li>
+</ul>
+<p>有锁状态下，如果是当前线程持有的锁，说明是重入，不需要争抢锁，会在栈帧中创建 Displaced Mark Word 为空的 Lock Record，用来记录锁的重入次数<br>如果不是当前线程持有的锁，就要升级为重量级锁。</p>
+<h5 id="轻量级锁解锁"><a href="#轻量级锁解锁" class="headerlink" title="轻量级锁解锁"></a>轻量级锁解锁</h5><p>使用 CAS 操作将当前线程栈帧中的 Displaced Mark Word 替换回锁对象头中，替换成功则解锁成功。替换失败则膨胀成重量级锁之后再解锁</p>
+<h5 id="膨胀过程"><a href="#膨胀过程" class="headerlink" title="膨胀过程"></a>膨胀过程</h5><p>有两种情况会膨胀成重量级锁。</p>
+<ul>
+<li><p>1.cas 自旋 10 次还没有获取锁，因为 CAS 会消耗 CPU。</p>
+</li>
+<li><p>2.其他线程正在 CAS 获取锁，第三个线程竞争锁，锁也会膨胀成重量级锁</p>
+</li>
+</ul>
+<h5 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h5><p>轻量级锁又分为自旋锁和自适应自旋锁</p>
+<h6 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h6><p>所谓自旋，就是指当有另外一个线程来竞争锁资源时，这个线程会在原地循环等待，而不是把该线程给阻塞，直到原来获得锁的线程释放锁了之后，这个线程就可以获得锁</p>
+<p>锁在原地循环的时候是会消耗 cpu 资源的</p>
+<ul>
+<li><p>如果同步代码块执行的很慢，需要消耗大量的时间，那么自旋可能会大量消耗 CPU</p>
+</li>
+<li><p>因为可能存在多个线程竞争锁，持有锁的线程释放锁之后，锁资源可能会被其他线程抢占，导致某些线程一直获取不到锁</p>
+</li>
+</ul>
+<p>因此必须给自旋锁设置一个重试次数，默认 10 次，超过 10 次，锁会再次膨胀，升级为重量级锁</p>
+<h6 id="自适应自旋锁"><a href="#自适应自旋锁" class="headerlink" title="自适应自旋锁"></a>自适应自旋锁</h6><p>所谓自适应自旋锁，就是线程空循环等待的自旋次数并非固定的，而是会动态根据实际情况来改变自旋等待的次数</p>
+<p>1.假如 A 线程刚刚成功获取一个锁，等它释放锁了之后，锁被线程 B 获取，在线程 B 执行同步代码块期间，线程 A 又需要获取锁，此时只能自旋等待，但是虚拟机认为，线程 A 刚刚获得过该锁，那么这次自旋也很有可能再次成功获取锁，所以会增加线程 A 自旋的次数</p>
+<p>2.另外对于某个锁，一个线程自旋之后，很少成功获得该锁，那么以后这个线程再次尝试获取锁时，可能直接忽略掉自旋过程，直接升级成重量级锁，以免空等浪费资源</p>
+<h4 id="4-重量级锁"><a href="#4-重量级锁" class="headerlink" title="4.重量级锁"></a>4.重量级锁</h4><p>重量级锁升级后是不可逆的，也就是说重量级锁无法再变为轻量级锁</p>
+<p>重量级锁是依赖对象内部的 monitor 锁来实现的，而 monitor 又依赖操作系统的 MutexLock(互斥锁)来实现的，所以重量级锁也被成为互斥锁</p>
+<p>重量级锁之所以被称为重量级，是因为 Java 线程是映射到操作系统的原生线程上的，如果要阻塞或唤醒一个线程，都需要依赖操作系统从当前用户态转换到核心态，这种状态转换需要耗费处理器很多时间，对于简单同步块，可能状态转换时间比用户代码执行时间还长，导致实际业务处理所占比偏小，性能损失较大</p>
+<h3 id="synchronized-锁的对象"><a href="#synchronized-锁的对象" class="headerlink" title="synchronized 锁的对象"></a>synchronized 锁的对象</h3><ul>
+<li><p>修饰在普通方法和普通代码块上，对象锁</p>
+</li>
+<li><p>修饰静态方法或者静态代码块，类锁</p>
+</li>
+</ul>
+<h3 id="锁粗化和锁消除"><a href="#锁粗化和锁消除" class="headerlink" title="锁粗化和锁消除"></a>锁粗化和锁消除</h3><ul>
+<li><p>锁粗化: 将多次连在一起的加锁，解锁操作合并为一次，将多个连续的锁扩展为一个大范围的锁</p>
+</li>
+<li><p>锁消除: Java 虚拟机在即时编译时，通过对上下文内容的扫描，去除不可能存在共享资源竞争的锁，通过消除这种没必要的锁，可以节省毫无意义的请求锁的时间</p>
+</li>
+</ul>
+<h3 id="synchronized-如何实现可重入"><a href="#synchronized-如何实现可重入" class="headerlink" title="synchronized 如何实现可重入"></a>synchronized 如何实现可重入</h3><p>每个锁关联一个持有者线程和一个计数器，当计数器为 0 时，说明该锁没有被任何线程所持有，那么任何线程都可能获得该锁，当一个线程成功获取到锁之后，JVM 会记下持有锁的线程，并将计数器+1，此时其他线程请求该锁，则必须等待，而该锁持有者线程如果想要再次请求该锁，可以直接拿到，同时将计数器+1，当线程退出一个同步代码块之后，计数器会-1，如果计数器减为 0 则释放该锁</p>
+<h3 id="对-synchronized-优化"><a href="#对-synchronized-优化" class="headerlink" title="对 synchronized 优化"></a>对 synchronized 优化</h3><ul>
+<li><p>减少 synchronized 的范围:同步代码块中尽量短，减少同步代码执行时间，减少锁的竞争</p>
+</li>
+<li><p>降低 synchronized 的锁力度:将一个锁拆分为多个锁提高并发度，尽量不要用类名.class 作为锁对象</p>
+</li>
+<li><p>读写分离: 读取的时候不加锁，写入更新和删除的时候加锁</p>
+</li>
+</ul>
+<h3 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h3><p>ReentrantLock 主要利用 CAS+AQS 队列来实现，支持公平锁和非公平锁，支持可重入</p>
+<p>ReentrantLock 主要依赖 AQS 维护一个阻塞队列，多个线程加锁时，失败则会进入阻塞队列等待唤醒，重新尝试加锁</p>
+<p><img data-src="https://i.loli.net/2021/04/13/pHRoWU3TzvlmiZK.png" alt="ReentrantLock"></p>
+<p>根据代码可知，ReentrantLock 里面有一个内部类 Sync，Sync 继承 AQS(AbstratcQueuedSynchronizer)，加锁和解锁的大部分操作实际上都是在 Sync 中实现的。它有公平锁 FairSync 和非公平锁 NonFairSync 两个子类。ReentrantLock 默认使用非公平锁，也可以通过构造器来显式的指定使用公平锁。</p>
+<h4 id="非公平锁"><a href="#非公平锁" class="headerlink" title="非公平锁"></a>非公平锁</h4><p>资源释放，任何线程都有机会获得资源，而不管其申请顺序</p>
+<p>NonFairSync 继承自 ReentrantLock.Sync，而 Sync 继承自 AbstractQueuedSynchronizer。</p>
+<p>NonFairSync 的 tryAccquire 函数，会调用父类的 nofairTryAccqiure 函数:如果资源释放时，新的线程会尝试 CAS 获取锁，而不管阻塞队列中是否有比之先申请资源的线程</p>
+<p>非公平锁可能出现后申请锁的线程先获取到锁的情况。</p>
+<p>非公平锁的优点是可以减少唤起线程的开销，整体的吞吐量高，因为线程有几率不阻塞直接获取锁，CPU 不必唤醒所有线程</p>
+<p>非公平锁的缺点是处于等待队列中的线程可能会饿死，或者等很久才获得锁</p>
+<p><img data-src="https://i.loli.net/2021/04/13/9u6iz8VHghd1TGC.png" alt="NonFairSync"></p>
+<p><img data-src="https://i.loli.net/2021/04/13/y7GEuzlCxPSQrUm.png" alt="nonfairTryAcquire"></p>
+<h5 id="非公平锁加锁流程"><a href="#非公平锁加锁流程" class="headerlink" title="非公平锁加锁流程"></a>非公平锁加锁流程</h5><ul>
+<li>1.尝试获取锁，如果获取锁成功，直接返回</li>
+</ul>
+<p>检查 state 字段，若为 0，表示锁未被占用，那么 CAS 尝试占用，若不为 0，检查锁是否被当前线程占用，若被自己占用，则更新 state 字段，增加锁的重入次数，如果前面都没有成功，则获取锁失败，</p>
+<ul>
+<li>2.入队</li>
+</ul>
+<p>如果锁已经被其他线程获取，后面的线程执行 tryAccquire 失败，将进入等待队列</p>
+<ul>
+<li>3.挂起</li>
+</ul>
+<p>已经进入等待队列的线程先尝试获取锁，如果获取失败，线程会被挂起</p>
+<h5 id="非公平锁解锁流程"><a href="#非公平锁解锁流程" class="headerlink" title="非公平锁解锁流程"></a>非公平锁解锁流程</h5><p>先 tryRelease 尝试释放锁，若释放成功，那么查看头节点状态是否为 SIGNAL，如果是则唤醒头节点的下个节点关联的线程，如果释放失败那么返回 false 表示解锁失败</p>
+<p>tryRelease 中，若当前线程并没有持有锁，则抛出异常，若持有着锁，计算释放后的 state 值是否为 0，若为 0 表示已经成功释放，并且清空独占线程，最后更新 state 值，返回 true</p>
+<h4 id="公平锁"><a href="#公平锁" class="headerlink" title="公平锁"></a>公平锁</h4><p>FairSync 同样继承自 ReentrantLock.Sync，ReentrantLock 调用 lock 方法，最终会调用 Sync 的 tryAcquire 函数，获取资源。</p>
+<p>公平锁的优点是等待线程不会饿死。</p>
+<p>公平锁的缺点是整体整体吞吐消息相对于非公平锁要低，等待队列中除第一个线程以外的所有线程都会阻塞，CPU 唤醒阻塞线程的开销要比非公平锁大。</p>
+<p><img data-src="https://i.loli.net/2021/04/13/cGwX3jsuHNLiUtv.png" alt="FairSync"></p>
+<h5 id="公平锁加锁流程"><a href="#公平锁加锁流程" class="headerlink" title="公平锁加锁流程"></a>公平锁加锁流程</h5><p>公平锁加锁不会检查 state 状态，直接 accquire(1)</p>
+<p>多个线程申请获取同一资源，必须按照申请顺序，依次获取资源</p>
+<p>FairSync 的 tryAccquire 函数定义: 当前线程只有在队列为空或者是队首节点的时候，才能获取资源，否则会被加入到阻塞队列中</p>
+<h4 id="可重入性"><a href="#可重入性" class="headerlink" title="可重入性"></a>可重入性</h4><p>获取独占资源的线程，可以直接重复获得该资源，不需要重复争取锁</p>
+<p>ReentantLock 在申请资源的时候，都会判断当前线程是否是该资源的持有者，如果是，只是将 state 的值+1，记录当前线程的重入次数</p>
+<p>ReentantLock 在释放资源的时候，都会调用 tryRelease，只有 state 为 0 的时候，才会真正释放资源</p>
+<p>重入多少次就必须释放多少次</p>
+<h4 id="超时机制"><a href="#超时机制" class="headerlink" title="超时机制"></a>超时机制</h4><p>tryLock(long timeout， TimeUnit unit)提供了超时获取锁的功能，在指定时间内获取到锁则返回 true，没有获取到锁则返回 false</p>
+<p>这种机制避免了线程无限期的等待锁释放</p>
+<h5 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h5><p>1.如果线程被中断了，直接抛出 InterruptedException，如果未中断，先尝试获取锁，获取成功直接返回，获取失败则进入 doAccquireNanos</p>
+<p>2.doAccquireNanos: 线程先进入等待队列，然后开始自旋，尝试获取锁，获取成功就返回，失败则在队列里找一个安全点把自己挂起直到超时时间过期.这里为什么还需要循环呢?因为当前线程节点的前驱状态可能不是 SIGNAL，那么在当前这轮循环中线程不会被挂起，然后更新超时时间，开始新一轮的尝试</p>
+<h3 id="等待通知"><a href="#等待通知" class="headerlink" title="等待通知"></a>等待通知</h3><p>synchronized 与 wait()和 nitofy()/notifyAll()方法相结合可以实现等待/通知模型</p>
+<p>ReentrantLock 借助 Condition 可以实现等待/通知模型，且 Condition 具有更好的灵活性</p>
+<ul>
+<li><p>一个 Lock 里面可以创建多个 Condition 实例，实现多路通知</p>
+</li>
+<li><p>notify 方法进行通知时，被通知的线程是 Java 虚拟机随机选择的，但是 ReentrantLock 结合 Condition 可以实现有选择性的通知</p>
+</li>
+<li><p>Condition 类的 await 方法和 Object 的 wait 方法等效</p>
+</li>
+<li><p>Condition 类的 signal 方法和 Object 的 notify 方法等效</p>
+</li>
+<li><p>Condition 类的 signalAll 方法和 Object 的 notifyAll 方法等效</p>
+</li>
+</ul>
+<h3 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h3><p>针对读多写少的情况，java 提供了 ReentrantReadWriteLock。读写锁允许同一时刻被多个读线程访问，但是在写线程访问时，所有的读线程和其他写线程都会阻塞</p>
+<h4 id="ReadWriteLock"><a href="#ReadWriteLock" class="headerlink" title="ReadWriteLock"></a>ReadWriteLock</h4><p>读写锁在读的时候上读锁，写的时候上写锁.这样就可以解决读与读之间互斥导致的性能问题</p>
+<p>读写锁支持锁降级，遵循按照获取写锁，获取读锁再释放写锁的次序，写锁能够降级成为读锁，不支持锁升级</p>
+<h3 id="AbstractQueuedSynchronizer-基本原理"><a href="#AbstractQueuedSynchronizer-基本原理" class="headerlink" title="AbstractQueuedSynchronizer 基本原理"></a>AbstractQueuedSynchronizer 基本原理</h3><p>AbstractQueuedSynchronizer，AQS，抽象队列同步器</p>
+<p>AQS 是一个用于构建锁和同步器的框架，许多同步器都可以通过 AQS 很容易并且高效的构造出来，不仅 Reentrant 和 Semaphore 是基于 AQS 构建的，还包括 CountDownLatch，ReentrantReadWriteLock，SynchronousQueue 和 FutureTask</p>
+<p>AQS 实现了独占锁/共享锁，可中断锁/不可中断锁的逻辑</p>
+<p>AQS 使用 CLH 队列表示排队等待锁的线程，CLH 队列是一个先进先出的双向队列，队列头节点称作”哨兵节点”或者”哑节点”，它不与任何线程关联，其他的节点与等待线程关联，每个节点维护一个等待状态 waitStatus</p>
+<p>state 称为共享资源或者同步状态，用 volatile 修饰，保证多线程下的可见性</p>
+<p>AQS 底层使用了模板方法模式，自定义同步器在实现时只需要实现共享资源 state 的获取与释放方法即可，至于具体线程的等待队列的维护(如资源获取失败入队/唤醒出队等)，AQS 已经在上层实现好</p>
+<p>AQS 中还有另外一个非常重要的内部类 ConditionObject，它实现了 Condition 接口，主要用于条件锁</p>
+<p>ConditionObject 中也维护了一个队列，这个队列主要用于等待条件的成立，当条件成立时，其他线程将 signal 这个队列中的元素，将其移动到 AQS 的队列中，等待占有锁的线程释放锁后被唤醒</p>
+<p>Condition 典型的应用场景是在 BlockingQueue 中的实现，当队列为空时，获取元素的线程阻塞在 notEmpty 条件上，一旦队列中添加了一个元素，将通知 notEmpty 条件，将其队列中的元素移动到 AQS 队列中等待被唤醒</p>
+<h3 id="多线程并发编程的三个特性"><a href="#多线程并发编程的三个特性" class="headerlink" title="多线程并发编程的三个特性"></a>多线程并发编程的三个特性</h3><ul>
+<li><p>可见性: 可见性是指当多个线程访问同一个共享变量时，一个线程修改了这个变量的值，其他的线程能够立即看到修改后的值</p>
+</li>
+<li><p>原子性: 原子性指一个操作或者一组操作要么全部执行，要么全部不执行</p>
+</li>
+<li><p>有序性: 有序性是指程序执行的顺序按照代码的先后顺序执行</p>
+</li>
+</ul>
+<h3 id="java-内存模型定义的八种原子性操作"><a href="#java-内存模型定义的八种原子性操作" class="headerlink" title="java 内存模型定义的八种原子性操作"></a>java 内存模型定义的八种原子性操作</h3><ul>
+<li><p>lock(锁定): 作用于主内存的变量，把一个变量标识为一个线程独占</p>
+</li>
+<li><p>unlock(解锁): 作用于主内存的变量，把一个处于锁定状态的变量解锁，解除锁定之后的变量才能被其他线程锁定</p>
+</li>
+<li><p>read(读取): 作用于主内存的变量，把一个变量值从主内存传输到线程的工作内存中，以便后续的 load 动作使用</p>
+</li>
+<li><p>load(载入): 作用于工作内存的变量，把 read 操作从主内存中得到的变量值放入工作内存的变量副本中</p>
+</li>
+<li><p>use(使用): 作用于工作内存的变量，把工作内存中的一个变量值传递给执行引擎，每当虚拟机遇到一个需要使用变量的值的字节码指令时执行这个操作</p>
+</li>
+<li><p>assign(赋值): 作用于工作内存的变量，把一个从执行引擎接收到的值赋给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作</p>
+</li>
+<li><p>store(存储): 作用于工作内存的变量，把工作内存中的一个变量值传送到主内存中，以便后续的 write 的操作</p>
+</li>
+<li><p>write(写入): 作用于主内存的变量，把 store 操作从工作内存中传送的一个变量的值写入到主内存的变量中</p>
+</li>
+</ul>
+<h4 id="java-内存模型规则"><a href="#java-内存模型规则" class="headerlink" title="java 内存模型规则"></a>java 内存模型规则</h4><p>Java 内存模型还规定了在执行上述八种基本操作时，必须满足如下规则：</p>
+<ul>
+<li><p>如果要把一个变量从主内存中复制到工作内存，需要顺序执行 read 和 load 操作，如果把变量从工作内存中同步回主内存中，就要按顺序的执行 store 和 write 操作。但是 java 内存模型只要求上述操作按顺序执行，并没有邀请保证操作是连续的，也就是操作不是原子的，一组操作可以中断</p>
+</li>
+<li><p>不允许 read 和 load，store 和 write 操作之一单独出现，必须成对出现</p>
+</li>
+<li><p>不允许一个线程丢弃它最近的 assign 操作，即变量在工作内存中改变了之后必须同步回主内存中</p>
+</li>
+<li><p>不允许一个线程无原因地(没有发生过任何 assign 操作)把数据从工作内存同步到主内存</p>
+</li>
+<li><p>一个新的变量只能在主内存中诞生，不允许在工作内存中直接使用一个未被初始化(load 或 assign)的变量，即对一个变量执行 use 和 store 之前，必须先执行过 assign 和 load 操作</p>
+</li>
+<li><p>一个变量在同一时刻只允许一条线程对其进行 lock 操作，但 lock 操作可以被同一线程重复执行多次，多次执行 lock 后，只有执行相同次数的 unlock 操作，变量才会解锁。lock 和 unlock 必须成对出现</p>
+</li>
+<li><p>如果对一个变量执行 lock 操作，将会清空工作内存中此变量的值，在执行引擎使用这个变量之前需要重新执行 load 或 assign 操作初始化变量的值</p>
+</li>
+<li><p>如果一个变量事先没有被 lock 锁定，则不允许对它进行 unlock 操作。也不允许去 unlock 一个被其他线程锁定的变量</p>
+</li>
+<li><p>对一个变量执行 unlock 之前，必须先把此变量同步到主内存中(执行 store 和 write 操作)</p>
+</li>
+</ul>
+<h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><h4 id="CAS-缺点"><a href="#CAS-缺点" class="headerlink" title="CAS 缺点"></a>CAS 缺点</h4><p>1.循环时间开销大</p>
+<p>通过 do while 循环操作，如果替换失败，会一直进行尝试，如果 CAS 长时间一直不成功，可能会给 CPU 带来很大的开销</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndAddInt</span><span class="params">(Object var1， <span class="keyword">long</span> var2， <span class="keyword">int</span> var4)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> var5。</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            var5 = <span class="keyword">this</span>.getIntVolatile(var1， var2)。</span><br><span class="line">        &#125; <span class="keyword">while</span>(!<span class="keyword">this</span>.compareAndSwapInt(var1， var2， var5， var5 + var4))。</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> var5。</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.只能保证一个共享变量的原子操作</p>
+<p>当对一个共享变量执行操作时，可以使用循环 CAS 的方式来保证原子操作。但是对多个变量操作时，CAS 就无法保证操作的原子性，可以用加锁实现</p>
+<p>3.引来 ABA 问题</p>
+<p>可以通过 StampedReference 类解决</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+              <a href="/tags/synchronized/" rel="tag"># synchronized</a>
+              <a href="/tags/lock/" rel="tag"># lock</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/33ce6d02.html" rel="prev" title="dubbo面试知识点(持续更新)">
+      <i class="fa fa-chevron-left"></i> dubbo面试知识点(持续更新)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/4ca75bdb.html" rel="next" title="java集合面试知识点(持续更新)">
+      java集合面试知识点(持续更新) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-和-ReentrantLock-区别"><span class="nav-number">1.</span> <span class="nav-text">synchronized 和 ReentrantLock 区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-保证了那些特性"><span class="nav-number">2.</span> <span class="nav-text">synchronized 保证了那些特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-对象布局"><span class="nav-number">3.</span> <span class="nav-text">java 对象布局</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象头"><span class="nav-number">3.1.</span> <span class="nav-text">对象头</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Mark-Word"><span class="nav-number">3.1.1.</span> <span class="nav-text">Mark Word</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#klass-指针"><span class="nav-number">3.1.2.</span> <span class="nav-text">klass 指针</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数组长度"><span class="nav-number">3.1.3.</span> <span class="nav-text">数组长度</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例数据"><span class="nav-number">3.2.</span> <span class="nav-text">实例数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对齐填充"><span class="nav-number">3.3.</span> <span class="nav-text">对齐填充</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-原理"><span class="nav-number">4.</span> <span class="nav-text">synchronized 原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-synchronized-修饰代码块"><span class="nav-number">4.1.</span> <span class="nav-text">1.synchronized 修饰代码块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-synchronized-修饰方法"><span class="nav-number">4.2.</span> <span class="nav-text">2.synchronized 修饰方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#monitor"><span class="nav-number">4.2.1.</span> <span class="nav-text">monitor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#monitorenter"><span class="nav-number">4.2.2.</span> <span class="nav-text">monitorenter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#monitorexit"><span class="nav-number">4.2.3.</span> <span class="nav-text">monitorexit</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-锁升级及撤销"><span class="nav-number">5.</span> <span class="nav-text">synchronized 锁升级及撤销</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-无锁"><span class="nav-number">5.1.</span> <span class="nav-text">1.无锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-偏向锁"><span class="nav-number">5.2.</span> <span class="nav-text">2.偏向锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#偏向锁概念"><span class="nav-number">5.2.1.</span> <span class="nav-text">偏向锁概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#原理"><span class="nav-number">5.2.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#偏向锁有三种状态"><span class="nav-number">5.2.3.</span> <span class="nav-text">偏向锁有三种状态</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#批量重偏向和批量撤销"><span class="nav-number">5.2.4.</span> <span class="nav-text">批量重偏向和批量撤销</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#偏向锁加锁及升级逻辑"><span class="nav-number">5.2.5.</span> <span class="nav-text">偏向锁加锁及升级逻辑</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#偏向锁释放逻辑"><span class="nav-number">5.2.6.</span> <span class="nav-text">偏向锁释放逻辑</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#偏向锁关闭"><span class="nav-number">5.2.7.</span> <span class="nav-text">偏向锁关闭</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#好处"><span class="nav-number">5.2.8.</span> <span class="nav-text">好处</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-轻量级锁"><span class="nav-number">5.3.</span> <span class="nav-text">3.轻量级锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#轻量级锁概念"><span class="nav-number">5.3.1.</span> <span class="nav-text">轻量级锁概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#轻量级锁加锁流程"><span class="nav-number">5.3.2.</span> <span class="nav-text">轻量级锁加锁流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#轻量级锁解锁"><span class="nav-number">5.3.3.</span> <span class="nav-text">轻量级锁解锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#膨胀过程"><span class="nav-number">5.3.4.</span> <span class="nav-text">膨胀过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分类"><span class="nav-number">5.3.5.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#自旋锁"><span class="nav-number">5.3.5.1.</span> <span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#自适应自旋锁"><span class="nav-number">5.3.5.2.</span> <span class="nav-text">自适应自旋锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-重量级锁"><span class="nav-number">5.4.</span> <span class="nav-text">4.重量级锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-锁的对象"><span class="nav-number">6.</span> <span class="nav-text">synchronized 锁的对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁粗化和锁消除"><span class="nav-number">7.</span> <span class="nav-text">锁粗化和锁消除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-如何实现可重入"><span class="nav-number">8.</span> <span class="nav-text">synchronized 如何实现可重入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对-synchronized-优化"><span class="nav-number">9.</span> <span class="nav-text">对 synchronized 优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">10.</span> <span class="nav-text">ReentrantLock</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#非公平锁"><span class="nav-number">10.1.</span> <span class="nav-text">非公平锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#非公平锁加锁流程"><span class="nav-number">10.1.1.</span> <span class="nav-text">非公平锁加锁流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#非公平锁解锁流程"><span class="nav-number">10.1.2.</span> <span class="nav-text">非公平锁解锁流程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#公平锁"><span class="nav-number">10.2.</span> <span class="nav-text">公平锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#公平锁加锁流程"><span class="nav-number">10.2.1.</span> <span class="nav-text">公平锁加锁流程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可重入性"><span class="nav-number">10.3.</span> <span class="nav-text">可重入性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#超时机制"><span class="nav-number">10.4.</span> <span class="nav-text">超时机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#过程"><span class="nav-number">10.4.1.</span> <span class="nav-text">过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#等待通知"><span class="nav-number">11.</span> <span class="nav-text">等待通知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">12.</span> <span class="nav-text">ReentrantReadWriteLock</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ReadWriteLock"><span class="nav-number">12.1.</span> <span class="nav-text">ReadWriteLock</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AbstractQueuedSynchronizer-基本原理"><span class="nav-number">13.</span> <span class="nav-text">AbstractQueuedSynchronizer 基本原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多线程并发编程的三个特性"><span class="nav-number">14.</span> <span class="nav-text">多线程并发编程的三个特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-内存模型定义的八种原子性操作"><span class="nav-number">15.</span> <span class="nav-text">java 内存模型定义的八种原子性操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#java-内存模型规则"><span class="nav-number">15.1.</span> <span class="nav-text">java 内存模型规则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">16.</span> <span class="nav-text">CAS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CAS-缺点"><span class="nav-number">16.1.</span> <span class="nav-text">CAS 缺点</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

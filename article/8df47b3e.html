@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="redis 数据丢失Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失异步复制数据导致的数据丢失主节点异步同步数据给备用节点的过程中，主节点宕机了，导致有部分数据未同步到备用节点。而这个从节点又被选举为主节点，这时候就会有部分数据丢失 脑裂导致的数据丢失">
+<meta name="keywords" content="redis,interview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis面试知识点总结(持续更新)">
+<meta property="og:url" content="http://yoursite.com/article/8df47b3e.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="redis 数据丢失Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失异步复制数据导致的数据丢失主节点异步同步数据给备用节点的过程中，主节点宕机了，导致有部分数据未同步到备用节点。而这个从节点又被选举为主节点，这时候就会有部分数据丢失 脑裂导致的数据丢失">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-25T06:22:25.836Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis面试知识点总结(持续更新)">
+<meta name="twitter:description" content="redis 数据丢失Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失异步复制数据导致的数据丢失主节点异步同步数据给备用节点的过程中，主节点宕机了，导致有部分数据未同步到备用节点。而这个从节点又被选举为主节点，这时候就会有部分数据丢失 脑裂导致的数据丢失">
+
+<link rel="canonical" href="http://yoursite.com/article/8df47b3e.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>redis面试知识点总结(持续更新) | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/8df47b3e.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis面试知识点总结(持续更新)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-06 14:17:38" itemprop="dateCreated datePublished" datetime="2021-03-06T14:17:38+08:00">2021-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-25 14:22:25" itemprop="dateModified" datetime="2021-04-25T14:22:25+08:00">2021-04-25</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="redis-数据丢失"><a href="#redis-数据丢失" class="headerlink" title="redis 数据丢失"></a>redis 数据丢失</h2><h3 id="Redis-哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失"><a href="#Redis-哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失" class="headerlink" title="Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失"></a>Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失</h3><h3 id="异步复制数据导致的数据丢失"><a href="#异步复制数据导致的数据丢失" class="headerlink" title="异步复制数据导致的数据丢失"></a>异步复制数据导致的数据丢失</h3><p>主节点异步同步数据给备用节点的过程中，主节点宕机了，导致有部分数据未同步到备用节点。而这个从节点又被选举为主节点，这时候就会有部分数据丢失</p>
+<h3 id="脑裂导致的数据丢失"><a href="#脑裂导致的数据丢失" class="headerlink" title="脑裂导致的数据丢失"></a>脑裂导致的数据丢失</h3><p>主节点所在机器脱离了集群网络，实际上自身还是运行着的。但这时原来的集群中主节点的从节点升级成了主节点，这个时候就有两个主节点都在运行，这就是脑裂</p>
+<p>发生脑裂后，客户端还没有来得及切换到新的主节点，连的还是原来的，有些数据还是写入到了第一个节点里面，新的节点没有这些数据。等到第一个节点恢复后，会降级为从节点连接到集群，而且自身数据会被清空，重新从主节点复制数据。而新的主节点因为没有客户端之前写入的数据，所以导致数据丢失了一部分</p>
+<h3 id="如何避免"><a href="#如何避免" class="headerlink" title="如何避免"></a>如何避免</h3><ul>
+<li><p>配置 min-slaves-to-write 1，表示至少有一个从节点</p>
+</li>
+<li><p>配置 min-slaves-max-lag 10，表示数据复制和同步的延迟不能超过 10 秒。最多丢失 10 秒的数据</p>
+</li>
+</ul>
+<h2 id="redis-为什么这么快"><a href="#redis-为什么这么快" class="headerlink" title="redis 为什么这么快"></a>redis 为什么这么快</h2><ol>
+<li>纯内存操作，一般都是简单的存取操作，线程占用的时间很多，时间的花费主要集中在 IO 上，所以读取速度快</li>
+<li>整个 redis 就是一个全局 hash 表，他的时间复杂度是 O(1)，而且为了防止 hash 冲突导致链表过长，redis 会执行 reHash 操作，扩充 hash 桶数量，减少 hash 冲突。并且防止一次性重新映射数据过大导致线程阻塞，采用渐进式 rehash，巧妙的将一次性拷贝分摊到多次请求过程中，避免阻塞。</li>
+<li>redis 采用的是非阻塞 IO，IO 多路复用。采用了单线程来轮询描述符，将数据库的开、关、读、写都转换成了事件，redis 采用自己实现的事件分离器，效率比较高</li>
+<li>单线程,省去了上下文切换的消耗,CPU 利用率高</li>
+<li>redis 全程使用 hash 结构，读取速度快，还有一些特殊的数据结构，对数据存储进行了优化，如压缩表，对短数据进行压缩存储，再如跳表，使用有序的数据结构加快了读写速度</li>
+<li>根据实际存储的数据类型选择不同编码</li>
+</ol>
+<h2 id="1-redis-支持的数据结构"><a href="#1-redis-支持的数据结构" class="headerlink" title="1.redis 支持的数据结构"></a>1.redis 支持的数据结构</h2><p>redis 支持 5 种基本数据结构，分别是 string、list、set、zset 和 hash</p>
+<p>同时 redis 还支持 3 种特殊的数据类型，分别是 geo、bitmap 和 hyperloglog</p>
+<p>string:</p>
+<p>二进制安全的数据类型，可以用来存储图片二进制流或者序列化之后的对象，最大上限 512M</p>
+<p>可以保存（1）二进制序列字符串（2）整形数据（3）浮点数据</p>
+<p>可以用来做原子计数器</p>
+<p>可以用来实现分布式锁（拓展：分布式锁）</p>
+<p>list:</p>
+<p>简单的 string 列表，相当于 java 中的 LinkedList，按照插入顺序排序，写操作时间复杂度是 O(1)，读操作时间复杂度是 O(n)</p>
+<p>双向链表，可以头插（LPUSH）或者尾插（RPUSH）</p>
+<p>list 最大长度是 2^32-1</p>
+<p>发布订阅，可以实现简单的消息队列</p>
+<p>通过 list 裁剪功能可以实现排行榜</p>
+<p>set:</p>
+<p>string 的无序集合，相当于 java 中的 HashSet，set 内部使用 hash 表保证唯一性，添加、删除、查找的时间复杂度都是 O(1)</p>
+<p>set 最大成员个数是 2^32-1</p>
+<p>可以通过指令实现交集、并集等操作</p>
+<p>可以用于实现去重操作</p>
+<p>hash:</p>
+<p>string 的键值对集合，相当于 java 中的 HashMap，特别适合用来存储对象结构</p>
+<p>hash 中最大可以存储 2^32-1 个键值对</p>
+<p>可以用来实现购物车</p>
+<p>redis 数据库就是由 hash 来实现的</p>
+<p>渐进式 rehash：在 redis 中针对哈希冲突采用的是渐进式 rehash 操作，渐进式 rehash 会保留新旧两个 hash 结构，查询时同时间查询两个 hash 结构，在后续的定时 任务及 hash 操作的过程中完成从旧 hash 结构迁移到新 hash 结构的过程</p>
+<p>zset:</p>
+<p>zset 即 sorted set，是带有排序功能的 string 集合，不允许重复的成员</p>
+<p>通过为每个对象设置一个 double 类型的 score（分数）来实现排序，根据 score 值从小到大对对象进行排序，不同的成员可以设置相同的 score</p>
+<p>增加、修改和删除元素的时间复制度为 O(logN)</p>
+<p>可以实现排行榜</p>
+<p>（拓展：skipList）</p>
+<p>bitmap(2.2.0 版本新增):</p>
+<p>位图，byte 数组，用二进制表示，只有 0 和 1 两个数字，基于 string 实现，节省内存</p>
+<p>实现布隆过滤器（拓展：布隆过滤器）</p>
+<p>可以用于统计员工每日打卡</p>
+<p>统计用户在线状态</p>
+<p>hyperloglog(2.8.9 版本新增):</p>
+<p>用于基数统计</p>
+<p>可以用于埋点统计</p>
+<p>geo(3.2 版本新增):</p>
+<p>存储地理位置信息，底层由 zset 实现</p>
+<p>计算两个坐标点直接的距离</p>
+<p>实现附近的人</p>
+<h2 id="2-与-memcached-比较"><a href="#2-与-memcached-比较" class="headerlink" title="2.与 memcached 比较"></a>2.与 memcached 比较</h2><p>redis 支持多种数据类型，memcached 只支持 string 类型</p>
+<p>redis 的 string 类型最大可以达到 512M，而 memcached 最大只支持 1M</p>
+<p>memcached 只支持把数据存储到内存，而 redis 提供了持久化方式</p>
+<p>memcached 本身不支持分布式，需要通过客户端的分布式算法实现分布式集群，而 redis 通过 redis cluster 提供了分布式集群功能（拓展：hash 算法）</p>
+<p>memcached 支持多核多线程，而 redis 接收指令只支持单线程</p>
+<h2 id="3-redis-持久化"><a href="#3-redis-持久化" class="headerlink" title="3.redis 持久化"></a>3.redis 持久化</h2><p>redis 提供两种持久化方式，分别是 RDB 和 AOF</p>
+<p>RDB:</p>
+<p>可以在指定的时间间隔内对存储在 redis 服务器中的某个时间点的数据做快照，主进程会 fork 出一个子进程将快照数据写入临时文件并定期刷新到磁盘，redis 在启动时会读取之前生成的快照文件内容加载到内存中。</p>
+<p>AOF:</p>
+<p>以指定的时间间隔将服务器执行的所有指令记录下来，以追加的方式写入到指定的日志文件中，当日志文件过大时，redis 会创建子进程对日志文件进行重写。redis 提供了 3 种同步策略：每秒同步/每次修改同步/不同步</p>
+<p>比较：</p>
+<p>redis 先加载 AOF 文件来恢复原始数据，因为 AOF 数据比 RDB 更完整。</p>
+<p>但是 AOF 文件容易被损坏，损坏的 AOF 文件可以通过 redis-check-aof 进行修复</p>
+<p>RDB 文件进行了压缩，所以占用体积小，传输速度快，但是如果设置备份时间间隔太长，丢失数据量较大，数据量越大，fork 子进程时间越长，可能阻塞主进程，可读性差</p>
+<p>AOF 设置每秒追加一次，如果发生宕机只会丢失 1s 内的数据，生成文件较大，相对于 RDB 效率低，启动恢复慢</p>
+<p>混合模式(4.0 版本新增)：</p>
+<p>生成新的 AOF 文件前半段是 RDB 文件的全量数据，后半段是 AOF 模式的增量数据。在重启时加载此 AOF 文件进行恢复</p>
+<h2 id="4-redis-内存淘汰策略"><a href="#4-redis-内存淘汰策略" class="headerlink" title="4.redis 内存淘汰策略"></a>4.redis 内存淘汰策略</h2><p>redis 在进行内存淘汰时，采用两种方式：定时扫描主动清除+惰性删除（访问到已经过期的 key 时才进行删除）</p>
+<p>noeviction：</p>
+<p>当内存达到 maxmemory 限制时，直接报错</p>
+<p>volatile-lru：</p>
+<p>在所有设置了过期时间的 key 中挑选最近最少使用的数据进行淘汰（拓展：LRU 和 LFU）</p>
+<p>volatile-random：</p>
+<p>在所有设置了过期时间的 key 中随机挑选一些进行淘汰</p>
+<p>volatile-ttl：</p>
+<p>在所有设置了过期时间的 key 中，选择一些即将过期的 key 进行淘汰</p>
+<p>allkeys-random：</p>
+<p>在所有 key 中随机挑选一些进行淘汰</p>
+<p>allkeys-lru：</p>
+<p>在所有 key 中挑选最近最少使用的数据进行淘汰</p>
+<p>volatile-lru, volatile-random 和 volatile-ttl 在没有符合条件的 key 可以被淘汰时，表现和 noeviction 一样</p>
+<p>volatile-lfu(4.0 版本新增)：</p>
+<p>在所有设置了过期时间的 key 中，挑选最近最不经常使用的 key 进行淘汰</p>
+<p>allkeys-lfu(4.0 版本新增):</p>
+<p>在所有 key 中挑选最近最不经常使用的 key 进行淘汰</p>
+<h2 id="5-缓存雪崩-缓存击穿-缓存穿透"><a href="#5-缓存雪崩-缓存击穿-缓存穿透" class="headerlink" title="5.缓存雪崩/缓存击穿/缓存穿透"></a>5.缓存雪崩/缓存击穿/缓存穿透</h2><p>缓存雪崩：</p>
+<p>缓存数据批量过期，大量的请求穿过缓存直接打到数据库，给数据库带来很大压力，严重的情况可能导致数据库宕机</p>
+<p>解决方案：</p>
+<p>设置缓存 key 过期时间时增加随机值，避免缓存同时失效</p>
+<p>对热点缓存 key 不设置过期时间</p>
+<p>本地内存缓存+redis 缓存+服务降级</p>
+<p>缓存击穿：</p>
+<p>缓存中的热点数据存活时间到期或者被误删除，并发查询此缓存数据的请求穿过缓存打到数据库</p>
+<p>解决方案：</p>
+<p>对热点缓存 key 不设置过期时间</p>
+<p>分布式锁，遇到热点缓存 key 失效时，去请求分布式锁，拿到锁的线程才能去请求数据库，从数据库中查询到有效的数据之后放入缓存，这样后续进来的请求都可以直接从缓存中拿到数据，减轻了数据库压力，也可以避免多个线程同时查询数据库更新缓存，以免造成缓存脏数据</p>
+<p>缓存穿透：</p>
+<p>查询不存在于缓存也不存在于数据库的数据，这样请求相当于缓存不存在直接请求数据库，当并发请求量大时会对数据库造成很大压力</p>
+<p>解决方案：</p>
+<p>接口层增加参数校验</p>
+<p>缓存空值，设置较短的过期时间</p>
+<p>布隆过滤器</p>
+<h2 id="6-redis-集群模式"><a href="#6-redis-集群模式" class="headerlink" title="6.redis 集群模式"></a>6.redis 集群模式</h2><p>单机模式:</p>
+<p>优点:简单</p>
+<p>缺点:内存容量有限,处理能力有限,无法实现高可用</p>
+<p>主从复制:</p>
+<p>主从复制允许一个 redis 服务器创建多个复制品,被复制的服务器为 master,从 master 复制的服务器为 slave,master 会将自身的数据通过网络更新同步给 slave</p>
+<p>优点:可以通过 master 写入数据,通过 master/slave 读取数据</p>
+<p>缺点:无法实现高可用，没有解决 master 写的压力</p>
+<p>哨兵 sentinel:</p>
+<p>监控 redis 主从服务器,并在 master 下线时自动进行故障转移</p>
+<p>监控(Monitoring):sentinel 会不断检查 master 和 slave 是否正常运行</p>
+<p>提醒(Notification):当被监控的某个 redis 服务器出现问题时,sentinel 可以通过 API 向管理员或其他应用程序发送通知</p>
+<p>自动故障迁移(Automatic failover):当一台 master 不能正常运行时,sentinel 会开始一次自动故障迁移操作,将此 master 的一台 slave 升级成为 master,当原来下线的 master 故障恢复之后,会自动降级为新的 master 的 slave（拓展：哨兵主动切换）</p>
+<p>优点:保证高可用，提供节点监控及报警功能</p>
+<p>缺点：占用服务器资源，切换需要时间，可能存在丢失数据的风险，没有解决 master 写的压力</p>
+<p>集群（代理）:</p>
+<p>通过 Twemproxy 或者 codis 第三方代理实现 redis 集群的方式</p>
+<p>优点：支持多种 hash 算法，提供第三方功能</p>
+<p>缺点：引入代理，维护成本高，failover 逻辑需要自己实现，其本身不能支持故障的自动转移可扩展性差，进行扩缩容都需要手动干预</p>
+<p>集群（直连，3.0 版本新增）:</p>
+<p>Redis-Cluster 集群，采用无中心结构，每个节点保存数据和整个集群状态,每个节点都和其他所有节点连接。</p>
+<p>无中心架构。数据按照 slot 存储在多个节点，节点间数据共享，可以动态调整数据分布（拓展：一致性 hash 算法，hash 槽）。可拓展，节点可以动态添加或删除。高可用，部分节点不可用不影响整体集群，可以通过对节点增加 slave 的方式进行数据备份。实现故障自动 failover,节点间通过 gossip 协议（拓展：gossip 协议）交换状态信息，用投票机制完成主从角色切换。</p>
+<p>缺点：资源隔离性较差，容易相互影响。数据通过异步复制，不保证数据的强一致性。</p>
+<h2 id="7-常见的-redis-客户端"><a href="#7-常见的-redis-客户端" class="headerlink" title="7.常见的 redis 客户端"></a>7.常见的 redis 客户端</h2><p>Jedis<br>比较全面的 redis 操作指令，阻塞 IO，调用方法是同步的，不支持异步，不是线程安全的，所以需要配合连接池来使用</p>
+<p>Redission<br>基于 Netty 框架的事件驱动的通信层，提供 redLock 实现，调用方法是异步的，线程安全，不支持字符串操作，不支持排序、事务、管道、分区等 redis 特性</p>
+<p>Lettuce<br>基于 Netty 框架的事件驱动的通信层，调用方法是异步的，线程安全</p>
+<h2 id="8-其他-redis-问题"><a href="#8-其他-redis-问题" class="headerlink" title="8.其他 redis 问题"></a>8.其他 redis 问题</h2><p>redis 实现分布式锁</p>
+<p>单机</p>
+<p>加锁：setnx px(ex)</p>
+<p>释放锁：lua 脚本原子性操作</p>
+<p>优点：简单，单实例安全</p>
+<p>缺点：主从或者集群模式下，如果加锁成功后，锁对象未来得及从 master 同步到 slave，slave 挂了，可能也会出现多实例获取到锁的现象。如果锁住的代码块逻辑执行时间过长，超过缓存的过期时间，锁自动释放，相同的逻辑可能会执行多次</p>
+<p>集群</p>
+<p>redLock（拓展：redLock）</p>
+<p>redis 和 mysql 如何保持数据一致性</p>
+<p>先读取缓存，缓存中没有再去读取数据库，读取到数据之后将数据维护进缓存</p>
+<p>设置缓存过期时间</p>
+<p>删除缓存失败重试</p>
+<p>1.延时双删</p>
+<p>先删除缓存，再更新数据库，休眠一定时间之后再更次删除缓存</p>
+<p>2.异步延时删除</p>
+<p>先删除缓存，再更新数据库，发送 MQ 消息再次删除缓存</p>
+<p>3.监听 binlog</p>
+<p>更新数据库，监听程序监听到 binlog 变化，删除缓存，如果删除失败，发送 mq 消息重试，直至删除成功</p>
+<p>redis cluster 只支持 db0</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/redis/" rel="tag"># redis</a>
+              <a href="/tags/interview/" rel="tag"># interview</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/32240ede.html" rel="prev" title="学习接入sentinel">
+      <i class="fa fa-chevron-left"></i> 学习接入sentinel
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/a8db1400.html" rel="next" title="rabbit-mq面试知识点(持续更新)">
+      rabbit-mq面试知识点(持续更新) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-数据丢失"><span class="nav-number">1.</span> <span class="nav-text">redis 数据丢失</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失"><span class="nav-number">1.1.</span> <span class="nav-text">Redis 哨兵，当主节点发生故障时，需要进行主备切换，可能会导致数据丢失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步复制数据导致的数据丢失"><span class="nav-number">1.2.</span> <span class="nav-text">异步复制数据导致的数据丢失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#脑裂导致的数据丢失"><span class="nav-number">1.3.</span> <span class="nav-text">脑裂导致的数据丢失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何避免"><span class="nav-number">1.4.</span> <span class="nav-text">如何避免</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-为什么这么快"><span class="nav-number">2.</span> <span class="nav-text">redis 为什么这么快</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-redis-支持的数据结构"><span class="nav-number">3.</span> <span class="nav-text">1.redis 支持的数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-与-memcached-比较"><span class="nav-number">4.</span> <span class="nav-text">2.与 memcached 比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-redis-持久化"><span class="nav-number">5.</span> <span class="nav-text">3.redis 持久化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-redis-内存淘汰策略"><span class="nav-number">6.</span> <span class="nav-text">4.redis 内存淘汰策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-缓存雪崩-缓存击穿-缓存穿透"><span class="nav-number">7.</span> <span class="nav-text">5.缓存雪崩/缓存击穿/缓存穿透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-redis-集群模式"><span class="nav-number">8.</span> <span class="nav-text">6.redis 集群模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-常见的-redis-客户端"><span class="nav-number">9.</span> <span class="nav-text">7.常见的 redis 客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-其他-redis-问题"><span class="nav-number">10.</span> <span class="nav-text">8.其他 redis 问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

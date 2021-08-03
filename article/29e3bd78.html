@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="分库分表分库分表之扩容分库、分表、垂直拆分和水平拆分 分库：因一个数据库支持的最高并发访问数是有限的，可以将一个数据库的数据拆分到多个库中，来增加最高访问数  分表：因一个表的数据量太大，用索引来查询数据都搞不定了，所以可以将一张表的数据拆分到多张表，查询时只需要查拆分后的某一张表，SQL 语句的查询性能得到提升  分库分表优势：分库分表后，承受的并发增加了多倍；磁盘使用率大大降低；单表数据量减少">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式专题">
+<meta property="og:url" content="http://yoursite.com/article/29e3bd78.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="分库分表分库分表之扩容分库、分表、垂直拆分和水平拆分 分库：因一个数据库支持的最高并发访问数是有限的，可以将一个数据库的数据拆分到多个库中，来增加最高访问数  分表：因一个表的数据量太大，用索引来查询数据都搞不定了，所以可以将一张表的数据拆分到多张表，查询时只需要查拆分后的某一张表，SQL 语句的查询性能得到提升  分库分表优势：分库分表后，承受的并发增加了多倍；磁盘使用率大大降低；单表数据量减少">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-09T05:34:19.643Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式专题">
+<meta name="twitter:description" content="分库分表分库分表之扩容分库、分表、垂直拆分和水平拆分 分库：因一个数据库支持的最高并发访问数是有限的，可以将一个数据库的数据拆分到多个库中，来增加最高访问数  分表：因一个表的数据量太大，用索引来查询数据都搞不定了，所以可以将一张表的数据拆分到多张表，查询时只需要查拆分后的某一张表，SQL 语句的查询性能得到提升  分库分表优势：分库分表后，承受的并发增加了多倍；磁盘使用率大大降低；单表数据量减少">
+
+<link rel="canonical" href="http://yoursite.com/article/29e3bd78.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>分布式专题 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/29e3bd78.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式专题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-07 22:14:47" itemprop="dateCreated datePublished" datetime="2021-04-07T22:14:47+08:00">2021-04-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-09 13:34:19" itemprop="dateModified" datetime="2021-04-09T13:34:19+08:00">2021-04-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="分库分表"><a href="#分库分表" class="headerlink" title="分库分表"></a>分库分表</h2><h3 id="分库分表之扩容"><a href="#分库分表之扩容" class="headerlink" title="分库分表之扩容"></a>分库分表之扩容</h3><h4 id="分库、分表、垂直拆分和水平拆分"><a href="#分库、分表、垂直拆分和水平拆分" class="headerlink" title="分库、分表、垂直拆分和水平拆分"></a>分库、分表、垂直拆分和水平拆分</h4><ul>
+<li><p>分库：因一个数据库支持的最高并发访问数是有限的，可以将一个数据库的数据拆分到多个库中，来增加最高访问数</p>
+</li>
+<li><p>分表：因一个表的数据量太大，用索引来查询数据都搞不定了，所以可以将一张表的数据拆分到多张表，查询时只需要查拆分后的某一张表，SQL 语句的查询性能得到提升</p>
+</li>
+<li><p>分库分表优势：分库分表后，承受的并发增加了多倍；磁盘使用率大大降低；单表数据量减少，sql 执行效率明显提升</p>
+</li>
+<li><p>水平拆分：把一个表的数据拆分到多个数据库，每个数据库中的表结构不变。用多个库抗更高的并发。比如订单表每个月有 500W 条数据累计，每个月都可以进行水平拆分，将上个月的数据放到另外一个数据库中</p>
+</li>
+<li><p>垂直拆分：把一个有很多字段的表，拆分成多张表到同一个库或者多个库上面。高频访问字段放到一张表，低频访问的字段放到另外一张表。利用数据库缓存来缓存高频访问的行数据。比如一张很多字段的订单表拆分成几张表分别存不同的字段（可以有冗余字段）</p>
+</li>
+</ul>
+<h4 id="分库分表的方式"><a href="#分库分表的方式" class="headerlink" title="分库分表的方式"></a>分库分表的方式</h4><ul>
+<li><p>利用租户来分库、分表</p>
+</li>
+<li><p>利用字段范围来分库、分表</p>
+</li>
+<li><p>利用字段 hash 来分库、分表</p>
+</li>
+</ul>
+<h4 id="垂直拆分带来的问题"><a href="#垂直拆分带来的问题" class="headerlink" title="垂直拆分带来的问题"></a>垂直拆分带来的问题</h4><ul>
+<li>依然存在单表数据量过大的问题</li>
+<li>部份表无法关联查询，只能通过接口聚合的方式解决，提升了开发的复杂度</li>
+<li>分布式事务处理复杂</li>
+</ul>
+<h4 id="水平拆分带来的问题"><a href="#水平拆分带来的问题" class="headerlink" title="水平拆分带来的问题"></a>水平拆分带来的问题</h4><ul>
+<li>跨库的关联查询性能差</li>
+<li>数据多次扩容和维护量大</li>
+<li>跨分片的事务一致性难以保证</li>
+</ul>
+<h3 id="分库分表之唯一-ID"><a href="#分库分表之唯一-ID" class="headerlink" title="分库分表之唯一 ID"></a>分库分表之唯一 ID</h3><h4 id="为什么分库分表需要唯一-ID"><a href="#为什么分库分表需要唯一-ID" class="headerlink" title="为什么分库分表需要唯一 ID"></a>为什么分库分表需要唯一 ID</h4><ul>
+<li><p>如果要做分库分表，则必须考虑主键 ID 是全局唯一的，比如有一张订单表，被分到 A 库和 B 库，如果两张表都是从 1 开始递增，那么查询数据的时候就乱了，很多订单 ID 都是重复的，而这些订单其实并不是一笔订单</p>
+</li>
+<li><p>分库的一个期望结果就是将访问数据的次数分摊到其他库，有些场景是需要均匀分摊的，那么数据插入到多个数据库的时候就需要交替生成唯一的 ID 来保证请求均匀分摊到所有数据库</p>
+</li>
+</ul>
+<h4 id="生成唯一-ID-的原则"><a href="#生成唯一-ID-的原则" class="headerlink" title="生成唯一 ID 的原则"></a>生成唯一 ID 的原则</h4><ul>
+<li><p>全局唯一</p>
+</li>
+<li><p>趋势递增</p>
+</li>
+<li><p>单调递增</p>
+</li>
+<li><p>信息安全</p>
+</li>
+</ul>
+<h4 id="生成唯一-ID-的几种方式"><a href="#生成唯一-ID-的几种方式" class="headerlink" title="生成唯一 ID 的几种方式"></a>生成唯一 ID 的几种方式</h4><h5 id="数据库自增-ID，每个数据库每增加一条记录，自己的-ID-增-1"><a href="#数据库自增-ID，每个数据库每增加一条记录，自己的-ID-增-1" class="headerlink" title="数据库自增 ID，每个数据库每增加一条记录，自己的 ID 增 1"></a>数据库自增 ID，每个数据库每增加一条记录，自己的 ID 增 1</h5><ul>
+<li>多个库的 ID 可能重复，不适合分库分表后的 ID 生成</li>
+<li>信息不安全</li>
+</ul>
+<h5 id="UUID"><a href="#UUID" class="headerlink" title="UUID"></a>UUID</h5><ul>
+<li>UUID 太长，占用空间大</li>
+<li>不具有有序性，作为主键时，在写入数据时，不能产生有顺序的 append 操作，只能进行 insert 操作，导致读取整个 B+树节点到内存，插入数据后将整个节点写回磁盘，当记录占用空间很大时，性能很差</li>
+</ul>
+<h5 id="获取系统当前时间作为唯一-ID"><a href="#获取系统当前时间作为唯一-ID" class="headerlink" title="获取系统当前时间作为唯一 ID"></a>获取系统当前时间作为唯一 ID</h5><ul>
+<li>高并发时，1ms 内可能有多个相同的 ID</li>
+<li>信息不安全</li>
+</ul>
+<h5 id="Twitter-的snowflake（雪花算法）：twitter-开源的分布式-id-生成算法，64-位的-long-型的-id，分为-4-部分"><a href="#Twitter-的snowflake（雪花算法）：twitter-开源的分布式-id-生成算法，64-位的-long-型的-id，分为-4-部分" class="headerlink" title="Twitter 的snowflake（雪花算法）：twitter 开源的分布式 id 生成算法，64 位的 long 型的 id，分为 4 部分"></a>Twitter 的<strong>snowflake</strong>（雪花算法）：twitter 开源的分布式 id 生成算法，64 位的 long 型的 id，分为 4 部分</h5><p><img data-src="https://i.loli.net/2021/04/08/MFdcAjCxav9uLBt.png" alt="2021-04-08-22-34-1320210408223412"></p>
+<ul>
+<li>优点：<ul>
+<li>毫秒数在高位，自增序列在低位，整个 ID 都是趋势递增的</li>
+<li>不依赖数据库等第三方系统，以服务的方式部署，稳定性更高，生成 ID 的性能也是非常高的</li>
+<li>可以根据自身业务特性分配 bit 位，非常灵活</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>强依赖机器时钟，如果机器上时钟回拨，会导致发号重复或者服务会处于不可用状态</li>
+</ul>
+</li>
+</ul>
+<h5 id="百度的UIDGenerator算法"><a href="#百度的UIDGenerator算法" class="headerlink" title="百度的UIDGenerator算法"></a>百度的<strong>UIDGenerator</strong>算法</h5><p><img data-src="https://i.loli.net/2021/04/08/Tf7IFksaGmoHuVW.png" alt="2021-04-08-22-43-3920210408224338"></p>
+<ul>
+<li>基于 snowflake 的优化算法</li>
+<li>借用未来时间和双 buffer 来解决时间回拨与生成性能等问题，同时结和 mysql 进行 ID 分配</li>
+<li>优点：解决了时间回拨和生成性能问题</li>
+<li>缺点：依赖 mysql 数据库</li>
+</ul>
+<h5 id="美团的Leaf-snowflake算法"><a href="#美团的Leaf-snowflake算法" class="headerlink" title="美团的Leaf-snowflake算法"></a>美团的<strong>Leaf-snowflake</strong>算法</h5><ul>
+<li>获取 id 是通过代理服务访问数据库获取一批 id（号段）</li>
+<li>双缓冲：当前一批的 id 使用 10%时，再访问数据库获取新的一批 id 缓存起来，等上批的 id 用完之后直接用</li>
+<li>优点：<ul>
+<li>leaf 服务可以很方便的线性拓展，性能完全能够支撑大多数业务场景</li>
+<li>id 号码时趋势递增的 8byte 的 64 位数字，满足上述数据库存储的主键要求</li>
+<li>容灾性高：leaf 服务内部有号段缓存，即使 DB 宕机，短时间内 leaf 仍能正常对外提供服务</li>
+<li>可以自定义 max_id 的大小，非常方便业务从原有的 id 方式上迁移过来</li>
+<li>即使 DB 宕机，leaf 仍能持续发号一段时间</li>
+<li>偶尔的网络抖动不会影响下个号段的更新</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>ID 号码不够随机，能够泄漏发号数量的信息，不太安全</li>
+</ul>
+</li>
+</ul>
+<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>在分布式的世界中，存在着各个服务之间相互调用，链路可能很长，如果有任何一方执行出错，则需要回滚设计到的其他服务的相关操作。比如订单服务下单成功，然后调用营销中心发券接口发了一张代金券，但是微信支付扣款失败，则需要退回发的那张券，且要将订单状态改为异常订单</p>
+<h3 id="分布式事务的几种主要方式"><a href="#分布式事务的几种主要方式" class="headerlink" title="分布式事务的几种主要方式"></a>分布式事务的几种主要方式</h3><ul>
+<li>XA 方案（两段式提交）</li>
+<li>TCC 方案（try、confirm、cancel）</li>
+<li>SAGA 方案</li>
+<li>可靠消息最终一致性方案</li>
+<li>最大努力通知方案</li>
+</ul>
+<h4 id="XA-方案原理"><a href="#XA-方案原理" class="headerlink" title="XA 方案原理"></a>XA 方案原理</h4><p><img data-src="https://i.loli.net/2021/04/09/brVtGeCmkWMY36l.png" alt="2021-04-09-09-57-4420210409095743"></p>
+<ul>
+<li>事务管理器负责协调多个数据库的事务，先问问各个数据库准备好了吗？如果准备好了，则在数据库执行操作，如果任何一个数据库没有准备好，则执行事务</li>
+<li>适合单体应用，不适合微服务架构，因为每个服务只能访问自己的数据库，不允许交叉访问其他微服务的数据库</li>
+</ul>
+<h4 id="TCC-方案"><a href="#TCC-方案" class="headerlink" title="TCC 方案"></a>TCC 方案</h4><ul>
+<li><p>try 阶段：对各个服务的资源做检测以及对资源进行锁定或者预留</p>
+</li>
+<li><p>confirm 阶段：各个服务中执行实际的操作</p>
+</li>
+<li><p>cancel 阶段：如果任何一个服务的业务方法执行出错，需要将之前操作成功的步骤进行回滚</p>
+</li>
+<li><p>应用场景：</p>
+<ul>
+<li>跟支付、交易打交道，必须保证资金正确的场景</li>
+<li>对于一致性要求很高</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>要写很多补偿逻辑的代码，且不易维护</li>
+</ul>
+</li>
+</ul>
+<h4 id="Saga-方案"><a href="#Saga-方案" class="headerlink" title="Saga 方案"></a>Saga 方案</h4><ul>
+<li>基本原理：<ul>
+<li>业务流程中的每个步骤若有一个失败了，则补偿前面操作成功的步骤</li>
+</ul>
+</li>
+<li>适用场景：<ul>
+<li>业务流程长、业务流程多</li>
+<li>参与者包含其他公司或遗留系统服务</li>
+</ul>
+</li>
+<li>优势：<ul>
+<li>第一个阶段提交本地事务，无锁，高性能</li>
+<li>参与者可异步执行，高吞吐</li>
+<li>补偿服务易于实现</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>不保证事务的隔离性</li>
+</ul>
+</li>
+</ul>
+<h4 id="可靠消息一致性方案"><a href="#可靠消息一致性方案" class="headerlink" title="可靠消息一致性方案"></a>可靠消息一致性方案</h4><p><img data-src="https://i.loli.net/2021/04/09/qMnzUdBtCc4PbXa.png" alt="2021-04-09-12-08-0520210409120805"></p>
+<p>基本原理：</p>
+<ul>
+<li>利用消息中间件<strong>RocketMQ</strong>来实现消息事务</li>
+<li>第一步：A 系统发送一个消息到 MQ，MQ 将消息状态标记为<strong>prepared</strong>（预备状态，半消息），该消息无法被订阅</li>
+<li>第二步：MQ 响应 A 系统，告诉 A 系统已经接收到消息了</li>
+<li>第三步：A 系统执行本地事务</li>
+<li>第四步：若 A 系统执行本地事务成功，将<strong>prepared</strong>消息改为<strong>commit</strong>（提交事务消息），B 系统就可以订阅到消息了</li>
+<li>第五步：MQ 也会定时轮询所有<strong>prepared</strong>消息，回调 A 系统，让 A 系统告诉 MQ 本地事务处理的怎么样了，是继续等待还是回滚</li>
+<li>第六步：A 系统检查本地事务的执行结果</li>
+<li>第七步：若 A 系统执行本地事务失败，则 MQ 收到<strong>Rollback</strong>信号，丢弃消息。若执行本地事务成功，则 MQ 收到<strong>commit</strong>信号</li>
+<li>B 系统收到消息后，开始执行本地事务，如果执行失败，则自动不断重试直到成功。或 B 系统采取回滚的方式，同时要通过其他方式通知 A 系统也进行回滚</li>
+<li>B 系统需要保证幂等性</li>
+</ul>
+<h4 id="最大努力通知方案"><a href="#最大努力通知方案" class="headerlink" title="最大努力通知方案"></a>最大努力通知方案</h4><p>基本原理：</p>
+<ul>
+<li>系统 A 本地事务执行完成之后，发送消息到 MQ</li>
+<li>MQ 将消息持久化</li>
+<li>系统 B 如果执行本地事务失败，则<strong>最大努力服务</strong>会定时尝试重新调用系统 B，尽自己最大的努力让系统 B 重试，重试多次后，还是不行就只能放弃了。通知开发人员去排查以及后续人工补偿</li>
+</ul>
+<h4 id="几种方案如何选择"><a href="#几种方案如何选择" class="headerlink" title="几种方案如何选择"></a>几种方案如何选择</h4><ul>
+<li>跟支付、交易打交道，优先 TCC</li>
+<li>大型系统，但要求不那么严格，考虑消息事务或 SAGA 方案</li>
+<li>单体应用，建议 XA 两阶段提交就可以</li>
+<li>最大努力通知方案建议都加上，毕竟不可能一出问题就交给开发排查，先重试几次看看能不能成功</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/d1c9f364.html" rel="prev" title="sql优化专题">
+      <i class="fa fa-chevron-left"></i> sql优化专题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/a292cba5.html" rel="next" title="mq专题">
+      mq专题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分库分表"><span class="nav-number">1.</span> <span class="nav-text">分库分表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分库分表之扩容"><span class="nav-number">1.1.</span> <span class="nav-text">分库分表之扩容</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分库、分表、垂直拆分和水平拆分"><span class="nav-number">1.1.1.</span> <span class="nav-text">分库、分表、垂直拆分和水平拆分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分库分表的方式"><span class="nav-number">1.1.2.</span> <span class="nav-text">分库分表的方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#垂直拆分带来的问题"><span class="nav-number">1.1.3.</span> <span class="nav-text">垂直拆分带来的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#水平拆分带来的问题"><span class="nav-number">1.1.4.</span> <span class="nav-text">水平拆分带来的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分库分表之唯一-ID"><span class="nav-number">1.2.</span> <span class="nav-text">分库分表之唯一 ID</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么分库分表需要唯一-ID"><span class="nav-number">1.2.1.</span> <span class="nav-text">为什么分库分表需要唯一 ID</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成唯一-ID-的原则"><span class="nav-number">1.2.2.</span> <span class="nav-text">生成唯一 ID 的原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成唯一-ID-的几种方式"><span class="nav-number">1.2.3.</span> <span class="nav-text">生成唯一 ID 的几种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#数据库自增-ID，每个数据库每增加一条记录，自己的-ID-增-1"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">数据库自增 ID，每个数据库每增加一条记录，自己的 ID 增 1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#UUID"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">UUID</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#获取系统当前时间作为唯一-ID"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">获取系统当前时间作为唯一 ID</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Twitter-的snowflake（雪花算法）：twitter-开源的分布式-id-生成算法，64-位的-long-型的-id，分为-4-部分"><span class="nav-number">1.2.3.4.</span> <span class="nav-text">Twitter 的snowflake（雪花算法）：twitter 开源的分布式 id 生成算法，64 位的 long 型的 id，分为 4 部分</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#百度的UIDGenerator算法"><span class="nav-number">1.2.3.5.</span> <span class="nav-text">百度的UIDGenerator算法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#美团的Leaf-snowflake算法"><span class="nav-number">1.2.3.6.</span> <span class="nav-text">美团的Leaf-snowflake算法</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式事务"><span class="nav-number">2.</span> <span class="nav-text">分布式事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式事务的几种主要方式"><span class="nav-number">2.1.</span> <span class="nav-text">分布式事务的几种主要方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#XA-方案原理"><span class="nav-number">2.1.1.</span> <span class="nav-text">XA 方案原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCC-方案"><span class="nav-number">2.1.2.</span> <span class="nav-text">TCC 方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Saga-方案"><span class="nav-number">2.1.3.</span> <span class="nav-text">Saga 方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可靠消息一致性方案"><span class="nav-number">2.1.4.</span> <span class="nav-text">可靠消息一致性方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最大努力通知方案"><span class="nav-number">2.1.5.</span> <span class="nav-text">最大努力通知方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种方案如何选择"><span class="nav-number">2.1.6.</span> <span class="nav-text">几种方案如何选择</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

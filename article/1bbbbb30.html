@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.线程间同步为何要使用同步?java 允许多线程并发控制,当多个线程同时操作一个可共享的资源变量时,将会导致数据的不准确,相互之间产生冲突,因此可以加入同步锁以避免在该线程没有完成对数据的操作之前,数据被其他线程调用,从而保证了该变量的唯一性和准确性 同步的方式1.同步方法或同步代码块:synchronized 关键字或 Lock 锁">
+<meta name="keywords" content="interview,thread">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程面试知识点(持续更新)">
+<meta property="og:url" content="http://yoursite.com/article/1bbbbb30.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="1.线程间同步为何要使用同步?java 允许多线程并发控制,当多个线程同时操作一个可共享的资源变量时,将会导致数据的不准确,相互之间产生冲突,因此可以加入同步锁以避免在该线程没有完成对数据的操作之前,数据被其他线程调用,从而保证了该变量的唯一性和准确性 同步的方式1.同步方法或同步代码块:synchronized 关键字或 Lock 锁">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T14:15:04.536Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多线程面试知识点(持续更新)">
+<meta name="twitter:description" content="1.线程间同步为何要使用同步?java 允许多线程并发控制,当多个线程同时操作一个可共享的资源变量时,将会导致数据的不准确,相互之间产生冲突,因此可以加入同步锁以避免在该线程没有完成对数据的操作之前,数据被其他线程调用,从而保证了该变量的唯一性和准确性 同步的方式1.同步方法或同步代码块:synchronized 关键字或 Lock 锁">
+
+<link rel="canonical" href="http://yoursite.com/article/1bbbbb30.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>多线程面试知识点(持续更新) | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/1bbbbb30.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多线程面试知识点(持续更新)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-13 14:48:38" itemprop="dateCreated datePublished" datetime="2021-03-13T14:48:38+08:00">2021-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:15:04" itemprop="dateModified" datetime="2021-04-06T22:15:04+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-线程间同步"><a href="#1-线程间同步" class="headerlink" title="1.线程间同步"></a>1.线程间同步</h3><h4 id="为何要使用同步"><a href="#为何要使用同步" class="headerlink" title="为何要使用同步?"></a>为何要使用同步?</h4><p>java 允许多线程并发控制,当多个线程同时操作一个可共享的资源变量时,将会导致数据的不准确,相互之间产生冲突,因此可以加入同步锁以避免在该线程没有完成对数据的操作之前,数据被其他线程调用,从而保证了该变量的唯一性和准确性</p>
+<h4 id="同步的方式"><a href="#同步的方式" class="headerlink" title="同步的方式"></a>同步的方式</h4><p>1.同步方法或同步代码块:synchronized 关键字或 Lock 锁</p>
+<p>2.volatile 关键字</p>
+<p>3.使用 ThreadLocal</p>
+<p>4.阻塞队列</p>
+<p>5.使用原子变量</p>
+<h3 id="2-ThreadLocal"><a href="#2-ThreadLocal" class="headerlink" title="2.ThreadLocal"></a>2.ThreadLocal</h3><h4 id="ThreadLocal-是什么"><a href="#ThreadLocal-是什么" class="headerlink" title="ThreadLocal 是什么"></a>ThreadLocal 是什么</h4><p>ThreadLocal 是一个本地线程副本变量工具类;主要用于将私有线程和该线程存放的副本对象做一个映射,各个线程之间的变量互不干扰,在高并发场景下,可以实现无状态的调用,适合各个线程不共享变量值的操作</p>
+<h4 id="ThreadLocal-工作原理"><a href="#ThreadLocal-工作原理" class="headerlink" title="ThreadLocal 工作原理"></a>ThreadLocal 工作原理</h4><p>每个线程内部都维护了一个 ThreadLocalMap,是一个键值对数据格式,key 是一个弱引用,也就是 ThreadLocal 本身,value 存的是线程变量的值</p>
+<p>也就是说 ThreadLocal 本身并不存储线程的变量值,它只是一个工具,用来维护线程内部的 Map,帮助存和取变量</p>
+<h4 id="ThreadLocal-如何解决-Hash-冲突"><a href="#ThreadLocal-如何解决-Hash-冲突" class="headerlink" title="ThreadLocal 如何解决 Hash 冲突"></a>ThreadLocal 如何解决 Hash 冲突</h4><p>与 HashMap 不同,ThreadLocalMap 结构非常简单,没有 next 引用,也就是说 ThreadLocalMap 中解决 hash 冲突的方式并非链表的方式,而是采用线性探测的方式.所谓线性探测,就是根据初始 Key 的 hashcode 值确定元素在 table 数组中的位置,如果发现这个位置上已经被其他 key 值占用,则利用固定的算法寻找一定步长的下个位置,依次判断,直至找到能够存放的位置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/</span><br><span class="line"> * Increment i modulo len.</span><br><span class="line"> */</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">nextIndex</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((i + <span class="number">1</span> &lt; len) ? i + <span class="number">1</span> : <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/</span><br><span class="line"> * Decrement i modulo len.</span><br><span class="line"> */</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">prevIndex</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((i - <span class="number">1</span> &gt;= <span class="number">0</span>) ? i - <span class="number">1</span> : len - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ThreadLocal-的内存泄露是怎么回事"><a href="#ThreadLocal-的内存泄露是怎么回事" class="headerlink" title="ThreadLocal 的内存泄露是怎么回事"></a>ThreadLocal 的内存泄露是怎么回事</h4><p>ThreadLocal 在 ThreadLocalMap 中是以一个弱引用身份被 Entry 中的 key 引用的,因此如果 ThreadLocal 没有外部强引用来引用它,那么 ThreadLocal 会在下次 JVM 垃圾回收时被回收;这个时候 Entry 中的 Key 已经被回收,但是 value 又是一强引用所以不会被垃圾回收器回收,这样 ThreadLocal 的线程如果一直持续运行,value 就一直得不到回收,这样就会发生内存泄漏</p>
+<p>如何解决:</p>
+<p>使用完 ThreadLocal 后,及时调用 remove()方法释放内存空间</p>
+<h4 id="为什么-ThreadLocal-的-key-是弱引用"><a href="#为什么-ThreadLocal-的-key-是弱引用" class="headerlink" title="为什么 ThreadLocal 的 key 是弱引用"></a>为什么 ThreadLocal 的 key 是弱引用</h4><ul>
+<li><p>key 使用强引用,这样会导致一个问题:引用 ThreadLocal 的对象被回收了,但是 ThreadLocalMap 还持有 ThreadLocal 的强引用,如果没有手动删除,ThreadLocal 不会被回收,则导致内存泄漏</p>
+</li>
+<li><p>key 使用弱引用,这样的话,引用 ThreadLocal 的对象被回收了,由于 ThreadLocalMap 持有 ThreadLocal 的弱引用,即使没有手动删除,ThreadLocal 也会被回收;value 在下一次 ThreadLocalMap 调用 set,get,remove 的时候会被清除</p>
+</li>
+</ul>
+<p>比较以上两种情况,我们可以发现:由于 ThreadLocalMap 的生命周期跟 Thread 一样长,如果都没有手动删除对应 key,都会导致内存泄漏,但是使用弱引用可以多一层保障,弱引用的 ThreadLocal 不会内存泄漏,对应的 value 在下一次 ThreadLocalMap 调用 set,get,remove 的时候被清除,算是最优的解决方案</p>
+<h4 id="ThreadLocal-的应用场景"><a href="#ThreadLocal-的应用场景" class="headerlink" title="ThreadLocal 的应用场景"></a>ThreadLocal 的应用场景</h4><p>会话管理</p>
+<h3 id="CountDownLatch-与-CyclicBarrier-区别"><a href="#CountDownLatch-与-CyclicBarrier-区别" class="headerlink" title="CountDownLatch 与 CyclicBarrier 区别"></a>CountDownLatch 与 CyclicBarrier 区别</h3><p>CountDownLatch: 一个或者多个线程,等待其他线程完成某件事情之后才能执行</p>
+<p>CyclicBarrier: 多个线程互相等待,直到到达同一个同步点,再继续一起执行</p>
+<p>CountDownLatch 是递减计数,CyclicBarrier 是递增计数</p>
+<p>CountDownLatch 不可重复利用,CyclicBarrier 可以重复利用</p>
+<p>CountDownLatch 初始值为 N,N&gt;0,CyclicBarrier 初始值 N=0</p>
+<p>CountDownLatch 调用 countDown(),N-1,CyclicBarrier 调用 await(),N+1</p>
+<p>CountDownLatch 在 N&gt;0 时,调用 await() 一直阻塞,CyclicBarrier 在 N 小于指定值时,一直阻塞</p>
+<p>CountDownLatch 在计数为 0 时释放等待线程,CyclicBarrier 在计数达到指定值时释放等待线程</p>
+<h3 id="为什么要使用线程池"><a href="#为什么要使用线程池" class="headerlink" title="为什么要使用线程池"></a>为什么要使用线程池</h3><ul>
+<li>管理线程,避免增加创建线程和销毁线程的系统资源消耗</li>
+<li>提高相应速度</li>
+<li>资源重复利用</li>
+</ul>
+<h3 id="线程池核心的执行流程"><a href="#线程池核心的执行流程" class="headerlink" title="线程池核心的执行流程"></a>线程池核心的执行流程</h3><ul>
+<li>提交任务,判断核心线程是否已满,未满则创建新的核心线程执行任务</li>
+<li>如果核心线程池已满,判断队列是否已满,未满则将任务存入队列</li>
+<li>如果队列已满,判断非核心线程数是否已满,未满则创建非核心线程执行任务</li>
+<li>如果非核心线程已满,执行拒绝策略</li>
+</ul>
+<h3 id="线程池提供的四种拒绝策略"><a href="#线程池提供的四种拒绝策略" class="headerlink" title="线程池提供的四种拒绝策略"></a>线程池提供的四种拒绝策略</h3><ul>
+<li>AbortPolicy(抛出一个异常,默认策略)</li>
+<li>DiscardPolicy(直接丢弃任务)</li>
+<li>DiscardOldestPolicy(丢弃队列里最老的任务,将当前任务继续存入队列)</li>
+<li>CallerRunsPolicy(由调用线程池所在线程执行任务)</li>
+</ul>
+<h3 id="几种工作阻塞队列"><a href="#几种工作阻塞队列" class="headerlink" title="几种工作阻塞队列"></a>几种工作阻塞队列</h3><ul>
+<li>ArrayBlockingQueue(用数组实现的有界阻塞队列,按 FIFO 顺序)</li>
+<li>LinkedBlockingQueue(基于链表结构的阻塞队列,按 FIFO 排序,可以选择性设置容量,不设置默认为 Integer.MAX_VALUE,即无界队列)</li>
+<li>DelayQueue(支持延迟获取元素的阻塞队列)</li>
+<li>PriorityBlockingQueue(具有优先级的无界队列)</li>
+<li>SynchronousQueue(一个不存储元素的阻塞队列,每个插入操作必须等到另外一个线程执行移除操作,否则插入一直处于阻塞状态)</li>
+</ul>
+<h3 id="线程生命周期"><a href="#线程生命周期" class="headerlink" title="线程生命周期"></a>线程生命周期</h3><ul>
+<li>NEW:创建后尚未启动的线程处于此状态</li>
+<li>RUNNABLE:包括操作系统线程状态中的 Running 和 Ready,也就是线程可能处于执行中状态,也可能正在等待 CPU 为之分配执行时间</li>
+<li>WAITING:无限期等待状态,处于此状态的线程不会被分配 CPU 执行时间,需要等待被其他线程显式唤醒(notify/notifyAll),主要包括:没有显示设置 timeout 的 Object.wait();没有显示设置 timeout 的 Thread.join();LockSupport.park();</li>
+<li>TiMED_WAITING:有限期等待状态,处于此状态的线程不会被分陪 CPU 执行时间,无须等待其他线程显式唤醒,在一定时间之后会自动唤醒,主要包括:Thread.sleep(timeout);Object.wait(timeout);Thread.join(timeout);LockSupport.parkNanos(timeout);LockSupport.parkUnit(timeout)</li>
+<li>BLOCKED:阻塞状态,处于此状态的线程不会被分配 CPU 执行时间,发生情况:竞争对象监视器锁或 Object.wait()结束后重新竞争对象监视器控制权</li>
+<li>TERMINATED:终止状态,线程执行完毕,生命周期结束</li>
+</ul>
+<h3 id="阻塞与等待的区别"><a href="#阻塞与等待的区别" class="headerlink" title="阻塞与等待的区别"></a>阻塞与等待的区别</h3><h4 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h4><p>当一个线程试图获取对象锁(非 JUC 中的锁,即 synchronized),而该锁被其他线程持有,则该线程进入阻塞状态;它的特点是使用简单,由 JVM 调度器来唤醒自己,而不需要另一个线程来显式唤醒自己,不响应中断</p>
+<h4 id="等待"><a href="#等待" class="headerlink" title="等待"></a>等待</h4><p>当一个线程等待另一个线程通知调度器一个条件时,该线程进入等待状态;它的特点是需要等待另外一个线程显式地唤醒自己,实现灵活,语义更丰富,可响应中断;例如调用:Object.waite(),Thread.join().以及等待 Lock 或 Condition</p>
+<p>虽然 synchronized 和 JUC 里的 Lock 都实现锁的功能,但线程进入的状态是不一样的;synchronized 会让线程进入阻塞状态,而 JUC 中的 Lock 是用 park()/unpark()来实现阻塞/唤醒的,会让线程进入等待状态;虽然等锁时进入的状态不一样,但被唤醒后又都进入 Runnable 状态,从行为效果来看是一样的</p>
+<h3 id="yield-和-sleep-的区别"><a href="#yield-和-sleep-的区别" class="headerlink" title="yield()和 sleep() 的区别"></a>yield()和 sleep() 的区别</h3><ol>
+<li><p>yield 和 sleep 都能暂停当前线程,都不会释放锁资源,sleep 可以指定具体休眠的时间,而 yield 依赖 cpu 的时间划分</p>
+</li>
+<li><p>sleep 给其他线程运行机会时不考虑线程的优先级,因此会给低优先级的线程以运行的机会;yield 方法只会给相同或者更高优先级的线程以运行的机会</p>
+</li>
+<li><p>调用 sleep 方法使线程进入等待状态,等待睡眠时间到达,而调用 yield 方法,线程会进入就绪状态,也就是 sleep 需要等待设置的时间后才会进入的就绪状态,而 yield 会立即进入就绪状态</p>
+</li>
+<li><p>sleep 方法会抛出 InterruptedException,而 yield 不抛出任何异常</p>
+</li>
+<li><p>yield 不能被中断,而 sleep 方法可以接受中断</p>
+</li>
+<li><p>sleep 方法比 yield 方法有更好的移植性</p>
+</li>
+</ol>
+<h3 id="wait-和-sleep-的区别"><a href="#wait-和-sleep-的区别" class="headerlink" title="wait 和 sleep 的区别"></a>wait 和 sleep 的区别</h3><ol>
+<li><p>wait 来自 Object,sleep 来自 Thread</p>
+</li>
+<li><p>wait 释放锁,sleep 不释放锁</p>
+</li>
+<li><p>wait 必须在同步代码块中使用,sleep 不需要</p>
+</li>
+<li><p>wait 不需要捕获异常,sleep 需要</p>
+</li>
+</ol>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><h4 id="产生条件"><a href="#产生条件" class="headerlink" title="产生条件"></a>产生条件</h4><ul>
+<li><p>互斥条件: 一个资源或者说一个锁只能被一个线程占用,当一个线程首先获取到这个锁之后,在该线程释放该锁之前,其他的线程都无法获取到这个锁</p>
+</li>
+<li><p>占有且等待: 一个线程已经获取到一个锁,再获取另外一个锁时,即使获取不到也不会释放已经获得的锁</p>
+</li>
+<li><p>不可剥夺条件: 任何一个线程都无法强制获得其他线程已经拥有的锁</p>
+</li>
+<li><p>循环等待条件: 线程 A 拿着线程 B 想要获取的锁,线程 B 拿着线程 A 想要获取的锁</p>
+</li>
+</ul>
+<h4 id="如何避免"><a href="#如何避免" class="headerlink" title="如何避免"></a>如何避免</h4><ul>
+<li><p>加锁顺序: 线程按照相同的顺序加锁</p>
+</li>
+<li><p>限时加锁: 线程获取锁的过程中限定一些时间,如果给定的时间内无法获取锁就放弃,这里需要用到 Lock 的 api</p>
+</li>
+</ul>
+<h3 id="wait-虚假唤醒"><a href="#wait-虚假唤醒" class="headerlink" title="wait 虚假唤醒"></a>wait 虚假唤醒</h3><h3 id="notify-底层"><a href="#notify-底层" class="headerlink" title="notify 底层"></a>notify 底层</h3><h4 id="为何-wait-和-notify-要依赖-synchronized"><a href="#为何-wait-和-notify-要依赖-synchronized" class="headerlink" title="为何 wait 和 notify 要依赖 synchronized"></a>为何 wait 和 notify 要依赖 synchronized</h4><p>synchronized 代码块通过 javap 生成的字节码中包含 monitorenter 和 monitorexit 指令,执行 monitorenter 可以获得对象的 monitor,而 wait 方法通过调用 native 方法 wait(0)实现,wait(0)方法要求线程必须拥有对象的 monitor</p>
+<h4 id="notify-执行后唤醒的线程立马被-CPU-执行吗"><a href="#notify-执行后唤醒的线程立马被-CPU-执行吗" class="headerlink" title="notify 执行后唤醒的线程立马被 CPU 执行吗"></a>notify 执行后唤醒的线程立马被 CPU 执行吗</h4><p>notify/notifyAll 调用时并不会真正释放对象锁,只是把等待中的线程唤醒然后放入到对象的锁池中,但是锁池中的所有线程都不会马上运行,只有拥有锁的线程执行完代码块释放锁,别的线程拿到锁之后才能被执行</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+              <a href="/tags/thread/" rel="tag"># thread</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/903a0625.html" rel="prev" title="jvm相关面试知识点(持续更新)">
+      <i class="fa fa-chevron-left"></i> jvm相关面试知识点(持续更新)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/b0523a70.html" rel="next" title="面试问题及答案">
+      面试问题及答案 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-线程间同步"><span class="nav-number">1.</span> <span class="nav-text">1.线程间同步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为何要使用同步"><span class="nav-number">1.1.</span> <span class="nav-text">为何要使用同步?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#同步的方式"><span class="nav-number">1.2.</span> <span class="nav-text">同步的方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ThreadLocal"><span class="nav-number">2.</span> <span class="nav-text">2.ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-是什么"><span class="nav-number">2.1.</span> <span class="nav-text">ThreadLocal 是什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-工作原理"><span class="nav-number">2.2.</span> <span class="nav-text">ThreadLocal 工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-如何解决-Hash-冲突"><span class="nav-number">2.3.</span> <span class="nav-text">ThreadLocal 如何解决 Hash 冲突</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-的内存泄露是怎么回事"><span class="nav-number">2.4.</span> <span class="nav-text">ThreadLocal 的内存泄露是怎么回事</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么-ThreadLocal-的-key-是弱引用"><span class="nav-number">2.5.</span> <span class="nav-text">为什么 ThreadLocal 的 key 是弱引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-的应用场景"><span class="nav-number">2.6.</span> <span class="nav-text">ThreadLocal 的应用场景</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CountDownLatch-与-CyclicBarrier-区别"><span class="nav-number">3.</span> <span class="nav-text">CountDownLatch 与 CyclicBarrier 区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用线程池"><span class="nav-number">4.</span> <span class="nav-text">为什么要使用线程池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池核心的执行流程"><span class="nav-number">5.</span> <span class="nav-text">线程池核心的执行流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池提供的四种拒绝策略"><span class="nav-number">6.</span> <span class="nav-text">线程池提供的四种拒绝策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几种工作阻塞队列"><span class="nav-number">7.</span> <span class="nav-text">几种工作阻塞队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程生命周期"><span class="nav-number">8.</span> <span class="nav-text">线程生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞与等待的区别"><span class="nav-number">9.</span> <span class="nav-text">阻塞与等待的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#阻塞"><span class="nav-number">9.1.</span> <span class="nav-text">阻塞</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等待"><span class="nav-number">9.2.</span> <span class="nav-text">等待</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-和-sleep-的区别"><span class="nav-number">10.</span> <span class="nav-text">yield()和 sleep() 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-和-sleep-的区别"><span class="nav-number">11.</span> <span class="nav-text">wait 和 sleep 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#死锁"><span class="nav-number">12.</span> <span class="nav-text">死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#产生条件"><span class="nav-number">12.1.</span> <span class="nav-text">产生条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何避免"><span class="nav-number">12.2.</span> <span class="nav-text">如何避免</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-虚假唤醒"><span class="nav-number">13.</span> <span class="nav-text">wait 虚假唤醒</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#notify-底层"><span class="nav-number">14.</span> <span class="nav-text">notify 底层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为何-wait-和-notify-要依赖-synchronized"><span class="nav-number">14.1.</span> <span class="nav-text">为何 wait 和 notify 要依赖 synchronized</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#notify-执行后唤醒的线程立马被-CPU-执行吗"><span class="nav-number">14.2.</span> <span class="nav-text">notify 执行后唤醒的线程立马被 CPU 执行吗</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

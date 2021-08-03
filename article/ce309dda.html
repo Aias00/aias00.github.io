@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.创建一个基于 maven 的 SpringBoot 工程，type 选择 maven pom">
+<meta name="keywords" content="springboot,dubbo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建SpringBoot+dubbo+zookeeper简单demo工程">
+<meta property="og:url" content="http://yoursite.com/article/ce309dda.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="1.创建一个基于 maven 的 SpringBoot 工程，type 选择 maven pom">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T14:14:39.701Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="搭建SpringBoot+dubbo+zookeeper简单demo工程">
+<meta name="twitter:description" content="1.创建一个基于 maven 的 SpringBoot 工程，type 选择 maven pom">
+
+<link rel="canonical" href="http://yoursite.com/article/ce309dda.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>搭建SpringBoot+dubbo+zookeeper简单demo工程 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ce309dda.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建SpringBoot+dubbo+zookeeper简单demo工程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-07 21:23:56" itemprop="dateCreated datePublished" datetime="2019-09-07T21:23:56+08:00">2019-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:14:39" itemprop="dateModified" datetime="2021-04-06T22:14:39+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-创建一个基于-maven-的-SpringBoot-工程，type-选择-maven-pom"><a href="#1-创建一个基于-maven-的-SpringBoot-工程，type-选择-maven-pom" class="headerlink" title="1.创建一个基于 maven 的 SpringBoot 工程，type 选择 maven pom"></a>1.创建一个基于 maven 的 SpringBoot 工程，type 选择 maven pom</h3><p><img data-src="https://i.loli.net/2021/04/01/zs5V1yP2Bu3fWNX.png" alt></p>
+<p><img data-src="https://i.loli.net/2021/04/01/1rGqw4MkodtyZRF.png" alt></p>
+<p><img data-src="https://i.loli.net/2021/04/01/eZMuIxrgkGLWT9N.png" alt></p>
+<p><img data-src="https://i.loli.net/2021/04/01/AwG4ina6TJkFsDQ.png" alt></p>
+<h3 id="2-创建完成之后的工程结构如下，生成的-pom-xml-内容如下"><a href="#2-创建完成之后的工程结构如下，生成的-pom-xml-内容如下" class="headerlink" title="2.创建完成之后的工程结构如下，生成的 pom.xml 内容如下"></a>2.创建完成之后的工程结构如下，生成的 pom.xml 内容如下</h3><p><img data-src="https://i.loli.net/2021/04/01/iMjXfLvqCYV2Any.png" alt></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.8.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span> <span class="comment">&lt;!-- lookup parent from repository --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.aias<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Demo project for Spring Boot<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-在父类项目上右键-gt-New-gt-Module，添加三个子-module，demoProvider（服务提供者）-demoConsumer（服务调用者）-common（公共模块），过程和创建父类工程类似"><a href="#3-在父类项目上右键-gt-New-gt-Module，添加三个子-module，demoProvider（服务提供者）-demoConsumer（服务调用者）-common（公共模块），过程和创建父类工程类似" class="headerlink" title="3.在父类项目上右键-&gt;New-&gt;Module，添加三个子 module，demoProvider（服务提供者）\demoConsumer（服务调用者）\common（公共模块），过程和创建父类工程类似"></a>3.在父类项目上右键-&gt;New-&gt;Module，添加三个子 module，demoProvider（服务提供者）\demoConsumer（服务调用者）\common（公共模块），过程和创建父类工程类似</h3><p><img data-src="https://i.loli.net/2021/04/01/TUcaNkHXCKVQR6P.png" alt></p>
+<p><img data-src="https://i.loli.net/2021/04/01/hEo6K78jcTluaMt.png" alt></p>
+<p><img data-src="https://i.loli.net/2021/04/01/qPKyXiRLgaFjG5S.png" alt></p>
+<h3 id="4-修改子模块的-pom-xml，将里的内容替换成我们父工程的内容"><a href="#4-修改子模块的-pom-xml，将里的内容替换成我们父工程的内容" class="headerlink" title="4.修改子模块的 pom.xml，将里的内容替换成我们父工程的内容"></a>4.修改子模块的 pom.xml，将<parent>里的内容替换成我们父工程的内容</parent></h3><h3 id="5-common-工程里创建一个-User-java-和-IUserService，common-工程之后是打包成被其他-Module-项目依赖的-jar-包，不需要独立部署，所以这里把其他的无用文件夹删除，完成之后的目录结构如下。"><a href="#5-common-工程里创建一个-User-java-和-IUserService，common-工程之后是打包成被其他-Module-项目依赖的-jar-包，不需要独立部署，所以这里把其他的无用文件夹删除，完成之后的目录结构如下。" class="headerlink" title="5.common 工程里创建一个 User.java 和 IUserService，common 工程之后是打包成被其他 Module 项目依赖的 jar 包，不需要独立部署，所以这里把其他的无用文件夹删除，完成之后的目录结构如下。"></a>5.common 工程里创建一个 User.java 和 IUserService，common 工程之后是打包成被其他 Module 项目依赖的 jar 包，不需要独立部署，所以这里把其他的无用文件夹删除，完成之后的目录结构如下。</h3><p><img data-src="https://i.loli.net/2021/04/01/RWIwmfKGxvpDgUo.png" alt></p>
+<h3 id="common-项目的-pom-xml"><a href="#common-项目的-pom-xml" class="headerlink" title="common 项目的 pom.xml"></a>common 项目的 pom.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.aias<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.aias<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>common<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Demo project for Spring Boot<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-demoProvider-工程中添加了-MyBatis、druid-和-mysql-connector-的依赖，实现了-IUserService-接口类，实现了对数据库的实际操作，目录结构如下。在不添加其他配置和依赖的情况下，可以通过单元测试"><a href="#6-demoProvider-工程中添加了-MyBatis、druid-和-mysql-connector-的依赖，实现了-IUserService-接口类，实现了对数据库的实际操作，目录结构如下。在不添加其他配置和依赖的情况下，可以通过单元测试" class="headerlink" title="6.demoProvider 工程中添加了 MyBatis、druid 和 mysql-connector 的依赖，实现了 IUserService 接口类，实现了对数据库的实际操作，目录结构如下。在不添加其他配置和依赖的情况下，可以通过单元测试"></a>6.demoProvider 工程中添加了 MyBatis、druid 和 mysql-connector 的依赖，实现了 IUserService 接口类，实现了对数据库的实际操作，目录结构如下。在不添加其他配置和依赖的情况下，可以通过单元测试</h3><p><img data-src="https://i.loli.net/2021/04/01/qzUnk4xPr5tXI1O.png" alt></p>
+<h3 id="7-添加-dubbo-和-dubbo-spring-boot-starter-依赖，在-application-properties-中添加-dubbo-相关配置信息，然后启动单元测试，这时候会报连接失败的错误，需要启动-zookeeper-才能成功。至此-provider-已经配置完成"><a href="#7-添加-dubbo-和-dubbo-spring-boot-starter-依赖，在-application-properties-中添加-dubbo-相关配置信息，然后启动单元测试，这时候会报连接失败的错误，需要启动-zookeeper-才能成功。至此-provider-已经配置完成" class="headerlink" title="7.添加 dubbo 和 dubbo-spring-boot-starter 依赖，在 application.properties 中添加 dubbo 相关配置信息，然后启动单元测试，这时候会报连接失败的错误，需要启动 zookeeper 才能成功。至此 provider 已经配置完成"></a>7.添加 dubbo 和 dubbo-spring-boot-starter 依赖，在 application.properties 中添加 dubbo 相关配置信息，然后启动单元测试，这时候会报连接失败的错误，需要启动 zookeeper 才能成功。至此 provider 已经配置完成</h3><p><img data-src="https://i.loli.net/2021/04/01/hHBmAnWISjpyktb.png" alt></p>
+<p><img data-src="https://i.loli.net/2021/04/01/w4nzBJ32VHsQAti.png" alt></p>
+<h3 id="demoProvider-工程的完整-pom-文件"><a href="#demoProvider-工程的完整-pom-文件" class="headerlink" title="demoProvider 工程的完整 pom 文件"></a>demoProvider 工程的完整 pom 文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line">    &lt;parent&gt;</span><br><span class="line">        &lt;groupId&gt;com.aias&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;demo&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;</span><br><span class="line">    &lt;/parent&gt;</span><br><span class="line">    &lt;groupId&gt;com.aias&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;demoProvider&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;</span><br><span class="line">    &lt;name&gt;demoProvider&lt;/name&gt;</span><br><span class="line">    &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.aias&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;common&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!-- mybatis --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.1.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!-- druid --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;druid-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.10&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!-- mysql-connector --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;!-- dubbo --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;dubbo-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;0.2.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;dubbo&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.6.3&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-在-demoConsumer-工程中添加相关依赖，和-dubbo-配置信息，通过注解注入的方式调用服务提供者的-service-实现"><a href="#8-在-demoConsumer-工程中添加相关依赖，和-dubbo-配置信息，通过注解注入的方式调用服务提供者的-service-实现" class="headerlink" title="8.在 demoConsumer 工程中添加相关依赖，和 dubbo 配置信息，通过注解注入的方式调用服务提供者的 service 实现"></a>8.在 demoConsumer 工程中添加相关依赖，和 dubbo 配置信息，通过注解注入的方式调用服务提供者的 service 实现</h3><p><img data-src="https://i.loli.net/2021/04/01/xmX5YfPC3KweNbp.png" alt></p>
+<p><img data-src="https://i.loli.net/2021/04/01/s4fNegUxRMiZlTV.png" alt></p>
+<h3 id="demoConsumer-完整-pom-文件"><a href="#demoConsumer-完整-pom-文件" class="headerlink" title="demoConsumer 完整 pom 文件"></a>demoConsumer 完整 pom 文件</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.aias<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.aias<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demoConsumer<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>demoConsumer<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Demo project for Spring Boot<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.aias<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- dubbo --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="9-启动-zookeeper，启动-demoProvider-和-demoConsumer-项目，浏览器访问http-localhost-8080-hello"><a href="#9-启动-zookeeper，启动-demoProvider-和-demoConsumer-项目，浏览器访问http-localhost-8080-hello" class="headerlink" title="9.启动 zookeeper，启动 demoProvider 和 demoConsumer 项目，浏览器访问http://localhost:8080/hello"></a>9.启动 zookeeper，启动 demoProvider 和 demoConsumer 项目，浏览器访问<a href="http://localhost:8080/hello" target="_blank" rel="noopener">http://localhost:8080/hello</a></h3><h3 id="成功页面"><a href="#成功页面" class="headerlink" title="成功页面"></a>成功页面</h3><p><img data-src="https://i.loli.net/2021/04/01/93rmxG2EsKkWueq.png" alt></p>
+<h3 id="10-项目源码详见springboot-集成-dubbo-示例项目"><a href="#10-项目源码详见springboot-集成-dubbo-示例项目" class="headerlink" title="10.项目源码详见springboot 集成 dubbo 示例项目"></a>10.项目源码详见<a href="https://github.com/Aias00/demoSpringBootDubbo" target="_blank" rel="noopener">springboot 集成 dubbo 示例项目</a></h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/springboot/" rel="tag"># springboot</a>
+              <a href="/tags/dubbo/" rel="tag"># dubbo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/article/dbc52038.html" rel="next" title="redis基本数据类型">
+      redis基本数据类型 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-创建一个基于-maven-的-SpringBoot-工程，type-选择-maven-pom"><span class="nav-number">1.</span> <span class="nav-text">1.创建一个基于 maven 的 SpringBoot 工程，type 选择 maven pom</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-创建完成之后的工程结构如下，生成的-pom-xml-内容如下"><span class="nav-number">2.</span> <span class="nav-text">2.创建完成之后的工程结构如下，生成的 pom.xml 内容如下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-在父类项目上右键-gt-New-gt-Module，添加三个子-module，demoProvider（服务提供者）-demoConsumer（服务调用者）-common（公共模块），过程和创建父类工程类似"><span class="nav-number">3.</span> <span class="nav-text">3.在父类项目上右键-&gt;New-&gt;Module，添加三个子 module，demoProvider（服务提供者）\demoConsumer（服务调用者）\common（公共模块），过程和创建父类工程类似</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-修改子模块的-pom-xml，将里的内容替换成我们父工程的内容"><span class="nav-number">4.</span> <span class="nav-text">4.修改子模块的 pom.xml，将里的内容替换成我们父工程的内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-common-工程里创建一个-User-java-和-IUserService，common-工程之后是打包成被其他-Module-项目依赖的-jar-包，不需要独立部署，所以这里把其他的无用文件夹删除，完成之后的目录结构如下。"><span class="nav-number">5.</span> <span class="nav-text">5.common 工程里创建一个 User.java 和 IUserService，common 工程之后是打包成被其他 Module 项目依赖的 jar 包，不需要独立部署，所以这里把其他的无用文件夹删除，完成之后的目录结构如下。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#common-项目的-pom-xml"><span class="nav-number">6.</span> <span class="nav-text">common 项目的 pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-demoProvider-工程中添加了-MyBatis、druid-和-mysql-connector-的依赖，实现了-IUserService-接口类，实现了对数据库的实际操作，目录结构如下。在不添加其他配置和依赖的情况下，可以通过单元测试"><span class="nav-number">7.</span> <span class="nav-text">6.demoProvider 工程中添加了 MyBatis、druid 和 mysql-connector 的依赖，实现了 IUserService 接口类，实现了对数据库的实际操作，目录结构如下。在不添加其他配置和依赖的情况下，可以通过单元测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-添加-dubbo-和-dubbo-spring-boot-starter-依赖，在-application-properties-中添加-dubbo-相关配置信息，然后启动单元测试，这时候会报连接失败的错误，需要启动-zookeeper-才能成功。至此-provider-已经配置完成"><span class="nav-number">8.</span> <span class="nav-text">7.添加 dubbo 和 dubbo-spring-boot-starter 依赖，在 application.properties 中添加 dubbo 相关配置信息，然后启动单元测试，这时候会报连接失败的错误，需要启动 zookeeper 才能成功。至此 provider 已经配置完成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demoProvider-工程的完整-pom-文件"><span class="nav-number">9.</span> <span class="nav-text">demoProvider 工程的完整 pom 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-在-demoConsumer-工程中添加相关依赖，和-dubbo-配置信息，通过注解注入的方式调用服务提供者的-service-实现"><span class="nav-number">10.</span> <span class="nav-text">8.在 demoConsumer 工程中添加相关依赖，和 dubbo 配置信息，通过注解注入的方式调用服务提供者的 service 实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demoConsumer-完整-pom-文件"><span class="nav-number">11.</span> <span class="nav-text">demoConsumer 完整 pom 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-启动-zookeeper，启动-demoProvider-和-demoConsumer-项目，浏览器访问http-localhost-8080-hello"><span class="nav-number">12.</span> <span class="nav-text">9.启动 zookeeper，启动 demoProvider 和 demoConsumer 项目，浏览器访问http://localhost:8080/hello</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#成功页面"><span class="nav-number">13.</span> <span class="nav-text">成功页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-项目源码详见springboot-集成-dubbo-示例项目"><span class="nav-number">14.</span> <span class="nav-text">10.项目源码详见springboot 集成 dubbo 示例项目</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

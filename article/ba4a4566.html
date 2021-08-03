@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="什么是 mvccmvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存 MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读 什么是当前读和快照读1">
+<meta name="keywords" content="mysql,mvcc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mvcc 多版本并发控制">
+<meta property="og:url" content="http://yoursite.com/article/ba4a4566.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="什么是 mvccmvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存 MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读 什么是当前读和快照读1">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-27T11:38:06.370Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mvcc 多版本并发控制">
+<meta name="twitter:description" content="什么是 mvccmvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存 MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读 什么是当前读和快照读1">
+
+<link rel="canonical" href="http://yoursite.com/article/ba4a4566.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>mvcc 多版本并发控制 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ba4a4566.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mvcc 多版本并发控制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-26 13:41:27" itemprop="dateCreated datePublished" datetime="2021-03-26T13:41:27+08:00">2021-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-27 19:38:06" itemprop="dateModified" datetime="2021-04-27T19:38:06+08:00">2021-04-27</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="什么是-mvcc"><a href="#什么是-mvcc" class="headerlink" title="什么是 mvcc"></a>什么是 mvcc</h3><p>mvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存</p>
+<p>MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读</p>
+<h3 id="什么是当前读和快照读"><a href="#什么是当前读和快照读" class="headerlink" title="什么是当前读和快照读"></a>什么是当前读和快照读</h3><p>1.当前读</p>
+<p>像 select lock in shared mode(共享锁)，select for update。 update，insert， delete(排他锁)这些操作都是一种当前读，为什么叫当前读?就是它读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录加锁</p>
+<p>2.快照读</p>
+<p>像不加锁的 select 操作就是快照读，即不加锁的非阻塞读。快照读的前提是隔离级别不是串行级别，串行级别下的快照读会退化为当前读。之所以出现快照读的情况，是基于提高并发性能的考虑，快照读的实现是基于多版本并发控制，即 MVCC。可以认为 MVCC 是行锁的一个变种，但它在很多情况下，避免了加锁操作，降低了开销.既然是基于多版本，即快照读可能读到的并不一定是数据的最新版本，而有可能是之前的历史版本</p>
+<p>说白了 MVCC 就是为了实现读-写冲突不加锁，而这个读指的就是快照读，而非当前读，当前读实际上是一种加锁的操作，是悲观锁的实现</p>
+<h3 id="当前读，快照读和-mvcc-什么关系"><a href="#当前读，快照读和-mvcc-什么关系" class="headerlink" title="当前读，快照读和 mvcc 什么关系"></a>当前读，快照读和 mvcc 什么关系</h3><p>1.准确的说，MVCC 指的是”维持一个数据的多个版本，使得读写操作没有冲突”这么一个概念，仅仅是一个理想概念</p>
+<p>2.而在 mysql 中，快照读就是实现 mvcc 理想模型的其中一个具体非阻塞读功能。而相对而言，当前读就是悲观锁的具体功能实现</p>
+<p>3.快照读本身也是一个抽象概念。MVCC 模型在 mysql 中的具体实现是由 3 个隐式字段，undo 日志，read view 等去完成的</p>
+<h3 id="mvcc-能解决什么问题"><a href="#mvcc-能解决什么问题" class="headerlink" title="mvcc 能解决什么问题"></a>mvcc 能解决什么问题</h3><p>数据库并发场景有 3 种，分别是:</p>
+<p>读-读:不存在任何问题，也不需要并发控制</p>
+<p>读-写:有线程安全问题，可能会造成事务隔离性问题，可能遇到脏读，幻读，不可重复读</p>
+<p>写-写:有线程安全问题，可能会存在更新丢失问题，比如第一类更新丢失，第二类更新丢失</p>
+<p>MVCC 带来的好处是?</p>
+<p>MVCC 是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务快照读之前的数据库的快照，所以 MVCC 可以为数据库解决以下问题</p>
+<p>1.在并发读写数据库时，可以做到在读操作时不用阻塞写操作，写操作也不用阻塞读操作，提高了数据库并发读写的性能</p>
+<p>2.同时还可以解决脏读，幻读，不可重复读等事务隔离问题，但不能解决更新丢失问题</p>
+<p>组合:</p>
+<p>1.MVCC+悲观锁</p>
+<p>mvcc 解决读写冲突，悲观锁解决写写冲突</p>
+<p>2.mvcc+乐观锁</p>
+<p>mvcc 解决读写冲突，乐观锁解决写写冲突</p>
+<h3 id="mvcc-的实现原理"><a href="#mvcc-的实现原理" class="headerlink" title="mvcc 的实现原理"></a>mvcc 的实现原理</h3><p>mvcc 的实现原理主要是依赖记录中的 3 个隐式字段，undo 日志，Read view 来实现的</p>
+<h4 id="隐式字段"><a href="#隐式字段" class="headerlink" title="隐式字段"></a>隐式字段</h4><p>每行记录除了我们自定义的字段外，还有数据库隐式定义的 DB_TRX_ID，DB_ROLL_PTR，DB_ROW_ID 等字段</p>
+<p>DB_TRX_ID: 6byte，最近修改(修改/插入)事务 ID:记录创建这条记录/最后一次修改该记录的事务 ID</p>
+<p>DB_ROLL_PTR: 7byte，回滚指针，指向这条记录的上一个版本(存储于 rollback segment 里)</p>
+<p>DB_ROW_ID: 6byte，隐含的自增 id(隐藏主键)，如果数据表没有主键，InnoDB 会自动以 DB_ROW_ID 产生一个聚簇索引</p>
+<p>实际上还有一个删除 flag 隐藏字段，既记录被更新或删除并不代表真的删除，而是删除 flag 变了</p>
+<p><img data-src="https://i.loli.net/2021/03/27/DcY6TvGL7xl1Bq3.png" alt="mvcc-2021-03-27-11-56-1620210327115615"></p>
+<h4 id="undo-日志"><a href="#undo-日志" class="headerlink" title="undo 日志"></a>undo 日志</h4><p>undo log 主要分为两种:</p>
+<p>insert undo log:代表事务在 insert 新记录时产生的 undo log，只在事务回滚时需要，并且在事务提交后可以被立即丢弃</p>
+<p>update undo log:事务在进行 update 或者 delete 时产生的 undo log。不仅在事务回滚时需要，在快照读时也需要。所以不能随便删除，只有在快速读或事务回滚不涉及该日志时，对应的日志才会被 purge 线程统一清除</p>
+<h5 id="purge-线程"><a href="#purge-线程" class="headerlink" title="purge 线程"></a>purge 线程</h5><p>从前面的分析可以看出，为了实现 InnoDB 的 mvcc 机制，更新或者删除操作都只是设置一下老记录的 deleted_bit，并不真正将过时的记录删除</p>
+<p>为了不影响磁盘空间，InnoDB 有专门的 purge 线程来清理 deleted_bit 为 true 的记录。为了不影响 MVCC 的正常工作，purge 线程自己也维护了一个 read view(这个 read view 相当于系统中最老活跃事务的 read view)。</p>
+<p>如果某个记录的 deleted_bit 为 true，并且 DB_TRX_ID 相对于 purge 线程的 read view 可见，那么这条记录一定是可以被安全清除的</p>
+<p>对 MVCC 有帮助的实质是 update undo log， undo log 实际上就是存在 rollback segment 中旧记录链，它的执行流程如下:</p>
+<p>1.比如有个事务插入了 person 表插入了一条新纪录，记录如下:name 为 zhangsan，age 为 20，隐式主键是 1，事务 ID 和回滚指针，我们假设为 null</p>
+<p><img data-src="https://i.loli.net/2021/03/27/d95jPMtuNVyCIZE.png" alt="mvcc-2021-03-27-12-00-1220210327120011"></p>
+<p>2.现在来了个事务 A 对该记录的 name 做了修改，改为 lisi</p>
+<p>a.在事务 A 修改该行记录时，数据库会先对该行加排他锁</p>
+<p>b.然后把该行数据拷贝到 undo log 中，作为旧纪录，即在 undo log 中有当前行的拷贝副本</p>
+<p>c.拷贝完毕后，修改该行 name 为 lisi ，并且修改隐藏字段的事务 ID 为当前事务 A 的 Id，默认从 1 开始，之后递增，回滚指针指向拷贝到 undo log 的副本记录，即表示当前的上一个版本</p>
+<p>d.事务提交后，释放锁</p>
+<p><img data-src="https://i.loli.net/2021/03/27/spNYXjCkzRmODlE.png" alt="mvcc-2021-03-27-13-18-2920210327131828"></p>
+<p>3.又一个事务 B，修改同一条记录，将 age 改为 25</p>
+<p>a.在事务 B 修改该行数据时，数据库也先为该行加锁</p>
+<p>b.然后把该行数据拷贝到 undo log，作为旧记录，发现该行已经有了 undo log，那么最新的旧数据作为链表的表头，插在该行记录的 undo log 最前面</p>
+<p>c.修改 age 为 25，并且修改隐藏字段事务 id 为当前事务 B 的 id，自增即为 2，回滚指针指向刚刚拷贝到 undo log 的副本记录</p>
+<p>d.提交事务，释放锁</p>
+<p><img data-src="https://i.loli.net/2021/03/27/WnqcEB7CONwSpmH.png" alt="mvcc-2021-03-27-13-24-5620210327132456"></p>
+<p>从上面我们就可以看出，不同事务或者相同事务对同一条记录进行修改，就会导致该记录的 undo log 成为一条记录版本线性表，即链表，undo log 的链首就是最新的旧记录，链尾就是最早的一条旧记录(当然就像之前说的该 undo log 的节点可能会被 purge 线程清除掉，像图中的第一条 insert undo log，其实在事务提交之后可能就被删除丢失了)</p>
+<h4 id="read-view-读视图"><a href="#read-view-读视图" class="headerlink" title="read view (读视图)"></a>read view (读视图)</h4><p>什么是 read view</p>
+<p>read view 就是事务进行快照读操作的时候产生的读视图，在该事务执行的快照读的那一刻，会生成数据库系统当前的一个快照，记录并维护系统当前活跃事务的 ID(当每个事务开启时，都会被分配一个 ID，这个 ID 是递增的，所以最新的事务 ID 最大)</p>
+<p>read view 主要是用来做可见性判断的，主要是将要被修改的数据的最新记录中 DB_TRX_ID 取出来，与系统当前其他活跃事务的 ID(由 Read view 维护)去对比，如果 DB_TRX_ID 跟 Read View 的属性做了某些比较，不符合可见性，那就通过 DB_ROLL_PTR 回滚指针去取出 undo log 的 DB_TRX_ID 再比较，即遍历链表的 DB_TRX_ID(从链首到链尾，即从最近的一次修改查起)，直到找到满足特定条件的 DB_TRX_ID，那么这个 DB_TRX_ID 所在的旧记录就是当前事务能看见的最新的老版本</p>
+<p><img data-src="https://i.loli.net/2021/03/27/zpEsh6bnorYviVP.png" alt="mvcc-2021-03-27-13-50-5720190314144440494"></p>
+<p>那么这个判断条件是什么呢?如上，它是一段判断可见性的源码，即 changes_visible 方法，该方法展示了我们拿 DB_TRX_ID 去跟 read view 某些属性进行怎样的比较</p>
+<p>在展示之前，我们可以把 read view 简单的理解成有三个全局属性</p>
+<ul>
+<li><p>trx_list :一个数值列表，用来维护 Read view 生成时刻系统正活跃的事务 id</p>
+</li>
+<li><p>up_limit_id: 记录 trx_list 列表中事务 id 最小的 id</p>
+</li>
+<li><p>low_limit_id: read view 生成时刻系统尚未分配的下一个事务 id，也就是目前已经出现过的事务 id 的最大值+1</p>
+</li>
+</ul>
+<p>a.首先比较 DB_TRX_ID &lt; up_limit_id，如果小于，则当前事务能看到 DB_TRX_ID 所在的记录，如果大于等于进入下一个判断</p>
+<p>b.接下来判断 DB_TRX_ID 大于等于 low_limit_id，如果大于等于代表 DB_TRX_ID 所在的记录是在 read view 生成后才出现的，那对当前事务肯定不可见，如果小于则进入下一个判断</p>
+<p>c.判断 DB_TRX_ID 是否在活跃事务之中，trx_list.contains(DB_TRX_ID)，如果在则代表 Read view 生成时刻，DB_TRX_ID 对应的事务还在活跃，还没有 commit，DB_TRX_ID 对应事务修改的数据，当前事务也是看不见的。如果不在，说明 DB_TRX_ID 对应的事务在 read view 生成之前就已经 commit，DB_TRX_ID 对应的事务修改的结果，当前事务是能看见的</p>
+<h3 id="mvcc-整体流程"><a href="#mvcc-整体流程" class="headerlink" title="mvcc 整体流程"></a>mvcc 整体流程</h3><p>1.事务 A 和事务 C 进行中时，事务 B 对某行数据执行了快照读，数据库为该行数据生成了一个 read view 读视图，假设当前事务 ID 为 2，此时还有事务 A 和事务 C 在活跃中，事务 D 在事务 B 快照读前一刻提交更新了，所以 read view 记录了系统当前活跃事务 A，C 的 id，维护在一个列表上，假设称之为 trx_list</p>
+<p><img data-src="https://i.loli.net/2021/03/27/thWsT4mCryQSzcj.png" alt="mvcc-2021-03-27-14-38-5820210327143858"></p>
+<p>2.read view 并不仅仅会通过一个列表 trx_list 来维护事务 B 执行快照读那刻系统正活跃的事务 Id，还会有两个属性 up_limit_id(记录 trx_list 列表中事务 ID 最小的 ID)，low_limit_id(记录 trx_list 列表中事务 ID 最大的 ID，也有人说快照读那刻系统尚未分配的下一个事务 ID 也就是目前已经出现过的事务 ID 的最大值+1)。所以在这里 up_limit_id 就是 1，low_limit_id 就是 4+1=5，trx_list 集合的值就是[1，3]，read view 如下图</p>
+<p><img data-src="https://i.loli.net/2021/03/27/nIyzJmfNbRGHdgU.png" alt="mvcc-2021-03-27-15-01-1320210327150112"></p>
+<p>3.目前只有事务 D 修改过记录， 并在事务 B 执行快照读之前提交了事务，所以当前该行当前数据的 undo log 如下图所示。事务 B 在快照读该行记录的时候，就会拿该行记录的 DB_TRX_ID 去跟 up_limit_id，low_limit_id 和活跃事务 id 列表进行比较，判断当前事务 B 能看到该记录的版本是哪个</p>
+<p><img data-src="https://i.loli.net/2021/03/27/dm9sZU1N4cOCv6a.png" alt="mvcc-2021-03-27-15-07-5220210327150752"></p>
+<p>4.所以先拿该记录 DB_TRX_ID 字段记录的事务 ID4 去和 read view 的 up_limit_id 比较，看 4 是否小于 up_limit_id(1)，所以不符合条件。继续判断 4 是否大于等于 low_limit_id(5)，也不符合条件。最后判断活跃事务列表中的活跃事务 id，发现 4 不在列表中，符合可见性条件，所以事务 D 修改后提交的最新结果对事务 B 快照读时是可见的，所以事务 B 能读到的最新数据记录是事务 D 所提交的版本，而事务 D 提交的版本也是全局角度上的最新的版本</p>
+<p><img data-src="https://i.loli.net/2021/03/27/8EiAjucqtBNdH5L.png" alt="mvcc-2021-03-27-15-43-5620210327154355"></p>
+<p>5.也正是 read view 生成的时机不同，造成 RC，RR 隔离级别下快照读的结果不同</p>
+<h3 id="MVCC-相关问题"><a href="#MVCC-相关问题" class="headerlink" title="MVCC 相关问题"></a>MVCC 相关问题</h3><h4 id="RR-是如何在-RC-的基础上解决不可重复读的"><a href="#RR-是如何在-RC-的基础上解决不可重复读的" class="headerlink" title="RR 是如何在 RC 的基础上解决不可重复读的"></a>RR 是如何在 RC 的基础上解决不可重复读的</h4><h5 id="当前读和快照读在-RR-级别下的区别"><a href="#当前读和快照读在-RR-级别下的区别" class="headerlink" title="当前读和快照读在 RR 级别下的区别"></a>当前读和快照读在 RR 级别下的区别</h5><p><img data-src="https://i.loli.net/2021/03/27/1C8AVSekYQbm5hK.png" alt="mvcc-2021-03-27-15-52-0720210327155207"></p>
+<p>在上表的顺序下，事务 B 在事务 A 提交修改之后的快照读依旧是旧版本数据，而当前读是最新的数据</p>
+<p><img data-src="https://i.loli.net/2021/03/27/GcV5LjwKzxBEdh1.png" alt="mvcc-2021-03-27-15-55-3020210327155529"></p>
+<p>在第二张表的顺序下，事务 B 在事务 A 提交之后的快照读和当前读都是最新的数据 400。这里与第一张表的区别仅仅是第一张表的事务 B 在事务 A 修改金额前快照读过一次金额数据，而第二章表的事务 B 在事务 A 修改金额前没有进行过快照读</p>
+<p>所以我们知道事务中快照读的结果是非常依赖该事务首次出现快照读的地方，即某个事务中首次出现快照读的地方非常关键，它有决定该事务后续快照读结果的能力</p>
+<p>这里展示的是更新的流程，同时删除也是一样的，如果事务 B 的快照读是在事务 A 操作之后进行的，事务 B 的快照读也能读到最新的数据</p>
+<h5 id="RC，RR-级别下的-InnoDB-快照读有什么不同"><a href="#RC，RR-级别下的-InnoDB-快照读有什么不同" class="headerlink" title="RC，RR 级别下的 InnoDB 快照读有什么不同"></a>RC，RR 级别下的 InnoDB 快照读有什么不同</h5><p>正是 read view 生成时机的不同，从而造成 RC，RR 级别下快照读的结果的不同</p>
+<ul>
+<li><p>在 RR 级别下的某个事务对某记录的第一次快照读会创建一个快照和 Read View，将当前系统活跃的其他事务记录起来，此后在调用快照读的时候，还是使用的同一个 read view，所以只要当前事务在其他事务提交更新之前使用过快照读，那么之后的快照读使用的都是同一个 read view，所以之后的修改对其不可见</p>
+</li>
+<li><p>即 RR 级别下，快照读生成 read view 时，read view 会记录此时其他活动事务的快照，这些事务的修改对于当前事务都是不可见的。而早于 Read view 创建的事务所作的修改均是可见的</p>
+</li>
+<li><p>而在 RC 级别下，事务中每次快照读都会新生成一个快照和 read view ，这就是我们在 RC 级别下的事务中可以看到别的事务提交的更新的原因</p>
+</li>
+</ul>
+<p>总之在 RC 隔离级别下，是每个快照读都会生成并获取最新的 read view 。而在 RR 级别下，则是同一个事务中的第一个快照读才会创建 Read view，之后的快照读获取的都是同一个 read view</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+              <a href="/tags/mvcc/" rel="tag"># mvcc</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/c2128012.html" rel="prev" title="linux常用操作指令">
+      <i class="fa fa-chevron-left"></i> linux常用操作指令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/61951fe.html" rel="next" title="mysql事务导致的一些问题">
+      mysql事务导致的一些问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是-mvcc"><span class="nav-number">1.</span> <span class="nav-text">什么是 mvcc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是当前读和快照读"><span class="nav-number">2.</span> <span class="nav-text">什么是当前读和快照读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当前读，快照读和-mvcc-什么关系"><span class="nav-number">3.</span> <span class="nav-text">当前读，快照读和 mvcc 什么关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvcc-能解决什么问题"><span class="nav-number">4.</span> <span class="nav-text">mvcc 能解决什么问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvcc-的实现原理"><span class="nav-number">5.</span> <span class="nav-text">mvcc 的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#隐式字段"><span class="nav-number">5.1.</span> <span class="nav-text">隐式字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undo-日志"><span class="nav-number">5.2.</span> <span class="nav-text">undo 日志</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#purge-线程"><span class="nav-number">5.2.1.</span> <span class="nav-text">purge 线程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#read-view-读视图"><span class="nav-number">5.3.</span> <span class="nav-text">read view (读视图)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvcc-整体流程"><span class="nav-number">6.</span> <span class="nav-text">mvcc 整体流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVCC-相关问题"><span class="nav-number">7.</span> <span class="nav-text">MVCC 相关问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RR-是如何在-RC-的基础上解决不可重复读的"><span class="nav-number">7.1.</span> <span class="nav-text">RR 是如何在 RC 的基础上解决不可重复读的</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#当前读和快照读在-RR-级别下的区别"><span class="nav-number">7.1.1.</span> <span class="nav-text">当前读和快照读在 RR 级别下的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RC，RR-级别下的-InnoDB-快照读有什么不同"><span class="nav-number">7.1.2.</span> <span class="nav-text">RC，RR 级别下的 InnoDB 快照读有什么不同</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

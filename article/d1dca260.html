@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="二叉查找树二叉查找树，Binary Search Tree[BST]，也称有序二叉树（ordered binary tree），排序二叉树（sorted binary tree），是指一棵空树或具有下列性质的二叉树 1.若任意节点的左子树不为空，则左子树上所有节点的值均小于它的根节点的值 2.若任意节点的右子树不为空，则右子树上所有节点的值均大于它的根节点的值 3.任意节点的左右子树也分别是二叉查">
+<meta name="keywords" content="tree">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tree知识点(持续更新)">
+<meta property="og:url" content="http://yoursite.com/article/d1dca260.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="二叉查找树二叉查找树，Binary Search Tree[BST]，也称有序二叉树（ordered binary tree），排序二叉树（sorted binary tree），是指一棵空树或具有下列性质的二叉树 1.若任意节点的左子树不为空，则左子树上所有节点的值均小于它的根节点的值 2.若任意节点的右子树不为空，则右子树上所有节点的值均大于它的根节点的值 3.任意节点的左右子树也分别是二叉查">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T14:15:15.887Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tree知识点(持续更新)">
+<meta name="twitter:description" content="二叉查找树二叉查找树，Binary Search Tree[BST]，也称有序二叉树（ordered binary tree），排序二叉树（sorted binary tree），是指一棵空树或具有下列性质的二叉树 1.若任意节点的左子树不为空，则左子树上所有节点的值均小于它的根节点的值 2.若任意节点的右子树不为空，则右子树上所有节点的值均大于它的根节点的值 3.任意节点的左右子树也分别是二叉查">
+
+<link rel="canonical" href="http://yoursite.com/article/d1dca260.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>tree知识点(持续更新) | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/d1dca260.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          tree知识点(持续更新)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-30 10:56:26" itemprop="dateCreated datePublished" datetime="2021-03-30T10:56:26+08:00">2021-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:15:15" itemprop="dateModified" datetime="2021-04-06T22:15:15+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h3><p>二叉查找树，Binary Search Tree[BST]，也称有序二叉树（ordered binary tree），排序二叉树（sorted binary tree），是指一棵空树或具有下列性质的二叉树</p>
+<p>1.若任意节点的左子树不为空，则左子树上所有节点的值均小于它的根节点的值</p>
+<p>2.若任意节点的右子树不为空，则右子树上所有节点的值均大于它的根节点的值</p>
+<p>3.任意节点的左右子树也分别是二叉查找树</p>
+<p>4.没有键值相等的节点</p>
+<p>因为一棵由 n 个节点随机构造的二叉树高度为 lgN，所以一般操作的执行时间为 O(lgN)</p>
+<p><img data-src="https://i.loli.net/2021/04/01/125J6eGB3vKk7FM.png" alt="2021-03-30-13-45-1720210330134516"></p>
+<p>上图，结合二叉查找树的三条约束来看，没有什么问题，下图依旧符合上面三条约束，却是存在问题的</p>
+<p><img data-src="https://i.loli.net/2021/04/01/yR21Bt84niVaoxD.png" alt="2021-03-30-13-44-5720210330134457"></p>
+<p>二叉树若退化成了一颗具有 n 个节点的线性链后，操作的最坏时间复杂度为 O(N)</p>
+<p>红黑树会通过一些性质使树相对平衡，使得最终查找、插入、删除的时间复杂度最坏情况下依然为 O(lgN)</p>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>红黑树，Red-Black Tree[RBT]，是一个自平衡（不是绝对的平衡）的二叉查找树（BST），树上的每个节点都遵循下面的规则：</p>
+<p>1.每个节点要么是红的，要么是黑色</p>
+<p>2.根节点是黑色的</p>
+<p>3.每个叶子节点（叶子节点即指树尾端 nil 指针或 NULL 节点）是黑色</p>
+<p>4.如果一个节点是红色，那么它的两个儿子是黑色</p>
+<p>5.对于任一节点而言，其到叶节点的每一条路径都包含相同数目的黑色节点</p>
+<p>正是红黑树的这 5 条性质，使得一棵 n 个节点的红黑树始终保持了 lgN 的高度，也就是红黑树查找、插入、删除的最坏时间复杂度为 lgN</p>
+<p><img data-src="https://i.loli.net/2021/04/01/UfemGoEVQpLJ46g.png" alt="2021-03-30-15-42-2920210330154228"></p>
+<h4 id="红黑树的旋转与变色"><a href="#红黑树的旋转与变色" class="headerlink" title="红黑树的旋转与变色"></a>红黑树的旋转与变色</h4><p>当我们在对红黑树进行插入或删除等操作时，对树的结构进行了修改，可能会违背红黑树的性质</p>
+<p>为了继续保持红黑树的性质，我们会进行两种操作：</p>
+<p>1.recolor（变色，重新标记红色或黑色）</p>
+<p>2.rotation（旋转）</p>
+<p>先尝试 recolor，如果 recolor 不能达到红黑树的要求，就尝试 rotation</p>
+<p>步骤:</p>
+<p>假设新插入的节点为 X</p>
+<ul>
+<li><p>1.将新插入的节点标记为红色</p>
+</li>
+<li><p>2.如果 X 是根节点（root），则标记为黑色</p>
+</li>
+<li><p>3.如果 X 不是根节点且 X 的 parent 不是黑色</p>
+<ul>
+<li><p>3.1 如果 X 的 uncle（叔叔）是红色</p>
+<ul>
+<li><p>3.1.1 将 parent 和 uncle 标记为黑色</p>
+</li>
+<li><p>3.1.2 将 grand parent（祖父）标记为红色</p>
+</li>
+<li><p>3.1.3 将 G 变成新的 X，然后重复步骤 2、3</p>
+</li>
+</ul>
+</li>
+<li><p>3.2 如果 X 的 uncle（叔叔）是黑色，要分成四种情况处理</p>
+<ul>
+<li><p>3.2.1 左左（P 是 G 的左儿子，X 是 P 的左儿子）</p>
+</li>
+<li><p>3.2.2 左右（P 是 G 的左儿子，X 是 P 的右儿子）</p>
+</li>
+<li><p>3.2.3 右右（P 是 G 的右儿子，X 是 P 的右儿子）</p>
+</li>
+<li><p>3.2.4 右左（P 是 G 的右儿子，X 是 P 的左儿子）</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="uncle-是红色"><a href="#uncle-是红色" class="headerlink" title="uncle 是红色"></a>uncle 是红色</h5><p>1.将新插入的节点 X 标记为红色</p>
+<p>2.发现 X 的 parent（P）同样为红色，这违反了红黑树的第三条规则：不能有两个连续相邻的红色节点</p>
+<p>3.发现 X 的 uncle（U）同样为红色</p>
+<p>4.将 P 和 U 标记为黑色</p>
+<p>5.将 X 和 X 的 grand parent （G）标记为相同的颜色，即红色，将 G 设为新的 X，继续重复 2、3</p>
+<p>6.发现 G 是根节点，标记为黑色</p>
+<p>7.结束</p>
+<p><img data-src="https://i.loli.net/2021/04/01/ClKvsw3ceyqiSXh.png" alt="2021-03-30-16-59-1120210330165910"></p>
+<h5 id="左左"><a href="#左左" class="headerlink" title="左左"></a>左左</h5><p>想象这是一根绳子，手提起 P 点，然后变色</p>
+<p><img data-src="https://i.loli.net/2021/04/01/VCxABK57ephZUdW.png" alt="2021-03-30-17-12-2220210330171222"></p>
+<h5 id="左右"><a href="#左右" class="headerlink" title="左右"></a>左右</h5><p>左旋：使 X 的父节点 P 被 X 取代，同时父节点 P 成为 X 的左孩子，然后再应用左左情况</p>
+<p><img data-src="https://i.loli.net/2021/04/01/YQfzqWmG6d7K8Mw.png" alt="2021-03-30-17-21-4420210330172143"></p>
+<h5 id="右右"><a href="#右右" class="headerlink" title="右右"></a>右右</h5><p>与左左情况一样,想象成一根绳子</p>
+<p><img data-src="https://i.loli.net/2021/04/01/lbud9vPiaxWrkzc.png" alt="2021-04-01-11-14-1720210401111416"></p>
+<h5 id="右左"><a href="#右左" class="headerlink" title="右左"></a>右左</h5><p>右旋:使 X 的父节点 P 被 X 取代,同时父节点 P 成为 X 的右孩子,然后再应用右右情况</p>
+<p><img data-src="https://i.loli.net/2021/04/01/4uFCTlLJkXyQ59h.png" alt="2021-04-01-11-25-2220210401112522"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/tree/" rel="tag"># tree</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/f89cb603.html" rel="prev" title="红黑树">
+      <i class="fa fa-chevron-left"></i> 红黑树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/d1c9f364.html" rel="next" title="sql优化专题">
+      sql优化专题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#二叉查找树"><span class="nav-number">1.</span> <span class="nav-text">二叉查找树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#红黑树"><span class="nav-number">2.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#红黑树的旋转与变色"><span class="nav-number">2.1.</span> <span class="nav-text">红黑树的旋转与变色</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#uncle-是红色"><span class="nav-number">2.1.1.</span> <span class="nav-text">uncle 是红色</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#左左"><span class="nav-number">2.1.2.</span> <span class="nav-text">左左</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#左右"><span class="nav-number">2.1.3.</span> <span class="nav-text">左右</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#右右"><span class="nav-number">2.1.4.</span> <span class="nav-text">右右</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#右左"><span class="nav-number">2.1.5.</span> <span class="nav-text">右左</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

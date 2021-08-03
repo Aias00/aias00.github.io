@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="某天凌晨接到售后的电话,说线上设备出现了批量离线的问题,下意识以为是之前 Netty 相关服务代码导致的问题又复现了,但是排查了一下发现并不是这个原因现在把这个问题记录下来,虽然至今还没有找到具体原因但是已经大致缩小了范围  各个服务平台报出无法与 mq 建立连接的错误  查询 mq 服务进程发现进程 pid 还在但是端口号却没了  因为急着解决问题,于是联系运维重启了 mq 服务(这里不应该,其">
+<meta name="keywords" content="线上问题,activemq">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录线上activemq出现的问题">
+<meta property="og:url" content="http://yoursite.com/article/5883ff82.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="某天凌晨接到售后的电话,说线上设备出现了批量离线的问题,下意识以为是之前 Netty 相关服务代码导致的问题又复现了,但是排查了一下发现并不是这个原因现在把这个问题记录下来,虽然至今还没有找到具体原因但是已经大致缩小了范围  各个服务平台报出无法与 mq 建立连接的错误  查询 mq 服务进程发现进程 pid 还在但是端口号却没了  因为急着解决问题,于是联系运维重启了 mq 服务(这里不应该,其">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-07T08:48:15.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记录线上activemq出现的问题">
+<meta name="twitter:description" content="某天凌晨接到售后的电话,说线上设备出现了批量离线的问题,下意识以为是之前 Netty 相关服务代码导致的问题又复现了,但是排查了一下发现并不是这个原因现在把这个问题记录下来,虽然至今还没有找到具体原因但是已经大致缩小了范围  各个服务平台报出无法与 mq 建立连接的错误  查询 mq 服务进程发现进程 pid 还在但是端口号却没了  因为急着解决问题,于是联系运维重启了 mq 服务(这里不应该,其">
+
+<link rel="canonical" href="http://yoursite.com/article/5883ff82.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>记录线上activemq出现的问题 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/5883ff82.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记录线上activemq出现的问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-12 15:11:14" itemprop="dateCreated datePublished" datetime="2020-12-12T15:11:14+08:00">2020-12-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-07 16:48:15" itemprop="dateModified" datetime="2021-04-07T16:48:15+08:00">2021-04-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>某天凌晨接到售后的电话,说线上设备出现了批量离线的问题,下意识以为是之前 Netty 相关服务代码导致的问题又复现了,但是排查了一下发现并不是这个原因<br>现在把这个问题记录下来,虽然至今还没有找到具体原因但是已经大致缩小了范围</p>
+<ol>
+<li><p>各个服务平台报出无法与 mq 建立连接的错误</p>
+</li>
+<li><p>查询 mq 服务进程发现进程 pid 还在但是端口号却没了</p>
+</li>
+<li><p>因为急着解决问题,于是联系运维重启了 mq 服务(这里不应该,其实应该先查一下 mq 进程的状态,这里直接重启导致后面无法细致排查)</p>
+</li>
+<li><p>事后分析 mq 日志及源码,发现在出现问题之前的一些迹象:</p>
+<ul>
+<li><p>凌晨 00:10,mq 集群 Master 主机发生了不明原因的网络波动,导致 master 与 zookeeper 的连接超时,断开连接</p>
+</li>
+<li><p>断开连接之后 mq master 自动降级为 slave</p>
+</li>
+<li><p>mq master 在降级为 slave 的过程中先要将自己的 master 服务和 broker 服务停止,然后以 slave 角色重新启动</p>
+</li>
+<li><p>在 mq 重启的过程中又恢复了与 zookeeper 的连接</p>
+</li>
+<li><p>在 mq 停止 master 服务过程中没有停止成功,处于挂起状态</p>
+</li>
+<li><p>由于 mq master 服务 hang 在挂起状态,导致 mq 集群没有完成角色切换,这个状态就是 master 死了一半,但是其他 slave 依旧还是 slave</p>
+</li>
+<li><p>整个 mq 集群没有办法对外服务,消费者无法消费,导致 mq 消息堆积,导致设备显示离线</p>
+</li>
+</ul>
+</li>
+<li><p>以上就是目前分析出的整个状况,因为没有保留事故现场并且因为急着恢复服务导致没有排查出真正的原因,是什么原因导致的 master 与 zookeeper 连接断开,以及为什么 master 服务会没有完成重启动作</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/线上问题/" rel="tag"># 线上问题</a>
+              <a href="/tags/activemq/" rel="tag"># activemq</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/db8ef88b.html" rel="prev" title="在亚马逊免费试用ubuntu">
+      <i class="fa fa-chevron-left"></i> 在亚马逊免费试用ubuntu
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/bc887465.html" rel="next" title="使用Nacos注册中心功能">
+      使用Nacos注册中心功能 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

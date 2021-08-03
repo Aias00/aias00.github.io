@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="MQ 的本质MQ 本质都是[一发一存一消费] 生产者先将消息投递到一个叫做[队列]的容器中，队列存储消息之后，再转发给消费者  上面这个图便是消息队列最原始的模型，它包含了两个关键词：队列和消息">
+<meta name="keywords" content="mq,消息中间件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mq专题">
+<meta property="og:url" content="http://yoursite.com/article/a292cba5.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="MQ 的本质MQ 本质都是[一发一存一消费] 生产者先将消息投递到一个叫做[队列]的容器中，队列存储消息之后，再转发给消费者  上面这个图便是消息队列最原始的模型，它包含了两个关键词：队列和消息">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-08T10:57:45.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mq专题">
+<meta name="twitter:description" content="MQ 的本质MQ 本质都是[一发一存一消费] 生产者先将消息投递到一个叫做[队列]的容器中，队列存储消息之后，再转发给消费者  上面这个图便是消息队列最原始的模型，它包含了两个关键词：队列和消息">
+
+<link rel="canonical" href="http://yoursite.com/article/a292cba5.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>mq专题 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/a292cba5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mq专题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-07 22:15:29" itemprop="dateCreated datePublished" datetime="2021-04-07T22:15:29+08:00">2021-04-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-08 18:57:45" itemprop="dateModified" datetime="2021-04-08T18:57:45+08:00">2021-04-08</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="MQ-的本质"><a href="#MQ-的本质" class="headerlink" title="MQ 的本质"></a>MQ 的本质</h3><p>MQ 本质都是[一发一存一消费]</p>
+<p>生产者先将消息投递到一个叫做[队列]的容器中，队列存储消息之后，再转发给消费者</p>
+<p><img data-src="https://i.loli.net/2021/04/07/oVDlHdXeW3uITpv.png" alt="2021-04-07-22-22-1420210407222213"></p>
+<p>上面这个图便是消息队列最原始的模型，它包含了两个关键词：队列和消息</p>
+<ul>
+<li><p>消息：就是要传输的数据，可以是最简单的文本字符串，也可以是自定义的复杂格式（只要能按照预定的格式解析出来）</p>
+</li>
+<li><p>队列：先进先出的数据结构。它是存放消息的容器，消息从队尾入队，从队首出队，入队即发消息的过程，出队即消费消息的过程</p>
+</li>
+</ul>
+<h3 id="原始模型的进化"><a href="#原始模型的进化" class="headerlink" title="原始模型的进化"></a>原始模型的进化</h3><p>现在流行的消息队列都在原始的模型上做了拓展，同时提出了一些新名词，比如：主题（Topic）、分区（partition）等</p>
+<h4 id="队列模型"><a href="#队列模型" class="headerlink" title="队列模型"></a>队列模型</h4><p>最初的消息队列就是原始模型，它是一个严格意义上的队列（Queue）。消息按照什么顺序写进去，就按照什么顺序读出来。不过，队列没有“读”这个操作，读就是出队，从队首删除消息</p>
+<p><img data-src="https://i.loli.net/2021/04/07/6dXV3Wi89Nymg2E.png" alt="2021-04-07-22-33-0720210407223307"></p>
+<p>这便是队列模型：它允许多个生产者往同一个队列发送消息。但是如果有多个消费者，实际上是竞争关系，也就是一条消息只能被一个消费者收到，读完即删除。</p>
+<h4 id="发布-订阅模型"><a href="#发布-订阅模型" class="headerlink" title="发布-订阅模型"></a>发布-订阅模型</h4><p>如果需要将一份消息数据发送给多个消费者，并且每个消费者都要求接收到全量的数据。很显然队列模型无法满足这个需求</p>
+<p>一个可行的方案是：为每个消费者创建一个单独的队列，让生产者发送多份。这种做法比较笨，而且同一份数据被复制多份，也很浪费空间</p>
+<p>为了解决这个问题，就演化出另外一种消息模型：发布-订阅模型</p>
+<p><img data-src="https://i.loli.net/2021/04/07/LQD4ocayKUht563.png" alt="2021-04-07-22-43-0420210407224303"></p>
+<p>在发布-订阅模型中，存放消息的容器变成了“主题”，订阅者在接收消息之前需要先“订阅主题”。最终，每个订阅者都可以接收到同一个主题的全量消息</p>
+<p>仔细对比下它和“队列模型”的异同：生产者就是发布者，队列就是主题，消费者就是订阅者，无本质区别。唯一的不同点在于：一份消息数据是否可以被多次消费</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>上面两种模型就是“单播和广播的区别”。而且，当发布-订阅模型中只有一个订阅者时，它和队列模型就一样了。因此在功能上是完全兼容队列模型的</p>
+<p>这也解释了为什么现在主流的消息中间件如 RocketMq、Kafka 都是直接基于发布-订阅模型实现的。此外，RabbitMQ 中之所以有一个 Exchange 模块，其实也是为了解决消息的投递问题，可以变相实现发布-订阅模型</p>
+<p>包括大家接触到的“消费组”、“集群消费”、“广播消费”这些概念，都和上面这两种模型相关，以及在应用层面大家最常见的情形：组间广播、组内单播，也属于此范畴</p>
+<h3 id="透过模型看-MQ-的应用场景"><a href="#透过模型看-MQ-的应用场景" class="headerlink" title="透过模型看 MQ 的应用场景"></a>透过模型看 MQ 的应用场景</h3><p>目前，MQ 的应用场景非常多：系统解耦、异步通信、流量削峰、延迟通知、最终一致性保证、顺序消息和流式处理等</p>
+<p>MQ 消息模型的适配性很广</p>
+<p>MQ 消费模型主要解决的是：生产者和消费者的通信问题</p>
+<p><img data-src="https://i.loli.net/2021/04/08/BzIrxPsRhYbSkTl.png" alt="2021-04-08-11-28-3220210408112832"></p>
+<p>通过对比，能够很明显地看出两点差异：</p>
+<ul>
+<li><p>1.引入 MQ 后，由之前的 1 次 RPC 变成了现在的 2 次 RPC，而且生产者只跟队列耦合，它根本无需知道消费者的存在</p>
+</li>
+<li><p>2.多了一个中间节点[队列]进行消息存储，相当于同步变成了异步</p>
+</li>
+</ul>
+<p>再反过来思考 MQ 的应用场景，就不难理解为什么 MQ 适用了。因为这些场景无外乎都应用到了上面的两个特性</p>
+<p>举个例子：比如说电商业务中最常见的[订单支付]场景，在订单支付成功后，需要更新订单状态、更新用户积分、通知商家有新订单、更新推荐系统中的用户画像等</p>
+<p><img data-src="https://i.loli.net/2021/04/08/aSAMLNyB5QdsKY2.png" alt="2021-04-08-11-44-1720210408114417"></p>
+<p>引入 MQ 之后，订单系统现在只需要关注它最关心的流程：更新订单状态，即可。其他事情全部交给 MQ 来通知。这便是 MQ 解决的最核心的问题：系统解耦</p>
+<p>改造前订单系统依赖 3 个外部系统，改造后仅仅依赖 MQ，而且后续业务再拓展（比如：营销系统打算针对支付用户奖励优惠券），也不涉及订单系统的改动，从而保证了核心流程的稳定性，降低了维护成本</p>
+<p>这个改造还带来另外一个好处：因为 MQ 的引入，更新用户积分、通知商家、更新用户画像这些步骤全部变成了异步执行，能减少订单支付的整体耗时，提升订单系统的吞吐量。这便是 MQ 的另外一个典型应用场景：异步通信</p>
+<p>初次之外，由于队列能转储消息，对于超出系统承载能力的场景，可以用 MQ 作为“漏斗”进行限流保护，即所谓的流量削峰</p>
+<p>我们还可以用队列本身的顺序性，来满足消息必须按顺序投递的需求。利用队列+定时任务来实现消息的延时消费等</p>
+<h3 id="如何设计一个-MQ"><a href="#如何设计一个-MQ" class="headerlink" title="如何设计一个 MQ"></a>如何设计一个 MQ</h3><h4 id="1-MQ-的雏形"><a href="#1-MQ-的雏形" class="headerlink" title="1.MQ 的雏形"></a>1.MQ 的雏形</h4><p>如果只是实现一个很粗糙的 MQ，不考虑生产环境的要求，应该如何设计呢？</p>
+<p>MQ 最核心的功能需求：一发一存一消费。另外从技术维度来看 MQ 的通信模型，可以理解成：两次 RPC+消息转储</p>
+<ul>
+<li><p>1.直接利用成熟的 RPC 框架（dubbo 或者 Thrift），实现两个接口：发消息和读消息</p>
+</li>
+<li><p>2.消息放在本地内存即可。数据结构可以用 JDK 自带的 ArrayBlockingQueue</p>
+</li>
+</ul>
+<h4 id="2-写一个适用于生产环境的-MQ"><a href="#2-写一个适用于生产环境的-MQ" class="headerlink" title="2.写一个适用于生产环境的 MQ"></a>2.写一个适用于生产环境的 MQ</h4><h5 id="1-关键点"><a href="#1-关键点" class="headerlink" title="1.关键点"></a>1.关键点</h5><p>假如我们还是只考虑最基础的功能：发消息、存消息、消费消息（支持发布-订阅模式）</p>
+<p>那么在生产环境中，这些基础功能将会面临以下问题：</p>
+<ul>
+<li>1.高并发场景下，如何保证收发消息的性能</li>
+<li>2.如何保证消息服务的高可用和高可靠</li>
+<li>3.如何保证服务是可以水平任意拓展的</li>
+<li>4.如何保证消息存储也是水平可拓展的</li>
+<li>5.各种元数据（比如集群中的各个节点、主题、消费关系等）如何管理，需不需要考虑数据的一致性</li>
+</ul>
+<p>可见，如何解决高并发场景下满足高性能、高可靠等非功能性需求，才是这个问题的关键所在</p>
+<h5 id="2-整体设计思路"><a href="#2-整体设计思路" class="headerlink" title="2.整体设计思路"></a>2.整体设计思路</h5><p>整体架构会涉及三类角色：</p>
+<p><img data-src="https://i.loli.net/2021/04/08/YZrMJSkuVAW4qCw.png" alt="2021-04-08-13-24-2920210408132428"></p>
+<p>另外，将[一发一存一消费]这个核心流程进一步细化后，比较完整的数据流如下：</p>
+<p><img data-src="https://i.loli.net/2021/04/08/AbdpysgSX3xv175.png" alt="2021-04-08-13-31-1620210408133116"></p>
+<p>基于上面两个图，我们可以很快明确出 3 类角色的作用，分别如下：</p>
+<ul>
+<li><p>1.Broker（服务端）：MQ 中最核心的部分，是 MQ 的服务端，核心逻辑几乎全在这里，它为生产者和消费者提供 RPC 接口，负责消息的存储、备份和删除，以及维护消费关系等</p>
+</li>
+<li><p>2.Producer（生产者）：MQ 的客户端之一，调用 Broker 提供给的 RPC 接口发送消息</p>
+</li>
+<li><p>3.Consumer（消费者）：MQ 的另外一个客户端，调用 Broker 提供的 RPC 接口接收消息，同时完成消息确认</p>
+</li>
+</ul>
+<h5 id="3-详细设计"><a href="#3-详细设计" class="headerlink" title="3.详细设计"></a>3.详细设计</h5><p>再展开讨论下一些具体的技术难点和可行的解决方案</p>
+<h6 id="难点-1：RPC-通信"><a href="#难点-1：RPC-通信" class="headerlink" title="难点 1：RPC 通信"></a>难点 1：RPC 通信</h6><p>解决的是 Broker 与 Producer 以及 Consumer 之间的通信问题。如果不重复造轮子，直接利用成熟的 RPC 框架如 dubbo、Thrift 实现即可，这样不需要考虑服务注册与发现、负载均衡、通信协议、序列化方式等一系列问题</p>
+<p>当然，也可以基于 Netty 来做底层通信，用 Zookeeper、Eureka 等来做注册中心，然后自定义一套新的通信协议（类似 kafka）。也可以基于 AMQP 这种标准化的 MQ 协议来做实现（类似 RabbitMQ）。对比直接用 RPC 框架，这种方案的定制化能力和优化空间更大</p>
+<h6 id="难点-2：高可用设计"><a href="#难点-2：高可用设计" class="headerlink" title="难点 2：高可用设计"></a>难点 2：高可用设计</h6><p>高可用主要涉及两个方面：Broker 服务的高可用、存储方案的高可用</p>
+<p>Broker 服务的高可用，只需要保证 Broker 可水平拓展及逆行集群部署即可。进一步通过服务自动注册与发现、负载均衡、超时重试机制、发送和消费时的 ack 机制来保证</p>
+<p>存储方案的高可用有两个思路：</p>
+<ol>
+<li><p>参考 kafka 的分区+多副本模式，但是需要考虑分布式场景下数据复制和一致性方案（类似 ZAB、Raft 等协议），并实现自动故障转移</p>
+</li>
+<li><p>还可以用主流的 DB、分布式文件系统、带持久化能力的 KV 系统，他们都有自己的高可用方案</p>
+</li>
+</ol>
+<h6 id="难点-3：存储设计"><a href="#难点-3：存储设计" class="headerlink" title="难点 3：存储设计"></a>难点 3：存储设计</h6><p>消息的存储方案是 MQ 的核心部分。可靠性保证已经在高可用设计中谈过了，可靠性要求不高的话直接用内存或者分布式缓存也可以。这里重点说一下存储的高性能如何保证，这个问题的决定因素在于存储结构的设计</p>
+<p>目前主流的方案是：追加写日志文件（数据部分）+索引文件的方式（很多主流的开源 MQ 都是这种方式）。索引设计上可以考虑稠密索引或者稀疏索引，查找消息可以利用跳跃表、二分查找等，还可以通过操作系统的页缓存、零拷贝等技术来提升磁盘文件的读写性能</p>
+<p>如果不追求很高的性能，也可以考虑线程的分布式文件系统、KV 存储或者数据库方案</p>
+<h6 id="难点-4：消费关系管理"><a href="#难点-4：消费关系管理" class="headerlink" title="难点 4：消费关系管理"></a>难点 4：消费关系管理</h6><p>为了支持发布-订阅的广播模式，Broker 需要知道每个主题都有哪些 Consumer 订阅了，基于这个关系进行消息投递</p>
+<p>由于 Broker 是集群部署的，所以消费关系通常维护在公共存储上，可以基于 zookeeper、apollo 等配置中心来管理以及进行变更通知</p>
+<h6 id="难点-5：高性能设计"><a href="#难点-5：高性能设计" class="headerlink" title="难点 5：高性能设计"></a>难点 5：高性能设计</h6><p>存储的高性能已经谈过了，当然还可以从其他方面进一步优化性能</p>
+<p>比如 Reactor 网络 IO 模型、业务线程池的设计、生产端的批量发送、Broker 端的异步刷盘、消费端的批量拉取等</p>
+<h5 id="4-小结"><a href="#4-小结" class="headerlink" title="4.小结"></a>4.小结</h5><p>要回答好如何设计一个 MQ</p>
+<ol>
+<li><p>需要从功能性需求（收发消息）和非功能性需求（高性能、高可用、高拓展等）两方面入手</p>
+</li>
+<li><p>功能性需求不是重点，能覆盖 MQ 最基础的功能即可，至于延时消息、事务消息、重试队列等高级特性只是锦上添花的东西</p>
+</li>
+<li><p>最核心的是：能结和功能性需求，理清楚整体的数据流，然后顺着这个思路取考虑非功能性的诉求如何满足，这才是技术难点所在</p>
+</li>
+</ol>
+<h3 id="消息队列的非幂等问题"><a href="#消息队列的非幂等问题" class="headerlink" title="消息队列的非幂等问题"></a>消息队列的非幂等问题</h3><h4 id="幂等性概念"><a href="#幂等性概念" class="headerlink" title="幂等性概念"></a>幂等性概念</h4><p>所谓幂等性就是无论多少次操作都和第一次的操作结果一样。如果消息被多次消费，很有可能造成数据的不一致。而如果消息不可避免地被消费多次，如果我们开发人员能通过技术手段保证数据的前后一致性，那也是可以接接受的</p>
+<h4 id="场景分析"><a href="#场景分析" class="headerlink" title="场景分析"></a>场景分析</h4><p>RabbitMQ、RocketMQ、Kafka 等消息中间件都有可能出现消息重复消费的问题。这种问题并不是 MQ 自己保证的，而是需要开发人员来保证</p>
+<p>这几款消息队列都考虑了消息的幂等性，以 Kafka 为例：</p>
+<p>Kafka 有一个<strong>偏移量</strong>的概念，代表着消息的序号，每条消息写道消息队列都会有一个偏移量，消费者消费了数据之后，每过一段固定的时间，就会把消费过的消息的偏移量提交以下，表示已经消费过了，下次消费就从偏移量后面开始消费。</p>
+<h5 id="问题：当消费完消息后，还没来得及提交偏移量，系统就被关机了，那么未提交偏移量的消息则会再次被消费"><a href="#问题：当消费完消息后，还没来得及提交偏移量，系统就被关机了，那么未提交偏移量的消息则会再次被消费" class="headerlink" title="问题：当消费完消息后，还没来得及提交偏移量，系统就被关机了，那么未提交偏移量的消息则会再次被消费"></a>问题：当消费完消息后，还没来得及提交偏移量，系统就被关机了，那么未提交偏移量的消息则会再次被消费</h5><p>如下图所示，队列中的数据 A、B、C 对应的偏移量分别未 100、101、102，都被消费者消费了，但是只有数据 A 的偏移量 100 提交成功，另外 2 个偏移量因系统重启而导致未及时提交。</p>
+<p><img data-src="https://i.loli.net/2021/04/08/Q1UGy5lriCFXs2z.png" alt="2021-04-08-15-47-2420210408154723"></p>
+<p>重启后，消费者又是拿偏移量 100 以后的数据，从偏移量 101 开始消费消息。所以数据 B 和数据 C 被重复消费</p>
+<p><img data-src="https://i.loli.net/2021/04/08/lBPpTHnMY1EK6iy.png" alt="2021-04-08-15-50-3720210408155036"></p>
+<h5 id="幂等性解决方案"><a href="#幂等性解决方案" class="headerlink" title="幂等性解决方案"></a>幂等性解决方案</h5><ul>
+<li><p>微信支付结果通知场景</p>
+<ul>
+<li>微信官方文档上体到微信支付通知结果可能会推送多次，需要开发者自行保证幂等性。第一次我们可以直接修改订单状态（如：支付中-&gt;支付成功），第二次就根据订单状态来判断，如果不是支付中，则不进行订单处理逻辑</li>
+</ul>
+</li>
+<li><p>插入数据库场景</p>
+<ul>
+<li>每次插入数据时，先检查下数据库中是否又这条数据的主键 id，如果有，则进行更新操作</li>
+</ul>
+</li>
+<li><p>写 redis 场景</p>
+<ul>
+<li>redis 的 set 操作天然具有幂等性，所以不用考虑 redis 写的问题</li>
+</ul>
+</li>
+<li><p>其他场景方案</p>
+<ul>
+<li>生产者发送每条数据时，增加一个全局唯一 id，类似订单 id。每次消费时，先去 redis 查询是否有这个 id，如果没有，则进行正常处理消息，且将 id 存到 redis。如果查到有这个 id，说明之前消费过，则不要及逆行重复处理这条消息</li>
+</ul>
+</li>
+</ul>
+<h3 id="消息队列消息丢失的问题"><a href="#消息队列消息丢失的问题" class="headerlink" title="消息队列消息丢失的问题"></a>消息队列消息丢失的问题</h3><h4 id="1-生产者存放消息的过程中丢失消息"><a href="#1-生产者存放消息的过程中丢失消息" class="headerlink" title="1.生产者存放消息的过程中丢失消息"></a>1.生产者存放消息的过程中丢失消息</h4><p><img data-src="https://i.loli.net/2021/04/08/dgWOe3rxnMTvUHk.png" alt="2021-04-08-16-00-4420210408160043"></p>
+<h5 id="生产者丢失消息解决方案"><a href="#生产者丢失消息解决方案" class="headerlink" title="生产者丢失消息解决方案"></a>生产者丢失消息解决方案</h5><ul>
+<li>事务机制（不推荐，同步方式）</li>
+</ul>
+<p>对于 RabbitMQ 来说，生产者发送数据之前开启 RabbitMQ 的事务机制 channel.txselect，如果消息没有进入队列，则生产者收到异常报错，并进行回滚 channel.txRollback，然后可以操作重试发送消息；如果收到了消息，则可以提交事务 channel.txCommit。但是这是一个同步的操作，会影响性能</p>
+<ul>
+<li>confirm 机制（推荐，异步方式）</li>
+</ul>
+<p>可以通过 confirm 模式来解决同步机制的性能问题。每次生产者发送的消息都会被分配一个唯一的 id，如果写入到了 rabbitMQ 队列中，则 rabbitMQ 会回传一个 ack 消息，说明这个消息写入成功。如果 rabbitMQ 没能写入这个消息，则回调 nack 接口，说明需要重试发送消息。</p>
+<p>也可以自定义超时时间+消息 id 来实现超时重试机制。但可能出现的问题是调用 ack 接口时失败了，所以会出现消息被发送两次的问题。这个时候就需要保证消费者消费消息的幂等性</p>
+<h5 id="事务模式和-confirm-模式的区别"><a href="#事务模式和-confirm-模式的区别" class="headerlink" title="事务模式和 confirm 模式的区别"></a>事务模式和 confirm 模式的区别</h5><ul>
+<li><p>事务模式是同步的，提交事务后会被阻塞直到提交事务成功</p>
+</li>
+<li><p>confirm 模式异步接收通知，但可能接收不到通知，需要考虑接收不到通知的场景</p>
+</li>
+</ul>
+<h4 id="2-消息队列丢失消息"><a href="#2-消息队列丢失消息" class="headerlink" title="2.消息队列丢失消息"></a>2.消息队列丢失消息</h4><p><img data-src="https://i.loli.net/2021/04/08/R2xBdzyJ51ipWFg.png" alt="2021-04-08-16-16-4720210408161647"></p>
+<p>消息队列的消息可以放到内存中，或者将内存中的消息转储到硬盘（比如数据库）中，一般都是内存和硬盘都存有消息。如果只是放在内存中，那么当机器重启了，消息就全部丢失了。如果是硬盘中，则可能存在一种极端情况，就是将内存中的数据转换到硬盘的期间，消息队列出问题了，未能完成消息的持久化操作</p>
+<h5 id="消息队列丢失消息解决方案"><a href="#消息队列丢失消息解决方案" class="headerlink" title="消息队列丢失消息解决方案"></a>消息队列丢失消息解决方案</h5><ul>
+<li><p>创建 Queue 的时候将其设置为持久化</p>
+</li>
+<li><p>发送消息的时候将消息的 deliveryMode 设置为 2</p>
+</li>
+<li><p>开启生产者 confirm 模式，可以重试发送消息</p>
+</li>
+</ul>
+<h4 id="3-消费者丢失消息"><a href="#3-消费者丢失消息" class="headerlink" title="3.消费者丢失消息"></a>3.消费者丢失消息</h4><p><img data-src="https://i.loli.net/2021/04/08/kLGV48qrduvhgOX.png" alt="2021-04-08-16-20-2020210408162020"></p>
+<p>消费者刚拿到消息，还没有开始处理，进程因为异常退出了，消费者没有机会再次拿到消息</p>
+<h5 id="消费者丢失消息解决方案"><a href="#消费者丢失消息解决方案" class="headerlink" title="消费者丢失消息解决方案"></a>消费者丢失消息解决方案</h5><ul>
+<li><p>关闭 RabbitMQ 的自动 ack，每次生产者将消息写入消息队列后，就自动回传一个 ack 给生产者</p>
+</li>
+<li><p>消费者处理完消息后再主动 ack，告诉消息队列消息处理完成</p>
+</li>
+</ul>
+<h5 id="问题：这种主动-ack-有什么漏洞，如果主动-ack-的时候挂了，怎么办"><a href="#问题：这种主动-ack-有什么漏洞，如果主动-ack-的时候挂了，怎么办" class="headerlink" title="问题：这种主动 ack 有什么漏洞，如果主动 ack 的时候挂了，怎么办"></a>问题：这种主动 ack 有什么漏洞，如果主动 ack 的时候挂了，怎么办</h5><p>可能会被再次消费，这个时候就需要幂等处理了</p>
+<h5 id="问题：如果这条消息一直被重复消费怎么办"><a href="#问题：如果这条消息一直被重复消费怎么办" class="headerlink" title="问题：如果这条消息一直被重复消费怎么办"></a>问题：如果这条消息一直被重复消费怎么办</h5><p>需要加上重试次数的监控，如果超过一定次数则将消息丢失，记录到异常表或发送异常通知给管理人员</p>
+<h4 id="4-RabbitMQ-消息丢失总结"><a href="#4-RabbitMQ-消息丢失总结" class="headerlink" title="4.RabbitMQ 消息丢失总结"></a>4.RabbitMQ 消息丢失总结</h4><p><img data-src="https://i.loli.net/2021/04/08/OdJ2RiWKDPXYMc3.png" alt="2021-04-08-16-34-3620210408163436"></p>
+<h4 id="5-Kafka-消息丢失"><a href="#5-Kafka-消息丢失" class="headerlink" title="5.Kafka 消息丢失"></a>5.Kafka 消息丢失</h4><h5 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h5><p>Kafka 的某个 broker 节点宕机了，重新选举 leader（写入的节点）。如果 leader 挂了，follower 还有些数据未同步完，则 follower 成为 leader 后，消息队列会丢失一部分数据</p>
+<h5 id="Kafka-消息丢失解决方案"><a href="#Kafka-消息丢失解决方案" class="headerlink" title="Kafka 消息丢失解决方案"></a>Kafka 消息丢失解决方案</h5><ul>
+<li><p>给 topic 设置<strong>replication.factor</strong>参数，值必须大于 1，要求每个 partition 必须有至少 2 个副本</p>
+</li>
+<li><p>给 Kafka 服务端设置<strong>min.insyc.replicas</strong>必须大于 1，表示一个 leader 至少一个 follower 还跟自己保持联系</p>
+</li>
+</ul>
+<h3 id="消息队列消息乱序的问题"><a href="#消息队列消息乱序的问题" class="headerlink" title="消息队列消息乱序的问题"></a>消息队列消息乱序的问题</h3><p>坑：用户先下单成功，然后取消订单，如果顺序乱了，则最后数据库里面会有一条下单成功的订单</p>
+<h4 id="RabbitMQ-场景"><a href="#RabbitMQ-场景" class="headerlink" title="RabbitMQ 场景"></a>RabbitMQ 场景</h4><ul>
+<li><p>生产者向消息队列按照顺序发送了 2 条消息，消息 1：增加数据 A；消息 2：删除数据 A</p>
+</li>
+<li><p>期望结果：数据 A 被删除</p>
+</li>
+<li><p>但是如果有两个消费者，消费顺序是：消息 2、消息 1。则最后结果是增加了数据 A</p>
+</li>
+</ul>
+<p><img data-src="https://i.loli.net/2021/04/08/PcZKANILlGtUgWv.png" alt="2021-04-08-16-59-0220210408165901"></p>
+<h5 id="RabbitMQ-解决方案"><a href="#RabbitMQ-解决方案" class="headerlink" title="RabbitMQ 解决方案"></a>RabbitMQ 解决方案</h5><ul>
+<li><p>将 Queue 进行拆分，创建多个内存 Queue，消息 1 和消息 2 进入同一个 Queue</p>
+</li>
+<li><p>创建多个消费者，每个消费者对应一个 Queue</p>
+</li>
+</ul>
+<p><img data-src="https://i.loli.net/2021/04/08/MyYI7KC6VkBXa8E.png" alt="2021-04-08-17-03-4620210408170345"></p>
+<h4 id="Kafka-场景"><a href="#Kafka-场景" class="headerlink" title="Kafka 场景"></a>Kafka 场景</h4><ul>
+<li><p>创建了 topic，有 3 个 partition</p>
+</li>
+<li><p>创建一条订单记录，订单 id 作为 key，订单相关的消息都丢到同一个 partition 中，同一个生产者创建的消息，顺序是正确的</p>
+</li>
+<li><p>为了快速消费消息，会创建多个消费者去处理消息，而为了提高效率，每个消费者可能会创建多个线程来并行的去拿消息及处理消息，处理消息的顺序可能就乱了</p>
+</li>
+</ul>
+<p><img data-src="https://i.loli.net/2021/04/08/E3tZdhWuVeAmvGX.png" alt="2021-04-08-17-10-1720210408171016"></p>
+<h5 id="Kafka-解决方案"><a href="#Kafka-解决方案" class="headerlink" title="Kafka 解决方案"></a>Kafka 解决方案</h5><ul>
+<li><p>解决方案和 RabbitMQ 类似，利用多个内存 Queue，每个线程消费一个 Queue</p>
+</li>
+<li><p>具有相同 Key 的消息，进入同一个 Queue</p>
+</li>
+</ul>
+<p><img data-src="https://i.loli.net/2021/04/08/iJtVznA3UXCDwgh.png" alt="2021-04-08-17-15-4420210408171543"></p>
+<h3 id="消息队列消息积压的问题"><a href="#消息队列消息积压的问题" class="headerlink" title="消息队列消息积压的问题"></a>消息队列消息积压的问题</h3><p>消息积压：消息队列里面有很多消息来不及消费</p>
+<ul>
+<li><p>场景 1：消费端出了问题，比如消费者都挂了，没有消费者消费消息，导致消息在队列里面不断积压</p>
+</li>
+<li><p>场景 2：消费端出了问题，比如消费者消费的速度太慢了，导致消息不断积压</p>
+</li>
+</ul>
+<p><img data-src="https://i.loli.net/2021/04/08/BHTAg2epfEoCFG3.png" alt="2021-04-08-17-41-2120210408174120"></p>
+<p>解决方案：</p>
+<ul>
+<li><p>修复代码层面消费者的问题，确保后续消费速度恢复或尽可能加快消费的速度</p>
+</li>
+<li><p>停掉现有的消费者</p>
+</li>
+<li><p>临时建立好原先 5 倍数量的 Queue</p>
+</li>
+<li><p>临时建立好原先 5 倍数量的消费者</p>
+</li>
+<li><p>将堆积的消息全部转入临时的 Queue，用临时消费者消费这些 Queue</p>
+</li>
+<li><p>消费完成后恢复原有状态</p>
+</li>
+</ul>
+<p><img data-src="https://i.loli.net/2021/04/08/VdxubX6Y3qnrlky.png" alt="2021-04-08-17-45-5920210408174559"></p>
+<h3 id="消息队列消息过期失效的问题"><a href="#消息队列消息过期失效的问题" class="headerlink" title="消息队列消息过期失效的问题"></a>消息队列消息过期失效的问题</h3><p>坑：RabbitMQ 可以设置过期时间，如果消息超过一定时间还没有被消费者消费，会被 RabbitMQ 给清理掉。消息就丢失了</p>
+<p><img data-src="https://i.loli.net/2021/04/08/YBaefWiUjhp9OmR.png" alt="2021-04-08-18-54-5420210408185454"></p>
+<h4 id="消息过期失效解决方案"><a href="#消息过期失效解决方案" class="headerlink" title="消息过期失效解决方案"></a>消息过期失效解决方案</h4><ul>
+<li><p>准备好批量重导的程序</p>
+</li>
+<li><p>手动将消息闲时批量重导</p>
+</li>
+</ul>
+<h3 id="消息队列队列写满"><a href="#消息队列队列写满" class="headerlink" title="消息队列队列写满"></a>消息队列队列写满</h3><p>坑：当消息队列因消息积压导致的队列快写满，所以不能接收更多的消息了。生产者生产的消息将会被丢弃</p>
+<p>解决方案：</p>
+<ul>
+<li><p>判断哪些是无用的消息，RabbitMQ 可以进行 purge message 操作</p>
+</li>
+<li><p>如果是有用的消息，则需要将消息快速消费，将消息里面的内容转存到数据库</p>
+</li>
+<li><p>准备好程序将转存在数据库中的消息再次重导入到消息队列</p>
+</li>
+<li><p>显示重导消息到消息队列</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mq/" rel="tag"># mq</a>
+              <a href="/tags/消息中间件/" rel="tag"># 消息中间件</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/29e3bd78.html" rel="prev" title="分布式专题">
+      <i class="fa fa-chevron-left"></i> 分布式专题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/3ad60b.html" rel="next" title="cas">
+      cas <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQ-的本质"><span class="nav-number">1.</span> <span class="nav-text">MQ 的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始模型的进化"><span class="nav-number">2.</span> <span class="nav-text">原始模型的进化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#队列模型"><span class="nav-number">2.1.</span> <span class="nav-text">队列模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#发布-订阅模型"><span class="nav-number">2.2.</span> <span class="nav-text">发布-订阅模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">2.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透过模型看-MQ-的应用场景"><span class="nav-number">3.</span> <span class="nav-text">透过模型看 MQ 的应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何设计一个-MQ"><span class="nav-number">4.</span> <span class="nav-text">如何设计一个 MQ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-MQ-的雏形"><span class="nav-number">4.1.</span> <span class="nav-text">1.MQ 的雏形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-写一个适用于生产环境的-MQ"><span class="nav-number">4.2.</span> <span class="nav-text">2.写一个适用于生产环境的 MQ</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-关键点"><span class="nav-number">4.2.1.</span> <span class="nav-text">1.关键点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-整体设计思路"><span class="nav-number">4.2.2.</span> <span class="nav-text">2.整体设计思路</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-详细设计"><span class="nav-number">4.2.3.</span> <span class="nav-text">3.详细设计</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#难点-1：RPC-通信"><span class="nav-number">4.2.3.1.</span> <span class="nav-text">难点 1：RPC 通信</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#难点-2：高可用设计"><span class="nav-number">4.2.3.2.</span> <span class="nav-text">难点 2：高可用设计</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#难点-3：存储设计"><span class="nav-number">4.2.3.3.</span> <span class="nav-text">难点 3：存储设计</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#难点-4：消费关系管理"><span class="nav-number">4.2.3.4.</span> <span class="nav-text">难点 4：消费关系管理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#难点-5：高性能设计"><span class="nav-number">4.2.3.5.</span> <span class="nav-text">难点 5：高性能设计</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-小结"><span class="nav-number">4.2.4.</span> <span class="nav-text">4.小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列的非幂等问题"><span class="nav-number">5.</span> <span class="nav-text">消息队列的非幂等问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#幂等性概念"><span class="nav-number">5.1.</span> <span class="nav-text">幂等性概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景分析"><span class="nav-number">5.2.</span> <span class="nav-text">场景分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题：当消费完消息后，还没来得及提交偏移量，系统就被关机了，那么未提交偏移量的消息则会再次被消费"><span class="nav-number">5.2.1.</span> <span class="nav-text">问题：当消费完消息后，还没来得及提交偏移量，系统就被关机了，那么未提交偏移量的消息则会再次被消费</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#幂等性解决方案"><span class="nav-number">5.2.2.</span> <span class="nav-text">幂等性解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列消息丢失的问题"><span class="nav-number">6.</span> <span class="nav-text">消息队列消息丢失的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-生产者存放消息的过程中丢失消息"><span class="nav-number">6.1.</span> <span class="nav-text">1.生产者存放消息的过程中丢失消息</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#生产者丢失消息解决方案"><span class="nav-number">6.1.1.</span> <span class="nav-text">生产者丢失消息解决方案</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#事务模式和-confirm-模式的区别"><span class="nav-number">6.1.2.</span> <span class="nav-text">事务模式和 confirm 模式的区别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-消息队列丢失消息"><span class="nav-number">6.2.</span> <span class="nav-text">2.消息队列丢失消息</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#消息队列丢失消息解决方案"><span class="nav-number">6.2.1.</span> <span class="nav-text">消息队列丢失消息解决方案</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-消费者丢失消息"><span class="nav-number">6.3.</span> <span class="nav-text">3.消费者丢失消息</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#消费者丢失消息解决方案"><span class="nav-number">6.3.1.</span> <span class="nav-text">消费者丢失消息解决方案</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题：这种主动-ack-有什么漏洞，如果主动-ack-的时候挂了，怎么办"><span class="nav-number">6.3.2.</span> <span class="nav-text">问题：这种主动 ack 有什么漏洞，如果主动 ack 的时候挂了，怎么办</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题：如果这条消息一直被重复消费怎么办"><span class="nav-number">6.3.3.</span> <span class="nav-text">问题：如果这条消息一直被重复消费怎么办</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-RabbitMQ-消息丢失总结"><span class="nav-number">6.4.</span> <span class="nav-text">4.RabbitMQ 消息丢失总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Kafka-消息丢失"><span class="nav-number">6.5.</span> <span class="nav-text">5.Kafka 消息丢失</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#场景"><span class="nav-number">6.5.1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Kafka-消息丢失解决方案"><span class="nav-number">6.5.2.</span> <span class="nav-text">Kafka 消息丢失解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列消息乱序的问题"><span class="nav-number">7.</span> <span class="nav-text">消息队列消息乱序的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RabbitMQ-场景"><span class="nav-number">7.1.</span> <span class="nav-text">RabbitMQ 场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RabbitMQ-解决方案"><span class="nav-number">7.1.1.</span> <span class="nav-text">RabbitMQ 解决方案</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kafka-场景"><span class="nav-number">7.2.</span> <span class="nav-text">Kafka 场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Kafka-解决方案"><span class="nav-number">7.2.1.</span> <span class="nav-text">Kafka 解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列消息积压的问题"><span class="nav-number">8.</span> <span class="nav-text">消息队列消息积压的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列消息过期失效的问题"><span class="nav-number">9.</span> <span class="nav-text">消息队列消息过期失效的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#消息过期失效解决方案"><span class="nav-number">9.1.</span> <span class="nav-text">消息过期失效解决方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列队列写满"><span class="nav-number">10.</span> <span class="nav-text">消息队列队列写满</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.数组和集合的区别 数组能存放基础数据类型和对象,而集合存放的都是对象,集合无法存放基础数据类型.数组和集合存放的都是对象的引用地址 数组容量固定无法动态改变,集合容量可以动态改变 数组无法判断其中实际存放多少元素,length 只告诉了数组的容量,而集合的 size()可以确切知道元素的个数 集合有多种实现方式和不同适用场景,不像数组仅采用顺序表方式 集合以类的形式存在,具有继承,封装,多态等">
+<meta name="keywords" content="interview,collection,list,set,map">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java集合面试知识点(持续更新)">
+<meta property="og:url" content="http://yoursite.com/article/4ca75bdb.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="1.数组和集合的区别 数组能存放基础数据类型和对象,而集合存放的都是对象,集合无法存放基础数据类型.数组和集合存放的都是对象的引用地址 数组容量固定无法动态改变,集合容量可以动态改变 数组无法判断其中实际存放多少元素,length 只告诉了数组的容量,而集合的 size()可以确切知道元素的个数 集合有多种实现方式和不同适用场景,不像数组仅采用顺序表方式 集合以类的形式存在,具有继承,封装,多态等">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T14:03:46.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java集合面试知识点(持续更新)">
+<meta name="twitter:description" content="1.数组和集合的区别 数组能存放基础数据类型和对象,而集合存放的都是对象,集合无法存放基础数据类型.数组和集合存放的都是对象的引用地址 数组容量固定无法动态改变,集合容量可以动态改变 数组无法判断其中实际存放多少元素,length 只告诉了数组的容量,而集合的 size()可以确切知道元素的个数 集合有多种实现方式和不同适用场景,不像数组仅采用顺序表方式 集合以类的形式存在,具有继承,封装,多态等">
+
+<link rel="canonical" href="http://yoursite.com/article/4ca75bdb.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>java集合面试知识点(持续更新) | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/4ca75bdb.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java集合面试知识点(持续更新)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-12 10:41:59" itemprop="dateCreated datePublished" datetime="2021-03-12T10:41:59+08:00">2021-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:03:46" itemprop="dateModified" datetime="2021-04-06T22:03:46+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-数组和集合的区别"><a href="#1-数组和集合的区别" class="headerlink" title="1.数组和集合的区别"></a>1.数组和集合的区别</h3><ul>
+<li>数组能存放基础数据类型和对象,而集合存放的都是对象,集合无法存放基础数据类型.数组和集合存放的都是对象的引用地址</li>
+<li>数组容量固定无法动态改变,集合容量可以动态改变</li>
+<li>数组无法判断其中实际存放多少元素,length 只告诉了数组的容量,而集合的 size()可以确切知道元素的个数</li>
+<li>集合有多种实现方式和不同适用场景,不像数组仅采用顺序表方式</li>
+<li>集合以类的形式存在,具有继承,封装,多态等面向对象特性,通过简单的方法和属性即可以实现各种复杂操作,大大提高了软件开发的效率</li>
+</ul>
+<h3 id="2-java-集合分类"><a href="#2-java-集合分类" class="headerlink" title="2.java 集合分类"></a>2.java 集合分类</h3><p>Collection 和 Map,是集合框架的接口</p>
+<h4 id="Collection-的子接口"><a href="#Collection-的子接口" class="headerlink" title="Collection 的子接口"></a>Collection 的子接口</h4><ul>
+<li><p>Set:接口,实现类:HashSet,LinkedHashSet 等</p>
+</li>
+<li><p>Set 的子接口:SortedSet 接口,实现类:TreeSet</p>
+</li>
+<li><p>List:接口,实现类:ArrayList,LinkedList,Vector 等</p>
+</li>
+</ul>
+<h4 id="List-集合"><a href="#List-集合" class="headerlink" title="List 集合"></a>List 集合</h4><p>有序列表,允许存放重复的元素</p>
+<p>实现类:</p>
+<h5 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h5><p>数组实现,查询快,增删慢,轻量级,线程不安全,底层是 Object 数组,所以 ArrayList 具有数组的查询速度快以及增删速度慢的特点</p>
+<h5 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h5><p>双向链表实现,增删快,查询慢,线程不安全,底层是双向循环链表,在此链表上每一个数据节点都由三部分组成: 前指针(指向前面的节点),数据,后指针(指向后面的节点).最后一个节点的后指针指向第一个节点的前指针,形成一个循环链表.双向循环链表的查询效率低但是增删效率高</p>
+<h5 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h5><p>数组实现,重量级,线程安全</p>
+<h5 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h5><p>支持高效率并发且是线程安全的,读操作无锁的 ArrayList.所有可变操作都是通过对底层数组进行一次新的复制来实现</p>
+<p>适合使用在读操作远远大于写操作的场景里,比如缓存,它不存在扩容的概念,每次写操作都要复制一个副本,在副本的基础上修改之后改变 Array 引用,因为写操作要大面积复制数组,所以性能很差</p>
+<p>由于写操作的时候,需要拷贝数组,会消耗内存,如果原数组的内容比较多的情况下,可能导致 young gc 或者 full gc</p>
+<p>不能用于实时读的场景,像拷贝数组,新增元素都需要时间,所以调用一个 set 操作后,读取到的数据可能还是旧的,只能做到最终一致性</p>
+<h3 id="ArrayList-和-LinkedList-的区别"><a href="#ArrayList-和-LinkedList-的区别" class="headerlink" title="ArrayList 和 LinkedList 的区别"></a>ArrayList 和 LinkedList 的区别</h3><ul>
+<li><p>ArrayList 底层是基于动态数组的数据结构,LinkedList 底层是基于双向链表的数据结构</p>
+</li>
+<li><p>对于 ArrayList 和 LinkedList 而言,在列表末尾增加一个元素所花的开销都是固定的,对于 ArrayList 而言,主要是在内部数组中增加一项,指向所添加的元素,偶尔可能会导致对数组重新进行分配,而对 LinkedList 而言,这个开销是统一的,分配一个内部 Entry 对象</p>
+</li>
+<li><p>在 ArrayList 中间插入或者删除一个元素意味着这个列表中剩余的元素都会被移动,而在 LinkedList 中间插入或删除一个元素的开销是固定的</p>
+</li>
+<li><p>对于随机访问 get 和 set,ArrayList 性能由于 linkedList,时间复杂度 O(1),因为 LinkedList 要移动指针 ,时间复杂度 O(n)</p>
+</li>
+<li><p>对于新增和删除操作 add 和 remove,LinkedList 比较占优,因为 ArrayList 要移动数据</p>
+</li>
+<li><p>LinkedList 不支持高效率的随机元素访问</p>
+</li>
+<li><p>ArrayList 的空间浪费主要体现在 list 列表的结尾预留一定的容量空间,而 linkedList 的空间花费则体现在它的每个元素都要消耗相当的空间</p>
+</li>
+</ul>
+<h3 id="LinkedList-特性"><a href="#LinkedList-特性" class="headerlink" title="LinkedList 特性"></a>LinkedList 特性</h3><p>LinkedList 是采用双向循环链表实现的</p>
+<p>利用 LinkedList 实现栈(Stack),队列(queue),双向队列(double-ended queue).它具有 addFirst(),addLast(),getFirst(),getLast(),removeFirst(),removeLast()等方法</p>
+<p>经常用来增删操作较多而查询操作较少的情况下:</p>
+<p>队列和堆栈</p>
+<p>队列:先进先出的数据结构</p>
+<p>栈:后进先出的数据结构</p>
+<p>注意:使用栈的时候一定不能提供方法让不是最后一个元素的元素获得出栈的机会</p>
+<p>用 LinkedList 实现队列:</p>
+<p>队列(queue)是限定所有的插入只能在表的一端进行,而所有的删除都在表的另一端进行的线性表</p>
+<p>表中允许插入的一端成为队尾(Rear),允许删除的一端称为对头(Front)</p>
+<p>队列的操作是先进先出的原则进行的</p>
+<p>队列的物理存储可以用顺序存储结构,也可以用链式存储结构</p>
+<p>用 LinkedList 实现栈:</p>
+<p>栈(Stack)也是一种特殊的线性表,是一种后进先出的结构</p>
+<p>栈是限定仅在表尾进行插入和删除运算的线性表,表尾称为栈顶(Top),表头称为栈底(Bottom)</p>
+<p>栈的物理存储结构可以用顺序表存储结构,也可以用链式存储结构</p>
+<h3 id="3-Set-集合"><a href="#3-Set-集合" class="headerlink" title="3.Set 集合"></a>3.Set 集合</h3><p>拓展 Collection 接口</p>
+<p>无序集合,不允许存放重复的元素,允许使用 Null 元素</p>
+<p>对 add(),equals()和 hashCode()方法添加了限制</p>
+<p>HashSet 和 TreeSet 是 Set 的实现</p>
+<p>Set-&gt;HashSet-&gt;LinkedHashSet</p>
+<p>Set-&gt;SortedSet-&gt;TreeSet</p>
+<p>HashSet 由 HashMap 实现,value 都是 new Object();</p>
+<p>实现类:</p>
+<ul>
+<li><p>HashSet:equals 返回 true, hashCode 返回相同的整数;哈希表;存储的数据是无序的</p>
+</li>
+<li><p>LinkedHashSet: LinkedHashMap;存储的数据是有序的</p>
+</li>
+</ul>
+<h4 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h4><p>HashSet 直接实现了 Set 接口,其底层其实是包装了一个 HashMap 去实现的,HashSet 采用 HashCode 算法来存取集合中的元素,因此具有比较好的读取和查找性能</p>
+<p>特征:</p>
+<p>不仅不能保证元素插入的顺序,而且元素在以后的顺序中也可能变化(这是由于 HashSet 按 HashCode 存储元素决定的,对象变化则可能导致 HashCode 变化)</p>
+<p>HashSet 是非线程安全的</p>
+<p>HashSet 元素值可以为 Null</p>
+<p>如何能达到不存在重复元素的目的?</p>
+<p>“键”就是我们要存储的元素,而”值”是一个常量,而”键”在 Map 中是不能重复的,这就保证了我们存入 Set 中的所有元素都不重复</p>
+<h4 id="LinekdHashSet"><a href="#LinekdHashSet" class="headerlink" title="LinekdHashSet"></a>LinekdHashSet</h4><p>LinkedHashSet 底层由 LinkedHashMap 实现</p>
+<h4 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h4><p>TreeSet 实现了 SortedSet 接口,这是以中排序的 Set 集合,底层是由 TreeMap 实现的,本质上是一个红黑树,相对于 HashSet,TreeSet 额外提供了一些按排序位置访问元素的方法,比如 first(),last(),higher(),lower(),subSet(),headSet(),tailSet()等</p>
+<p>TreeSet 的排序分两种类型,一种是自然排序,另一种是定制排序</p>
+<ul>
+<li><p>自然排序: 调用 compareTo 方法比较元素大小,然后按照升序排序,所以自然排序中的元素,都比需实现了 Comparable 接口,否则会抛出异常.判读元素是否重复也是调用元素的 compareTo 方法,如果返回 0 则是重复元素,</p>
+</li>
+<li><p>定制排序: 在集合中写排序规则,需要关联一个 Comparator 对象,由 Comparator 提供排序逻辑</p>
+</li>
+</ul>
+<h4 id="EnumSet"><a href="#EnumSet" class="headerlink" title="EnumSet"></a>EnumSet</h4><p>EnumSet 是专门为枚举类型设计的集合,因此集合元素必须是枚举类型,否则会抛出异常,EnumSet 也是有序的,其顺序就是 Enum 类内元素定义的顺序,EnumSet 的存取速度非常快,批量操作的速度也很快,</p>
+<p>EnumSet 主要提供的方法有 allOf(),complementOf(),copyOf(),noneOf(),of(),range 等,EnumSet 并没有提供任何构造函数,要创建一个 EnumSet 集合对象,只需要调用 allOf 等方法</p>
+<h4 id="CopyOnWriteArraySet"><a href="#CopyOnWriteArraySet" class="headerlink" title="CopyOnWriteArraySet"></a>CopyOnWriteArraySet</h4><p>基于 CopyOnWriteArrayList 实现,线程安全</p>
+<h3 id="4-Map"><a href="#4-Map" class="headerlink" title="4.Map"></a>4.Map</h3><p>集合框架的第二类接口树</p>
+<p>提供了一组键值对的映射,其中存储的每个对象都有一个响应的关键字(key),关键字决定了对象在 Map 中的存储位置</p>
+<p>关键字应该是唯一的,每个 key 只能映射一个 value</p>
+<h4 id="实现类"><a href="#实现类" class="headerlink" title="实现类"></a>实现类</h4><h5 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h5><p>键值对,key 不能重复,但是 value 可以重复,允许 null 的 key 或者 value</p>
+<p>最常用的 Map,根据 key 的 hashCode 存储数据,具有很快的访问速度</p>
+<p>最多只允许一条记录的 key 是 null,value 不限</p>
+<p>不支持线程同步,多线程并发变更 HashMap 结构会导致数据不同步或者抛出异常</p>
+<p>可以用 Collection.synchronizedMap(HashMap)方法使 HashMap 具有同步能力</p>
+<h6 id="底层数据实现"><a href="#底层数据实现" class="headerlink" title="底层数据实现"></a>底层数据实现</h6><p>jdk1.8: 数组+单向链表+红黑树,链表插入数据时采用尾插法,链表长度大于 8 且数组长度大于等于 64 时转为红黑树,数据量小于 6 时转回链表</p>
+<p>当链表长度为 6 时,查询的平均长度为 n/2=3,红黑树 log(6)=2.6;为 8 时,链表 8/2=4,红黑树 log(8)=3</p>
+<p>链表转换成树之前,还会判断数组长度是否大于 64,这是为了避免在哈希表建立初期,多个键值对恰好被放入了同一链表中而导致不必要的变化</p>
+<p>如果链表长度大于 8 但是数据元素个数小于 64,只会触发扩容</p>
+<h6 id="HashMap-初始化"><a href="#HashMap-初始化" class="headerlink" title="HashMap 初始化"></a>HashMap 初始化</h6><p>默认大小是 16,负载因子是 0.75,如果传入初始大小 k,初始化大小为离 k 最近的大于 k 的 2 的整数次幂,如果传入 10,初始大小为 16</p>
+<h6 id="HashMap-插入流程"><a href="#HashMap-插入流程" class="headerlink" title="HashMap 插入流程"></a>HashMap 插入流程</h6><p>1.判断数组是否为空,为空则进行初始化</p>
+<p>2.计算 key 的 hash=((null == key) ? 0 : key.hashCode() ^ k.hashCode &gt;&gt;&gt; 16),通过(n-1)&amp;hash 计算当前应存放在数组中的下标 index</p>
+<p>3.查看 table[index]是否存在数据,没有数据就构造一个 Node 节点存放在 table[index]中</p>
+<p>4.存在数据说明发生了 hash 冲突,继续判断 key 是否相等,相等就用新的 value 替换原数据</p>
+<p>5.如果 key 不相等,判断当前节点类型是否为树形节点,如果是树形节点,构造一个树形节点插入红黑树中</p>
+<p>6.如果不是树形节点,继续遍历链表判断 Node 后面的节点是否为空,不为空判断 key 是否相等,如果相等则结束遍历,替换旧值</p>
+<p>7.如果遍历到链表尾部,构造 Node 节点加入链表中,判断链表长度是否大于 8,大于 8 的话将链表转换为红黑树</p>
+<p>8.插入完成之后判断当前节点数是否大于阈值(即数组长度*负载因子),如果大于阈值,开始将数组扩容为原数组的二倍</p>
+<h6 id="HashMap-删除流程"><a href="#HashMap-删除流程" class="headerlink" title="HashMap 删除流程"></a>HashMap 删除流程</h6><h5 id="TreeMap"><a href="#TreeMap" class="headerlink" title="TreeMap"></a>TreeMap</h5><p>对 key 排好序的 Map,key 要实现 Comparable 接口或者传入 Comparator</p>
+<h5 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h5><p>维护着一个运行于所有条目的双向链表,存储的数据是有序的,记录数据存入的顺序</p>
+<h5 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h5><p>线程安全的,不允许 Null 的 key 或 value</p>
+<h5 id="Properties"><a href="#Properties" class="headerlink" title="Properties"></a>Properties</h5><p>key 和 value 都是 String 类型,用来读取配置文件</p>
+<h3 id="HashMap-和-HashTable-区别"><a href="#HashMap-和-HashTable-区别" class="headerlink" title="HashMap 和 HashTable 区别"></a>HashMap 和 HashTable 区别</h3><p>都实现了 Map 接口</p>
+<p>HashMap 没有考虑同步,线程不安全,HashTable 使用了 synchronized 关键字,线程安全</p>
+<p>HashMap 允许 一个 key 和多个 value 都为 null,后者都不允许为 null</p>
+<p>HashMap 的迭代器是 fail-fast,而 HashTable 的迭代器不是 fail-fast,所有当多线程修改 HashMap 结构,会抛出 ConcurrentModificationException,但迭代器本身的 remove()方法移除元素则不会抛出</p>
+<p>单线程下 HashTable 比 HashMap 要慢</p>
+<p>HashMap 不能保证随着时间推移 Map 中的元素次序是不变的</p>
+<h3 id="ConcurrerntHashMap-和-HashTable-区别"><a href="#ConcurrerntHashMap-和-HashTable-区别" class="headerlink" title="ConcurrerntHashMap 和 HashTable 区别"></a>ConcurrerntHashMap 和 HashTable 区别</h3><p>ConcurrentHashMap 结合了 HashMap 和 HashTable 二者的优势,HashTable 每次同步执行都要锁住整个结构,ConcurrentHashMap 锁的方式是细粒度的</p>
+<h3 id="ConcurrentHashMap-实现原理"><a href="#ConcurrentHashMap-实现原理" class="headerlink" title="ConcurrentHashMap 实现原理"></a>ConcurrentHashMap 实现原理</h3><h4 id="jdk1-7：数组-Segment-数组-HashEntry-链表-HashEntry-节点"><a href="#jdk1-7：数组-Segment-数组-HashEntry-链表-HashEntry-节点" class="headerlink" title="jdk1.7：数组(Segment)+数组(HashEntry)+链表(HashEntry 节点)"></a>jdk1.7：数组(Segment)+数组(HashEntry)+链表(HashEntry 节点)</h4><ul>
+<li><p>ConcurrentHashMap 分段锁对整个桶数组进行了分割分段(Segment),每一把锁只锁容器其中一部分数据,多线程访问容器里不同数据段的数据,就不会存在锁竞争,提高并发访问率</p>
+</li>
+<li><p>Segment 是一种可重入锁(ReentrantLock),在 ConcurrentHashMap 中扮演锁的角色,HashEntry 则用于存储键值对数据.</p>
+</li>
+<li><p>一个 ConcurrentHashMap 里包含一个 HashEntry 数组,每个 HashEntry 是一个链表结构的元素,每个 Segment 守护着一个 HashEntry 数组里的元素,当对 HashEntry 数组的数据进行修改时,必须先获得与它对应的 Segment 锁</p>
+</li>
+</ul>
+<h5 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h5><p>ConcurrentHashMap 初始化时,计算出 Segment 数组的大小 ssize 和每个 Segment 中的 HashEntry 数组的大小 cap,并初始化 Segment 数组的第一个元素;其中 ssize 的大小为 2 的幂次方,默认为 16,cap 大小也是 2 的幂次方,最小值为 2,最终结果根据初始化容量 initialCapacity 进行计算,其中 Segment 在实现上继承了 ReentrantLock,这样就自带了锁的功能</p>
+<p>当执行 put 方法插入数据时,根据 key 的 hash 值,在 Segment 数组中找到相应的位置,如果相应位置的 Segment 还未初始化,则通过 CAS 进行赋值,接着执行 Segment 对象的 put 方法通过加锁机制插入数据</p>
+<p>1.线程 A 执行 tryLock()方法成功获取锁,则把 HashEntry 对象插入到相应的位置</p>
+<p>2.线程 B 获取锁失败,则执行 scanAndLockForPut()方法,在 scanAndLockForPut()方法中,会通过重复执行 tryLock()方法尝试获取锁,在多处理器环境下,重复次数为 64,单处理器重复次数为 1,当执行 tryLock()方法的次数超过上限时,则执行 lock()方法挂起线程 B</p>
+<p>3.当线程 A 执行完插入操作时,会通过 unlock()方法释放锁,接着唤醒线程 B 继续执行</p>
+<h5 id="size-实现"><a href="#size-实现" class="headerlink" title="size 实现"></a>size 实现</h5><p>因为 ConcurrentHashMap 时可以并发插入数据的,所以在准确计算元素时存在一定的难度,一版的思路时统计每个 Segement 对象中的元素的个数,然后进行累加,但是这种方式计算出来的结果并不一定是准确的,因为在计算后面几个 Segment 的元素个数时,已经计算过的 Segment 同时可能有数据的插入或者删除,在 1.7 的实现中采用了如下方式:</p>
+<p>先采用不加锁的方式,连续计算元素的个数,最多计算 3 次</p>
+<ul>
+<li><p>1.如果前后两次计算结果相同,则说明计算出来的元素个数是准确的;</p>
+</li>
+<li><p>2.如果前后两次计算结果都不同,则给每个 Segment 加锁,再计算一次元素的个数</p>
+</li>
+</ul>
+<h4 id="jdk1-8：Node-数组-链表-红黑树"><a href="#jdk1-8：Node-数组-链表-红黑树" class="headerlink" title="jdk1.8：Node 数组+链表/红黑树"></a>jdk1.8：Node 数组+链表/红黑树</h4><ul>
+<li><p>底层依然采用数组+链表+红黑树的存储结构</p>
+</li>
+<li><p>对每个数组元素加锁(Node),</p>
+</li>
+<li><p>采用 Node+CAS+Synchronized 来保证并发安全进行</p>
+</li>
+</ul>
+<h5 id="HashMap-实现原理"><a href="#HashMap-实现原理" class="headerlink" title="HashMap 实现原理"></a>HashMap 实现原理</h5><p>只有执行第一次 put 方法时,才会调用 initTable()初始化 Node 数组</p>
+<p>当执行 put 方法插入数据时</p>
+<p>1.根据 Key 的 hashcode 值,计算 hash=(k.hashcode ^ (k.hashcode &gt;&gt;&gt; 16)) &amp; 0x7fffffff,在 Node 数组中找到相应的下标 index = (n-1)&amp;hash</p>
+<p>2.如果相应位置的 Node 还未初始化,则构造一个 Node,通过 CAS 插入相应的数据,结束循环</p>
+<p>3.如果对应位置 Node 不为空,且对应 Node 的 hash 值为 MOVED(-1),说明 table 正在扩容,当前线程会帮助扩容,然后获取扩容之后的 table 重新开始循环</p>
+<p>4.如果相应位置的 Node 不为空,并且 Node 不处于移动状态,则对该节点加 synchronized 锁,防止并发出现的问题</p>
+<p>5.如果目标位置上的元素依旧为之前获取到的节点,如果目标节点的 hash 值大于等于 0,则是链式结构</p>
+<p>6.将 binCount 置为 1,然后循环链表,每遇到一个元素,binCount 增加 1,如果目标节点 key 的 hash 与要存入的 hash 相等并且键值相等,替换旧值,结束循环;否则循环到链表尾部,构造新的 Node 节点插入链表尾部</p>
+<p>7.如果该节点是 TreeBin 类型的节点,说明是红黑树结构,将 binCount 置为 2,通过 putTreeVal 方法往红黑树中插入节点</p>
+<p>8.如果 binCount 不为 0,说明 put 操作对数据产生了影响,如果 binCount&gt;= 8 ,则通过 treeifyBin 方法转化为红黑树,如果 oldVal 不为空,说明是一次更新操作,没有对元素个数产生影响,则直接返回旧值,结束循环</p>
+<p>9.如果插入的是一个新的节点,则执行 addCount()方法尝试更新元素个数 baseCount,判断是否需要对 table 进行扩容</p>
+<h5 id="HashMap-size-实现"><a href="#HashMap-size-实现" class="headerlink" title="HashMap size 实现"></a>HashMap size 实现</h5><p>1.8 中使用一个 volatile 类型的变量 baseCount 记录元素的个数,当插入新数据或删除数据时,会通过 addCount()方法更新 baseCount</p>
+<p>1.初始化时 counterCells 为空,在并发量很高时,如果存在两个线程同时执行 CAS 修改 baseCount 值,则失败的线程会继续执行方法体中的逻辑,使用 counterCell 记录元素个数的变化</p>
+<p>2.如果 counterCell 数组 counterCells 为空,调用 fullAddCount()方法进行初始化,并插入对应的记录数,通过 CAS 设置 cellsBusy 字段,只有设置成功的线程才能初始化 counterCell 数组</p>
+<p>3.如果通过 CAS 设置 cellsBusy 字段失败的化,则继续尝试通过 CAS 修改 baseCount 字段,如果修改 baseCount 字段成功的话,就退出循环,否则继续循环插入 CounterCell 对象</p>
+<p>所以在 1.8 中的 size 实现比 1.7 简单的多,因为元素个数保存在 baseCount 中,部分元素的变化个数保存在 counterCell 数组中,通过累加 baseCount 和 CounterCell 数组中的数量,即可得到元素的总个数</p>
+<h3 id="为什么-HashMap-引入红黑树而不是其他树"><a href="#为什么-HashMap-引入红黑树而不是其他树" class="headerlink" title="为什么 HashMap 引入红黑树而不是其他树"></a>为什么 HashMap 引入红黑树而不是其他树</h3><h4 id="1-为什么不用二叉排序树"><a href="#1-为什么不用二叉排序树" class="headerlink" title="1.为什么不用二叉排序树"></a>1.为什么不用二叉排序树</h4><p>二叉排序树在添加元素的时候极端情况下会出现线性结构</p>
+<p>由于二叉树左子树所有节点的值均小于根节点的值这一特点，如果我们添加的元素都比根节点小，会导致左子树线性增长，这样就失去了用树型结构替换链表的初衷，导致查询时间增长</p>
+<h4 id="2-为什么不用平衡二叉树"><a href="#2-为什么不用平衡二叉树" class="headerlink" title="2.为什么不用平衡二叉树"></a>2.为什么不用平衡二叉树</h4><p>1.红黑树不追求“完全平衡”，即不像 AVL 那样要求节点的|balFact|&lt;= 1，它只要求部分达到平衡，但是提出了为节点增加颜色，红黑是用非严格的平衡来换取增删节点的时候旋转次数的降低，任何不平衡都会在 3 次之内解决，而 AVL 是严格平衡树，因此在增加和删除节点的时候，根据不同情况，旋转的次数比红黑树要多</p>
+<p>2.AVL 更平衡，结构上更加直观，时间效能针对读取而言更高；维护稍慢，空间开销较大</p>
+<p>3.红黑树，读取略逊于 AVL，维护强于 AVL，空间开销与 AVL 类似，内容多时略优于 AVL，维护优于 AVL</p>
+<p>就插入节点导致树失衡的情况，AVL 和 RBT 都是最多两次树旋转来实现复衡 rebalance，旋转的量级是 O(1)，删除节点导致失衡，AVL 需要维护从被删除节点到根节点 root 这条路径上所有节点的平衡，旋转的量级为 O(logN)，而 RBT 最多只需要旋转 3 次实现复衡，只需 O(1)，所以说 RBT 删除节点的 rebalance 效率更高，开销更小</p>
+<p>AVL 树的结构相对于 RBT 更为平衡，插入和删除引起失衡，RBT 效率更高；当然由于 AVL 高度平衡，因此 AVL 搜索的效率更高</p>
+<p>针对插入和删除节点导致失衡后的 rebalance 操作，红黑树能够提供一个比较“便宜”的解决方案，降低开销，是对 search、insert 以及 delete 效率的折衷，总体来说，RBT 的统计性能高于 AVL</p>
+<p>故引入 RBT 是功能、性能、空间开销的折衷结构</p>
+<p>基本上主要的几种平衡树看来，红黑树有着良好的稳定性和完整的功能，性能表现也不错，综合实力强；</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+              <a href="/tags/collection/" rel="tag"># collection</a>
+              <a href="/tags/list/" rel="tag"># list</a>
+              <a href="/tags/set/" rel="tag"># set</a>
+              <a href="/tags/map/" rel="tag"># map</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/ce3641e9.html" rel="prev" title="锁面试知识点(持续更新)">
+      <i class="fa fa-chevron-left"></i> 锁面试知识点(持续更新)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/4004f64d.html" rel="next" title="事务相关面试知识点(持续更新)">
+      事务相关面试知识点(持续更新) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-数组和集合的区别"><span class="nav-number">1.</span> <span class="nav-text">1.数组和集合的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-java-集合分类"><span class="nav-number">2.</span> <span class="nav-text">2.java 集合分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Collection-的子接口"><span class="nav-number">2.1.</span> <span class="nav-text">Collection 的子接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#List-集合"><span class="nav-number">2.2.</span> <span class="nav-text">List 集合</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ArrayList"><span class="nav-number">2.2.1.</span> <span class="nav-text">ArrayList</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LinkedList"><span class="nav-number">2.2.2.</span> <span class="nav-text">LinkedList</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Vector"><span class="nav-number">2.2.3.</span> <span class="nav-text">Vector</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CopyOnWriteArrayList"><span class="nav-number">2.2.4.</span> <span class="nav-text">CopyOnWriteArrayList</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList-和-LinkedList-的区别"><span class="nav-number">3.</span> <span class="nav-text">ArrayList 和 LinkedList 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LinkedList-特性"><span class="nav-number">4.</span> <span class="nav-text">LinkedList 特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Set-集合"><span class="nav-number">5.</span> <span class="nav-text">3.Set 集合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HashSet"><span class="nav-number">5.1.</span> <span class="nav-text">HashSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LinekdHashSet"><span class="nav-number">5.2.</span> <span class="nav-text">LinekdHashSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TreeSet"><span class="nav-number">5.3.</span> <span class="nav-text">TreeSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EnumSet"><span class="nav-number">5.4.</span> <span class="nav-text">EnumSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CopyOnWriteArraySet"><span class="nav-number">5.5.</span> <span class="nav-text">CopyOnWriteArraySet</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Map"><span class="nav-number">6.</span> <span class="nav-text">4.Map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现类"><span class="nav-number">6.1.</span> <span class="nav-text">实现类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#HashMap"><span class="nav-number">6.1.1.</span> <span class="nav-text">HashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#底层数据实现"><span class="nav-number">6.1.1.1.</span> <span class="nav-text">底层数据实现</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#HashMap-初始化"><span class="nav-number">6.1.1.2.</span> <span class="nav-text">HashMap 初始化</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#HashMap-插入流程"><span class="nav-number">6.1.1.3.</span> <span class="nav-text">HashMap 插入流程</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#HashMap-删除流程"><span class="nav-number">6.1.1.4.</span> <span class="nav-text">HashMap 删除流程</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TreeMap"><span class="nav-number">6.1.2.</span> <span class="nav-text">TreeMap</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LinkedHashMap"><span class="nav-number">6.1.3.</span> <span class="nav-text">LinkedHashMap</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HashTable"><span class="nav-number">6.1.4.</span> <span class="nav-text">HashTable</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Properties"><span class="nav-number">6.1.5.</span> <span class="nav-text">Properties</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap-和-HashTable-区别"><span class="nav-number">7.</span> <span class="nav-text">HashMap 和 HashTable 区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConcurrerntHashMap-和-HashTable-区别"><span class="nav-number">8.</span> <span class="nav-text">ConcurrerntHashMap 和 HashTable 区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConcurrentHashMap-实现原理"><span class="nav-number">9.</span> <span class="nav-text">ConcurrentHashMap 实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#jdk1-7：数组-Segment-数组-HashEntry-链表-HashEntry-节点"><span class="nav-number">9.1.</span> <span class="nav-text">jdk1.7：数组(Segment)+数组(HashEntry)+链表(HashEntry 节点)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#实现原理"><span class="nav-number">9.1.1.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#size-实现"><span class="nav-number">9.1.2.</span> <span class="nav-text">size 实现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jdk1-8：Node-数组-链表-红黑树"><span class="nav-number">9.2.</span> <span class="nav-text">jdk1.8：Node 数组+链表/红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#HashMap-实现原理"><span class="nav-number">9.2.1.</span> <span class="nav-text">HashMap 实现原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HashMap-size-实现"><span class="nav-number">9.2.2.</span> <span class="nav-text">HashMap size 实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么-HashMap-引入红黑树而不是其他树"><span class="nav-number">10.</span> <span class="nav-text">为什么 HashMap 引入红黑树而不是其他树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-为什么不用二叉排序树"><span class="nav-number">10.1.</span> <span class="nav-text">1.为什么不用二叉排序树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-为什么不用平衡二叉树"><span class="nav-number">10.2.</span> <span class="nav-text">2.为什么不用平衡二叉树</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

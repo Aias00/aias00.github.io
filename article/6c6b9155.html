@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="什么是缓存穿透和缓存击穿缓存穿透和缓存击穿是存在区别的两种情况:  缓存穿透  要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。 在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库">
+<meta name="keywords" content="cache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存穿透和缓存击穿">
+<meta property="og:url" content="http://yoursite.com/article/6c6b9155.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="什么是缓存穿透和缓存击穿缓存穿透和缓存击穿是存在区别的两种情况:  缓存穿透  要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。 在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-06T14:00:27.403Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="缓存穿透和缓存击穿">
+<meta name="twitter:description" content="什么是缓存穿透和缓存击穿缓存穿透和缓存击穿是存在区别的两种情况:  缓存穿透  要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。 在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库">
+
+<link rel="canonical" href="http://yoursite.com/article/6c6b9155.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>缓存穿透和缓存击穿 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/6c6b9155.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          缓存穿透和缓存击穿
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-09 17:51:00" itemprop="dateCreated datePublished" datetime="2020-08-09T17:51:00+08:00">2020-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-06 22:00:27" itemprop="dateModified" datetime="2021-04-06T22:00:27+08:00">2021-04-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="什么是缓存穿透和缓存击穿"><a href="#什么是缓存穿透和缓存击穿" class="headerlink" title="什么是缓存穿透和缓存击穿"></a>什么是缓存穿透和缓存击穿</h3><p>缓存穿透和缓存击穿是存在区别的两种情况:</p>
+<ul>
+<li>缓存穿透</li>
+</ul>
+<p>要查询的数据本来就不存在于缓存,也不存在于数据库。当各种请求进来查询的时候,先查缓存,没有查到就会去持久层查询数据库,依旧查不到。下一个请求再来查的时候还是相同的情况。</p>
+<p>在这种情况下,缓存这一层相当于不存在,所有请求直接查询了数据库</p>
+<ul>
+<li>缓存击穿</li>
+</ul>
+<p>如果缓存中的数据因为某种原因失效(存活时间到期或者被删除等),并发查询这条数据的请求在失效的瞬间就会穿过缓存去查询数据库,就像在缓存这层开了个洞,所以被成为缓存击穿</p>
+<p>以上这两种情况在并发量大的情况下会对数据库造成很大压力,甚至可能引起数据库宕机</p>
+<h3 id="面对缓存穿透一些解决办法"><a href="#面对缓存穿透一些解决办法" class="headerlink" title="面对缓存穿透一些解决办法"></a>面对缓存穿透一些解决办法</h3><ul>
+<li>缓存空值</li>
+</ul>
+<p>面对缓存穿透的情况,这类数据因为本来就不存在,所以最终请求到的结果也是空值,所以可以将对应的 key 直接存入缓存,value 相应设置为 null 或者空字符串(根据业务)</p>
+<p>为了保证这些缓存数据不会对后期真实存在了的数据数据造成影响,需要对这类缓存设置一个相对较短的过期时间,而且应该保证在真正的数据入库成功之后,将这些缓存失效</p>
+<p>因为这种方法在有效数据入库成功之后和使空值缓存失效之前,存在一定的时间差,还是可能造成一段时间的数据不一致</p>
+<p>而且将空值存入缓存也会占用缓存资源,造成内存浪费。如果遭受恶意攻击,将大量空值存入缓存,可能会将内存资源占满,造成缓存服务器一定时间无法访问</p>
+<p>这种解决方案的建议使用场景为: key 全集数据数据量级较小，并且完全可预测，可以通过提前填充的方式直接将数据缓存</p>
+<ul>
+<li>布隆过滤器(BloomFilter)</li>
+</ul>
+<p>本质上布隆过滤器是一种数据结构,比较巧妙的概率型数据结构,特点是高效地插入和查询,可以用来告诉你”某样东西一定不存在或者可能存在”</p>
+<p>相比于传统的 List、Set、Map 等数据结构，它更高效、占用空间更少,但是缺点是其返回的结果是概率性的，而不是确切的</p>
+<p>通常把有数据的 key 都放到 BloomFilter 中,每次查询的时候都先去 BloomFilter 判断,如果没有就直接返回空</p>
+<p>由于布隆过滤器不支持删除操作,对于删除的 key,查询就会经过 BloomFilter 然后查询缓存再查询数据库,所以 BloomFilter 建议结合缓存空值用,对于删除的 key,可以在缓存中缓存空</p>
+<p>同样它也不支持扩容操作,这就要求布隆过滤器建立初期必须进行严格的推算,确保后期不需要扩容,否则重建布隆过滤器的成本可能会超乎想象</p>
+<h3 id="缓存击穿的一些解决办法"><a href="#缓存击穿的一些解决办法" class="headerlink" title="缓存击穿的一些解决办法"></a>缓存击穿的一些解决办法</h3><ul>
+<li>互斥锁(独占锁)</li>
+</ul>
+<p>在缓存失效的时候,并不直接去查询数据库,而是要拿到锁,由成功抢占到锁资源的线程去查询数据库,并更新回缓存,更新缓存成功,释放锁资源,后续</p>
+<p>这样可以避免多个线程同时穿过缓存去查询数据库,防止多个线程对缓存进行重复更新的情况发生</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cache/" rel="tag"># cache</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/f431f94b.html" rel="prev" title="关于缓存我的理解">
+      <i class="fa fa-chevron-left"></i> 关于缓存我的理解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/90da3a95.html" rel="next" title="缓存雪崩">
+      缓存雪崩 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是缓存穿透和缓存击穿"><span class="nav-number">1.</span> <span class="nav-text">什么是缓存穿透和缓存击穿</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#面对缓存穿透一些解决办法"><span class="nav-number">2.</span> <span class="nav-text">面对缓存穿透一些解决办法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存击穿的一些解决办法"><span class="nav-number">3.</span> <span class="nav-text">缓存击穿的一些解决办法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

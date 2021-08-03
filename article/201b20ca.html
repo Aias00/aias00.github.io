@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis性能优化">
+<meta property="og:url" content="http://yoursite.com/article/201b20ca.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-04-14T10:12:14.147Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis性能优化">
+<meta name="twitter:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
+
+<link rel="canonical" href="http://yoursite.com/article/201b20ca.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>redis性能优化 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/201b20ca.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis性能优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-13 16:58:55" itemprop="dateCreated datePublished" datetime="2021-04-13T16:58:55+08:00">2021-04-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-14 18:12:14" itemprop="dateModified" datetime="2021-04-14T18:12:14+08:00">2021-04-14</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈</p>
+<h3 id="优化网络延时"><a href="#优化网络延时" class="headerlink" title="优化网络延时"></a>优化网络延时</h3><p>首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度比 localhost 局域网（学名：loopback）更快。</p>
+<p>但是很多公司的业务规模不是单机部署能够支撑的，所以还是得用 TCP。</p>
+<p>redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令，客户端和 redis 的多个请求就如下图：</p>
+<p><img data-src="https://i.loli.net/2021/04/13/nY7z1mQFTS5AXcj.png" alt="2021-04-13-17-17-4020210413171739"></p>
+<p>（备注：如果要发送的 key 不是特别长，一个 TCP 包完全能放的下 redis 指令，所以只画了一个 push 包）</p>
+<p>这样两次请求中，客户端都要经历一段网络传输时间</p>
+<h4 id="合并请求"><a href="#合并请求" class="headerlink" title="合并请求"></a>合并请求</h4><p>但如果有可能，完全可以使用 <strong>multi-key</strong> 类的指令来合并请求，比如两个 GET key 可以用 MGET key1 key2 合并。这样在实际通讯中，请求次数也减少了，延时自然减少了</p>
+<p>如果不能用 multi-key 指令来合并，比如一个 SET，一个 GET，无法合并，还有以下解决办法：</p>
+<ul>
+<li>MULTI/EXEC</li>
+</ul>
+<p>构建事务，可以合并多个指令为一个 request，通讯过程如下：</p>
+<p><img data-src="https://i.loli.net/2021/04/13/wqOlXuDyJpZ5gvE.png" alt="2021-04-13-17-26-1620210413172616"></p>
+<ul>
+<li>script</li>
+</ul>
+<p>最好利用缓存脚本的 <strong>sha1 hash key</strong> 来调起脚本，这样通讯量更小</p>
+<p>以上两种解决方案要求这个 <strong>transaction/script</strong> 中涉及的 key 在同一个 node 上，所以要酌情考虑</p>
+<h4 id="合并-response"><a href="#合并-response" class="headerlink" title="合并 response"></a>合并 response</h4><p>如果没有办法合并多个请求，还可以考虑合并多个 responses，比如把两个回复信息合并：</p>
+<p><img data-src="https://i.loli.net/2021/04/13/jpeSKcwoFd4yGnQ.png" alt="2021-04-13-17-33-3220210413173331"></p>
+<p>这样，理论上可以省去一次回复所用的网络传输时间，这就是 <strong>pipeline</strong> 的功能</p>
+<p>不是任意多个回复信息都可以放进一个 TCP 包中，如果请求数太多，回复的数据很长（比如 get 一个长字符串），TCP 还是会分包传输，但是使用 pipeline，依然可以减少传输次数</p>
+<p>pipeline 和上面其他的方法都不一样的是，它不具有原子性。所以在 cluster 状态下的集群，pipeline 更容易实现</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><ol>
+<li>使用 unix 进程间通信，如果单机部署</li>
+<li>使用 multi-key 指令合并多个指令，减少请求数</li>
+<li>使用 transaction、script 合并 requests 以及 responses</li>
+<li>使用 pipeline 合并 response</li>
+</ol>
+<h3 id="警惕执行时间长的操作"><a href="#警惕执行时间长的操作" class="headerlink" title="警惕执行时间长的操作"></a>警惕执行时间长的操作</h3><p>在大数据量的情况下，有些操作执行的时间会相对长，比如 KEYS *，LRANGE list 0 -1，以及其他算法时间复杂度为 O(N)的指令。因为 redis 只用一个线程来做数据查询，如果这些指令执行时间很长，就会阻塞 redis，造成大量延时</p>
+<p>redis 中 transaction、script 等因为可以合并多个 commands 为一个具有原子性的执行过程，所以也可能占用 redis 很长时间</p>
+<p>如果想找出生产环境使用的”慢指令”，可以利用 SLOWLOG GET 5 来查看最近的 5 个执行时间很长的指令。至于多长算长，可以通过在 redis.conf 中设置 slowlog-log-slower-than 来定义</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> Redis has two primitives to delete keys. One is called DEL and is a blocking</span><br><span class="line"><span class="meta">#</span> deletion of the object. It means that the server stops processing new commands</span><br><span class="line"><span class="meta">#</span> in order to reclaim all the memory associated with an object in a synchronous</span><br><span class="line"><span class="meta">#</span> way. If the key deleted is associated with a small object, the time needed</span><br><span class="line"><span class="meta">#</span> in order to execute the DEL command is very small and comparable to most other</span><br><span class="line"><span class="meta">#</span> O(1) or O(log_N) commands in Redis. However if the key is associated with an</span><br><span class="line"><span class="meta">#</span> aggregated value containing millions of elements, the server can block for</span><br><span class="line"><span class="meta">#</span> a long time (even seconds) in order to complete the operation.</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> For the above reasons Redis also offers non blocking deletion primitives</span><br><span class="line"><span class="meta">#</span> such as UNLINK (non blocking DEL) and the ASYNC option of FLUSHALL and</span><br><span class="line"><span class="meta">#</span> FLUSHDB commands, in order to reclaim memory in background. Those commands</span><br><span class="line"><span class="meta">#</span> are executed in constant time. Another thread will incrementally free the</span><br><span class="line"><span class="meta">#</span> object in the background as fast as possible.</span><br></pre></td></tr></table></figure>
+
+<p>del 一个大的 object 的时候，回收相应的内存可能会需要很长时间（甚至几秒），所以建议用 del 的异步版本：UNLINK。后者会启动一个新的 thread 来删除目标 key，而不阻塞原来的线程</p>
+<p>当一个 Key 过期后，redis 一般也需要同步地将它删除。其中一种删除 key 的方式是：每 10 秒检查一次有设置过期时间的 Key，这些 key 存储在一个全局的 struct 中，可以用 server.db-&gt;expires 访问。检查的方式是：</p>
+<ul>
+<li>从中随机取出 20 个 key</li>
+<li>把过期的删掉</li>
+<li>如果刚刚的 20 个 key 中，有 25%以上（也就是 5 个以上）都是过期的，redis 认为，过期的 key 还挺多的，继续重复步骤 1，直到满足退出条件：某次取出的 key 中没有那么多过期的 key</li>
+</ul>
+<p>这里对于性能的影响是，如果真的有很多 key 在同一时间过期，那么 redis 会一直循环执行删除，占用主线程</p>
+<p>对此，redis 作者的建议是警惕 EXPIREAT 这个指令，因为它更容易产生 key 同时过期的现象。还有一些建议是给 key 的过期时间设置一个随机波动量。最后，redis.conf 中也给出了一个方法，把 keys 的过期删除操作变为异步，即在 redis.conf 中设置 lazyfree-lazy-expire yes</p>
+<h3 id="优化数据结构、使用正确的算法"><a href="#优化数据结构、使用正确的算法" class="headerlink" title="优化数据结构、使用正确的算法"></a>优化数据结构、使用正确的算法</h3><p>一种数据类型（比如 string、list）进行增删改查的效率是由其底层的存储结构决定的</p>
+<p>我们在使用一种数据类型时，可以适当关注一下它底层的存储结构及其算法，避免使用复杂度太高的方法。举个例子：</p>
+<ul>
+<li>ZADD 的时间复杂度是 O(log(N))，这比其他数据类型增加一个新的元素的操作更复杂，所以要小心使用</li>
+<li>若 Hash 类型的值的 fields 数量有限，它很可能采用 zipList 这种结构做存储，而 zipList 的查询效率可能没有同等字段数量的 hashTable 效率高，在必要时，可以调整 redis 的存储结构</li>
+</ul>
+<p>除了时间性能上的考虑，有时候我们还需要节省空间。比如上面提到的 ziplist 结构，就比 hashtable 结构节省空间。但节省空间的数据结构，其算法的复杂度可能很高。所以这里就需要在具体问题面前做出权衡。</p>
+<h3 id="考虑操作系统和硬件是否影响性能"><a href="#考虑操作系统和硬件是否影响性能" class="headerlink" title="考虑操作系统和硬件是否影响性能"></a>考虑操作系统和硬件是否影响性能</h3><p>redis 运行的外部环境，也就是操作系统和硬件显然也会影响 redis 的性能</p>
+<ul>
+<li>CPU：intel 多种 cpu 都比 AMD 皓龙系列好</li>
+<li>虚拟化：实体机比虚拟机好，主要是因为部分虚拟机上，硬盘不是本地硬盘，监控软件导致 fork 指令的速度慢（持久化时会用到 fork），尤其是用 Xen 来做虚拟化时</li>
+<li>内存管理：在 linux 操作系统中，为了让 translation lookaside buffer 即 TLB，能够管理更多内存空间（TLB 只能缓存有限个 page），操作系统把一些 memory page 变得更大，比如 2MB 或者 1GB，而不是通常的 4096 字节，这些大的内存页叫做 huge pages。同时为了方便程序员使用这些大的 page，操作系统中实现了一个 transparent huge pages（THP）机制，使得大内存页对他们来说是透明的，可以像使用正常的内存 page 一样使用他们。但这种机制并不是数据库所需要的，可能是因为 THP 会把内存空间变得紧凑而连续，而数据库需要的是稀疏的内存空间，所以请近用掉 THP 功能。redis 也不例外，但 redis 官方博客上给出的理由是：使用大内存 page 会使 bgsave 时，fork 的速度变慢；如果 fork 之后，这些内存 page 在原进程中被修改了，他们就需要被复制（即 copy on write），这样的复制会消耗大量的内存，所以请禁止掉操作系统中的 transparent huge page 功能</li>
+<li>交换空间：当一些内存 page 被存储在交换空间文件上，而 redis 又要请求那些数据，那么操作系统会阻塞 redis 进程，然后把想要的 page 从交换空间中拿出来，放进内存。这其中涉及整个内存的阻塞，所以可能会造成延时问题，一个解决方法是禁用交换空间</li>
+</ul>
+<h3 id="考虑持久化带来的开销"><a href="#考虑持久化带来的开销" class="headerlink" title="考虑持久化带来的开销"></a>考虑持久化带来的开销</h3><p>redis 的一项重要功能就是持久化，也就是把数据复制到硬盘上。基于持久化，才有了 redis 的数据恢复等功能</p>
+<p>但是维护持久化这个功能，也是有性能开销的</p>
+<h4 id="RDB-全量持久化"><a href="#RDB-全量持久化" class="headerlink" title="RDB 全量持久化"></a>RDB 全量持久化</h4><p>这种持久化方式把 redis 中的全量数据打包成 rdb 文件放在硬盘上。但是执行 rdb 持久化的过程是原进程 fork 出来一个子进程，而 fork 这个系统调用是需要时间的，而这段时间内，redis 是无法相应请求的</p>
+<p>为此，要使用合理的 rdb 持久化的时间间隔，不要太频繁</p>
+<h4 id="AOF-增量持久化"><a href="#AOF-增量持久化" class="headerlink" title="AOF 增量持久化"></a>AOF 增量持久化</h4><p>这种持久化方式会把发到 redis server 的指令以文本的形式保存下来（格式遵循 redis protocol），这个过程中，会调用两个系统调用，一个是 write(2)，同步完成，一个是 fsync(2)，异步完成。</p>
+<p>这两步都可能是延时问题的原因：</p>
+<ul>
+<li>write 可能会因为输出的 buffer 满了，或者 kernal 正在把 buffer 中的数据同步到硬盘，就被阻塞了</li>
+<li>fsync 的作用是确保 write 写入到 aof 文件的数据落到了硬盘上，在一个 7200 转/分的硬盘上可能要延时 20ms，消耗还是挺大的。更重要的是在 fsync 进行的时候，write 可能会被阻塞</li>
+</ul>
+<p>其中，write 的阻塞貌似只能接受，因为没有更好的方法把 buffer 中的数据写入到一个文件中了。但对于 fsync，redis 允许三种配置，选用哪种取决于对备份及时性和性能的平衡。</p>
+<ul>
+<li>always：当把 appendfsync 设置为 always，fsync 会和客户端的指令同步执行，因此可能造成延时问题，但备份及时性最好</li>
+<li>everysec：每秒钟异步执行一次 fsync，此时 redis 的性能表现会更好，但是 fsync 依然可能阻塞 write，算是一个折中选择。</li>
+<li>no：redis 不会主动触发 fsync（并不是永远不 fsync），而是由 kernal 决定何时 fsync</li>
+</ul>
+<h3 id="使用分布式架构，读写分离，数据分片"><a href="#使用分布式架构，读写分离，数据分片" class="headerlink" title="使用分布式架构，读写分离，数据分片"></a>使用分布式架构，读写分离，数据分片</h3><p>首先说，哪些情况下不得不（或者说最好）使用分布式架构</p>
+<p>1.数据量很大，单台服务器内存装不下，</p>
+<p>2.需要服务高可用</p>
+<p>3.单台请求的压力过大</p>
+<p>解决这些问题可以采用数据分片或者主从分离，或者两者都用（即，在分片用的 cluster 节点上，也设置主从结构）</p>
+<p>这样的架构，可以为性能提升加入新的切入点：</p>
+<ul>
+<li>把慢速的指令发送到某些从库上执行</li>
+<li>把持久化功能放到一个很少使用的从库上</li>
+<li>把某些大 list 分片</li>
+</ul>
+<p>其中前两条都是根据 redis 单线程的特性，用其他进程（甚至机器）做性能补充的方法</p>
+<p>当然，使用分布式架构，也可能对性能有影响，比如请求需要被转发、数据需要不断被复制分发等</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/3ad60b.html" rel="prev" title="cas">
+      <i class="fa fa-chevron-left"></i> cas
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/3ad834c9.html" rel="next" title="zookeeper">
+      zookeeper <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#优化网络延时"><span class="nav-number">1.</span> <span class="nav-text">优化网络延时</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#合并请求"><span class="nav-number">1.1.</span> <span class="nav-text">合并请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#合并-response"><span class="nav-number">1.2.</span> <span class="nav-text">合并 response</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">1.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#警惕执行时间长的操作"><span class="nav-number">2.</span> <span class="nav-text">警惕执行时间长的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化数据结构、使用正确的算法"><span class="nav-number">3.</span> <span class="nav-text">优化数据结构、使用正确的算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#考虑操作系统和硬件是否影响性能"><span class="nav-number">4.</span> <span class="nav-text">考虑操作系统和硬件是否影响性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#考虑持久化带来的开销"><span class="nav-number">5.</span> <span class="nav-text">考虑持久化带来的开销</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB-全量持久化"><span class="nav-number">5.1.</span> <span class="nav-text">RDB 全量持久化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF-增量持久化"><span class="nav-number">5.2.</span> <span class="nav-text">AOF 增量持久化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用分布式架构，读写分离，数据分片"><span class="nav-number">6.</span> <span class="nav-text">使用分布式架构，读写分离，数据分片</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

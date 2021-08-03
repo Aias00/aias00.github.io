@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 dubbo消费者是如何调用到连接者的 两个消费者提供的服务名一样">
+<meta name="keywords" content="interview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021年春季面试记录">
+<meta property="og:url" content="http://yoursite.com/article/eba5d7a5.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 dubbo消费者是如何调用到连接者的 两个消费者提供的服务名一样">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-05-19T06:49:00.389Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2021年春季面试记录">
+<meta name="twitter:description" content="百度百度一面 rabbitmq 如何保证消息不丢失 双亲委派机制 类加载器如何确定自己能加载哪些类 mysql innodb 引擎索引的数据结构 redis 实现 缓存带过期时间及淘汰策略 redis 集群 共识算法 分布式不用 queue 排队，如何实现抢工单 分布式锁 dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现 dubbo消费者是如何调用到连接者的 两个消费者提供的服务名一样">
+
+<link rel="canonical" href="http://yoursite.com/article/eba5d7a5.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2021年春季面试记录 | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/eba5d7a5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2021年春季面试记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-18 14:02:54" itemprop="dateCreated datePublished" datetime="2021-05-18T14:02:54+08:00">2021-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-19 14:49:00" itemprop="dateModified" datetime="2021-05-19T14:49:00+08:00">2021-05-19</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="百度"><a href="#百度" class="headerlink" title="百度"></a>百度</h2><h3 id="百度一面"><a href="#百度一面" class="headerlink" title="百度一面"></a>百度一面</h3><ul>
+<li>rabbitmq 如何保证消息不丢失</li>
+<li>双亲委派机制</li>
+<li>类加载器如何确定自己能加载哪些类</li>
+<li>mysql innodb 引擎索引的数据结构</li>
+<li>redis 实现 缓存带过期时间及淘汰策略</li>
+<li>redis 集群</li>
+<li>共识算法</li>
+<li>分布式不用 queue 排队，如何实现抢工单</li>
+<li>分布式锁</li>
+<li>dubbo 支持的协议，用的哪个协议，序列化，服务注册和发现</li>
+<li>dubbo消费者是如何调用到连接者的</li>
+<li>两个消费者提供的服务名一样 包名都一样</li>
+<li>springboot 和 springmvc 的区别</li>
+<li>算法：倒排链表</li>
+<li>JVM 结构</li>
+<li>垃圾回收算法</li>
+<li>异常的类别</li>
+<li>设计模式，用到了哪些</li>
+<li>mybatis 用了哪些数据结构</li>
+<li>sql 优化</li>
+<li>mysql 索引最左匹配原则</li>
+<li>apollo 分布式配置</li>
+<li>threadlocal</li>
+</ul>
+<h3 id="百度二面"><a href="#百度二面" class="headerlink" title="百度二面"></a>百度二面</h3><ul>
+<li>rabbitmq 如何保证消息不丢失，rabbitmq 顺序消费</li>
+<li>java内存模型哪个区域最容易发生内存泄漏</li>
+<li>加载一个类涉及到哪些内存区域</li>
+<li>dubbo 如何实现泛化（不引入 jar 包如何调用提供者的方法）</li>
+<li>共识算法</li>
+<li>分布式锁（redis、zookeeper）</li>
+<li>mysql 为什么用自增主键</li>
+<li>mysql 如何解决幻读（mvcc）</li>
+<li>一些 Linux 操作指令</li>
+<li>mysql 客户端和服务器如何通信的，可以被中断吗</li>
+<li>hashmap 为什么用红黑树，为什么不用二叉树，为什么不用平衡二叉树</li>
+<li>A、B 两个数组，合并后排序（二分排序）</li>
+<li>concurrentHashMap1.7、1.8</li>
+<li>countDownLatch</li>
+<li>try 里面 return，finally 里面 return，会返回什么，finally 什么时候执行的</li>
+<li>spring如何做到ioc的</li>
+<li>spring bean 什么时候创建的，什么时候销毁的</li>
+<li>static/private static/final 哪些是线程安全的</li>
+<li>threadLocal</li>
+<li>redis 为什么快</li>
+<li>mysqL innodb 叶子节点的特点，mysql 主键如何存储的</li>
+<li>CAS 会出现同时替换的情况吗</li>
+<li>92843 找到离他最近比他大的数</li>
+<li>sql 查出一个学生的平均分最大的</li>
+</ul>
+<h2 id="快手"><a href="#快手" class="headerlink" title="快手"></a>快手</h2><h3 id="快手一面"><a href="#快手一面" class="headerlink" title="快手一面"></a>快手一面</h3><ul>
+<li>自我介绍</li>
+<li>业务规模</li>
+<li>联合索引在 mysql 中怎么存储<ul>
+<li>叶子节点和非叶子节点都存储什么</li>
+</ul>
+</li>
+<li>MVCC</li>
+<li>spring 事务隔离级别</li>
+<li>@Transactional 注解什么情况下会失效</li>
+<li>JVM 垃圾回收器了解吗</li>
+<li>redis 中 string 的底层结构</li>
+<li>线程池提交任务流程</li>
+<li>删除除了编号不同，其他都相同的学生的冗余信息<ul>
+<li>自动编号 学号 姓名 课程 分数</li>
+<li>id number name course score</li>
+<li>1 2005001 张三 数学 69</li>
+<li>2 2005002 李四 语文 89</li>
+<li>3 2005001 张三 数学 69</li>
+</ul>
+</li>
+<li>求无重复最大子串的长度<ul>
+<li>aabbcdefghhijk bcdefgh 7</li>
+</ul>
+</li>
+</ul>
+<h2 id="火花思维"><a href="#火花思维" class="headerlink" title="火花思维"></a>火花思维</h2><h3 id="火花思维一面"><a href="#火花思维一面" class="headerlink" title="火花思维一面"></a>火花思维一面</h3><ul>
+<li>自我介绍</li>
+<li>业务规模</li>
+<li>redis 哪些数据结构，用过哪些，布隆过滤器用过吗</li>
+<li>一次删除含有 500W 个 key 的 set（unlink）</li>
+<li>redlock 锁，如何实现阻塞（pub/sub）</li>
+<li>题库中有 100 道题，如何随机插入到数据库</li>
+<li>name 和 age，做联合索引哪个在前</li>
+<li>商家 id，用户 id，商品 id，如何分库分表，商家可以看到所有他卖出的商品，用户可以看到所有他买到的商品</li>
+<li>ReentrantLock和synchronized区别</li>
+</ul>
+<h3 id="火花思维二面"><a href="#火花思维二面" class="headerlink" title="火花思维二面"></a>火花思维二面</h3><ul>
+<li>vhost 有什么用</li>
+<li>延时消息</li>
+<li>消息幂等</li>
+<li>用了什么类型的队列</li>
+<li>redis 淘汰策略</li>
+<li>redis 数据结构，用了哪些</li>
+<li>mysql 乐观锁和悲观锁举例</li>
+<li>分布式事务</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/d1722f66.html" rel="prev" title="volatile关键字面试知识点（持续更新）">
+      <i class="fa fa-chevron-left"></i> volatile关键字面试知识点（持续更新）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/article/11c912f4.html" rel="next" title="spring-cloud-eureka">
+      spring-cloud-eureka <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#百度"><span class="nav-number">1.</span> <span class="nav-text">百度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#百度一面"><span class="nav-number">1.1.</span> <span class="nav-text">百度一面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#百度二面"><span class="nav-number">1.2.</span> <span class="nav-text">百度二面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快手"><span class="nav-number">2.</span> <span class="nav-text">快手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#快手一面"><span class="nav-number">2.1.</span> <span class="nav-text">快手一面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#火花思维"><span class="nav-number">3.</span> <span class="nav-text">火花思维</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#火花思维一面"><span class="nav-number">3.1.</span> <span class="nav-text">火花思维一面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#火花思维二面"><span class="nav-number">3.2.</span> <span class="nav-text">火花思维二面</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
