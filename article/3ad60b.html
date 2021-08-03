@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的 CAS 算法涉及到 3 个操作数：  需要读写的内存值 V 进行比较的值 A 要写入的新值 B  当且仅当 V 的值等于 A 时，CAS 通过原子方式用新值 B 来更新 V 的值">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-19T08:52:30.901Z">
+<meta property="og:updated_time" content="2021-08-03T13:49:24.012Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cas">
 <meta name="twitter:description" content="CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的 CAS 算法涉及到 3 个操作数：  需要读写的内存值 V 进行比较的值 A 要写入的新值 B  当且仅当 V 的值等于 A 时，CAS 通过原子方式用新值 B 来更新 V 的值">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-19 16:52:30" itemprop="dateModified" datetime="2021-04-19T16:52:30+08:00">2021-04-19</time>
+                <time title="修改时间：2021-08-03 21:49:24" itemprop="dateModified" datetime="2021-08-03T21:49:24+08:00">2021-08-03</time>
               </span>
 
           
@@ -216,7 +216,7 @@
 <p>接下来查看 AtomicInteger 的自增函数 incrementAndGet()的源码，发现自增函数底层调用的是 unsafe.getAndAddInt()。但是由于 JDK 本身只有 Unsafe.class，只通过 class 文件中的参数名，并不能很好的了解方法的作用，所以通过 OpenJDK8 来查看 Unsafe 的源码</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ------------------------- JDK 8 -------------------------</span></span><br><span class="line"><span class="comment">// AtomicInteger 自增方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">incrementAndGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> unsafe.getAndAddInt(<span class="keyword">this</span>, valueOffset, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unsafe.class</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndAddInt</span><span class="params">(Object var1, <span class="keyword">long</span> var2, <span class="keyword">int</span> var4)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> var5;</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">      var5 = <span class="keyword">this</span>.getIntVolatile(var1, var2);</span><br><span class="line">  &#125; <span class="keyword">while</span>(!<span class="keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));</span><br><span class="line">  <span class="keyword">return</span> var5;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ------------------------- OpenJDK 8 -------------------------</span></span><br><span class="line"><span class="comment">// Unsafe.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndAddInt</span><span class="params">(Object o, <span class="keyword">long</span> offset, <span class="keyword">int</span> delta)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">int</span> v;</span><br><span class="line">   <span class="keyword">do</span> &#123;</span><br><span class="line">       v = getIntVolatile(o, offset);</span><br><span class="line">   &#125; <span class="keyword">while</span> (!compareAndSwapInt(o, offset, v, v + delta));</span><br><span class="line">   <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>根据 OpenJDK8 的源码我们可以看出，getAndAddInt 循环获取给定对象 o 中的偏移量处的值 v，然后判断内存值是否等于 v。如果相等则将内存值设为 v+delta，否则返回 false，继续循环进行重试，知道设置成功才能退出循环，并将旧值返回。整个”比较+更新”操作封装在 compareAndSwapInt()中，在 JNI 里是借助一个 CPU 指令完成的，属于原子操作，可以保证多个线程都能看到同一个变量的修改值。</p>
+<p>根据 OpenJDK8 的源码我们可以看出，getAndAddInt 循环获取给定对象 o 中的偏移量处的值 v，然后判断内存值是否等于 v。如果相等则将内存值设为 v+delta，否则返回 false，继续循环进行重试，直到设置成功才能退出循环，并将旧值返回。整个”比较+更新”操作封装在 compareAndSwapInt()中，在 JNI 里是借助一个 CPU 指令完成的，属于原子操作，可以保证多个线程都能看到同一个变量的修改值。</p>
 <p>后续 JDK 通过 CPU 的 cmpxchg 指令，去比较寄存器中的 A 和内存中的值 V。如果相等，就把要写入的新值 B 存入内存中。如果不相等，就将内存值 V 赋值给寄存器中的值 A，然后通过 java 代码中的 while 循环再次调用 cmpxchg 指令进行重试，直到设置成功为止</p>
 <p>CAS 虽然很高效，但是也存在三大问题：</p>
 <ul>
@@ -226,7 +226,7 @@
 </li>
 <li>循环时间长开销大：CAS 操作如果长时间不成功，会导致其一直自旋，给 CPU 带来很大负担</li>
 <li>只能保证一个共享变量的原子操作：对一个共享变量执行操作时，CAS 能够保证原子操作，但是对多个共享变量操作时，CAS 是无法保证操作的原子性的<ul>
-<li>java 从 1.5 版本开始提供了 AtomicStampedReference 类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行 CAS 操作</li>
+<li>java 从 1.5 版本开始提供了 AtomicReference 类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行 CAS 操作</li>
 </ul>
 </li>
 </ul>
@@ -244,8 +244,8 @@
 <li>I(Invalid)：表示缓存已经失效</li>
 </ul>
 </li>
-<li>在 MESI 协议中，每个缓存的缓存控制器不仅知道自己的读写操作，而且也监听(snoop)其他 cache 的读写操作</li>
-<li>CPU 在读数据时，如果缓存行状态是 I，则需要从主内存中取出，并把缓存行状态置为 S；如果不是 I，则可以直接读取缓存中的值，但在此之前必须要等待对其他 CPU 的监听结果，如果其他 CPU 也有该数据的缓存并且状态是 M，则需要等待其把缓存更新到内存后再读取</li>
+<li>在 MESI 协议中，每个缓存的缓存控制器不仅知道自己的读写操作，而且也嗅探(snoop)其他 cache 的读写操作</li>
+<li>CPU 在读数据时，如果缓存行状态是 I，则需要从主内存中取出，并把缓存行状态置为 S；如果不是 I，则可以直接读取缓存中的值，但在此之前必须要等待对其他 CPU 的监听结果，如果其他 CPU 也有该数据的缓存并且状态是 M，则需要等待其把缓存更新到主内存后再读取</li>
 <li>CPU 可以将状态为 M/E/S 的缓存写入内存，其中如果缓存行状态为 S，则其他 CPU 缓存了相同数据的缓存行会无效化</li>
 </ul>
 </li>

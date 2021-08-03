@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
+  <meta name="description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会成为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis性能优化">
 <meta property="og:url" content="http://yoursite.com/article/201b20ca.html">
 <meta property="og:site_name" content="hongyu`s blog">
-<meta property="og:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
+<meta property="og:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会成为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-14T10:12:14.147Z">
+<meta property="og:updated_time" content="2021-08-03T13:50:35.419Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis性能优化">
-<meta name="twitter:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
+<meta name="twitter:description" content="redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会成为 redis 的性能瓶颈，网络才是瓶颈 优化网络延时首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度">
 
 <link rel="canonical" href="http://yoursite.com/article/201b20ca.html">
 
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-14 18:12:14" itemprop="dateModified" datetime="2021-04-14T18:12:14+08:00">2021-04-14</time>
+                <time title="修改时间：2021-08-03 21:50:35" itemprop="dateModified" datetime="2021-08-03T21:50:35+08:00">2021-08-03</time>
               </span>
 
           
@@ -197,7 +197,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会称为 redis 的性能瓶颈，网络才是瓶颈</p>
+        <p>redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会成为 redis 的性能瓶颈，网络才是瓶颈</p>
 <h3 id="优化网络延时"><a href="#优化网络延时" class="headerlink" title="优化网络延时"></a>优化网络延时</h3><p>首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度比 localhost 局域网（学名：loopback）更快。</p>
 <p>但是很多公司的业务规模不是单机部署能够支撑的，所以还是得用 TCP。</p>
 <p>redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令，客户端和 redis 的多个请求就如下图：</p>
