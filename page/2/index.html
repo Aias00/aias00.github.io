@@ -150,6 +150,86 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/3ad60b.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/3ad60b.html" class="post-title-link" itemprop="url">cas</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-12 15:14:34" itemprop="dateCreated datePublished" datetime="2021-04-12T15:14:34+08:00">2021-04-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-03 21:49:24" itemprop="dateModified" datetime="2021-08-03T21:49:24+08:00">2021-08-03</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的</p>
+<p>CAS 算法涉及到 3 个操作数：</p>
+<ul>
+<li>需要读写的内存值 V</li>
+<li>进行比较的值 A</li>
+<li>要写入的新值 B</li>
+</ul>
+<p>当且仅当 V 的值等于 A 时，CAS 通过原子方式用新值 B 来更新 V 的值（”比较”+”更新”，整体是一个原子操作），否则不会执行任何操作。一般情况下，”更新”是一个不断重试的操作</p>
+<p>AtomicInteger 源码：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/3ad60b.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/a292cba5.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -834,80 +914,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/c2128012.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="hongyu liu">
-      <meta itemprop="description" content="保持好奇，保持热爱">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hongyu`s blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/article/c2128012.html" class="post-title-link" itemprop="url">linux常用操作指令</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-26 09:59:32" itemprop="dateCreated datePublished" datetime="2021-03-26T09:59:32+08:00">2021-03-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-30 13:35:16" itemprop="dateModified" datetime="2021-04-30T13:35:16+08:00">2021-04-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="查询日志尾部最后-10-行的日志"><a href="#查询日志尾部最后-10-行的日志" class="headerlink" title="查询日志尾部最后 10 行的日志"></a>查询日志尾部最后 10 行的日志</h3><p>tail -n 10 test.log</p>
-<h3 id="查询-10-行之后的所有日志"><a href="#查询-10-行之后的所有日志" class="headerlink" title="查询 10 行之后的所有日志"></a>查询 10 行之后的所有日志</h3><p>tail -n +10 test.log</p>
-<h3 id="查询前-10-行"><a href="#查询前-10-行" class="headerlink" title="查询前 10 行"></a>查询前 10 行</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/article/c2128012.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -978,7 +984,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="Java 集合Collection 和 Map，是集合框架的接口 Collection 的子接口有 List 和 Set List有序列表，允许存放重复的元素">
+<meta name="keywords" content="interview,java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试allInOne">
+<meta property="og:url" content="http://yoursite.com/article/ee73d129.html">
+<meta property="og:site_name" content="hongyu`s blog">
+<meta property="og:description" content="Java 集合Collection 和 Map，是集合框架的接口 Collection 的子接口有 List 和 Set List有序列表，允许存放重复的元素">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-08-04T14:20:44.034Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试allInOne">
+<meta name="twitter:description" content="Java 集合Collection 和 Map，是集合框架的接口 Collection 的子接口有 List 和 Set List有序列表，允许存放重复的元素">
+
+<link rel="canonical" href="http://yoursite.com/article/ee73d129.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>面试allInOne | hongyu`s blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hongyu`s blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ee73d129.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          面试allInOne
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-04 10:59:48 / 修改时间：22:20:44" itemprop="dateCreated datePublished" datetime="2021-08-04T10:59:48+08:00">2021-08-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Java-集合"><a href="#Java-集合" class="headerlink" title="Java 集合"></a>Java 集合</h2><p>Collection 和 Map，是集合框架的接口</p>
+<p>Collection 的子接口有 List 和 Set</p>
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><p>有序列表，允许存放重复的元素</p>
+<h4 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h4><p>数组实现，查询快，增删慢，轻量级，线程不安全，底层是 Object 数组</p>
+<h4 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h4><p>双向链表实现，增删快，查询慢，线程不安全，底层是双向循环链表。</p>
+<p>在此链表上每一个数据节点都由三部分组成：前指针（指向前面的节点），后指针（指向后面的节点），数据。</p>
+<p>最后一个节点的后指针指向第一个节点的前指针，形成循环链表。</p>
+<p>LinkedList 是采用双向循环链表实现的。</p>
+<p>利用 LinkedList 实现栈（Stack）、队列（Queue）、双向队列（Double-Ended Queue）等。它具有 addFirst()、addLast()、getFirst()、getLast()、removeFirst()、removeLast()等方法</p>
+<p>经常用在增删操作较多而查询较少的情况下：</p>
+<h5 id="队列和堆栈"><a href="#队列和堆栈" class="headerlink" title="队列和堆栈"></a>队列和堆栈</h5><ul>
+<li>队列：先进先出的数据结构</li>
+<li>栈：后进先出的数据结构（注意：使用栈的时候一定不能提供方法让不是最后一个元素的元素获得出栈的机会）</li>
+</ul>
+<h6 id="用-LinkedList-实现队列"><a href="#用-LinkedList-实现队列" class="headerlink" title="用 LinkedList 实现队列"></a>用 LinkedList 实现队列</h6><p>队列（Queue）是限定所有的插入只能在表的一端进行，而所有的删除都在表的另一端进行的线性表，表中允许插入的一端称为队尾（Rear），允许删除的一端称为队首（Front）。</p>
+<p>队列的操作是先进先出的原则进行的。</p>
+<p>队列的物理存储可以用顺序存储结构，也可以用链式存储结构。</p>
+<h6 id="用-LinkedList-实现栈"><a href="#用-LinkedList-实现栈" class="headerlink" title="用 LinkedList 实现栈"></a>用 LinkedList 实现栈</h6><p>栈（Stack）也是一种特殊的线性表，是一种后进先出的结构。</p>
+<p>栈是限定仅在表尾进行插入和删除运算的线性表，表尾称为栈顶（Top），表头称为栈底（Bottom）。</p>
+<p>栈的物理存储结构可以用顺序表存储结构，也可以用链式存储结构。</p>
+<h4 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h4><p>数组实现，重量级，线程安全。</p>
+<h4 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h4><p>支持高效率并发且是线程安全的，读操作无锁的 ArrayList。</p>
+<p>所有可变操作都是通过对底层数组进行一次新的复制来实现。</p>
+<p>适合使用在读操作远远大于写操作的场景里，比如缓存。它不存在扩容的概念，每次写操作都要复制一个副本，在副本的基础上修改之后改变 Array 引用，因为写操作要大面积复制数组，所以性能很差</p>
+<p>由于写操作的时候，需要拷贝数组，会消耗内存。如果原数组的内容比较多的情况下，可能导致 young gc 或者 full gc。</p>
+<p>不能用于实时读的场景，像拷贝数组、新增元素都需要事件，所以调用一个 set 操作后，读取到的数据可能还是旧的，只能做到最终一致性</p>
+<h4 id="ArrayList-和-LinkedList-的区别"><a href="#ArrayList-和-LinkedList-的区别" class="headerlink" title="ArrayList 和 LinkedList 的区别"></a>ArrayList 和 LinkedList 的区别</h4><ul>
+<li>ArrayList 底层是基于动态数组的数据结构，LinkedList 底层是基于双向链表的数据结构</li>
+<li>对于 ArrayList 和 LinkedList 而言，在列表末尾增加一个元素的开销都是固定的。对于 ArrayList 而言，主要是在内部数组中增加一项，指向所添加的元素，偶尔可能导致对数组重新进行分配；而对于 LinkedList 而言，这个开销是统一的，分配一个内部 Entry 对象</li>
+<li>在 ArrayList 中间插入或者删除一个元素意味着这个列表中剩余的元素都会被移动，而在 LinkedList 中间插入或者删除一个元素的开销是固定的</li>
+<li>对于随机访问，ArrayList 性能优于 LinkedList，时间复杂度 O(1)，因为 LinkedList 要移动指针，时间复杂度 O(n)</li>
+<li>对于新增和删除操作，LinkedList 比较占优，因为 ArrayList 要移动数组元素</li>
+<li>LinkedList 不支持高效率的随机元素访问</li>
+<li>ArrayList 的空间浪费主要体现在 list 列表的结尾预留一定的容量空间。而 LinkedList 的空间花费则体现在它的每个元素都要消耗相当的空间</li>
+</ul>
+<h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><p>无序集合，不允许存放重复的元素，允许使用 null</p>
+<p>对 add()，equals()和 hashCode()方法添加了限制</p>
+<h4 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h4><p>HashSet 由 HashMap 实现，value 都是 new Object()</p>
+<p>HashSet 直接实现了 Set 接口，其底层其实是包装了一个 HashMaps 去实现的，HashSet 采用 HashCode 算法来存取集合中的元素，因此具有比较好的读取和查找性能</p>
+<p>不仅不能保证元素插入的顺序，而且元素在以后的顺序中也可能变化（这是由于 HashSet 按 HashCode 存储元素决定的，对象变化则可能导致 HashCode 变化）</p>
+<p>HashSet 是非线程安全的</p>
+<p>HashSet 如何能达到不存在重复元素的目的？</p>
+<p>“键”就是我们要存储的元素，而“值”是一个常量，而“键”在 Map 中是不能重复的，这就保证了我们存入 Set 中的所有元素都不重复</p>
+<h4 id="LinkedHashSet"><a href="#LinkedHashSet" class="headerlink" title="LinkedHashSet"></a>LinkedHashSet</h4><p>Set-&gt;HashSet-&gt;LinkedHashSet</p>
+<p>LinkedHashSet 是 HashSet 的子类</p>
+<p>LinkedHashMap 实现，存储的数据是有序的</p>
+<h4 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h4><p>Set-&gt;SortedSet-&gt;TreeSet</p>
+<p>TreeSet 实现了 SortedSet 接口，这是一种排序的 Set 集合，底层是由 TreeMap 实现的，本质上是一个红黑树，相对于 HashSet，TreeSet 额外提供了一些按排序位置访问元素的方法，比如 first()、last()、higher()、lower()、subSet()、headSet()、tailSet()等</p>
+<p>TreeSet 的排序分两种类型，一种是自然排序，另一种是定制排序</p>
+<ul>
+<li>自然排序：调用 compareTo 方法比较元素大小，然后按照升序排序，所以自然排序中的元素都必须实现了 Comparable 接口，否则会抛出异常。判断元素是否重复也是调用元素的 compareTo 方法，如果返回 0 则是重复元素</li>
+<li>定制排序：在集合中写排序规则，需要关联一个 Comparator 对象，由 Comparator 提供排序逻辑</li>
+</ul>
+<h4 id="EnumSet"><a href="#EnumSet" class="headerlink" title="EnumSet"></a>EnumSet</h4><p>EnumSet 是专门为枚举类型设计的集合，因此集合元素必须是枚举类型，否则会抛出异常，EnumSet 也是有序的，其顺序就是 Enum 类内元素定义的顺序，EnumSet 的存取速度非常快，批量操作的顺序也很快。</p>
+<p>EnumSet 主要提供的方法有 allOf()、complementOf()、copyOf()、noneOf()、of()、range()等，EnumSet 并没有提供任何构造函数，要创建一个 EnumSet 集合对象，只需要调用 allOf()等方法。</p>
+<h4 id="CopyOnWriteArraySet"><a href="#CopyOnWriteArraySet" class="headerlink" title="CopyOnWriteArraySet"></a>CopyOnWriteArraySet</h4><p>基于 CopyOnWriteArrayList 实现，线程安全的</p>
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>集合框架的第二类接口树，提供了一组键值对的映射。其中存储的每个对象都有一个相应的关键字（key），关键字决定了对象在 Map 中的存储位置。关键字应该是唯一的，每个 key 只能映射一个 value</p>
+<h4 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h4><p>键值对，key 不能重复，但是 value 无限制，允许 null 的 key 或者 value</p>
+<p>最常用的 map，根据 key 的 hashCode 存储数据，具有很快的访问速度</p>
+<p>最多只允许一条记录的 key 是 null，value 不限</p>
+<p>不支持线程同步，多并发变更 HashMap 结构会导致数据不同步或者抛出异常</p>
+<p>可以用 Collections.synchronizedMap(HashMap)方法使 HashMap 具有同步能力</p>
+<h5 id="底层数据实现"><a href="#底层数据实现" class="headerlink" title="底层数据实现"></a>底层数据实现</h5><p>jdk1.8：数组+单向链表+红黑树，链表插入数据时采用尾插法，链表长度大于 8 且数组长度大于等于 64 时，链表转为红黑树，链表长度小于 6 时转回链表</p>
+<p>当链表长度为 6 时，查询的时间复杂度为 n/2=3，红黑树 log(6)=2.6 时；为 8 时，查询的时间复杂度为 n/2=4，红黑树 log(8)=3，此时红黑树效率更优</p>
+<p>链表转换为树之前，还会判断数组长度是否大于 64，这是为了避免在哈希表建立初期，多个键值对恰好被放入了同一链表中而导致不必要的变化。如果链表长度大于 8 但是数据元素个数小于 64，只会触发扩容</p>
+<h5 id="HashMap-初始化"><a href="#HashMap-初始化" class="headerlink" title="HashMap 初始化"></a>HashMap 初始化</h5><p>默认数组长度是 16，负载因子时 0.75，如果传入初始大小 k，初始化大小为离 k 最近的大于 k 的 2 的整数次幂，如果传入 10，初始大小为 16</p>
+<h5 id="HashMap-插入流程"><a href="#HashMap-插入流程" class="headerlink" title="HashMap 插入流程"></a>HashMap 插入流程</h5><p>1.判断数组是否为空，为空则先初始化数组</p>
+<p>2.计算 key 的 hash=((null == key)?0:key.hashCode()^k.hashCode() &gt;&gt;&gt; 16)，通过(n-1)&amp;hash 计算当前 key 应存放在数组中的下表 index（n 为数组长度）</p>
+<p>3.查看 table[index]是否存在数据，没有数据就构造一个 Node 节点存在到 table[index]中</p>
+<p>4.存在数据说明发生了 hash 冲突，继续判断 key 是否相等，相等就用新的 value 替换原 value，将旧值返回</p>
+<p>5.如果 key 不相等，判断当前节点类型是否为树形节点，如果是树形节点，构造一个 TreeNode 插入红黑树中</p>
+<p>6.如果不是树形节点，继续遍历链表判断 Node 后面的节点是否为空，不为空则判断 key 是否相等，如果相等则结束便利，用新的 value 替换旧的 value，将旧值返回</p>
+<p>7.如果遍历到链表尾部，构造 Node 节点放入链表中。判断链表长度是否大于 8，大于 8 的话将链表转换为红黑树。</p>
+<p>8.插入完成之后判断当前节点数是否大于阈值（即数组长度*负载因子），如果大于阈值，开始将数组扩容为原数组的二倍。</p>
+<h5 id="HashMap-删除流程"><a href="#HashMap-删除流程" class="headerlink" title="HashMap 删除流程"></a>HashMap 删除流程</h5><h5 id="HashMap-扩容"><a href="#HashMap-扩容" class="headerlink" title="HashMap 扩容"></a>HashMap 扩容</h5><h4 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h4><h5 id="1-7"><a href="#1-7" class="headerlink" title="1.7"></a>1.7</h5><p>Segment 数组+HashEntry，每个 Segment 元素存储的是 HashEntry 数组+链表</p>
+<p><img data-src="https://i.loli.net/2021/08/04/pValM1nI2O7zY53.png" alt="2021-08-04-14-22-0320210804142203"></p>
+<ul>
+<li>Segment 数组的意义就是将一个大的 table 分割成多个小的 table 来进行加锁，也就是锁分离技术</li>
+<li>ConcurrentHashMap 分段锁对整个桶数组进行了分割分段（Segment），每一把锁只锁容器其中一部分（Segment）数据，多线程访问容器里不同 Segment 的数据，就不会存在锁竞争，提高并发访问率。</li>
+<li>Segment 是一种可重入锁（ReentrantLock），在 ConcurrentHashMap 中扮演锁的角色，HashEntry 则用户存储键值对数据。</li>
+<li>一个 ConcurrentHashMap 里面包含一个 HashEntry 数组，每个 HashEntry 是一个链表结构的元素，每个 Segment 守护者一个 HashEntry 数组里的元素，当对 HashEnrty 数组的数据进行修改时，必须先获得与他对应的 Segment 锁。</li>
+</ul>
+<h6 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h6><p>ConcurrentHashMap 初始化时，计算出 Segment 数组的大小 ssize 和每个 Segment 中的 HashEntry 数组的大小 cap，并初始化 Segment 数组的第一个元素。其中 ssize 的大小为 2 的幂次方，默认为 16，cap 大小也是 2 的幂次方，最小值为 2，最终结果根据初始化容量 initialCapacity 进行计算，其中 Segment 在实现上继承了 ReentrantLock，这样就自带了锁的功能。</p>
+<h6 id="put"><a href="#put" class="headerlink" title="put"></a>put</h6><p>当执行 pus 方法插入数据时，根据 key 的 hash 只，在 Segment 数组中找到对应的位置，如果响应位置的 Segment 还未初始化，则通过 CAS 进行复制，接着执行 Segment 对象的 put 方法通过加锁机制插入数据。</p>
+<ul>
+<li>1.线程 A 执行 tryLock()方法成功获取锁，则把 HashEntry 对象插入到相应的位置</li>
+<li>2.线程 B 获取锁失败，则执行 scanAndLockForPut()方法，在此方法中会通过重复执行 tryLock()方法尝试获取锁，在多处理器环境下，重复次数为 64，单处理器重复次数为 1，当执行 tryLock()方法的次数超过上限时，则执行 lock()方法挂起线程 B</li>
+<li>3.当线程 A 完插入操作时，会通过 unlock()方法释放锁，接着唤醒线程 B 继续执行</li>
+</ul>
+<h6 id="size"><a href="#size" class="headerlink" title="size"></a>size</h6><p>因为 ConcurrentHashMap 是可以并发插入数据的，所以在准确计算元素时存在一定的难度，一般的思路是统计每个 Segment 对象中元素的个数，然后进行累加，但是这种方式计算出来的结果并不一定是准确的，因为在计算后面的 Segment 时，已经计算过的 Segment 同时可能有数据的插入或者删除操作，在 1.7 的实现中采用了如下方式：</p>
+<p>先采用不加锁的方式，连续计算元素的个数，最多计算 3 次</p>
+<ul>
+<li>1.如果前后两次计算结果相同，则说明计算出来的元素个数是准确的</li>
+<li>2.如果前后两次计算结果都不同，则给每个 Segment 加锁，再计算一次元素的个数</li>
+</ul>
+<h5 id="1-8"><a href="#1-8" class="headerlink" title="1.8"></a>1.8</h5><p>Node 数组+链表+红黑树</p>
+<ul>
+<li>底层依然采用数组+链表+红黑树的存储结构</li>
+<li>对每个数组元素（Node）加锁</li>
+<li>采用 Node+CAS+Synchronized 来保证并发安全</li>
+</ul>
+<h6 id="put-流程"><a href="#put-流程" class="headerlink" title="put 流程"></a>put 流程</h6><p>只有第一次执行 put 方法时，才会调用 initTable()初始化 Node 数组</p>
+<ul>
+<li>1.根据 key 的 hashCode 值，计算 hash=(k.hashCode^(k.hashCode &gt;&gt;&gt; 16))&amp;0x7fffffff，在 Node 数组中找到相应的下标 index=(n-1)&amp;hash，n 为数组长度</li>
+<li>2.如果对应位置的 Node 还未初始化，则构造一个 Node，通过 CAS 插入相应的位置，结束循环</li>
+<li>3.如果对应位置的 Node 不为抗，且对应 Node 的 hash 值为 MOVED(-1)，说明 table 正在扩容，当前线程会帮助扩容，然后获取扩容之后的 table 重新开始循环</li>
+<li>4.如果相应位置的 Node 不为空且 Node 不处于移动状态，则对该节点加 Synchronized 锁，防止并发出现的问题</li>
+<li>5.如果目标位置上的元素依旧为加锁之前获取到的节点，并且目标节点的 hash 值大于等于 0，则是链式结构</li>
+<li>6.将 binCount 置为 1，然后循环链表，每遇到一个元素，binCount 增加 1，如果目标节点 key 的 hash 与要存入的 key 的 hash 相等并且 key 相等，则替换旧值，结束循环；否则循环到链表尾部，构造新的 Node 节点插入链表尾部。</li>
+<li>7.如果该节点是 TreeBin 类型的节点，说明是红黑树操作，将 binCount 置为 2，通过 putTreeVal 方法往红黑树中插入节点</li>
+<li>8.如果 binCount 不为 0，说明 put 操作对数据产生了影响，如果 binCount&gt;=8，则通过 treeifyBin 方法转化为红黑树，如果 oldVal 不为空，说明是一次更新操作，没有对元素个数产生影响，则直接返回旧值，结束循环</li>
+<li>9.如果插入的是一个新的节点，则执行 addCount()方法尝试更新元素个数 baseCount()，判断是否需要对 table 进行扩容</li>
+</ul>
+<h6 id="size-流程"><a href="#size-流程" class="headerlink" title="size 流程"></a>size 流程</h6><p>1.8 中使用一个 volatile 类型的变量 bastCount 记录元素的个数，当插入新数据或删除数据时，会通过 addCount()方法更新 baseCount。</p>
+<ul>
+<li>1.初始化时 counterCells 为空，在并发量很高时，如果存在两个线程同时执行 CAS 修改 baseCount 值，则失败的线程会继续执行方法体中的逻辑，使用 counterCell 记录元素个数的变化</li>
+<li>2.如果 counterCell 数组 counterCells 为空，调用 fullAddCount()方法进行初始化，并插入对应的记录数，通过 CAS 设置 cellsBusy 字段，只有设置成功的线程才能初始化 counterCell 数组</li>
+<li>3.如果通过 CAS 设置 cellsBusy 字段失败的话，则继续尝试通过 CAS 修改 baseCount 字段，如果修改 baseCount 字段成功的话，就退出循环，否则继续循环插入 counterCell 对象</li>
+</ul>
+<p>所以在 1.8 中的 size 实现比 1.7 简单的多，因为元素个数保存在 baseCount 中，部分元素的变化个数保存在 counterCells 数组中，通过累加 baseCount 和 counterCells 数组中的数量，即可得到元素的总个数</p>
+<h4 id="TreeMap"><a href="#TreeMap" class="headerlink" title="TreeMap"></a>TreeMap</h4><p>对 key 排序好的 Map，key 要实现 comparable 接口或者传入 comparator</p>
+<h4 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h4><p>维护着一个运行于所有条目的双向链表，存储的数据是有序的，记录数据存入的顺序</p>
+<h4 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h4><p>线程安全的 Map，不允许 null 的 key 或 value</p>
+<h4 id="Properties"><a href="#Properties" class="headerlink" title="Properties"></a>Properties</h4><p>key 和 value 都是 String 类型，用来读取配置文件</p>
+<h4 id="HashMap-和-HashTable-的区别"><a href="#HashMap-和-HashTable-的区别" class="headerlink" title="HashMap 和 HashTable 的区别"></a>HashMap 和 HashTable 的区别</h4><p>都实现了 Map 接口。</p>
+<p>HashMap 没有考虑同步，线程不安全；HashTable 使用了 synchronized 关键字，线程安全。</p>
+<p>HashMap 的迭代器是 fail-fast 而 HashTable 的迭代器不是，所以当多线程修改 HashMap 结构，会抛出 ConcurrentModificationException 异常，但迭代器本身的 remove()方法移除元素则不会抛出。</p>
+<p>单线程下 HashTable 比 HashMap 要慢。</p>
+<p>HashMap 不能保证随着时间推移 Map 中的元素次序是不变的。</p>
+<h4 id="ConcurrentHashMap-和-HashTable-的区别"><a href="#ConcurrentHashMap-和-HashTable-的区别" class="headerlink" title="ConcurrentHashMap 和 HashTable 的区别"></a>ConcurrentHashMap 和 HashTable 的区别</h4><p>ConcurrentHashMap 结合了 HashMap 和 HashTable 二者的优势，HashTable 每次同步执行都要锁住整个结构，ConcurrentHashMap 锁的方式是细粒度的。</p>
+<h4 id="为什么-HashMap-引入红黑树而不是其他树"><a href="#为什么-HashMap-引入红黑树而不是其他树" class="headerlink" title="为什么 HashMap 引入红黑树而不是其他树"></a>为什么 HashMap 引入红黑树而不是其他树</h4><h5 id="1-为什么不用二叉排序树"><a href="#1-为什么不用二叉排序树" class="headerlink" title="1.为什么不用二叉排序树"></a>1.为什么不用二叉排序树</h5><ul>
+<li>二叉排序树在添加元素的时候极端情况下会出现线性结构</li>
+<li>由于二叉树左子树所有节点的值均小于根节点的值这一特点，如果我们添加的元素都比根节点小，会导致左子树线性增长，这样就失去了用树型结构替换链表的初衷，导致查询时间增长</li>
+</ul>
+<h5 id="为什么不用平衡二叉树（AVL）"><a href="#为什么不用平衡二叉树（AVL）" class="headerlink" title="为什么不用平衡二叉树（AVL）"></a>为什么不用平衡二叉树（AVL）</h5><ul>
+<li>红黑树不追求“完全平衡”，即不像 AVL 树那样要求节点的|balFact|&lt;=1，它只要求部分达到平衡，但是提出了为节点增加颜色，红黑树用非严格的平衡来换取增删节点的时候旋转次数的降低，任何不平衡都会在 3 次之内解决，而 AVL 是严格平衡树，因此在增加和删除节点的时候，根据不同情况，旋转的次数可能比红黑树要多</li>
+<li>AVL 更平衡，结构上更加直观，时间效能针对读取而言更高；维护稍慢，空间开销较大</li>
+<li>红黑树读取略逊色于 AVL，维护强于 AVL，空间开销与 AVL 类似，内容多时略优于 AVL</li>
+<li>就插入节点导致树失衡的情况，AVL 和 RBT 都是最多两次树旋转来实现复衡 reblance，旋转的量级是 O(1)；删除节点导致失衡，AVL 需要维护从被删除节点到根节点 root 这条路径上所有节点的平衡，旋转的量级为 O(logN)，而 RBT 最多只需要旋转 3 次实现复衡，只需 O(1)，所以说 RBT 删除节点的 rebalance 效率更高，开销更小</li>
+<li>AVL 树的结构相对于 RBT 更为平衡，插入和删除引起失衡，RBT 效率更高；当然由于 AVL 高度平衡，因此 AVL 搜索的效率更高</li>
+<li>针对插入和删除节点导致失衡后 rebalance 操作，红黑树能够提供一个比较“便宜”的解决方案，降低开销，是对 search、insert 以及 delete 效率的折中。总体来说，RBT 的统计性能高于 AVL</li>
+<li>故引入 RBT 是功能、性能、空间开销的折中结构</li>
+<li>基本上主要的几种平衡树看来，红黑树有良好的稳定性和完整的功能，性能表现也不错，综合实力强</li>
+</ul>
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><h3 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h3><h4 id="为什么要使用线程池"><a href="#为什么要使用线程池" class="headerlink" title="为什么要使用线程池"></a>为什么要使用线程池</h4><ul>
+<li>管理线程，避免增加创建线程和销毁线程的系统资源消耗</li>
+<li>提高响应速度</li>
+<li>资源重复利用</li>
+</ul>
+<h4 id="线程池参数详解"><a href="#线程池参数详解" class="headerlink" title="线程池参数详解"></a>线程池参数详解</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">int</span> maximumPoolSize,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">long</span> keepAliveTime,</span></span></span><br><span class="line"><span class="function"><span class="params">                          TimeUnit unit,</span></span></span><br><span class="line"><span class="function"><span class="params">                          BlockingQueue&lt;Runnable&gt; workQueue,</span></span></span><br><span class="line"><span class="function"><span class="params">                          ThreadFactory threadFactory,</span></span></span><br><span class="line"><span class="function"><span class="params">                          RejectedExecutionHandler handler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (corePoolSize &lt; <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt;= <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt; corePoolSize ||</span><br><span class="line">        keepAliveTime &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    <span class="keyword">if</span> (workQueue == <span class="keyword">null</span> || threadFactory == <span class="keyword">null</span> || handler == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    <span class="keyword">this</span>.acc = System.getSecurityManager() == <span class="keyword">null</span> ?</span><br><span class="line">            <span class="keyword">null</span> :</span><br><span class="line">            AccessController.getContext();</span><br><span class="line">    <span class="keyword">this</span>.corePoolSize = corePoolSize;</span><br><span class="line">    <span class="keyword">this</span>.maximumPoolSize = maximumPoolSize;</span><br><span class="line">    <span class="keyword">this</span>.workQueue = workQueue;</span><br><span class="line">    <span class="keyword">this</span>.keepAliveTime = unit.toNanos(keepAliveTime);</span><br><span class="line">    <span class="keyword">this</span>.threadFactory = threadFactory;</span><br><span class="line">    <span class="keyword">this</span>.handler = handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这些参数都通过 volatile 修饰</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadPoolExecutor</span> <span class="keyword">extends</span> <span class="title">AbstractExecutorService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingQueue&lt;Runnable&gt; workQueue;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> ThreadFactory threadFactory;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> RejectedExecutionHandler handler;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">long</span> keepAliveTime;</span><br><span class="line">    <span class="comment">// 是否允许核心线程被回收</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> allowCoreThreadTimeOut;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> corePoolSize;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> maximumPoolSize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>corePoolSize：核心线程数<ul>
+<li>线程池维护的最小线程数量，核心线程创建后不会被回收（注意：设置 allowCoreThreadTimeOut=true 后，空闲的核心线程超过存活时间也会被回收）</li>
+<li>大于核心线程数的线程，在空闲时间超过 keepAliveTime 后会被回收</li>
+<li>线程池刚刚创建时，里面没有一个线程，当调用 execute()方法添加一个任务时，如果正在运行的线程数量小于 corePoolSize，则马上创建新线程去执行这个任务</li>
+</ul>
+</li>
+<li>maximumPoolSize：最大线程数<ul>
+<li>线程池允许创建的最大的线程数量</li>
+<li>当添加一个任务时，核心线程数已满，阻塞队列已满，存活的线程数量还没有达到最大线程数，创建一个新线程并执行任务。</li>
+</ul>
+</li>
+<li>keepAliveTime：空闲线程存活时间<ul>
+<li>当一个线程的空闲时间大于 keepAliveTime，就会被回收</li>
+<li>可被回收的线程：<ul>
+<li>设置了 allowCoreThreadTimeOut=true 的核心线程</li>
+<li>大于核心线程数的线程（非核心线程）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>unit：keepAliveTime 的时间单位</li>
+<li>workQueue：工作队列<ul>
+<li>存放待执行任务的队列：当提交的任务数超过核心线程数大小之后，再提交的任务就存放在工作队列，任务调度时再从队列中取出任务，它仅仅用来存放被 execute()方法提交的 Runnable 任务。工作队列实现了 BlockingQueue 接口。</li>
+</ul>
+</li>
+<li>threadFactory：线程工厂。创建线程的工厂，可以设定线程名称、线程编号等。</li>
+<li>handler：拒绝策略。可以自定义拒绝策略，拒绝策略需要实现 RejectedExecutionHandler 接口</li>
+</ul>
+<h4 id="线程池核心执行流程"><a href="#线程池核心执行流程" class="headerlink" title="线程池核心执行流程"></a>线程池核心执行流程</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (command == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Proceed in 3 steps:</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 1. If fewer than corePoolSize threads are running, try to</span></span><br><span class="line"><span class="comment">         * start a new thread with the given command as its first</span></span><br><span class="line"><span class="comment">         * task.  The call to addWorker atomically checks runState and</span></span><br><span class="line"><span class="comment">         * workerCount, and so prevents false alarms that would add</span></span><br><span class="line"><span class="comment">         * threads when it shouldn't, by returning false.</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 2. If a task can be successfully queued, then we still need</span></span><br><span class="line"><span class="comment">         * to double-check whether we should have added a thread</span></span><br><span class="line"><span class="comment">         * (because existing ones died since last checking) or that</span></span><br><span class="line"><span class="comment">         * the pool shut down since entry into this method. So we</span></span><br><span class="line"><span class="comment">         * recheck state and if necessary roll back the enqueuing if</span></span><br><span class="line"><span class="comment">         * stopped, or start a new thread if there are none.</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 3. If we cannot queue task, then we try to add a new</span></span><br><span class="line"><span class="comment">         * thread.  If it fails, we know we are shut down or saturated</span></span><br><span class="line"><span class="comment">         * and so reject the task.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> c = ctl.get();</span><br><span class="line">        <span class="keyword">if</span> (workerCountOf(c) &lt; corePoolSize) &#123;</span><br><span class="line">            <span class="keyword">if</span> (addWorker(command, <span class="keyword">true</span>))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            c = ctl.get();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">            <span class="keyword">int</span> recheck = ctl.get();</span><br><span class="line">            <span class="keyword">if</span> (! isRunning(recheck) &amp;&amp; remove(command))</span><br><span class="line">                reject(command);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (workerCountOf(recheck) == <span class="number">0</span>)</span><br><span class="line">                addWorker(<span class="keyword">null</span>, <span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!addWorker(command, <span class="keyword">false</span>))</span><br><span class="line">            reject(command);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="https://i.loli.net/2021/08/04/poOV1Cz7FhlxXtA.png" alt="2021-08-04-19-31-1420210804193114"></p>
+<ul>
+<li>提交任务，判断核心线程是否已满，未满则创建新的核心线程执行任务</li>
+<li>如果核心线程池已满，判断工作队列是否已满，未满则将任务存入队列</li>
+<li>如果工作队列已满，判断非核心线程数是否已满，未满则创建非核心线程执行任务</li>
+<li>如果非核心线程已满，执行拒绝策略</li>
+</ul>
+<h4 id="线程生命周期"><a href="#线程生命周期" class="headerlink" title="线程生命周期"></a>线程生命周期</h4><p><img data-src="https://i.loli.net/2021/08/04/txZRm7VeoiALcuv.png" alt="2021-08-04-19-37-1920210804193718"></p>
+<ul>
+<li>NEW：创建后尚未启动的线程处于此状态</li>
+<li>RUNNABLE：包括操作系统线程状态中的 RUNNING 和 READY，也就是线程可能处于执行中状态，也可能正在等待 CPU 为之分配执行时间</li>
+<li>WAITING：无限期等待状态，处于此状态的线程不会被分配 CPU 执行时间，需要等到被其他线程显式唤醒（notify、notifyAll）。进入此状态的方式主要包括：<ul>
+<li>没有显式设置 timeout 的 Object.wait()</li>
+<li>没有显式设置 timeout 的 Thread.join()</li>
+<li>LockSupport.park()</li>
+</ul>
+</li>
+<li>TIMED_WAITING：有限期等待状态，处于此状态的线程不会被分配 CPU 执行时间，在一定时间之后会自动唤醒。进入此状态的方式主要包括：<ul>
+<li>Thread.sleep(timeout)</li>
+<li>Object.wait(timeout)</li>
+<li>Thread.join(timeout)</li>
+<li>LockSupport.parkNanos(timeout)</li>
+<li>LockSupport.parkUnit(timeout)</li>
+</ul>
+</li>
+<li>BLOCKED：阻塞状态，处于此状态的线程不会被分配 CPU 执行时间。发生情况：<ul>
+<li>竞争对象监视器锁</li>
+<li>Object.wait()结束后重新竞争对象监视器控制权</li>
+</ul>
+</li>
+<li>TERMINATED：终止状态，表示当前线程执行完毕，生命周期结束。</li>
+</ul>
+<h4 id="线程池四种拒绝策略"><a href="#线程池四种拒绝策略" class="headerlink" title="线程池四种拒绝策略"></a>线程池四种拒绝策略</h4><ul>
+<li>AbortPolicy（弃任务并抛出 RejectedExecutionException 异常，默认策略）</li>
+<li>DiscardPolicy（直接丢弃任务）</li>
+<li>DiscardOldestPolicy（丢弃队列里最老的任务，将当前任务继续存入队列）</li>
+<li>CallerRunsPolicy（由调用线程池所在的线程执行任务）</li>
+</ul>
+<h4 id="几种工作阻塞队列"><a href="#几种工作阻塞队列" class="headerlink" title="几种工作阻塞队列"></a>几种工作阻塞队列</h4><ul>
+<li>ArrayBlockingQueue（用数组实现的有界阻塞队列，按 FIFO 排序）</li>
+<li>LinkedBlockingQueue（基于链表结构的阻塞队列，按 FIFO 排序，可以选择性设置容量，不设置默认未 Integer.MAX_VALUE，即无界队列）</li>
+<li>DelayQueue（支持延迟获取元素的阻塞队列）</li>
+<li>PriorityBlockingQueue（具有优先级的无界队列）</li>
+<li>SynchronousQueue（一个不存储元素的阻塞队列，每个插入操作必须等到另一个线程执行一处操作，否则插入操作一直处于阻塞状态）</li>
+</ul>
+<h3 id="线程间同步"><a href="#线程间同步" class="headerlink" title="线程间同步"></a>线程间同步</h3><h4 id="为何要使用同步"><a href="#为何要使用同步" class="headerlink" title="为何要使用同步"></a>为何要使用同步</h4><p>java 允许多线程并发控制。当多个线程同事操作一个可共享的资源变量时，将会导致数据的不准确，相互之间产生冲突。因此可以加入同步锁以避免在该线程没有完成对数据的操作之前，数据被其他线程调用，从而保证了该变量的唯一性和准确性。</p>
+<h4 id="同步的方式"><a href="#同步的方式" class="headerlink" title="同步的方式"></a>同步的方式</h4><ul>
+<li>1.同步方法或者同步代码块：sychronized 关键字或者 Lock 锁</li>
+<li>2.volatile 关键字</li>
+<li>3.使用 ThreadLocal</li>
+<li>4.阻塞队列</li>
+<li>5.使用原子变量</li>
+</ul>
+<h3 id="阻塞与等待的区别"><a href="#阻塞与等待的区别" class="headerlink" title="阻塞与等待的区别"></a>阻塞与等待的区别</h3><h4 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h4><p>当一个线程试图获取锁对象（非 JUC 中的锁，即 synchronized），而该锁被其他线程持有，则该线程进入阻塞状态。它的特点是使用简单，由 JVM 调度器来唤醒自己，而不需要另一个线程来显式唤醒自己，不会响应中断</p>
+<h4 id="等待"><a href="#等待" class="headerlink" title="等待"></a>等待</h4><p>当一个线程等待另一个线程通知调度器一个条件时，该线程进入等待状态。它的特点是需要等待另外一个线程显式地唤醒自己，实现灵活，语义更丰富，可响应中断。例如调用：Object.wait()、Thread.join()以及等待 Lock 或 Condition</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>虽然 synchronized 和 JUC 里的 Lock 都实现锁的功能，但线程进入的状态是不一样的。synchronized 会让线程进入阻塞状态，而 Lock 使用 park()/unpark()来实现阻塞/唤醒的，会让线程进入等待状态；虽然等锁时进入的状态不一样，但被唤醒后又都进入 RUNNABLE 状态，从行为效果来看是一样的</p>
+<h3 id="yeild-和-sleep-的区别"><a href="#yeild-和-sleep-的区别" class="headerlink" title="yeild()和 sleep()的区别"></a>yeild()和 sleep()的区别</h3><ul>
+<li>1.yeild 和 sleep 都能暂停当前线程，都不会释放锁资源。sleep 可以指定具体休眠的时间，而 yeild 依赖 cpu 的时间划分</li>
+<li>2.sleep 给其他线程运行机会时不考虑线程的优先级，因此会给低优先级的线程以运行的机会；而 yeild 方法只会给相同或者更高优先级的线程以运行的机会</li>
+<li>3.调用 sleep 方法使线程进入等待状态，等待睡眠时间到达；而调用 yeild 方法线程会进入就绪状态，也就是 sleep 需要等待设置的时间后才会进入就绪状态，而 yeild 会立即进入就绪状态</li>
+<li>4.sleep 方法会抛出 InterruptedException，而 yeild 不会抛出任何异常</li>
+<li>5.yeild 不能被中断，而 sleep 方法可以响应中断</li>
+<li>6.sleep 方法比 yeild 方法有更好的移植性</li>
+</ul>
+<h3 id="wait-和sleep-的区别"><a href="#wait-和sleep-的区别" class="headerlink" title="wait()和sleep()的区别"></a>wait()和sleep()的区别</h3><ul>
+<li>1.</li>
+</ul>
+<h3 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h3><h3 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h3><h4 id="ThreadLocal-是什么"><a href="#ThreadLocal-是什么" class="headerlink" title="ThreadLocal 是什么"></a>ThreadLocal 是什么</h4><p>ThreadLocal 时一个本地线程副本变量工具类。主要用于将私有线程和该线程存放的副本对象做一个映射。各个线程之间的变量互不干扰，在高并发场景下，可以实现无状态的调用。适合各个线程不共享变量值的操作</p>
+<h4 id="ThreadLocal-工作原理"><a href="#ThreadLocal-工作原理" class="headerlink" title="ThreadLocal 工作原理"></a>ThreadLocal 工作原理</h4><p>每个线程内部都维护了一个 ThreadLocalMap，是一个键值对数据格式，key 是一个弱引用，也就是 ThreadLocal 本身，value 存的是线程变量的值</p>
+<p>也就是说 ThreadLocal 本身并不存储线程的变量值，它只是一个工具，用来维护线程内部的 ThreadLocalMap，帮助存储和取出变量值</p>
+<h4 id="ThreadLocal-如何解决-Hash-冲突"><a href="#ThreadLocal-如何解决-Hash-冲突" class="headerlink" title="ThreadLocal 如何解决 Hash 冲突"></a>ThreadLocal 如何解决 Hash 冲突</h4><p>与 HashMap 不同，ThreadLocalMap 结构非常简单，没有 next 引用，也就是说 ThreadLocalMap 中解决 hash 冲突的方式并非链表的方式，而是采用线性探测的方式。所谓线性探测，就是根据初始 key 的 hashCode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他 key 值占用，则利用固定的算法寻找一定步长的下一个位置，依次判断，直至找到能够存放的位置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/</span><br><span class="line"> * Increment i modulo len.</span><br><span class="line"> */</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">nextIndex</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((i + <span class="number">1</span> &lt; len) ? i + <span class="number">1</span> : <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/</span><br><span class="line"> * Decrement i modulo len.</span><br><span class="line"> */</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">prevIndex</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((i - <span class="number">1</span> &gt;= <span class="number">0</span>) ? i - <span class="number">1</span> : len - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ThreadLocal-的内存泄露是怎么回事"><a href="#ThreadLocal-的内存泄露是怎么回事" class="headerlink" title="ThreadLocal 的内存泄露是怎么回事"></a>ThreadLocal 的内存泄露是怎么回事</h4><p>ThreadLocal 在 ThreadLocalMap 中是以一个弱引用身份被 Entry 中的 key 引用的，因此如果 ThreadLocal 没有外部强引用来引用它，那么 ThreadLocal 会在下次 JVM 垃圾回收时被回收，这时候 Entry 中的 key 已经被回收，但是 value 又是一强引用所以不会被垃圾回收器回收，这样 ThreadLocal 的线程如果一直运行下去，value 就一直得不到回收，这样就会发生内存泄露。</p>
+<p>如何解决：</p>
+<p>使用完 ThreadLocal 后，及时调用 remove()方法释放内存空间</p>
+<h4 id="为什么-ThreadLocal-的-key-是弱引用"><a href="#为什么-ThreadLocal-的-key-是弱引用" class="headerlink" title="为什么 ThreadLocal 的 key 是弱引用"></a>为什么 ThreadLocal 的 key 是弱引用</h4><ul>
+<li>1.key 使用强引用，这样会导致一个问题：引用 ThreadLocal 的对象被回收了，但是 ThreadLocalMap 还持有 ThreadLocal 的强引用，如果没有手动删除，ThreadLocal 不会被回收，则导致内存泄漏</li>
+<li>2.key 使用弱引用，这样的话，引用 ThreadLocal 的对象被回收了，由于 ThreadLocalMap 持有 ThreadLocal 的弱引用，即使没有手动删除，ThreadLocal 也会被回收；value 在下一次 ThreadLocalMap 调用 set、get、remove 的时候会被清除</li>
+</ul>
+<p>比较以上两种情况，我们可以发现：由于 TheadLocalMap 的生命周期跟 Thread 一样长，如果都没有手动删除对应的 key，都会导致内存泄漏，但是弱引用可以多一层保障，弱引用的 ThreadLocal 不会内存泄漏，对应的 value 在下一次 ThreadLocalMap 调用 set、get、remove 的时候被清除，算是最优的解决方案</p>
+<h4 id="ThreadLocal-的应用场景"><a href="#ThreadLocal-的应用场景" class="headerlink" title="ThreadLocal 的应用场景"></a>ThreadLocal 的应用场景</h4><ul>
+<li>Session 管理</li>
+<li>数据库连接</li>
+</ul>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="Synchronized"><a href="#Synchronized" class="headerlink" title="Synchronized"></a>Synchronized</h3><h3 id="Lock"><a href="#Lock" class="headerlink" title="Lock"></a>Lock</h3><h3 id="AQS"><a href="#AQS" class="headerlink" title="AQS"></a>AQS</h3><h3 id="JUC-其他"><a href="#JUC-其他" class="headerlink" title="JUC 其他"></a>JUC 其他</h3><h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><h3 id="SQL-优化"><a href="#SQL-优化" class="headerlink" title="SQL 优化"></a>SQL 优化</h3><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><h3 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h3><h4 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h4><h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3><h2 id="Dubbo"><a href="#Dubbo" class="headerlink" title="Dubbo"></a>Dubbo</h2><h2 id="MQ"><a href="#MQ" class="headerlink" title="MQ"></a>MQ</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># interview</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/article/c84e9335.html" rel="prev" title="wsl安装、配置及使用">
+      <i class="fa fa-chevron-left"></i> wsl安装、配置及使用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-集合"><span class="nav-number">1.</span> <span class="nav-text">Java 集合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#List"><span class="nav-number">1.1.</span> <span class="nav-text">List</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ArrayList"><span class="nav-number">1.1.1.</span> <span class="nav-text">ArrayList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LinkedList"><span class="nav-number">1.1.2.</span> <span class="nav-text">LinkedList</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#队列和堆栈"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">队列和堆栈</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#用-LinkedList-实现队列"><span class="nav-number">1.1.2.1.1.</span> <span class="nav-text">用 LinkedList 实现队列</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#用-LinkedList-实现栈"><span class="nav-number">1.1.2.1.2.</span> <span class="nav-text">用 LinkedList 实现栈</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Vector"><span class="nav-number">1.1.3.</span> <span class="nav-text">Vector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CopyOnWriteArrayList"><span class="nav-number">1.1.4.</span> <span class="nav-text">CopyOnWriteArrayList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ArrayList-和-LinkedList-的区别"><span class="nav-number">1.1.5.</span> <span class="nav-text">ArrayList 和 LinkedList 的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set"><span class="nav-number">1.2.</span> <span class="nav-text">Set</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HashSet"><span class="nav-number">1.2.1.</span> <span class="nav-text">HashSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LinkedHashSet"><span class="nav-number">1.2.2.</span> <span class="nav-text">LinkedHashSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TreeSet"><span class="nav-number">1.2.3.</span> <span class="nav-text">TreeSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EnumSet"><span class="nav-number">1.2.4.</span> <span class="nav-text">EnumSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CopyOnWriteArraySet"><span class="nav-number">1.2.5.</span> <span class="nav-text">CopyOnWriteArraySet</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Map"><span class="nav-number">1.3.</span> <span class="nav-text">Map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HashMap"><span class="nav-number">1.3.1.</span> <span class="nav-text">HashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#底层数据实现"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">底层数据实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HashMap-初始化"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">HashMap 初始化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HashMap-插入流程"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">HashMap 插入流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HashMap-删除流程"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">HashMap 删除流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HashMap-扩容"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">HashMap 扩容</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ConcurrentHashMap"><span class="nav-number">1.3.2.</span> <span class="nav-text">ConcurrentHashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-7"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">1.7</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#初始化"><span class="nav-number">1.3.2.1.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#put"><span class="nav-number">1.3.2.1.2.</span> <span class="nav-text">put</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#size"><span class="nav-number">1.3.2.1.3.</span> <span class="nav-text">size</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-8"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">1.8</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#put-流程"><span class="nav-number">1.3.2.2.1.</span> <span class="nav-text">put 流程</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#size-流程"><span class="nav-number">1.3.2.2.2.</span> <span class="nav-text">size 流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TreeMap"><span class="nav-number">1.3.3.</span> <span class="nav-text">TreeMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LinkedHashMap"><span class="nav-number">1.3.4.</span> <span class="nav-text">LinkedHashMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HashTable"><span class="nav-number">1.3.5.</span> <span class="nav-text">HashTable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Properties"><span class="nav-number">1.3.6.</span> <span class="nav-text">Properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HashMap-和-HashTable-的区别"><span class="nav-number">1.3.7.</span> <span class="nav-text">HashMap 和 HashTable 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ConcurrentHashMap-和-HashTable-的区别"><span class="nav-number">1.3.8.</span> <span class="nav-text">ConcurrentHashMap 和 HashTable 的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么-HashMap-引入红黑树而不是其他树"><span class="nav-number">1.3.9.</span> <span class="nav-text">为什么 HashMap 引入红黑树而不是其他树</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-为什么不用二叉排序树"><span class="nav-number">1.3.9.1.</span> <span class="nav-text">1.为什么不用二叉排序树</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#为什么不用平衡二叉树（AVL）"><span class="nav-number">1.3.9.2.</span> <span class="nav-text">为什么不用平衡二叉树（AVL）</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程"><span class="nav-number">2.</span> <span class="nav-text">多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池"><span class="nav-number">2.1.</span> <span class="nav-text">线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么要使用线程池"><span class="nav-number">2.1.1.</span> <span class="nav-text">为什么要使用线程池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程池参数详解"><span class="nav-number">2.1.2.</span> <span class="nav-text">线程池参数详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程池核心执行流程"><span class="nav-number">2.1.3.</span> <span class="nav-text">线程池核心执行流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程生命周期"><span class="nav-number">2.1.4.</span> <span class="nav-text">线程生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程池四种拒绝策略"><span class="nav-number">2.1.5.</span> <span class="nav-text">线程池四种拒绝策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种工作阻塞队列"><span class="nav-number">2.1.6.</span> <span class="nav-text">几种工作阻塞队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程间同步"><span class="nav-number">2.2.</span> <span class="nav-text">线程间同步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为何要使用同步"><span class="nav-number">2.2.1.</span> <span class="nav-text">为何要使用同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#同步的方式"><span class="nav-number">2.2.2.</span> <span class="nav-text">同步的方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞与等待的区别"><span class="nav-number">2.3.</span> <span class="nav-text">阻塞与等待的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#阻塞"><span class="nav-number">2.3.1.</span> <span class="nav-text">阻塞</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等待"><span class="nav-number">2.3.2.</span> <span class="nav-text">等待</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">2.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yeild-和-sleep-的区别"><span class="nav-number">2.4.</span> <span class="nav-text">yeild()和 sleep()的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-和sleep-的区别"><span class="nav-number">2.5.</span> <span class="nav-text">wait()和sleep()的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#volatile"><span class="nav-number">2.6.</span> <span class="nav-text">volatile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">2.7.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-是什么"><span class="nav-number">2.7.1.</span> <span class="nav-text">ThreadLocal 是什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-工作原理"><span class="nav-number">2.7.2.</span> <span class="nav-text">ThreadLocal 工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-如何解决-Hash-冲突"><span class="nav-number">2.7.3.</span> <span class="nav-text">ThreadLocal 如何解决 Hash 冲突</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-的内存泄露是怎么回事"><span class="nav-number">2.7.4.</span> <span class="nav-text">ThreadLocal 的内存泄露是怎么回事</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么-ThreadLocal-的-key-是弱引用"><span class="nav-number">2.7.5.</span> <span class="nav-text">为什么 ThreadLocal 的 key 是弱引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal-的应用场景"><span class="nav-number">2.7.6.</span> <span class="nav-text">ThreadLocal 的应用场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁"><span class="nav-number">3.</span> <span class="nav-text">锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Synchronized"><span class="nav-number">3.1.</span> <span class="nav-text">Synchronized</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock"><span class="nav-number">3.2.</span> <span class="nav-text">Lock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AQS"><span class="nav-number">3.3.</span> <span class="nav-text">AQS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JUC-其他"><span class="nav-number">3.4.</span> <span class="nav-text">JUC 其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL"><span class="nav-number">4.</span> <span class="nav-text">MySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL-优化"><span class="nav-number">4.1.</span> <span class="nav-text">SQL 优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引"><span class="nav-number">4.2.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务隔离级别"><span class="nav-number">4.3.</span> <span class="nav-text">事务隔离级别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MVCC"><span class="nav-number">4.3.1.</span> <span class="nav-text">MVCC</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis"><span class="nav-number">5.</span> <span class="nav-text">Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构"><span class="nav-number">5.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存穿透"><span class="nav-number">5.2.</span> <span class="nav-text">缓存穿透</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存击穿"><span class="nav-number">5.3.</span> <span class="nav-text">缓存击穿</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存雪崩"><span class="nav-number">5.4.</span> <span class="nav-text">缓存雪崩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式锁"><span class="nav-number">5.5.</span> <span class="nav-text">分布式锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dubbo"><span class="nav-number">6.</span> <span class="nav-text">Dubbo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQ"><span class="nav-number">7.</span> <span class="nav-text">MQ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hongyu liu" src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">hongyu liu</p>
+  <div class="site-description" itemprop="description">保持好奇，保持热爱</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongyu liu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
