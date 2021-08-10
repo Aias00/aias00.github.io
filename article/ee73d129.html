@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="Java 集合Collection 和 Map，是集合框架的接口 Collection 的子接口有 List 和 Set List有序列表，允许存放重复的元素">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-08-09T02:30:59.758Z">
+<meta property="og:updated_time" content="2021-08-10T01:58:11.184Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试allInOne">
 <meta name="twitter:description" content="Java 集合Collection 和 Map，是集合框架的接口 Collection 的子接口有 List 和 Set List有序列表，允许存放重复的元素">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-09 10:30:59" itemprop="dateModified" datetime="2021-08-09T10:30:59+08:00">2021-08-09</time>
+                <time title="修改时间：2021-08-10 09:58:11" itemprop="dateModified" datetime="2021-08-10T09:58:11+08:00">2021-08-10</time>
               </span>
 
           
@@ -425,12 +425,12 @@
 </ul>
 <h4 id="几种工作阻塞队列"><a href="#几种工作阻塞队列" class="headerlink" title="几种工作阻塞队列"></a>几种工作阻塞队列</h4><ul>
 <li>ArrayBlockingQueue（用数组实现的有界阻塞队列，按 FIFO 排序）</li>
-<li>LinkedBlockingQueue（基于链表结构的阻塞队列，按 FIFO 排序，可以选择性设置容量，不设置默认未 Integer.MAX_VALUE，即无界队列）</li>
+<li>LinkedBlockingQueue（基于链表结构的阻塞队列，按 FIFO 排序，可以选择性设置容量，不设置默认为 Integer.MAX_VALUE，即无界队列）</li>
 <li>DelayQueue（支持延迟获取元素的阻塞队列）</li>
 <li>PriorityBlockingQueue（具有优先级的无界队列）</li>
-<li>SynchronousQueue（一个不存储元素的阻塞队列，每个插入操作必须等到另一个线程执行一处操作，否则插入操作一直处于阻塞状态）</li>
+<li>SynchronousQueue（一个不存储元素的阻塞队列，每个插入操作必须等到另一个线程执行移除操作，否则插入操作一直处于阻塞状态）</li>
 </ul>
-<h3 id="线程间同步"><a href="#线程间同步" class="headerlink" title="线程间同步"></a>线程间同步</h3><h4 id="为何要使用同步"><a href="#为何要使用同步" class="headerlink" title="为何要使用同步"></a>为何要使用同步</h4><p>java 允许多线程并发控制。当多个线程同事操作一个可共享的资源变量时，将会导致数据的不准确，相互之间产生冲突。因此可以加入同步锁以避免在该线程没有完成对数据的操作之前，数据被其他线程调用，从而保证了该变量的唯一性和准确性。</p>
+<h3 id="线程间同步"><a href="#线程间同步" class="headerlink" title="线程间同步"></a>线程间同步</h3><h4 id="为何要使用同步"><a href="#为何要使用同步" class="headerlink" title="为何要使用同步"></a>为何要使用同步</h4><p>java 允许多线程并发控制。当多个线程同时操作一个可共享的资源变量时，将会导致数据的不准确，相互之间产生冲突。因此可以加入同步锁以避免在该线程没有完成对数据的操作之前，数据被其他线程调用，从而保证了该变量的唯一性和准确性。</p>
 <h4 id="同步的方式"><a href="#同步的方式" class="headerlink" title="同步的方式"></a>同步的方式</h4><ul>
 <li>1.同步方法或者同步代码块：sychronized 关键字或者 Lock 锁</li>
 <li>2.volatile 关键字</li>
@@ -454,6 +454,9 @@
 <li>2.wait 释放锁，sleep 不释放锁</li>
 <li>3.wait 必须在同步代码块中使用，sleep 不需要</li>
 <li>4.wait 不需要捕获异常，sleep 需要</li>
+<li>5.sleep 方法必须传入超时时间，而没有参数的 wait 方法意味着永久等待，直到被中断或者被唤醒</li>
+<li>5.都可以让线程阻塞</li>
+<li>6.都可以响应中断</li>
 </ul>
 <h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Object lockA = <span class="keyword">new</span> Object();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Object lockB = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Thread threadA = <span class="keyword">new</span> ThreadA();</span><br><span class="line">        Thread threadB = <span class="keyword">new</span> ThreadB();</span><br><span class="line">        threadA.start();</span><br><span class="line">        threadB.start();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lockA) &#123;</span><br><span class="line">                System.out.println(<span class="string">"ThreadA: lockA"</span>);</span><br><span class="line">                <span class="keyword">synchronized</span> (lockB) &#123;</span><br><span class="line">                    System.out.println(<span class="string">"ThreadA: lockB"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadB</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lockB) &#123;</span><br><span class="line">                System.out.println(<span class="string">"ThreadB: lockB"</span>);</span><br><span class="line">                <span class="keyword">synchronized</span> (lockA) &#123;</span><br><span class="line">                    System.out.println(<span class="string">"ThreadB: lockA"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -490,13 +493,13 @@
 <li>在 volatile 写之后插入 storeload 屏障，防止上面的 volatile 写操作与下面的读操作重排序</li>
 <li>在 volatile 读之后插入 loadload、loadstore 屏障，防止上面的 volatile 读和后面的普通读、普通写、volatile 写重排序</li>
 </ul>
-<p>还有 happens-before，对于一个 volatile 变量的写 happens-before 与后续任意对这个 volatile 的读</p>
+<p>还有 happens-before，对于一个 volatile 变量的写 happens-before 于后续任意对这个 volatile 的读</p>
 <p>由此实现有序性</p>
 <p><img data-src="https://i.loli.net/2021/04/06/ck86Z1XgFNCtmqy.png" alt><br><img data-src="https://i.loli.net/2021/04/06/9tsXI6Kz1bhR7vB.png" alt><br><img data-src="https://i.loli.net/2021/04/06/2JmDeF8xRsOrXib.png" alt><br><img data-src="https://i.loli.net/2021/04/06/gh86vLoAFsPYZmW.png" alt></p>
 <h4 id="volatile-指令重排序"><a href="#volatile-指令重排序" class="headerlink" title="volatile 指令重排序"></a>volatile 指令重排序</h4><p>volatile 变量的内存可见性是基于内存屏障（Memory Barrier）实现的。JMM 内部会有指令重排，并且会有 as-if-serial 和 happens-before 的理念来保证指令重排的正确性。内存就是基于 4 个汇编级别的关键字来禁止指令重排的，volatile 的重排规则如下：</p>
 <ul>
 <li>1.第一个为读操作时，第二个任何操作不可重排到第一个操作前面</li>
-<li>2.第二个为写操作时，第一个任何操作不可重拍到第二个操作后面</li>
+<li>2.第二个为写操作时，第一个任何操作不可重排到第二个操作后面</li>
 <li>3.第一个为写操作时，第二个的读写操作也不允许重排序</li>
 </ul>
 <p><img data-src="https://i.loli.net/2021/04/06/G5lCHmaKWMo6SNg.png" alt></p>
@@ -506,7 +509,7 @@
 <li>volatile 变量规则：对一个 volatile 的写，happens-before 于任意后续对这个 volatile 变量的读</li>
 <li>传递性：如果 A happens-before 于 B，B happens-before 于 C，则 A happens-before 于 C</li>
 </ul>
-<h3 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h3><h4 id="ThreadLocal-是什么"><a href="#ThreadLocal-是什么" class="headerlink" title="ThreadLocal 是什么"></a>ThreadLocal 是什么</h4><p>ThreadLocal 时一个本地线程副本变量工具类。主要用于将私有线程和该线程存放的副本对象做一个映射。各个线程之间的变量互不干扰，在高并发场景下，可以实现无状态的调用。适合各个线程不共享变量值的操作</p>
+<h3 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h3><h4 id="ThreadLocal-是什么"><a href="#ThreadLocal-是什么" class="headerlink" title="ThreadLocal 是什么"></a>ThreadLocal 是什么</h4><p>ThreadLocal 是一个本地线程副本变量工具类。主要用于将私有线程和该线程存放的副本对象做一个映射。各个线程之间的变量互不干扰，在高并发场景下，可以实现无状态的调用。适合各个线程不共享变量值的操作</p>
 <h4 id="ThreadLocal-工作原理"><a href="#ThreadLocal-工作原理" class="headerlink" title="ThreadLocal 工作原理"></a>ThreadLocal 工作原理</h4><p>每个线程内部都维护了一个 ThreadLocalMap，是一个键值对数据格式，key 是一个弱引用，也就是 ThreadLocal 本身，value 存的是线程变量的值</p>
 <p>也就是说 ThreadLocal 本身并不存储线程的变量值，它只是一个工具，用来维护线程内部的 ThreadLocalMap，帮助存储和取出变量值</p>
 <h4 id="ThreadLocal-如何解决-Hash-冲突"><a href="#ThreadLocal-如何解决-Hash-冲突" class="headerlink" title="ThreadLocal 如何解决 Hash 冲突"></a>ThreadLocal 如何解决 Hash 冲突</h4><p>与 HashMap 不同，ThreadLocalMap 结构非常简单，没有 next 引用，也就是说 ThreadLocalMap 中解决 hash 冲突的方式并非链表的方式，而是采用线性探测的方式。所谓线性探测，就是根据初始 key 的 hashCode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他 key 值占用，则利用固定的算法寻找一定步长的下一个位置，依次判断，直至找到能够存放的位置</p>
@@ -524,7 +527,7 @@
 <li>Session 管理</li>
 <li>数据库连接</li>
 </ul>
-<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h3><h3 id="Lock"><a href="#Lock" class="headerlink" title="Lock"></a>Lock</h3><h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><p>CAS 全称 Compare And Swap（比较与交换），是一种无所算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的</p>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h3><h3 id="Lock"><a href="#Lock" class="headerlink" title="Lock"></a>Lock</h3><h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><p>CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现的</p>
 <p>CAS 算法涉及到 3 个操作数：</p>
 <ul>
 <li>需要读写的内存值 V</li>
