@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="hongyu`s blog">
 <meta property="og:description" content="Java 集合Collection 和 Map，是集合框架的接口 Collection 的子接口有 List 和 Set List有序列表，允许存放重复的元素">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-08-10T12:06:22.318Z">
+<meta property="og:updated_time" content="2021-08-11T02:21:08.849Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试allInOne">
 <meta name="twitter:description" content="Java 集合Collection 和 Map，是集合框架的接口 Collection 的子接口有 List 和 Set List有序列表，允许存放重复的元素">
@@ -183,7 +183,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-08-10 20:06:22" itemprop="dateModified" datetime="2021-08-10T20:06:22+08:00">2021-08-10</time>
+                <time title="修改时间：2021-08-11 10:21:08" itemprop="dateModified" datetime="2021-08-11T10:21:08+08:00">2021-08-11</time>
               </span>
 
           
@@ -571,17 +571,17 @@
 <p>根据定义我们可以看出各属性的作用：</p>
 <ul>
 <li>unsafe：获取并操作内存的数据</li>
-<li>valueOffSet：存储 value 在 AtomicInteger 中的偏移量</li>
+<li>valueOffset：存储 value 在 AtomicInteger 中的偏移量</li>
 <li>value：存储 AtomicInteger 的 int 值，该属性需要 volatile 关键字保证其在线程间是可见的</li>
 </ul>
 <p>接下来查看 AtomicInteger 的自增函数 incremenetAndGet()的源码，发现自增函数底层调用的是 unsafe.getAndAddInt()。但是由于 JDK 本身只有 Unsafe.class，只通过 class 文件中的参数名，并不能很好的了解方法的作用，所以通过 OpenJDK8 来查看 Unsafe 的源码</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ------------------------- JDK 8 -------------------------</span></span><br><span class="line"><span class="comment">// AtomicInteger 自增方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">incrementAndGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> unsafe.getAndAddInt(<span class="keyword">this</span>, valueOffset, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Unsafe.class</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndAddInt</span><span class="params">(Object var1, <span class="keyword">long</span> var2, <span class="keyword">int</span> var4)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> var5;</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">      var5 = <span class="keyword">this</span>.getIntVolatile(var1, var2);</span><br><span class="line">  &#125; <span class="keyword">while</span>(!<span class="keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));</span><br><span class="line">  <span class="keyword">return</span> var5;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ------------------------- OpenJDK 8 -------------------------</span></span><br><span class="line"><span class="comment">// Unsafe.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAndAddInt</span><span class="params">(Object o, <span class="keyword">long</span> offset, <span class="keyword">int</span> delta)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">int</span> v;</span><br><span class="line">   <span class="keyword">do</span> &#123;</span><br><span class="line">       v = getIntVolatile(o, offset);</span><br><span class="line">   &#125; <span class="keyword">while</span> (!compareAndSwapInt(o, offset, v, v + delta));</span><br><span class="line">   <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>根据 OpenJDK8 的源码我们可以看出，getAddAddInt 循环获取给定对象 o 中的偏移量处的值 v，然后判断内存值是否等于 v。如果相等则将内存值设为 v+delta，否则返回 false，继续循环进行重试，直到设置成功才能退出循环，并将旧值返回。整个”比较+更新“操作封装在 compareAndSwapInt()中，在 JNI 里是接触一个 CPU 指令完成的，属于原子操作，可以保证多个线程都能看到同一个变量的修改值。</p>
-<p>后续 JDK 通过 CPU 的 cmpxchg 指令，去比较寄存器中的 A 和内存中的值 V，如果相等，就把要写入的新值 B 存入内存中。如果不相等，就将内存值 V 赋值给寄存器中的值 A，然后通过 java 代码中的 while 循环再次调用 cmpxchg 指令进行重试，直到设置成功位置</p>
+<p>根据 OpenJDK8 的源码我们可以看出，getAddAddInt 循环获取给定对象 o 中的偏移量处的值 v，然后判断内存值是否等于 v。如果相等则将内存值设为 v+delta，否则返回 false，继续循环进行重试，直到设置成功才能退出循环，并将旧值返回。整个”比较+更新“操作封装在 compareAndSwapInt()中，在 JNI 里是借助一个 CPU 指令完成的，属于原子操作，可以保证多个线程都能看到同一个变量的修改值。</p>
+<p>后续 JDK 通过 CPU 的 cmpxchg 指令，去比较寄存器中的 A 和内存中的值 V，如果相等，就把要写入的新值 B 存入内存中。如果不相等，就将内存值 V 赋值给寄存器中的值 A，然后通过 java 代码中的 while 循环再次调用 cmpxchg 指令进行重试，直到设置成功为止</p>
 <p>CAS 虽然很高效，但是也存在三大问题：</p>
 <ul>
-<li>ABA 问题：CAS 需要在操作值得时候检查内存值是否发生变化，没有发生变化才会更新内存值。但是如果内存值原来是 A，后来变成了 B，然后又变成了 A，那么 CAS 进行检查时会发现值没有发生变化，但是实际上是有变化得。ABA 问题的解决思路就是在变量前面加版本号，每次变量更新的时候都把版本号+1，这样变化过程就从”A-B-A“变成了”1A-2B-3A“。<ul>
+<li>ABA 问题：CAS 需要在操作值的时候检查内存值是否发生变化，没有发生变化才会更新内存值。但是如果内存值原来是 A，后来变成了 B，然后又变成了 A，那么 CAS 进行检查时会发现值没有发生变化，但是实际上是有变化的。ABA 问题的解决思路就是在变量前面加版本号，每次变量更新的时候都把版本号+1，这样变化过程就从”A-B-A“变成了”1A-2B-3A“。<ul>
 <li>JDK 从 1.5 版本开始提供了 AtomicStampedReference 类来解决 ABA 问题，具体操作封装在 compareAndSet()中。compareAndSet()首先检查当前引用和当前标志与预期引用和预期标志是否相等，如果都相等，则以原子方式将引用值和标志的值设置为给定的更新值</li>
 </ul>
 </li>
@@ -594,7 +594,7 @@
 <h4 id="CAS-面试问题"><a href="#CAS-面试问题" class="headerlink" title="CAS 面试问题"></a>CAS 面试问题</h4><ol>
 <li>假设有多个线程同时在对同一块内存进行 CAS 操作的话：两个线程 T1、T2 同时执行，V 存储同一块内存地址，A 当然也是旧的预期值，那么这种情况下 T1 和 T2 是否都可以更新成功</li>
 </ol>
-<p>在多个线程同事 CAS 的情况下是不会发生多个线程 CAS 成功的情况的，因为计算机底层实现保证了 V 指向内存的互斥性和立即可见性，可以理解为 CAS 操作时底层保证的线程安全</p>
+<p>在多个线程同时 CAS 的情况下是不会发生多个线程 CAS 成功的情况的，因为计算机底层实现保证了 V 指向内存的互斥性和立即可见性，可以理解为 CAS 操作时底层保证的线程安全</p>
 <p>一个线程 T 在 CAS 操作时，其他线程无法访问 V 指向的内存地址，并且一旦 T 更新了 V 指向内存的值，其他所有线程的 V 指向内存都变得无效</p>
 <p>处理器实现原子操作有两种做法</p>
 <ul>
@@ -608,7 +608,7 @@
 </ul>
 </li>
 <li>在 MESI 协议中，每个缓存的缓存控制器不仅知道自己的读写操作，而且也嗅探（snoop）其他 cache 的读写操作</li>
-<li>CPU 在读数据时，如果缓存行状态时 I，则需要从主内存中取出，并把缓存行状态置为 S；如果不是 I，则可以直接读取缓存中的值，但在此之前必须要等待对其他 CPU 的监听结果，如果其他 CPU 也有该数据的缓存并且状态是 M，则需要等待其把缓存更新到主内存后再读取</li>
+<li>CPU 在读数据时，如果缓存行状态是 I，则需要从主内存中取出，并把缓存行状态置为 S；如果不是 I，则可以直接读取缓存中的值，但在此之前必须要等待对其他 CPU 的监听结果，如果其他 CPU 也有该数据的缓存并且状态是 M，则需要等待其把缓存更新到主内存后再读取</li>
 <li>CPU 可以将状态为 M/E/S 的缓存写入内存，其中如果缓存行状态为 S，则其他缓存了相同数据的缓存行会无效化</li>
 </ul>
 </li>
