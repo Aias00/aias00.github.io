@@ -150,6 +150,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/201b20ca.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="hongyu liu">
+      <meta itemprop="description" content="保持好奇，保持热爱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongyu`s blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/article/201b20ca.html" class="post-title-link" itemprop="url">redis性能优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-13 16:58:55" itemprop="dateCreated datePublished" datetime="2021-04-13T16:58:55+08:00">2021-04-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-06 14:27:48" itemprop="dateModified" datetime="2021-08-06T14:27:48+08:00">2021-08-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>redis 利用了 IO 多路复用机制，处理客户端请求时，不会阻塞主线程。redis 单纯执行指令时（大多数指令），一个指令不到 1 微秒，如此，单核 CPU1 秒就能处理一百万个指令（大概对应几十万个请求），单线程不会成为 redis 的性能瓶颈，网络才是瓶颈</p>
+<h3 id="优化网络延时"><a href="#优化网络延时" class="headerlink" title="优化网络延时"></a>优化网络延时</h3><p>首先如果使用单机部署（应用服务和 redis 在同一台机器上）的话，使用 Unix 进程间通讯来请求 redis 服务，速度比 localhost 局域网（学名：loopback）更快。</p>
+<p>但是很多公司的业务规模不是单机部署能够支撑的，所以还是得用 TCP。</p>
+<p>redis 客户端和服务器的通讯一般使用 TCP 长连接。如果客户端发送请求后需要等待 redis 返回结果再发送下一条指令，客户端和 redis 的多个请求就如下图：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/article/201b20ca.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/3ad60b.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -420,7 +495,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-17 16:11:50" itemprop="dateModified" datetime="2021-04-17T16:11:50+08:00">2021-04-17</time>
+                <time title="修改时间：2021-08-08 17:52:57" itemprop="dateModified" datetime="2021-08-08T17:52:57+08:00">2021-08-08</time>
               </span>
 
           
@@ -840,80 +915,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/article/ba4a4566.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="hongyu liu">
-      <meta itemprop="description" content="保持好奇，保持热爱">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hongyu`s blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/article/ba4a4566.html" class="post-title-link" itemprop="url">mvcc 多版本并发控制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-26 13:41:27" itemprop="dateCreated datePublished" datetime="2021-03-26T13:41:27+08:00">2021-03-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-27 19:38:06" itemprop="dateModified" datetime="2021-04-27T19:38:06+08:00">2021-04-27</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="什么是-mvcc"><a href="#什么是-mvcc" class="headerlink" title="什么是 mvcc"></a>什么是 mvcc</h3><p>mvcc，Multi-version Concurrency Control，即多版本并发控制。mvcc 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问，在编程语言中实现事务内存</p>
-<p>MVCC 在 mysql InnoDB 中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读</p>
-<h3 id="什么是当前读和快照读"><a href="#什么是当前读和快照读" class="headerlink" title="什么是当前读和快照读"></a>什么是当前读和快照读</h3><p>1.当前读</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/article/ba4a4566.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -984,7 +985,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
