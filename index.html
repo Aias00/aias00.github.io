@@ -1,20 +1,507 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Aias 的个人主页。">
-<meta name="theme-color" content="#f5f4ef">
-<title>Aias · 个人主页</title>
-<style>
-:root{color-scheme:light;--paper:#f5f4ef;--ink:#242923;--muted:#6b7168;--line:#d8dbd2;--green:#456b4c}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}.page{max-width:1100px;margin:auto;padding:38px 48px;min-height:100svh;display:flex;flex-direction:column}header,footer{display:flex;justify-content:space-between;align-items:center;gap:20px}header{font-size:14px}.brand{font-weight:700;letter-spacing:.12em}.label{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:12px}.dot{height:7px;width:7px;border-radius:50%;background:var(--green)}main{flex:1;display:flex;align-items:center;padding:100px 0 120px}.intro{max-width:760px}.eyebrow{color:var(--green);font-size:12px;letter-spacing:.2em;margin:0 0 26px}h1{font-size:clamp(76px,13vw,148px);font-weight:500;letter-spacing:-.075em;line-height:1;margin:0 0 32px}h1 span{color:var(--green)}.description{font-size:18px;color:var(--muted);line-height:1.9;margin:0 0 38px}.link{display:inline-flex;gap:42px;align-items:center;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:100px;padding:15px 23px;font-size:14px;transition:background .2s,border-color .2s}.link:hover{background:#e8ece3;border-color:var(--green)}a:focus-visible{outline:3px solid var(--green);outline-offset:5px}footer{border-top:1px solid var(--line);padding-top:22px;color:var(--muted);font-size:12px;line-height:1.6}footer a{color:inherit;text-decoration:none}footer a:hover{text-decoration:underline}@media(max-width:600px){.page{padding:26px 24px}main{padding:85px 0}.description{font-size:16px}footer{align-items:flex-start;flex-direction:column;gap:8px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aias 的个人主页。Apache ShenYu PMC 成员，探索开源、基础设施与 AI Agent。这里收藏我的项目、代码和新的想法。">
+  <meta name="theme-color" content="#101211">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Aias — 保持好奇，持续构建。">
+  <meta property="og:description" content="Apache ShenYu PMC 成员。探索开源、基础设施与 AI Agent，分享代码与想法。">
+  <meta property="og:url" content="https://aias00.github.io/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23101211'/%3E%3Cpath d='m18 43 14-24 14 24M23 35h18' fill='none' stroke='%23c2f970' stroke-width='5' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <title>Aias — 保持好奇，持续构建。</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101211; --surface: #171a17; --surface-hover: #1d211c;
+      --ink: #f0f1eb; --muted: #a1a59b; --dim: #87917f;
+      --accent: #c2f970; --line: #2b3029;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+    body::before { content: ""; position: fixed; z-index: -1; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' opacity='.15' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); opacity: .12; pointer-events: none; }
+    ::selection { background: var(--accent); color: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+    svg { display: block; }
+    .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .container { width: min(1184px, calc(100% - 96px)); margin-inline: auto; }
+    .accent { color: var(--accent); }
+    .skip-link { position: fixed; z-index: 5; top: 12px; left: 12px; padding: 12px 18px; color: var(--bg); background: var(--accent); transform: translateY(-160%); }
+    .skip-link:focus { transform: translateY(0); }
+    .site-header { min-height: 102px; display: flex; align-items: center; justify-content: space-between; gap: 32px; border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 28px; font-weight: 650; letter-spacing: -1.5px; }
+    .brand-mark { width: 23px; height: 27px; color: var(--accent); }
+    .brand-period { color: var(--accent); }
+    .header-nav { display: flex; align-items: center; gap: 34px; margin-left: 70px; }
+    .nav-link { display: inline-flex; gap: 7px; align-items: center; padding: 14px 0; font-size: 13px; color: var(--muted); transition: color .2s; }
+    .nav-link::before { content: ""; width: 4px; height: 4px; background: var(--accent); border-radius: 50%; opacity: 0; transition: opacity .2s; }
+    .nav-link:hover, .nav-link[aria-current="location"] { color: var(--ink); }
+    .nav-link[aria-current="location"]::before { opacity: 1; }
+    .header-link { display: inline-flex; align-items: center; justify-content: center; gap: 14px; border: 1px solid #373d32; padding: 11px 16px; border-radius: 6px; font: 12px var(--mono); transition: border-color .2s, background .2s; }
+    .header-link .icon { width: 15px; height: 15px; }
+    .header-link:hover { border-color: var(--accent); background: var(--surface); }
+    .hero { padding-top: 91px; }
+    .hero-main { display: grid; grid-template-columns: 1.07fr 1fr; gap: 38px; align-items: center; }
+    .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 26px; color: var(--accent); font: 10px var(--mono); letter-spacing: 1.5px; }
+    .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 12px #c2f97030; }
+    h1 { margin: 0; font-size: clamp(76px, 7.4vw, 106px); font-weight: 550; letter-spacing: -.075em; line-height: 1.05; }
+    .name { display: block; margin-top: 4px; font-size: 1.21em; letter-spacing: -.065em; }
+    .name .cursor { color: var(--accent); font-weight: 400; display: inline-block; transform: translateY(-.035em); }
+    .hero-motto { margin: 29px 0 13px; font-size: 20px; font-weight: 450; letter-spacing: .08em; }
+    .hero-description { max-width: 445px; margin: 0; font-size: 14px; line-height: 1.95; color: var(--muted); }
+    .hero-description a { color: #c8cebf; text-decoration: underline; text-decoration-color: #4b5441; text-underline-offset: 4px; }
+    .hero-description a:hover { color: var(--accent); }
+    .hero-actions { display: flex; align-items: center; gap: 29px; margin-top: 31px; }
+    .button-primary { display: inline-flex; align-items: center; justify-content: center; gap: 27px; min-height: 47px; padding: 13px 20px; border-radius: 5px; background: var(--accent); color: #19220e; font-size: 13px; font-weight: 600; transition: background .2s, transform .2s; }
+    .button-primary:hover { background: #d2ff94; transform: translateY(-2px); }
+    .button-primary .icon { width: 17px; height: 17px; }
+    .text-link { display: inline-flex; align-items: center; gap: 9px; color: #c9cec3; font: 12px var(--mono); transition: color .2s; }
+    .text-link:hover { color: var(--accent); }
+    .text-link .icon { width: 17px; height: 17px; }
+    .hero-visual { position: relative; height: 440px; margin-top: 9px; isolation: isolate; }
+    .visual-grid { position: absolute; z-index: -1; inset: 15px -15px 0; background-image: linear-gradient(#c2f97008 1px, transparent 1px), linear-gradient(90deg, #c2f97008 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(ellipse at 50% 49%, #000 20%, transparent 70%); }
+    .orb-halo { position: absolute; z-index: -1; inset: 30px 20px; border-radius: 50%; background: radial-gradient(ellipse, #9cd25a0e 0%, #95c25b06 44%, transparent 70%); }
+    .orb-canvas { display: block; width: 100%; height: 100%; }
+    .visual-caption { position: absolute; left: 0; top: 4px; color: var(--dim); font: 9px var(--mono); letter-spacing: 1.25px; }
+    .visual-caption::before { content: "+"; color: var(--accent); margin-right: 11px; font-size: 13px; }
+    .code-tag { position: absolute; right: -3px; top: 91px; display: flex; align-items: center; gap: 9px; padding: 11px 13px; border: 1px solid #39432f; border-radius: 5px; background: #171c15ef; color: #cbd4c1; font: 10px var(--mono); box-shadow: 0 6px 25px #0003; transform: rotate(4deg); }
+    .code-tag .code-keyword { color: #90a3d2; }
+    .code-tag .code-value { color: var(--accent); }
+    .visual-coordinate { position: absolute; bottom: 23px; left: 5px; color: var(--dim); font: 9px var(--mono); line-height: 1.9; letter-spacing: .5px; }
+    .visual-coordinate span { color: #afb7a4; }
+    .visual-badge { position: absolute; bottom: 48px; right: 10px; display: flex; align-items: center; gap: 10px; background: #191d16e6; padding: 11px 14px; border: 1px solid #343c2b; border-radius: 5px; color: #c4ccb8; font: 10px var(--mono); transform: rotate(-5deg); }
+    .visual-badge .icon { width: 15px; height: 15px; color: var(--accent); }
+    .hero-bottom { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 66px; padding-bottom: 32px; border-bottom: 1px solid var(--line); }
+    .interests { display: flex; gap: 20px; align-items: center; color: #b4baac; font: 10px var(--mono); letter-spacing: .3px; }
+    .interests > span { display: flex; align-items: center; gap: 8px; }
+    .interests .icon { width: 14px; height: 14px; color: var(--dim); }
+    .interests .divider { color: #454d3e; font-size: 9px; }
+    .scroll-link { display: flex; align-items: center; gap: 16px; color: var(--dim); font: 9px var(--mono); letter-spacing: 1px; }
+    .scroll-link .icon { width: 15px; height: 15px; transition: transform .2s; }
+    .scroll-link:hover { color: var(--accent); }
+    .scroll-link:hover .icon { transform: translateY(3px); }
+    .projects { padding-top: 69px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 29px; }
+    .section-kicker { margin: 0 0 13px; color: var(--dim); font: 10px var(--mono); letter-spacing: 1px; }
+    .section-kicker span { color: var(--accent); margin-right: 13px; }
+    h2 { margin: 0; font-size: 29px; font-weight: 500; letter-spacing: -.04em; }
+    .section-heading > .text-link { margin-bottom: 4px; flex-shrink: 0; white-space: nowrap; font-family: var(--sans); font-size: 12px; color: var(--muted); gap: 15px; }
+    .section-heading > .text-link:hover { color: var(--accent); }
+    .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
+    .project-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 25px 25px 20px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); transition: transform .25s, border-color .25s, background .25s; }
+    .project-card:hover { transform: translateY(-5px); border-color: #687c4c; background: var(--surface-hover); }
+    .project-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+    .project-symbol { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #39432f; border-radius: 9px; background: #252e1d; color: var(--accent); }
+    .project-symbol .icon { width: 23px; height: 23px; }
+    .project-card:nth-child(2) .project-symbol { background: #242930; border-color: #38404b; color: #b8c9e8; }
+    .project-card:nth-child(3) .project-symbol { background: #2d2820; border-color: #453b2b; color: #d8bf94; }
+    .project-arrow { display: grid; place-items: center; width: 27px; height: 27px; color: var(--dim); transition: color .2s, transform .2s; }
+    .project-card:hover .project-arrow { color: var(--accent); transform: translate(2px, -2px); }
+    .project-arrow .icon { width: 19px; height: 19px; }
+    .project-category { margin: 0 0 8px; color: var(--dim); font: 9px var(--mono); letter-spacing: 1px; }
+    h3 { margin: 0 0 12px; font-size: 19px; font-weight: 550; letter-spacing: -.04em; }
+    .project-description { flex: 1; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.9; }
+    .project-meta { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 25px; padding-top: 17px; border-top: 1px solid var(--line); font: 10px var(--mono); color: #929b89; }
+    .language { display: inline-flex; align-items: center; gap: 6px; }
+    .language::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #75b6d2; }
+    .language.python::before { background: #dfc36f; }
+    .project-type { color: var(--dim); font-size: 9px; }
+    .about { display: grid; grid-template-columns: 1fr 1.37fr; gap: 80px; align-items: start; padding-block: 85px 77px; border-bottom: 1px solid var(--line); }
+    .about h2 { line-height: 1.7; font-size: 27px; letter-spacing: .01em; }
+    .about h2 span { color: #8b9481; }
+    .about-copy { padding-top: 23px; }
+    .about-copy p { margin: 0 0 19px; color: var(--muted); font-size: 13px; line-height: 2.1; }
+    .about-copy p:last-of-type { margin-bottom: 22px; }
+    .about-copy strong { color: #d6ddcc; font-weight: 500; }
+    .about-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .about-tags span { padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; color: #afb7a5; font: 10px var(--mono); }
+    .contact { padding-block: 71px 76px; display: flex; justify-content: space-between; align-items: center; gap: 32px; }
+    .contact h2 { font-size: clamp(28px, 3.2vw, 42px); letter-spacing: -.045em; line-height: 1.4; }
+    .contact h2 .accent { font-family: var(--mono); font-weight: 400; }
+    .contact-description { margin: 15px 0 0; font-size: 13px; line-height: 1.9; color: var(--muted); }
+    .contact-link { display: inline-flex; align-items: center; gap: 24px; flex-shrink: 0; padding-bottom: 10px; border-bottom: 1px solid #617944; font-size: 16px; transition: color .2s, border-color .2s; }
+    .contact-link .icon { width: 25px; height: 25px; color: var(--accent); transition: transform .2s; }
+    .contact-link:hover { color: var(--accent); border-color: var(--accent); }
+    .contact-link:hover .icon { transform: translate(3px, -3px); }
+    .site-footer { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 79px; border-top: 1px solid var(--line); color: var(--dim); font: 10px var(--mono); }
+    .footer-left { display: flex; align-items: center; gap: 20px; }
+    .footer-note { color: #919a85; }
+    .footer-time { display: inline-flex; align-items: center; gap: 8px; font-size: 9px; letter-spacing: .3px; }
+    .footer-time .status-dot { width: 5px; height: 5px; }
+    .footer-time time { color: #b0b9a4; font-variant-numeric: tabular-nums; }
+    .back-top { display: flex; gap: 8px; align-items: center; padding: 10px 0; transition: color .2s; }
+    .back-top .icon { width: 13px; height: 13px; }
+    .back-top:hover { color: var(--accent); }
+    @media (min-width: 1500px) { .hero { padding-top: 110px; } .hero-bottom { margin-top: 89px; } }
+    @media (max-width: 1000px) {
+      .container { width: calc(100% - 64px); }
+      .hero { padding-top: 70px; }
+      .hero-main { gap: 18px; grid-template-columns: 1.1fr 1fr; }
+      h1 { font-size: 78px; }
+      .hero-visual { height: 370px; }
+      .code-tag { top: 77px; right: -8px; font-size: 8px; padding: 9px; gap: 5px; }
+      .visual-caption { font-size: 7px; letter-spacing: .7px; }
+      .visual-badge { right: 0; bottom: 43px; font-size: 8px; }
+      .hero-motto { font-size: 18px; }
+      .hero-description { font-size: 13px; }
+      .interests { gap: 13px; font-size: 9px; }
+      .project-card { padding: 21px 19px 18px; }
+      h3 { font-size: 17px; }
+      .about { gap: 48px; }
+      .about h2 { font-size: 24px; }
+    }
+    @media (max-width: 720px) {
+      .container { width: calc(100% - 40px); }
+      .site-header { min-height: 80px; gap: 16px; }
+      .brand { font-size: 25px; gap: 7px; }
+      .brand-mark { width: 21px; height: 24px; }
+      .header-nav { gap: 16px; margin-left: auto; }
+      .nav-link { font-size: 12px; gap: 4px; }
+      .header-link { padding: 9px 11px; }
+      .header-link .header-link-label { display: none; }
+      .header-link .icon { width: 16px; height: 16px; }
+      .hero { padding-top: 49px; }
+      .hero-main { grid-template-columns: 1fr; gap: 30px; }
+      .eyebrow { font-size: 9px; letter-spacing: 1.2px; margin-bottom: 22px; }
+      h1 { font-size: clamp(72px, 16vw, 108px); }
+      .name { margin-top: 0; }
+      .hero-motto { margin-top: 25px; font-size: 18px; letter-spacing: .06em; }
+      .hero-description { max-width: 470px; font-size: 13px; }
+      .hero-actions { margin-top: 26px; gap: 25px; }
+      .button-primary { min-height: 45px; padding: 12px 17px; gap: 20px; font-size: 12px; }
+      .hero-visual { height: 340px; width: min(450px, 100%); margin: 0 auto; }
+      .visual-caption { top: 5px; font-size: 8px; }
+      .code-tag { top: 66px; right: 0; font-size: 9px; }
+      .visual-coordinate { left: 0; bottom: 8px; font-size: 8px; }
+      .visual-badge { bottom: 33px; font-size: 9px; }
+      .hero-bottom { margin-top: 28px; padding-bottom: 26px; }
+      .interests { gap: 10px; font-size: 8px; flex-wrap: wrap; }
+      .interests > span { gap: 5px; }
+      .interests .icon { width: 12px; height: 12px; }
+      .scroll-link { font-size: 0; gap: 0; }
+      .scroll-link .icon { width: 18px; height: 18px; }
+      .projects { padding-top: 47px; }
+      .section-heading { margin-bottom: 23px; gap: 10px; }
+      .section-kicker { font-size: 9px; margin-bottom: 12px; }
+      h2 { font-size: 25px; }
+      .section-heading > .text-link { font-size: 11px; gap: 6px; }
+      .project-grid { grid-template-columns: 1fr; gap: 13px; }
+      .project-card { padding: 22px; }
+      .project-card-top { margin-bottom: 23px; }
+      h3 { font-size: 20px; }
+      .project-description { font-size: 13px; }
+      .project-meta { margin-top: 23px; }
+      .about { grid-template-columns: 1fr; gap: 23px; padding-block: 55px 49px; }
+      .about h2 { font-size: 25px; }
+      .about-copy { padding-top: 0; }
+      .about-copy p { font-size: 13px; }
+      .contact { padding-block: 48px 52px; flex-direction: column; align-items: flex-start; gap: 26px; }
+      .contact h2 { font-size: 31px; }
+      .contact-description { font-size: 12px; max-width: 320px; }
+      .contact-link { font-size: 14px; gap: 19px; }
+      .site-footer { align-items: flex-start; flex-wrap: wrap; gap: 15px; padding-block: 23px; font-size: 9px; }
+      .footer-left { flex-direction: column; gap: 9px; align-items: flex-start; }
+      .footer-time { order: 3; width: 100%; font-size: 8px; margin-top: -1px; }
+      .back-top { margin-top: -7px; font-size: 9px; }
+    }
+    @media (max-width: 360px) {
+      .container { width: calc(100% - 32px); }
+      .header-nav { gap: 10px; }
+      .nav-link::before { display: none; }
+      .hero-motto { font-size: 16px; }
+      .hero-visual { height: 305px; }
+      .code-tag { font-size: 8px; }
+      .interests { gap: 8px; }
+      .interests .divider { display: none; }
+      .section-heading > .text-link { font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }
+    }
+  </style>
 </head>
-<body>
-<div class="page">
-<header><a class="brand" href="./" style="color:inherit;text-decoration:none" aria-label="Aias 首页">AIAS</a><div class="label"><span class="dot" aria-hidden="true"></span>个人主页</div></header>
-<main><section class="intro" aria-labelledby="hello"><p class="eyebrow">HELLO, WORLD</p><h1 id="hello">I'm Aias<span>.</span></h1><p class="description">欢迎来到我的个人主页。<br>在这里，与我连接。</p><a class="link" href="https://github.com/Aias00">在 GitHub 找到我 <span aria-hidden="true">↗</span></a></section></main>
-<footer><span>© 2026 Aias</span><a href="https://github.com/Aias00">github.com/Aias00 ↗</a></footer>
-</div>
+<body id="top">
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden">
+    <defs>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6h12v12"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v16m-6-6 6 6 6-6"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V4m-6 6 6-6 6 6"/></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19c-4.5 1.3-4.5-2.3-6.3-2.8M15.3 22v-3.4c0-1 .1-1.7-.5-2.3 3.4-.4 6.9-1.7 6.9-7.4 0-1.6-.5-2.9-1.5-4 .2-.4.7-1.9-.1-3.9 0 0-1.3-.4-4.2 1.5a14.5 14.5 0 0 0-7.7 0C5.3.6 4 .9 4 .9c-.8 2-.3 3.5-.1 3.9-1 1.1-1.5 2.4-1.5 4 0 5.7 3.5 7 6.9 7.4-.4.4-.8 1.1-.8 2.2V22" transform="translate(1 1) scale(.9)"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 18"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3L12 3Z"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5c-3.5-2-6-2-9-1v15c3-1 5.5-1 9 1 3.5-2 6-2 9-1V4c-3-1-5.5-1-9 1Zm0 0v15M6 7h2m-2 4h2m8-4h2m-2 4h2"/></symbol>
+      <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="site-header container">
+    <a class="brand" href="#top" aria-label="Aias 首页">
+      <svg class="brand-mark" viewBox="0 0 24 28" fill="none" aria-hidden="true"><path d="m2 23 10-18 10 18M6 17h12" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><path d="M8 26h8" stroke="currentColor" stroke-width="2.3"/></svg>
+      <span>aias<span class="brand-period">.</span></span>
+    </a>
+    <nav class="header-nav" aria-label="主要导航">
+      <a class="nav-link" href="#intro" aria-current="location">首页</a>
+      <a class="nav-link" href="#projects">项目</a>
+      <a class="nav-link" href="#about">关于</a>
+    </nav>
+    <a class="header-link" href="https://github.com/Aias00" target="_blank" rel="noopener noreferrer" aria-label="访问 Aias 的 GitHub（新窗口）"><span class="header-link-label">GitHub</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" id="intro" aria-labelledby="intro-title">
+      <div class="hero-main">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> OPEN SOURCE. OPEN MIND.</p>
+          <h1 id="intro-title" lang="en">Hi, I'm <span class="name">Aias<span class="cursor" aria-hidden="true">_</span></span></h1>
+          <p class="hero-motto">保持好奇，持续构建。</p>
+          <p class="hero-description"><a href="https://shenyu.apache.org/team/#pmc" target="_blank" rel="noopener noreferrer">Apache ShenYu PMC 成员</a>。探索开源、基础设施与 AI Agent，把想法写成代码，把探索变成作品。</p>
+          <div class="hero-actions">
+            <a class="button-primary" href="#projects">探索我的项目 <svg class="icon" aria-hidden="true"><use href="#i-down"/></svg></a>
+            <a class="text-link" href="https://github.com/Aias00" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> GitHub <svg class="icon" aria-hidden="true" style="width:13px;height:13px"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-grid"></div>
+          <div class="orb-halo"></div>
+          <span class="visual-caption">EXPLORING THE POSSIBILITIES</span>
+          <canvas class="orb-canvas" id="orb" width="1000" height="880">
+            <svg viewBox="0 0 500 440"><g fill="none" stroke="#c2f970" stroke-opacity=".45"><circle cx="250" cy="220" r="140"/><ellipse cx="250" cy="220" rx="70" ry="140"/><ellipse cx="250" cy="220" rx="140" ry="50"/><ellipse cx="250" cy="220" rx="215" ry="60" transform="rotate(-28 250 220)"/></g></svg>
+          </canvas>
+          <div class="code-tag"><span class="code-keyword">const</span> curiosity = <span class="code-value">Infinity</span>;</div>
+          <div class="visual-coordinate">A PERSONAL NODE<br><span>IN A CONNECTED WORLD.</span></div>
+          <div class="visual-badge"><svg class="icon"><use href="#i-code"/></svg> building something meaningful</div>
+        </div>
+      </div>
+      <div class="hero-bottom">
+        <div class="interests" aria-label="关注的领域">
+          <span><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg> OPEN SOURCE</span>
+          <span class="divider" aria-hidden="true">/</span>
+          <span><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg> INFRASTRUCTURE</span>
+          <span class="divider" aria-hidden="true">/</span>
+          <span><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg> AI AGENTS</span>
+        </div>
+        <a class="scroll-link" href="#projects" aria-label="向下浏览项目">SCROLL TO EXPLORE <svg class="icon" aria-hidden="true"><use href="#i-down"/></svg></a>
+      </div>
+    </section>
+
+    <section class="projects" id="projects" aria-labelledby="projects-title">
+      <div class="section-heading">
+        <div><p class="section-kicker"><span>01 /</span> SELECTED PROJECTS</p><h2 id="projects-title">一些正在发生的想法<span class="accent">.</span></h2></div>
+        <a class="text-link" href="https://github.com/Aias00?tab=repositories" target="_blank" rel="noopener noreferrer">全部项目 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="project-grid">
+        <a class="project-card" href="https://github.com/Aias00/envoy-learning-book" target="_blank" rel="noopener noreferrer" aria-labelledby="project-envoy">
+          <div class="project-card-top"><span class="project-symbol"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg></span><span class="project-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+          <p class="project-category">LEARN &amp; SHARE</p>
+          <h3 id="project-envoy">Envoy Learning Book</h3>
+          <p class="project-description">一本从零开始的 Envoy 中文学习书，从基础概念到源码导读，用实验理解代理与网关。</p>
+          <div class="project-meta"><span class="language">Go</span><span class="project-type">中文技术书 / 26 章</span></div>
+        </a>
+        <a class="project-card" href="https://github.com/Aias00/agent-skills" target="_blank" rel="noopener noreferrer" aria-labelledby="project-skills">
+          <div class="project-card-top"><span class="project-symbol"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></span><span class="project-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+          <p class="project-category">AI &amp; AUTOMATION</p>
+          <h3 id="project-skills">Agent Skills</h3>
+          <p class="project-description">把可复用的工作流变成 Agent 技能，连接浏览器扩展、技术内容与日常的创作过程。</p>
+          <div class="project-meta"><span class="language python">Python</span><span class="project-type">Agent 技能库</span></div>
+        </a>
+        <a class="project-card" href="https://github.com/Aias00/skills-manager" target="_blank" rel="noopener noreferrer" aria-labelledby="project-manager">
+          <div class="project-card-top"><span class="project-symbol"><svg class="icon" aria-hidden="true"><use href="#i-terminal"/></svg></span><span class="project-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
+          <p class="project-category">TOOLS FOR BUILDERS</p>
+          <h3 id="project-manager">Skills Manager</h3>
+          <p class="project-description">为 Agent Skills 做一个更顺手的管理工具。通过 Web UI 与 API，扫描、索引和管理技能。</p>
+          <div class="project-meta"><span class="language">Go</span><span class="project-type">开发者工具</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div><p class="section-kicker"><span>02 /</span> A LITTLE ABOUT ME</p><h2 id="about-title">代码之外，<br><span>是一个好奇的人。</span></h2></div>
+      <div class="about-copy">
+        <p>我是 Aias，<strong>Apache ShenYu PMC 成员</strong>，目前在北京。开源是我与世界交流的方式，也让我遇见很多一起解决问题的人。</p>
+        <p>最近的探索围绕 <strong>AI Agent、开发者工具和基础设施</strong>展开。我喜欢把学习过程整理下来，也把有用的想法做成可以分享的项目。</p>
+        <div class="about-tags" aria-label="技术兴趣"><span>Open Source</span><span>Apache ShenYu</span><span>Go</span><span>AI Agents</span></div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div><p class="section-kicker"><span>03 /</span> LET'S CONNECT</p><h2 id="contact-title">好的想法，从一句 <span class="accent">Hello</span> 开始。</h2><p class="contact-description">聊聊开源、交流想法，或只是打个招呼。<br>很高兴在互联网的这个角落遇见你。</p></div>
+      <a class="contact-link" href="https://github.com/Aias00" target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </section>
+  </main>
+
+  <footer class="site-footer container">
+    <div class="footer-left"><span>© <span id="year">2026</span> Aias</span><span class="footer-note">Built with curiosity &amp; a little code.</span></div>
+    <div class="footer-time"><span class="status-dot" aria-hidden="true"></span> BEIJING, CN <span aria-hidden="true">·</span> <time id="beijing-time" aria-label="北京当前时间">UTC+8</time></div>
+    <a class="back-top" href="#top">BACK TO TOP <svg class="icon" aria-hidden="true"><use href="#i-up"/></svg></a>
+  </footer>
+
+  <script>
+    (() => {
+      'use strict';
+      // Keep the small personal details current without external requests.
+      document.getElementById('year').textContent = new Date().getFullYear();
+      const time = document.getElementById('beijing-time');
+      const clock = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+      });
+      function updateClock() {
+        const now = new Date();
+        time.textContent = clock.format(now);
+        time.dateTime = now.toISOString();
+      }
+      updateClock();
+      let clockTimer = setInterval(updateClock, 1000);
+
+      // Reflect the section in view in the header navigation.
+      const links = Array.from(document.querySelectorAll('.nav-link'));
+      const sections = links.map(link => document.querySelector(link.getAttribute('href')));
+      function updateNavigation() {
+        let current = sections[0];
+        for (const section of sections) {
+          if (section.getBoundingClientRect().top <= window.innerHeight * .38) current = section;
+        }
+        for (const link of links) {
+          if (link.hash === '#' + current.id) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        }
+      }
+      let navigationPending = false;
+      window.addEventListener('scroll', () => {
+        if (navigationPending) return;
+        navigationPending = true;
+        requestAnimationFrame(() => { updateNavigation(); navigationPending = false; });
+      }, { passive: true });
+      window.addEventListener('resize', updateNavigation);
+      updateNavigation();
+
+      // A locally rendered point cloud: no images, libraries, or network dependency.
+      const canvas = document.getElementById('orb');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const points = [];
+      const count = 1050;
+      const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+      for (let i = 0; i < count; i++) {
+        const y = 1 - (i / (count - 1)) * 2;
+        const radius = Math.sqrt(1 - y * y);
+        const theta = goldenAngle * i;
+        points.push([Math.cos(theta) * radius, y, Math.sin(theta) * radius]);
+      }
+      let width = 0, height = 0, angle = .35, frame = 0, previousTime = 0, inView = true;
+      const tilt = -.24;
+      function project(x, y, z, scale, cx, cy) {
+        const rx = x * Math.cos(angle) + z * Math.sin(angle);
+        const rz = -x * Math.sin(angle) + z * Math.cos(angle);
+        const ry = y * Math.cos(tilt) - rz * Math.sin(tilt);
+        const depth = y * Math.sin(tilt) + rz * Math.cos(tilt);
+        return [cx + rx * scale, cy + ry * scale, depth];
+      }
+      function drawCurve(coordinates, scale, cx, cy, alpha, lineWidth) {
+        ctx.lineWidth = lineWidth;
+        for (let i = 1; i < coordinates.length; i++) {
+          const a = project(...coordinates[i - 1], scale, cx, cy);
+          const b = project(...coordinates[i], scale, cx, cy);
+          const opacity = alpha * (.28 + ((a[2] + 1) / 2) * .72);
+          ctx.strokeStyle = 'rgba(177, 225, 113, ' + opacity + ')';
+          ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+        }
+      }
+      const latitudeCurves = [], longitudeCurves = [];
+      for (let lat = -3; lat <= 3; lat++) {
+        const phi = lat * Math.PI / 9, curve = [];
+        for (let step = 0; step <= 80; step++) {
+          const theta = step / 80 * Math.PI * 2;
+          curve.push([Math.cos(theta) * Math.cos(phi), Math.sin(phi), Math.sin(theta) * Math.cos(phi)]);
+        }
+        latitudeCurves.push(curve);
+      }
+      for (let lon = 0; lon < 10; lon++) {
+        const theta = lon / 10 * Math.PI, curve = [];
+        for (let step = 0; step <= 80; step++) {
+          const phi = step / 80 * Math.PI * 2;
+          curve.push([Math.cos(theta) * Math.cos(phi), Math.sin(phi), Math.sin(theta) * Math.cos(phi)]);
+        }
+        longitudeCurves.push(curve);
+      }
+      function draw() {
+        if (!width || !height) return;
+        ctx.clearRect(0, 0, width, height);
+        const cx = width * .5, cy = height * .5;
+        const scale = Math.min(width * .32, height * .36);
+        // Quiet construction marks around the central sphere.
+        ctx.strokeStyle = 'rgba(158, 180, 133, .14)'; ctx.lineWidth = .7;
+        ctx.setLineDash([2, 5]); ctx.beginPath();
+        ctx.arc(cx, cy, scale * 1.28, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        ctx.strokeStyle = 'rgba(185, 211, 156, .25)';
+        for (let i = 0; i < 4; i++) {
+          const a = i * Math.PI / 2;
+          ctx.beginPath();
+          ctx.moveTo(cx + Math.cos(a) * scale * 1.23, cy + Math.sin(a) * scale * 1.23);
+          ctx.lineTo(cx + Math.cos(a) * scale * 1.33, cy + Math.sin(a) * scale * 1.33); ctx.stroke();
+        }
+        for (const curve of latitudeCurves) drawCurve(curve, scale, cx, cy, .24, .65);
+        for (const curve of longitudeCurves) drawCurve(curve, scale, cx, cy, .22, .65);
+        const projected = points.map(point => project(...point, scale, cx, cy)).sort((a, b) => a[2] - b[2]);
+        for (const point of projected) {
+          const front = (point[2] + 1) / 2;
+          ctx.fillStyle = 'rgba(194, 249, 112, ' + (.1 + front * .65) + ')';
+          ctx.beginPath(); ctx.arc(point[0], point[1], .55 + front * .65, 0, Math.PI * 2); ctx.fill();
+        }
+        // Two asymmetric orbits give the globe its own little solar system.
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(-.39);
+        ctx.lineWidth = .8; ctx.strokeStyle = 'rgba(194, 249, 112, .55)';
+        ctx.beginPath(); ctx.ellipse(0, 0, scale * 1.5, scale * .36, 0, 0, Math.PI * 2); ctx.stroke();
+        const satelliteAngle = angle * .65 + .55;
+        const sx = Math.cos(satelliteAngle) * scale * 1.5, sy = Math.sin(satelliteAngle) * scale * .36;
+        ctx.shadowBlur = 16; ctx.shadowColor = '#c2f970'; ctx.fillStyle = '#d5ff9e';
+        ctx.beginPath(); ctx.arc(sx, sy, 3.4, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0; ctx.restore();
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(.65);
+        ctx.strokeStyle = 'rgba(194, 249, 112, .19)'; ctx.lineWidth = .6;
+        ctx.beginPath(); ctx.ellipse(0, 0, scale * 1.29, scale * .45, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      }
+      function animate(timestamp) {
+        frame = 0;
+        if (previousTime) angle += Math.min(timestamp - previousTime, 64) * .000045;
+        previousTime = timestamp; draw();
+        if (!motion.matches && inView && !document.hidden) frame = requestAnimationFrame(animate);
+      }
+      function syncAnimation() {
+        if (frame) cancelAnimationFrame(frame);
+        frame = 0; previousTime = 0; draw();
+        if (!motion.matches && inView && !document.hidden) frame = requestAnimationFrame(animate);
+      }
+      function resizeCanvas() {
+        const bounds = canvas.getBoundingClientRect(); width = bounds.width; height = bounds.height;
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0); draw();
+      }
+      if ('ResizeObserver' in window) new ResizeObserver(resizeCanvas).observe(canvas);
+      else window.addEventListener('resize', resizeCanvas);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(entries => {
+          inView = entries[0].isIntersecting; syncAnimation();
+        }, { rootMargin: '60px' }).observe(canvas);
+      }
+      motion.addEventListener('change', syncAnimation);
+      document.addEventListener('visibilitychange', () => {
+        clearInterval(clockTimer);
+        if (!document.hidden) { updateClock(); clockTimer = setInterval(updateClock, 1000); }
+        syncAnimation();
+      });
+      resizeCanvas(); syncAnimation();
+    })();
+  </script>
 </body>
 </html>
