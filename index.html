@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Aias 的个人主页。Apache ShenYu PMC 成员，探索开源、基础设施与 AI Agent。这里收藏我的技术电子书、开源工具和新的想法。">
+  <meta name="description" content="Aias 的个人主页。Apache ShenYu PMC 成员，探索开源、基础设施与 AI Agent。这里收藏我的技术电子书和新的想法。">
   <meta name="theme-color" content="#101211">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Aias — 保持好奇，持续构建。">
@@ -86,32 +86,13 @@
     .scroll-link .icon { width: 15px; height: 15px; transition: transform .2s; }
     .scroll-link:hover { color: var(--accent); }
     .scroll-link:hover .icon { transform: translateY(3px); }
-    .projects { padding-top: 70px; }
     .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 29px; }
     .section-kicker { margin: 0 0 13px; color: var(--dim); font: 10px var(--mono); letter-spacing: 1px; }
     .section-kicker span { color: var(--accent); margin-right: 13px; }
     h2 { margin: 0; font-size: 29px; font-weight: 500; letter-spacing: -.04em; }
     .section-heading > .text-link { margin-bottom: 4px; flex-shrink: 0; white-space: nowrap; font-family: var(--sans); font-size: 12px; color: var(--muted); gap: 15px; }
     .section-heading > .text-link:hover { color: var(--accent); }
-    .project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 17px; }
-    .project-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 25px 25px 20px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); transition: transform .25s, border-color .25s, background .25s; }
-    .project-card:hover { transform: translateY(-5px); border-color: #687c4c; background: var(--surface-hover); }
-    .project-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
-    .project-symbol { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #39432f; border-radius: 9px; background: #252e1d; color: var(--accent); }
-    .project-symbol .icon { width: 23px; height: 23px; }
-    .project-card:nth-child(1) .project-symbol { background: #242930; border-color: #38404b; color: #b8c9e8; }
-    .project-card:nth-child(2) .project-symbol { background: #2d2820; border-color: #453b2b; color: #d8bf94; }
-    .project-arrow { display: grid; place-items: center; width: 27px; height: 27px; color: var(--dim); transition: color .2s, transform .2s; }
-    .project-card:hover .project-arrow { color: var(--accent); transform: translate(2px, -2px); }
-    .project-arrow .icon { width: 19px; height: 19px; }
-    .project-category { margin: 0 0 8px; color: var(--dim); font: 9px var(--mono); letter-spacing: 1px; }
     h3 { margin: 0 0 12px; font-size: 19px; font-weight: 550; letter-spacing: -.04em; }
-    .project-description { flex: 1; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.9; }
-    .project-meta { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 25px; padding-top: 17px; border-top: 1px solid var(--line); font: 10px var(--mono); color: #929b89; }
-    .language { display: inline-flex; align-items: center; gap: 6px; }
-    .language::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #75b6d2; }
-    .language.python::before { background: #dfc36f; }
-    .project-type { color: var(--dim); font-size: 9px; }
     .about { display: grid; grid-template-columns: 1fr 1.37fr; gap: 80px; align-items: start; padding-block: 85px 77px; border-bottom: 1px solid var(--line); }
     .about h2 { line-height: 1.7; font-size: 27px; letter-spacing: .01em; }
     .about h2 span { color: #8b9481; }
@@ -151,7 +132,6 @@
       .hero-motto { font-size: 18px; }
       .hero-description { font-size: 13px; }
       .interests { gap: 13px; font-size: 9px; }
-      .project-card { padding: 21px 19px 18px; }
       h3 { font-size: 17px; }
       .about { gap: 48px; }
       .about h2 { font-size: 24px; }
@@ -186,17 +166,11 @@
       .interests .icon { width: 12px; height: 12px; }
       .scroll-link { font-size: 0; gap: 0; }
       .scroll-link .icon { width: 18px; height: 18px; }
-      .projects { padding-top: 47px; }
       .section-heading { margin-bottom: 23px; gap: 10px; }
       .section-kicker { font-size: 9px; margin-bottom: 12px; }
       h2 { font-size: 25px; }
       .section-heading > .text-link { font-size: 11px; gap: 6px; }
-      .project-grid { grid-template-columns: 1fr; gap: 13px; }
-      .project-card { padding: 22px; }
-      .project-card-top { margin-bottom: 23px; }
       h3 { font-size: 20px; }
-      .project-description { font-size: 13px; }
-      .project-meta { margin-top: 23px; }
       .about { grid-template-columns: 1fr; gap: 23px; padding-block: 55px 49px; }
       .about h2 { font-size: 25px; }
       .about-copy { padding-top: 0; }
@@ -336,7 +310,6 @@
       .paths-heading > span { font-size: 8px; }
       .reading-path dt { margin-bottom: 5px; }
       .reading-path dd { font-size: 11px; }
-      .projects { padding-top: 49px; }
     }
     @media (max-width: 360px) {
       .shelf-index { display: none; }
@@ -375,7 +348,6 @@
     </a>
     <nav class="header-nav" aria-label="主要导航">
       <a class="nav-link" href="#books">书架</a>
-      <a class="nav-link" href="#projects">项目</a>
       <a class="nav-link" href="#about">关于</a>
     </nav>
     <a class="header-link" href="https://github.com/Aias00" target="_blank" rel="noopener noreferrer" aria-label="访问 Aias 的 GitHub（新窗口）"><span class="header-link-label">GitHub</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -391,7 +363,6 @@
           <p class="hero-description"><a href="https://shenyu.apache.org/team/#pmc" target="_blank" rel="noopener noreferrer">Apache ShenYu PMC 成员</a>。探索开源、基础设施与 AI Agent，把想法写成代码，也把学习过程整理成可以一起读的书。</p>
           <div class="hero-actions">
             <a class="button-primary" href="#books">浏览电子书架 <svg class="icon" aria-hidden="true"><use href="#i-down"/></svg></a>
-            <a class="text-link" href="#projects">开源工具 <svg class="icon" aria-hidden="true" style="width:15px;height:15px"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
         <div class="hero-visual" aria-hidden="true">
@@ -607,31 +578,8 @@
       </div>
     </section>
 
-    <section class="projects" id="projects" aria-labelledby="projects-title">
-      <div class="section-heading">
-        <div><p class="section-kicker"><span>02 /</span> OPEN SOURCE TOOLS</p><h2 id="projects-title">读过之后，动手构建<span class="accent">.</span></h2></div>
-        <a class="text-link" href="https://github.com/Aias00?tab=repositories" target="_blank" rel="noopener noreferrer">全部项目 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      </div>
-      <div class="project-grid">
-        <a class="project-card" href="https://github.com/Aias00/agent-skills" target="_blank" rel="noopener noreferrer" aria-labelledby="project-skills">
-          <div class="project-card-top"><span class="project-symbol"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></span><span class="project-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
-          <p class="project-category">AI &amp; AUTOMATION</p>
-          <h3 id="project-skills">Agent Skills</h3>
-          <p class="project-description">把可复用的工作流变成 Agent 技能，连接浏览器扩展、技术内容与日常的创作过程。</p>
-          <div class="project-meta"><span class="language python">Python</span><span class="project-type">Agent 技能库</span></div>
-        </a>
-        <a class="project-card" href="https://github.com/Aias00/skills-manager" target="_blank" rel="noopener noreferrer" aria-labelledby="project-manager">
-          <div class="project-card-top"><span class="project-symbol"><svg class="icon" aria-hidden="true"><use href="#i-terminal"/></svg></span><span class="project-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
-          <p class="project-category">TOOLS FOR BUILDERS</p>
-          <h3 id="project-manager">Skills Manager</h3>
-          <p class="project-description">为 Agent Skills 做一个更顺手的管理工具。通过 Web UI 与 API，扫描、索引和管理技能。</p>
-          <div class="project-meta"><span class="language">Go</span><span class="project-type">开发者工具</span></div>
-        </a>
-      </div>
-    </section>
-
     <section class="about" id="about" aria-labelledby="about-title">
-      <div><p class="section-kicker"><span>03 /</span> A LITTLE ABOUT ME</p><h2 id="about-title">代码之外，<br><span>是一个好奇的人。</span></h2></div>
+      <div><p class="section-kicker"><span>02 /</span> A LITTLE ABOUT ME</p><h2 id="about-title">代码之外，<br><span>是一个好奇的人。</span></h2></div>
       <div class="about-copy">
         <p>我是 Aias，<strong>Apache ShenYu PMC 成员</strong>，目前在北京。开源是我与世界交流的方式，也让我遇见很多一起解决问题的人。</p>
         <p>最近的探索围绕 <strong>AI Agent、开发者工具和基础设施</strong>展开。我喜欢把学习过程整理下来，也把有用的想法做成可以分享的项目。</p>
@@ -640,7 +588,7 @@
     </section>
 
     <section class="contact" id="contact" aria-labelledby="contact-title">
-      <div><p class="section-kicker"><span>04 /</span> LET'S CONNECT</p><h2 id="contact-title">好的想法，从一句 <span class="accent">Hello</span> 开始。</h2><p class="contact-description">聊聊开源、交流想法，或只是打个招呼。<br>很高兴在互联网的这个角落遇见你。</p></div>
+      <div><p class="section-kicker"><span>03 /</span> LET'S CONNECT</p><h2 id="contact-title">好的想法，从一句 <span class="accent">Hello</span> 开始。</h2><p class="contact-description">聊聊开源、交流想法，或只是打个招呼。<br>很高兴在互联网的这个角落遇见你。</p></div>
       <a class="contact-link" href="https://github.com/Aias00" target="_blank" rel="noopener noreferrer">在 GitHub 找到我 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </section>
   </main>
