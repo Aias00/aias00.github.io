@@ -6,38 +6,58 @@
 
 发布仓库：https://github.com/Aias00/aias00.github.io
 
-## 更新网站
+## 技术选型
 
-修改 `index.html`，提交并推送到本仓库的 `main` 分支。
-GitHub Actions 会自动将网站文件同步到发布仓库的 `master` 分支，然后由 GitHub Pages 发布。
-也可在 Actions → Publish homepage → Run workflow 手动发布。
+首页使用 Astro，构建时生成静态 HTML、CSS 和浏览器脚本，发布到 GitHub Pages。书架内容不依赖客户端渲染；禁用 JavaScript 仍能浏览所有书籍和阅读、下载链接。分类筛选、粒子动画和页脚时间采用原生 JavaScript。
 
-纯静态页面，无需安装依赖或构建。页面内容和样式都在 `index.html`。
-请在源码仓库修改；发布仓库的手动修改会在下次同步时被覆盖。
+## 本地开发
 
-## 本地预览与修改
-
-直接用浏览器打开 `index.html`，或在仓库目录运行：
+需要 Node.js 22.22.0 或更新版本；推荐按 `.nvmrc` 切换版本。
 
 ```sh
-python3 -m http.server 4187 --bind 127.0.0.1
+npm ci
+npm run dev
 ```
 
-然后访问 http://127.0.0.1:4187/ 。
+访问 http://localhost:4321/ 。检查与生产预览：
 
-页面采用深色背景与青绿色点缀，按“个人首屏 → 电子书架与阅读路线 → 关于与联系”排列。颜色在 `:root` 中统一配置，书目在 `#book-grid` 中修改。所有图形和图标均在页面内绘制，不依赖外部字体、图片或脚本。
+```sh
+npm run check
+npm run build
+npm run preview
+```
 
-电子书架默认展示全部 12 本书，支持“后端与基础设施 / AI 与智能体 / 开源实践”筛选。每本书分别提供在线阅读和 EPUB 下载；禁用 JavaScript 时仍可浏览所有书目及链接。完整分类、阅读顺序与维护约定见源码仓库的 [内容规划](https://github.com/Aias00/aias-homepage/blob/main/CONTENT_PLAN.md)。
+浏览器回归检查（首次运行先安装测试浏览器）：
 
-移动端（820px 及以下）书名使用 20px、简介与阅读入口使用 16px 字号，书籍简介独占整行，阅读和下载按钮提供至少 48px 点击高度。
+```sh
+npx playwright install chromium
+npm test
+```
 
-首屏粒子球会在离开可视区域或切换标签页后暂停；系统开启“减少动态效果”时显示静态图形。页脚时间使用北京时间。
+生产文件生成到 `dist/`，不提交构建产物。修改源码后需重新构建，不能直接用文件协议打开 Astro 源文件。
 
-## CI 配置
+## 内容与样式
 
-`.github/workflows/deploy.yml` 使用 `PAGES_DEPLOY_KEY` Actions secret。
-它对应发布仓库中名为 `aias-homepage CI` 的可写 deploy key，只用于该发布仓库。
-更换密钥时需同时更新 secret 和 deploy key。
+- `src/data/books.ts`：书目、分类、阅读和 EPUB 入口；书卡编号、总数与分类数量由数据生成。
+- `src/components/`：首屏、书架、书卡、阅读路线、关于、联系和页脚。
+- `src/layouts/SiteLayout.astro`：页面元信息、全局样式与脚本入口。
+- `src/styles/global.css`：配色、排版和移动端布局。
+- `src/scripts/homepage.js`：筛选、导航状态、时钟和粒子球。
+- `public/`：原样复制到构建输出的静态文件。
+
+页面按“个人首屏 → 电子书架与阅读路线 → 关于与联系”排列。书架默认展示全部 12 本书，支持“后端与基础设施 / AI 与智能体 / 开源实践”筛选。完整分类、阅读顺序与维护约定见 [内容规划](CONTENT_PLAN.md)。
+
+移动端（820px 及以下）书名使用 20px、简介与阅读入口使用 16px 字号，简介独占整行，阅读和下载按钮提供至少 48px 点击高度。
+
+首屏粒子球会在离开可视区域或切换标签页后暂停；系统开启“减少动态效果”时显示静态图形。页脚时间使用北京时间。字体、图标和图形均由本站提供。
+
+## 发布
+
+提交并推送到本仓库的 `main` 分支后，GitHub Actions 安装依赖、执行类型检查、构建及浏览器回归测试，再将 `dist/` 同步到发布仓库的 `master` 分支，由 GitHub Pages 发布。也可在 Actions → Publish homepage → Run workflow 手动发布。
+
+请在源码仓库修改；发布仓库的手动修改会在下次同步时被覆盖。
+
+`.github/workflows/deploy.yml` 使用 `PAGES_DEPLOY_KEY` Actions secret。它对应发布仓库中名为 `aias-homepage CI` 的可写 deploy key，只用于该发布仓库。更换密钥时需同时更新 secret 和 deploy key。
 
 旧博客保留在发布仓库的历史提交 `e6a8efc07afbfbb53da7ce40b76334b0961661f8` 中。
 
