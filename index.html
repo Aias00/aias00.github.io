@@ -243,7 +243,7 @@
     .paths-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
     .paths-heading h3 { margin: 0; font-size: 13px; font-weight: 450; letter-spacing: 0; }
     .paths-heading > span { color: var(--dim); font: 9px var(--mono); letter-spacing: 1px; }
-    .path-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 26px; }
+    .path-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }
     .reading-path { margin: 0; }
     .reading-path dt { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 11px; color: #cbd3c0; }
     .reading-path dt span { color: var(--accent); font: 9px var(--mono); }
@@ -379,7 +379,7 @@
       </div>
       <div class="hero-bottom">
         <div class="interests" aria-label="书架概览">
-          <span><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> 09 本中文电子书</span>
+          <span><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> 12 本中文电子书</span>
           <span class="divider" aria-hidden="true">/</span>
           <span>03 个阅读方向</span>
           <span class="divider" aria-hidden="true">/</span>
@@ -391,17 +391,17 @@
 
     <section class="books" id="books" aria-labelledby="books-title">
       <div class="section-heading">
-        <div><p class="section-kicker"><span>01 /</span> THE BOOKSHELF</p><h2 id="books-title">把探索，写成一本书<span class="accent">.</span></h2><p class="section-description">九本中文技术电子书，三个阅读方向。在线翻阅，也可以下载 EPUB 慢慢读。</p></div>
+        <div><p class="section-kicker"><span>01 /</span> THE BOOKSHELF</p><h2 id="books-title">把探索，写成一本书<span class="accent">.</span></h2><p class="section-description">十二本中文技术电子书，三个阅读方向。在线翻阅，也可以下载 EPUB 慢慢读。</p></div>
         <div class="shelf-index"><span>08</span> BOOKS / <span>03</span> TOPICS</div>
       </div>
       <div class="shelf-toolbar" id="shelf-toolbar" hidden>
         <div class="shelf-filters" role="group" aria-label="按主题筛选电子书">
-          <button class="shelf-filter" type="button" data-filter="all" aria-pressed="true" aria-controls="book-grid">全部 <span>9</span></button>
+          <button class="shelf-filter" type="button" data-filter="all" aria-pressed="true" aria-controls="book-grid">全部 <span>12</span></button>
           <button class="shelf-filter" type="button" data-filter="backend" aria-pressed="false" aria-controls="book-grid">后端与基础设施 <span>5</span></button>
-          <button class="shelf-filter" type="button" data-filter="agents" aria-pressed="false" aria-controls="book-grid">AI 与智能体 <span>3</span></button>
+          <button class="shelf-filter" type="button" data-filter="agents" aria-pressed="false" aria-controls="book-grid">AI 与智能体 <span>6</span></button>
           <button class="shelf-filter" type="button" data-filter="opensource" aria-pressed="false" aria-controls="book-grid">开源实践 <span>1</span></button>
         </div>
-        <span class="shelf-results" id="shelf-results" role="status" aria-live="polite" aria-atomic="true">共 9 本电子书</span>
+        <span class="shelf-results" id="shelf-results" role="status" aria-live="polite" aria-atomic="true">共 12 本电子书</span>
       </div>
       <div class="book-grid" id="book-grid">
         <article class="book-card" id="book-java" data-topic="backend" aria-labelledby="title-java">
@@ -548,15 +548,69 @@
             </div>
           </div>
         </article>
+        <article class="book-card" id="book-codex" data-topic="agents" aria-labelledby="title-codex">
+          <div class="book-cover" style="--cover:#b7cbd1;--cover-ink:#293f48" aria-hidden="true">
+            <span class="cover-series">AIAS / FIELD NOTES</span>
+            <div><div class="cover-title">Codex<br>工程导读</div><p class="cover-subtitle">AI 编程助手的工程导读</p></div>
+            <div class="cover-art"><svg viewBox="0 0 82 54"><rect x="27" y="17" width="28" height="20" rx="4"/><path d="M41 7v10M41 37v10M7 27h20m28 0h20M14 10l13 10m28 14 13 10M14 44l13-10m28-14 13-10"/><circle cx="36" cy="27" r="2"/><circle cx="46" cy="27" r="2"/></svg></div>
+            <div class="cover-footer"><span>AIAS</span><span>NO. 09</span></div>
+          </div>
+          <div class="book-info">
+            <p class="book-topic">09 / AGENT ENGINEERING</p>
+            <h3 id="title-codex">从零读懂 Codex 工程</h3>
+            <p class="book-description">从终端与 Git 基础出发，理解代理循环、工具执行、权限与沙箱，用练习读懂 Codex 工程。</p>
+            <div class="book-details"><span>14 章 · 2 个附录</span><span class="detail-separator" aria-hidden="true">/</span><span>源码与工程</span></div>
+            <div class="book-actions">
+              <a class="book-read" href="https://aias00.github.io/codex-engineering-book/" target="_blank" rel="noopener noreferrer" aria-label="在线阅读《从零读懂 Codex 工程》（新窗口）">在线阅读 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a class="book-download" href="https://aias00.github.io/codex-engineering-book/downloads/codex-engineering-book.epub" target="_blank" rel="noopener noreferrer" aria-label="下载《从零读懂 Codex 工程》EPUB">下载 EPUB <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg></a>
+            </div>
+          </div>
+        </article>
+        <article class="book-card" id="book-pi" data-topic="agents" aria-labelledby="title-pi">
+          <div class="book-cover" style="--cover:#dbc6a4;--cover-ink:#493a29" aria-hidden="true">
+            <span class="cover-series">AIAS / FIELD NOTES</span>
+            <div><div class="cover-title">Pi<br>工程入门</div><p class="cover-subtitle">AI 编程助手的工程导读</p></div>
+            <div class="cover-art"><svg viewBox="0 0 82 54"><rect x="27" y="17" width="28" height="20" rx="4"/><path d="M41 7v10M41 37v10M7 27h20m28 0h20M14 10l13 10m28 14 13 10M14 44l13-10m28-14 13-10"/><circle cx="36" cy="27" r="2"/><circle cx="46" cy="27" r="2"/></svg></div>
+            <div class="cover-footer"><span>AIAS</span><span>NO. 10</span></div>
+          </div>
+          <div class="book-info">
+            <p class="book-topic">10 / AGENT ENGINEERING</p>
+            <h3 id="title-pi">从零读懂 Pi：AI 编程助手的工程入门</h3>
+            <p class="book-description">沿着输入、工具调用和 Agent 循环认识 Pi，逐步学习会话、扩展机制与开发测试。</p>
+            <div class="book-details"><span>16 章 · 3 个附录</span><span class="detail-separator" aria-hidden="true">/</span><span>编程助手入门</span></div>
+            <div class="book-actions">
+              <a class="book-read" href="https://aias00.github.io/pi-beginner-book-zh/" target="_blank" rel="noopener noreferrer" aria-label="在线阅读《从零读懂 Pi：AI 编程助手的工程入门》（新窗口）">在线阅读 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a class="book-download" href="https://aias00.github.io/pi-beginner-book-zh/downloads/pi-beginner.epub" target="_blank" rel="noopener noreferrer" aria-label="下载《从零读懂 Pi：AI 编程助手的工程入门》EPUB">下载 EPUB <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg></a>
+            </div>
+          </div>
+        </article>
+        <article class="book-card" id="book-harness" data-topic="agents" aria-labelledby="title-harness">
+          <div class="book-cover" style="--cover:#b7bdd7;--cover-ink:#30394e" aria-hidden="true">
+            <span class="cover-series">AIAS / FIELD NOTES</span>
+            <div><div class="cover-title">DeepSeek<br>Harness</div><p class="cover-subtitle">AI 编程助手的工程导读</p></div>
+            <div class="cover-art"><svg viewBox="0 0 82 54"><rect x="27" y="17" width="28" height="20" rx="4"/><path d="M41 7v10M41 37v10M7 27h20m28 0h20M14 10l13 10m28 14 13 10M14 44l13-10m28-14 13-10"/><circle cx="36" cy="27" r="2"/><circle cx="46" cy="27" r="2"/></svg></div>
+            <div class="cover-footer"><span>AIAS</span><span>NO. 11</span></div>
+          </div>
+          <div class="book-info">
+            <p class="book-topic">11 / AGENT ENGINEERING</p>
+            <h3 id="title-harness">从零认识 DeepSeek Harness</h3>
+            <p class="book-description">从项目用途与任务流程入门，认识插件协作、工程目录和排错方法，建立源码阅读地图。</p>
+            <div class="book-details"><span>12 章</span><span class="detail-separator" aria-hidden="true">/</span><span>工程导读</span></div>
+            <div class="book-actions">
+              <a class="book-read" href="https://aias00.github.io/deepseek-harness-book/" target="_blank" rel="noopener noreferrer" aria-label="在线阅读《从零认识 DeepSeek Harness》（新窗口）">在线阅读 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <a class="book-download" href="https://aias00.github.io/deepseek-harness-book/deepseek-harness-book.epub" target="_blank" rel="noopener noreferrer" aria-label="下载《从零认识 DeepSeek Harness》EPUB">下载 EPUB <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg></a>
+            </div>
+          </div>
+        </article>
         <article class="book-card" id="book-opensource" data-topic="opensource" aria-labelledby="title-opensource">
           <div class="book-cover" style="--cover:#d7c18b;--cover-ink:#4c3c1e" aria-hidden="true">
             <span class="cover-series">AIAS / FIELD NOTES</span>
             <div><div class="cover-title">Apache<br>开源入门</div><p class="cover-subtitle">从第一个 PR 开始</p></div>
             <div class="cover-art"><svg viewBox="0 0 82 54"><circle cx="41" cy="26" r="8"/><circle cx="16" cy="10" r="4"/><circle cx="67" cy="10" r="4"/><circle cx="16" cy="43" r="4"/><circle cx="67" cy="43" r="4"/><path d="m20 12 15 10m12 0 16-10M20 41l15-10m12 0 16 10M41 3v15m0 16v16"/></svg></div>
-            <div class="cover-footer"><span>AIAS</span><span>NO. 09</span></div>
+            <div class="cover-footer"><span>AIAS</span><span>NO. 12</span></div>
           </div>
           <div class="book-info">
-            <p class="book-topic">09 / OPEN SOURCE</p>
+            <p class="book-topic">12 / OPEN SOURCE</p>
             <h3 id="title-opensource">从零参与 Apache 开源</h3>
             <p class="book-description">从选项目与第一个 PR 开始，了解持续贡献、发布协作与开源社区治理。</p>
             <div class="book-details"><span>13 章</span><span class="detail-separator" aria-hidden="true">/</span><span>贡献者入门</span></div>
@@ -572,7 +626,8 @@
         <div class="path-grid">
           <dl class="reading-path"><dt><span>01</span> 后端工程，从原理到实践</dt><dd><a href="#book-java">Java 并发</a><span class="path-arrow" aria-hidden="true">→</span><a href="#book-jvm">JVM 排障</a><br><a href="#book-redis">Redis</a><span class="path-arrow" aria-hidden="true">→</span><a href="#book-envoy">Envoy</a><span class="path-arrow" aria-hidden="true">→</span><a href="#book-gateway">API 网关</a></dd></dl>
           <dl class="reading-path"><dt><span>02</span> Agent 工程，从入门到专题</dt><dd><a href="#book-agent">Agent 工程入门与实战</a>：从知识库助手开始。<br><a href="#book-sandbox">Sandbox</a>：理解执行与隔离边界。<br><a href="#book-memory">Agent 记忆</a>：探索记忆与系统设计。</dd></dl>
-          <dl class="reading-path"><dt><span>03</span> 迈出开源贡献的第一步</dt><dd>从 <a href="#book-opensource">Apache 开源入门</a> 开始：<br>选项目 → 第一个 PR → 持续贡献。</dd></dl>
+          <dl class="reading-path"><dt><span>03</span> 读懂 AI 编程助手</dt><dd><a href="#book-codex">Codex 工程</a>：代理循环与权限边界。<br><a href="#book-pi">Pi 工程入门</a>：会话、工具与扩展。<br><a href="#book-harness">DeepSeek Harness</a>：任务流程与插件协作。</dd></dl>
+          <dl class="reading-path"><dt><span>04</span> 迈出开源贡献的第一步</dt><dd>从 <a href="#book-opensource">Apache 开源入门</a> 开始：<br>选项目 → 第一个 PR → 持续贡献。</dd></dl>
         </div>
         <p class="reading-note">阅读路线是选读建议，可按兴趣单独阅读。Envoy 还提供 <a href="https://github.com/Aias00/envoy-learning-book/releases/tag/v1.0.0" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;text-underline-offset:3px">PDF 等格式</a>。</p>
       </div>

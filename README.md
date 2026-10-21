@@ -27,7 +27,7 @@ python3 -m http.server 4187 --bind 127.0.0.1
 
 页面采用深色背景与青绿色点缀，按“个人首屏 → 电子书架与阅读路线 → 关于与联系”排列。颜色在 `:root` 中统一配置，书目在 `#book-grid` 中修改。所有图形和图标均在页面内绘制，不依赖外部字体、图片或脚本。
 
-电子书架默认展示全部 9 本书，支持“后端与基础设施 / AI 与智能体 / 开源实践”筛选。每本书分别提供在线阅读和 EPUB 下载；禁用 JavaScript 时仍可浏览所有书目及链接。完整分类、阅读顺序与维护约定见源码仓库的 [内容规划](https://github.com/Aias00/aias-homepage/blob/main/CONTENT_PLAN.md)。
+电子书架默认展示全部 12 本书，支持“后端与基础设施 / AI 与智能体 / 开源实践”筛选。每本书分别提供在线阅读和 EPUB 下载；禁用 JavaScript 时仍可浏览所有书目及链接。完整分类、阅读顺序与维护约定见源码仓库的 [内容规划](https://github.com/Aias00/aias-homepage/blob/main/CONTENT_PLAN.md)。
 
 首屏粒子球会在离开可视区域或切换标签页后暂停；系统开启“减少动态效果”时显示静态图形。页脚时间使用北京时间。
 
@@ -38,3 +38,7 @@ python3 -m http.server 4187 --bind 127.0.0.1
 更换密钥时需同时更新 secret 和 deploy key。
 
 旧博客保留在发布仓库的历史提交 `e6a8efc07afbfbb53da7ce40b76334b0961661f8` 中。
+
+## 阅读站统一样式
+
+共用样式和主题控件位于 `reader-theme/`。默认浅色，支持低饱和深色；偏好在同域书站间共享。运行 `python3 scripts/sync_reader_theme.py --checkout-root /path/to/book/repos` 将其同步到各书的源码与发布文件，再执行对应站点的构建和检查。样式随站点发布，不依赖外部资源，也不修改 EPUB。详细映射见 [阅读器维护说明](reader-theme/README.md)。
