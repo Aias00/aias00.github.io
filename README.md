@@ -8,7 +8,7 @@
 
 ## 技术选型
 
-首页使用 Astro，构建时生成静态 HTML、CSS 和浏览器脚本，发布到 GitHub Pages。书架内容不依赖客户端渲染；禁用 JavaScript 仍能浏览所有书籍和阅读、下载链接。分类筛选、粒子动画和页脚时间采用原生 JavaScript。
+网站使用 Astro，构建时生成静态 HTML、CSS 和浏览器脚本，发布到 GitHub Pages。首页、电子书架和自我介绍分别独立成页；禁用 JavaScript 仍能在三页之间导航，浏览所有书籍和阅读、下载链接。分类筛选、粒子动画和页脚时间采用原生 JavaScript。
 
 ## 本地开发
 
@@ -39,13 +39,17 @@ npm test
 ## 内容与样式
 
 - `src/data/books.ts`：书目、分类、阅读和 EPUB 入口；书卡编号、总数与分类数量由数据生成。
+- `src/pages/`：`index.astro` 为首页，`books.astro` 为电子书架，`about.astro` 为自我介绍与联系页。
 - `src/components/`：首屏、关于、书架、书卡、阅读路线、联系和页脚。
-- `src/layouts/SiteLayout.astro`：页面元信息、全局样式与脚本入口。
+- `src/layouts/SiteLayout.astro`：各页面独立的标题、描述与规范链接，全局样式与脚本入口。
 - `src/styles/global.css`：配色、排版和移动端布局。
-- `src/scripts/homepage.js`：筛选、导航状态、时钟和粒子球。
+- `src/scripts/site.js`：全站时钟与旧首页锚点兼容；导航当前页状态在构建时生成。
+- `src/scripts/bookshelf.js`、`src/scripts/orb.js`：分别仅在书架页加载筛选脚本、在首页加载粒子球脚本。
 - `public/`：原样复制到构建输出的静态文件。
 
-页面按“个人首屏 → 关于我 → 电子书架与阅读路线 → 联系”排列。书架默认展示全部 12 本书，支持“后端与基础设施 / AI 与智能体 / 开源实践”筛选。完整分类、阅读顺序与维护约定见 [内容规划](CONTENT_PLAN.md)。
+全站导航为“首页 / 书架 / 关于”。首页 `/` 保留个人首屏与书架入口；`/books/` 承载电子书架与阅读路线；`/about/` 展示自我介绍和联系方式。书架默认展示全部 12 本书，支持“后端与基础设施 / AI 与智能体 / 开源实践”筛选。完整分类、阅读顺序与维护约定见 [内容规划](CONTENT_PLAN.md)。
+
+旧首页的 `#books`、`#book-*` 链接自动转到书架页，`#about`、`#contact` 转到关于页；书籍和联系锚点保留。此兼容跳转需要 JavaScript，禁用脚本时可通过全站导航访问对应页面。
 
 移动端（820px 及以下）书名使用 20px、简介与阅读入口使用 16px 字号，简介独占整行，阅读和下载按钮提供至少 48px 点击高度。
 
