@@ -42,7 +42,7 @@ npm test
 - `src/pages/`：`index.astro` 为首页，`books.astro` 为电子书架，`about.astro` 为自我介绍与联系页。
 - `src/components/`：首屏、关于、书架、书卡、阅读路线、联系和页脚。
 - `src/layouts/SiteLayout.astro`：各页面独立的标题、描述与规范链接，全局样式与脚本入口。
-- `src/styles/global.css`：配色、排版和移动端布局。
+- `src/styles/global.css`：深海军蓝背景、冰青主色、靛蓝辅助色，以及排版与移动端布局；粒子球从同一组 CSS 变量读取配色。
 - `src/scripts/site.js`：全站时钟与旧首页锚点兼容；导航当前页状态在构建时生成。
 - `src/scripts/bookshelf.js`、`src/scripts/orb.js`：分别仅在书架页加载筛选脚本、在首页加载粒子球脚本。
 - `public/`：原样复制到构建输出的静态文件。
